@@ -551,12 +551,12 @@ class Handler{
     return jsonA;
   }
   openInfo(){
-    let readyString = `https://crm.centralnoe.ru/objectCard/info/add/index.html`;
+    let readyString = `https://crm.centralnoe.ru/CDB/object/card/info/add/index.html`;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
   }
   openCard(idReq) {
     const typeA = '1c';
-    let readyString = "https://crm.centralnoe.ru/objectCard/cardObject.php?source="+typeA+"&id="+idReq;
+    let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source="+typeA+"&id="+idReq;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
     return true;
   }

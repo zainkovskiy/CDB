@@ -268,7 +268,7 @@ class Handler{
     })
   }
   openCard() {
-    let readyString = `https://crm.centralnoe.ru/objectCard/info/photo/index.html`;
+    let readyString = `https://crm.centralnoe.ru/CDB/object/card/info/photo/index.html`;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
   }
 

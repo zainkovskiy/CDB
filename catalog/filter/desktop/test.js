@@ -762,7 +762,7 @@ class AddressHandler {
   openCard(idReq, source) {
     const typeA = source;
     let ScrW = window.screen.width*0.95;
-    let readyString = "https://crm.centralnoe.ru/objectCard/cardObject.php?source="+typeA+"&id="+idReq;
+    let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source="+typeA+"&id="+idReq;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
     return true;
   }
@@ -782,7 +782,7 @@ class AddressHandler {
       body: raw
     };
 
-    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/catalogFilter.php", requestOptions);
+    let response = await fetch("https://50970.vds.miran.ru:553/Servers/Search/Catalog.php", requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
