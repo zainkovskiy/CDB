@@ -1,0 +1,247 @@
+body {
+  margin: 0 auto;
+  font-family: "OpenSans-Semibold", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  background: #eef2f4;
+}
+
+.page {
+  padding: 10px;
+}
+
+.header {
+  background-color: white;
+  padding: 10px;
+  margin: 0 0 10px 0;
+  border-radius: 5px;
+}
+.header__logo {
+  display: block;
+  background-image: url("../img/logo_CAN.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 90px;
+}
+
+.deal {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: white;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.info {
+  width: 100%;
+}
+.info__name {
+  font-size: 13px;
+  line-height: 15px;
+  color: #333;
+  cursor: pointer;
+  display: block;
+  transition: color 0.1s;
+}
+.info__name:hover {
+  color: #2067b0;
+}
+.info__cost {
+  font-size: 14px;
+  line-height: 26px;
+  color: #535c6a;
+  display: block;
+  margin: 10px 0;
+}
+.info__owner {
+  font-size: 12px;
+  color: #8e8e8e;
+  display: block;
+}
+
+.business {
+  position: relative;
+}
+.business__text {
+  display: block;
+  margin: 10px 0 0 0;
+  color: #2660c0;
+  cursor: pointer;
+  font-size: 13px;
+}
+.business__info {
+  display: grid;
+  grid-template-columns: auto 50px;
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+  margin: 10px 0 0 -10px;
+}
+.business__img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.business__done {
+  display: block;
+  width: 25px;
+  height: 25px;
+  background-image: url("img/select.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.business__done-text {
+  font-size: 11px;
+  color: #a5a6a8;
+  text-align: center;
+  margin: 5px 0 0 0;
+}
+
+.task__time {
+  font-size: 11px;
+  line-height: 11px;
+  display: block;
+  color: red;
+  margin: 0 0 5px 0;
+}
+.task__text {
+  font-size: 14px;
+  color: #0b66c3;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.buttons__item {
+  display: block;
+  width: 25px;
+  height: 25px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+.buttons__item:nth-child(2) {
+  margin: 10px 0;
+}
+.buttons__phone {
+  background-image: url("img/phone-active.svg");
+}
+.buttons__message {
+  background-image: url("img/message-disable.svg");
+}
+.buttons__chat {
+  background-image: url("img/chat-active.svg");
+}
+.buttons__contract {
+  background-image: url("img/contract.svg");
+}
+
+.card {
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 10;
+  right: 0;
+  overflow: auto;
+}
+.card__info {
+  margin: 0 10px;
+  border-bottom: 1px solid #e8ecee;
+  padding: 0 0 10px 0;
+}
+.card__title {
+  height: 39px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e8ecee;
+  color: #525c69;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+.card__subtitle {
+  font-size: 14px;
+  color: #a3a9b1;
+  display: block;
+  margin: 10px 0 0 0;
+}
+.card__subtitle-child {
+  display: block;
+  color: black;
+  margin: 5px 0 0 0;
+  text-decoration: none;
+}
+
+.card_open {
+  animation: cardOpen 0.5s linear;
+  animation-fill-mode: forwards;
+}
+
+.card_close {
+  animation: cardClose 0.5s linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cardOpen {
+  from {
+    width: 0%;
+    visibility: hidden;
+  }
+  to {
+    width: 100%;
+    visibility: visible;
+  }
+}
+@keyframes cardClose {
+  from {
+    width: 100%;
+    visibility: visible;
+  }
+  to {
+    width: 0%;
+    visibility: hidden;
+  }
+}
+.return {
+  position: relative;
+  width: 100%;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid black;
+}
+.return__arrow {
+  position: absolute;
+  left: 0;
+  opacity: 0.5;
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-image: url("img/arrow-down.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: rotate(90deg);
+  pointer-events: none;
+  margin: 0 0 0 10px;
+}
+.return__text {
+  pointer-events: none;
+}
+
+.isVisible {
+  display: none;
+}
+
+/*# sourceMappingURL=style.css.map */

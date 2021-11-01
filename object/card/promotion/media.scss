@@ -1,0 +1,60 @@
+@media (max-width: 768px) {
+  .header{
+    flex-wrap: wrap;
+    height: max-content;
+    padding: 20px;
+  }
+  .place{
+    margin: 0 0 10px 0;
+  }
+  .basket{
+    top: 140px;
+  }
+  .panel{
+    display: flex;
+    flex-direction: column;
+    &__item{
+      border-top: 1px solid #cbbdbd;
+      margin: 0;
+    }
+  }
+  .accordion{
+    box-shadow: none;
+  }
+  .price-btn{
+    width: 100%;
+  }
+  .header__buttons{
+    width: 100%;
+    margin: 10px 0 0 0;
+  }
+  .header__close{
+    right: 15px;
+  }
+  .header__table{
+    min-width: 100%;
+    display: grid;
+    & tbody{
+      display: grid;
+    }
+    & tr{
+      display: grid;
+      border-bottom: 1px solid #cbbdbd;
+    }
+    & td{
+      width: 100%;
+      text-align: right;
+      border: none;
+      &:before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #6e6b6b;
+        position: absolute;
+        left: 10px;
+      }
+    }
+  }
+  .table-header{
+    display: none;
+  }
+}

@@ -1,0 +1,467 @@
+body {
+  margin: 0 auto;
+  background-color: #ecf2f4;
+  font-family: sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+.btn {
+  width: 100%;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+.btn__show {
+  background-color: #0c54a0;
+  color: white;
+  position: relative;
+}
+.btn__show:after {
+  content: attr(data-count);
+  position: absolute;
+  right: 20px;
+  background: white;
+  color: black;
+  border-radius: 15px;
+  padding: 5px;
+  top: 5px;
+}
+.btn__filter {
+  margin: 10px 0 0 0;
+}
+
+.title {
+  margin: 0 0 10px 0;
+}
+
+.blur-on {
+  filter: blur(100px);
+}
+
+.blur-off {
+  filter: blur(0);
+}
+
+.catalog {
+  padding: 10px;
+}
+
+.header {
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+.header__logo {
+  display: block;
+  background-image: url("../img/logo_CAN.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 90px;
+}
+.header__wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 0 0;
+}
+
+.owner {
+  margin: 20px 0;
+}
+
+.form {
+  padding: 10px;
+  background-color: white;
+  margin: 10px 0;
+  transition: filter 0.3s ease-out;
+  border-radius: 5px;
+}
+
+.source {
+  display: flex;
+  justify-content: space-between;
+  min-height: 40px;
+}
+.source__wrap {
+  width: 30%;
+}
+.source__input {
+  display: none;
+}
+.source__input:checked ~ .source__label {
+  border: 1px solid #0c54a0;
+  background-color: #acd6ff;
+}
+.source__label {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+.source__label-centr {
+  background-image: url("../img/centr-small.png");
+}
+.source__label-mls {
+  background-image: url("../img/mls.png");
+}
+.source__label-all {
+  background-image: url("../img/all.png");
+}
+
+.change {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.change__text {
+  display: block;
+  width: 100%;
+}
+.change__btn {
+  width: 45%;
+}
+
+.field {
+  position: relative;
+}
+.field_left {
+  margin: 0 10px 0 0;
+}
+.field_right {
+  margin: 0 0 0 10px;
+}
+
+.field__input {
+  width: 100%;
+  border: 1px solid #585858;
+  font-size: 15px;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.field__input:focus {
+  outline: none;
+  border-color: #0c54a0;
+}
+
+.field__input:focus + .field__placeholder .field__text, :not(input[value=""]) + .field__placeholder .field__text {
+  background-color: white;
+  font-size: 14px;
+  color: black;
+  transform: translate(0, -110%);
+}
+
+.field__input:focus + .field__placeholder .field__text {
+  border-color: #0c54a0;
+  color: #0c54a0;
+}
+
+.field__placeholder {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border: 3px solid transparent;
+  background-color: transparent;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.field__text {
+  font-size: 16px;
+  padding: 0 10px;
+  background-color: transparent;
+  transform: translate(0);
+  color: #9e9e9e;
+  transition: transform 0.15s ease-out, font-size 0.15s ease-out, background-color 0.2s ease-out, color 0.15s ease-out;
+}
+
+.from-to__wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.from-to__text {
+  display: block;
+  width: 100%;
+}
+
+.count-room {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.count-room__text {
+  display: block;
+  width: 100%;
+}
+.count-room__wrap {
+  width: 15%;
+}
+.count-room__input {
+  display: none;
+}
+.count-room__input:checked ~ .count-room__label {
+  border: 1px solid #0c54a0;
+  background-color: #acd6ff;
+}
+.count-room__label {
+  border: 1px solid;
+  width: 100%;
+  text-align: center;
+  padding: 5px 0;
+  display: block;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.card {
+  background: white;
+  margin: 10px 0 0 0;
+  border-radius: 5px;
+}
+.card__img {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  height: 300px;
+  display: block;
+  object-fit: cover;
+}
+.card__wrap {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  border-radius: 0 0 5px 5px;
+  position: relative;
+}
+.card__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column-start: 2;
+}
+.card__street {
+  font-size: 18px;
+  line-height: 20px;
+  color: #266BBE;
+  text-decoration: none;
+}
+.card__city {
+  font-size: 12px;
+  line-height: 15px;
+  color: #8F9091;
+  margin: 5px 0 0 0;
+}
+.card__info {
+  margin: 5px 0 0 0;
+}
+.card__area {
+  font-size: 14px;
+  line-height: 18px;
+  color: #484848;
+}
+.card__floor {
+  font-size: 14px;
+  line-height: 15px;
+  color: #484848;
+  margin: 0 15px;
+}
+.card__wall {
+  font-size: 14px;
+  line-height: 15px;
+  color: #484848;
+}
+.card__price {
+  font-size: 16px;
+  line-height: 20px;
+  color: #484848;
+  margin: 15px 0 0 0;
+  font-weight: 600;
+}
+.card__price span {
+  font-size: 14px;
+  line-height: 15px;
+  color: #8F9091;
+  margin: 0 0 0 10px;
+  font-weight: 400;
+}
+.card__place {
+  display: flex;
+  align-items: flex-end;
+}
+.card__logo {
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 40px;
+  height: 40px;
+}
+.card__logo-centr {
+  background-image: url("../img/centr-small.png");
+}
+.card__btn {
+  background-color: #3bc8f5;
+  border-radius: 4px;
+  outline: none;
+  border: none;
+  padding: 5px;
+}
+.card__btn:nth-child(2) {
+  margin: 5px 0;
+}
+.card__btn-content {
+  display: block;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+}
+.card__btn-call {
+  background-image: url("../img/call.png");
+}
+.card__btn-selection {
+  background-image: url("../img/selections.png");
+}
+.card__btn-alert {
+  background-image: url("../img/alert.png");
+}
+.card__alert {
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  left: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 0 0 5px 5px;
+}
+.card__alert-btn {
+  width: 100%;
+  height: 30%;
+  padding: 10px;
+  background-color: white;
+  outline: none;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #9c9c9c73;
+  display: flex;
+  align-items: center;
+}
+.loader__img {
+  width: 70px;
+  background-image: url("../img/loader.gif");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 70px;
+  margin: 0 auto;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+.search__field {
+  width: 100%;
+  border: 1px solid #c4c4c4;
+  outline: none;
+  padding: 10px;
+}
+.search__items {
+  position: absolute;
+  z-index: 10;
+  background-color: white;
+  width: 100%;
+  box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+  border-radius: 5px;
+  margin: 40px 0 0 0;
+  max-height: 300px;
+  overflow: auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.search__item {
+  user-select: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 10px 5px;
+}
+.search__item:hover {
+  background: #ebf0f5;
+}
+
+.hidden {
+  opacity: 0.3;
+}
+
+.visible {
+  display: none;
+}
+
+.margin {
+  margin: 10px 0;
+}
+.margin_last {
+  margin: 10px 0 0 0;
+}
+
+.disabled {
+  opacity: 0.3;
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+}
+.iframe-box {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  opacity: 0;
+  top: 0;
+}
+.iframe-close {
+  display: block;
+  width: 30px;
+  height: 30px;
+  background-image: url("../img/button-close.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+  z-index: 15;
+  right: 10px;
+  top: 10px;
+}
+
+/*# sourceMappingURL=style.css.map */

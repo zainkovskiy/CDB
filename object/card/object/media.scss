@@ -1,0 +1,109 @@
+@media (max-width: 480px) {
+  .main{
+    grid-template-columns: 1fr;
+    grid-gap: 10px 0;
+    grid-template-areas:
+            "nav"
+            "carousel"
+            "contacts"
+            "about"
+            "info"
+            "description"
+            "map"
+            'chart';
+  }
+  .wrapper{
+    padding: 10px;
+  }
+  .header {
+    flex-direction: column;
+
+    &__logo {
+      width: 100%;
+      height: 50px;
+      background-position: center;
+      background-size: 40%;
+    }
+
+    &__client {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .contacts{
+    width: 100%;
+    height: auto;
+    &__title{
+      margin: 0;
+    }
+  }
+  .info{
+    grid-template-columns: 1fr;
+    grid-gap: 0;
+  }
+  .aside{
+    height: 50px;
+    flex-direction: row;
+  }
+  .btn_like, .btn_dislike{
+    background-size: 20%;
+  }
+  .about{
+    grid-gap: 10px 0;
+    &__head{
+      flex-direction: column;
+      align-items: center;
+    }
+    &__title{
+      text-align: center;
+    }
+    &__price{
+      align-items: flex-end;
+    }
+    &__row {
+      margin: 0 10px 0 0;
+    }
+    &__area{
+      flex-direction: column;
+      &-items{
+        flex-direction: row;
+        margin: 10px 0 0 0;
+      }
+    }
+    &__type span, &__create span, &__update span{
+      display: block;
+    }
+    &__create{
+      text-align: center;
+    }
+    &__update{
+      text-align: right;
+    }
+  }
+  .description__text {
+    padding: 10px;
+  }
+  .slider__items {
+    counter-reset: slide;
+  }
+
+  .slider__item {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    counter-increment: slide;
+    height: 400px;
+    position: relative;
+  }
+  .slider__photo {
+    background-size: contain;
+  }
+
+  .mobile_visible{
+    display: none;
+  }
+  .mobile-margin_bottom{
+    margin: 0 0 10px 0;
+  }
+}

@@ -1,0 +1,89 @@
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.select-wrap {
+  max-width: 700px;
+  width: 100%;
+  margin: 20px auto;
+}
+
+.select-wrap select {
+  margin: 20px;
+}
+
+.select__gap {
+  background: #fff;
+  color: black;
+  border: 1px solid #c4c4c4;
+  font-size: 15px;
+  padding: 10px 15px;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  min-height: 44.5px;
+}
+
+.on.select__gap,
+.select__gap:hover {
+  color: #000000;
+}
+
+.select__list {
+  border: 1px solid #c4c4c4;
+  margin: 0 0;
+  position: absolute;
+  background: white;
+  width: 100%;
+  z-index: 2;
+  padding: 5px 0;
+}
+
+.select__list.on {
+  display: block;
+}
+
+.select__item span {
+  display: block;
+  padding: 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+.select__item.selected,
+.select__item span:hover {
+  color: #000000;
+  background: #f2f2f2;
+}
+
+.select__gap:after {
+  content: '';
+  display: block;
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  margin-top: -7px;
+  background-image: url("img/arrow-down.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  -webkit-transition: all .27s ease-in-out;
+  -o-transition: all .27s ease-in-out;
+  transition: all .27s ease-in-out;
+
+  -webkit-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.on.select__gap:after {
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}

@@ -1,0 +1,101 @@
+@media (max-width: 768px) {
+  .type__wrap {
+    width: 60%;
+  }
+
+  .clients {
+    grid-template-columns: 1fr;
+  }
+  .clients__data-code {
+    flex-direction: column;
+  }
+
+  .contract__change {
+    grid-template-columns: 1fr;
+  }
+
+  .file__container {
+    margin: 0;
+  }
+
+  .documents {
+    flex-direction: column;
+  }
+  .documents__wrap {
+    width: 100%;
+    align-items: center;
+    border-bottom: 2px solid #dddddd;
+  }
+  .documents__wrap:last-child {
+    border: none;
+  }
+
+  .upload {
+    flex-direction: column;
+  }
+  .upload__wrap {
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+
+  .form {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    border-radius: 0;
+  }
+  .form__fio {
+    grid-template-columns: 1fr;
+  }
+  .form__passport {
+    grid-template-columns: 1fr;
+  }
+  .form__passport-getPassport {
+    grid-column-end: 1;
+  }
+  .form__address {
+    grid-template-columns: 1fr;
+  }
+  .form__address_first {
+    grid-column-end: 1;
+  }
+  .form__address_second {
+    grid-column-end: 2;
+  }
+  .form__toggle-item {
+    width: 50%;
+  }
+  .form__toggle-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-link {
+    padding: 0.5rem !important;
+  }
+
+  .contract__toggle-item {
+    display: flex;
+  }
+
+  .contract__btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+@media (max-width: 480px) {
+  .type__wrap {
+    width: 100%;
+  }
+
+  .responsible {
+    width: 100%;
+    height: 80%;
+  }
+  .responsible__table-wrap {
+    height: 80%;
+  }
+}
+
+/*# sourceMappingURL=media.css.map */
