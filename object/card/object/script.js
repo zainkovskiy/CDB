@@ -396,11 +396,11 @@ class Render {
                 Редактировать
               </button>  -->
               <a class="btn_edit ui-btn ui-btn-primary-dark ${this.obj.privileges.user === 'owner' ? this.obj.privileges.user : 'isVisible'}"
-              href="https://crm.centralnoe.ru/objectCard/add/?login=yes&action=old&id=${this.obj.reqNumber}&contact=${phoneOwner}">
+              href="https://crm.centralnoe.ru/CDB/object/card/add/?login=yes&action=old&id=${this.obj.reqNumber}&contact=${phoneOwner}">
               Редактировать</a>
               
               <a class="btn_edit ui-btn ui-btn-primary-dark ${this.obj.privileges.user === 'owner' ? this.obj.privileges.user : 'disable'}" 
-              href="https://crm.centralnoe.ru/reportSeller/index.php?offerid=${this.obj.reqNumber}" target="_blank">Отчет продавцу</a>
+              href="https://crm.centralnoe.ru/CDB/catalog/report/index.php?offerid=${this.obj.reqNumber}" target="_blank">Отчет продавцу</a>
               
               <button class="btn_edit ui-btn ui-btn-primary
                 ${this.obj.privileges.user !== 'owner' || this.obj.docType === 'Без договора' ? 'isVisible' : this.obj.privileges.user}"
@@ -457,9 +457,9 @@ class Handler {
   }
   openCard(idReq) {
     if (source === '1c'){
-      location = `https://crm.centralnoe.ru/objectCard/applicationForOneself/?id=${UID}&deal=${deal}`;
+      location = `https://crm.centralnoe.ru/CDB/object/card/applicationForOneself/?id=${UID}&deal=${deal}`;
     } else {
-      let readyString = `https://crm.centralnoe.ru/objectCard/infoAboutClients/?id=${idReq}&deal=${deal}`;
+      let readyString = `https://crm.centralnoe.ru/CDB/object/card/infoAboutClients/?id=${idReq}&deal=${deal}`;
       BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
     }
   }

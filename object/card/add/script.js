@@ -256,7 +256,7 @@ class Header {
             <div class="error">   
                 <p class="error__text"></p>
             </div>
-            <div class="info"> 
+            <div class="methodical"> 
               <span>Как работать с объектом?</span>
               <button data-info="add" class="ui-btn ui-btn-primary-dark">инфо</button>
             </div>
@@ -523,7 +523,7 @@ class Handler{
         return
       }
     })
-    document.querySelector('.info').addEventListener('click', event => {
+    document.querySelector('.methodical').addEventListener('click', event => {
       if (event.target.dataset.info === 'add'){
         this.openInfo();
       }
