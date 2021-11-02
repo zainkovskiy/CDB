@@ -115,7 +115,7 @@ class Handler {
     document.querySelector('.card').classList.add('card_open');
     this.handlerCard('card');
   }
-  //todo вставить handlerCard из ../leads/script.js
+  //todo вставить handlerCard из ../leads/old.js
   openMainPage(){
     window.location.href='../index.html';
   }

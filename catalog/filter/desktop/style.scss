@@ -172,6 +172,8 @@ ul {
     right: 10px;
   }
   &-arrow{
+    pointer-events: none;
+    cursor: pointer;
     position: absolute;
     display: block;
     width: 10px;
@@ -184,6 +186,7 @@ ul {
     right: 10px;
   }
   &-cross{
+    pointer-events: auto;
     background-image: url("img/close.svg");
     background-size: cover;
     opacity: .5;
@@ -928,7 +931,7 @@ ul {
     display: grid;
     grid-template-rows: auto;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-row-gap: 10px;
+    grid-gap: 10px;
     margin: 0 0 0 16px;
     width: 100%;
   }

@@ -75,15 +75,40 @@ function selectStyle(select, firstWord){
 
   });
 }
+const novosibirsk = 'Новосибирская';
+const kemerovo = 'Кемеровская область - Кузбасс';
+
+$("#address").suggestions({
+  token: "408e6651c0b9bfc8e2f487383d45353973f3285c",
+  type: "ADDRESS",
+  /* Вызывается, когда пользователь выбирает одну из подсказок */
+  onSelect: function(suggestion) {
+    if(suggestion.data.region === novosibirsk || suggestion.data.region === kemerovo){
+      if (suggestion.data.city || suggestion.data.settlement){
+        address.addressValue = suggestion.value;
+        address.addressObject = suggestion;
+        address.metroArray = [];
+        address.districtArray = [];
+        for (let key in address.metroValue){
+          address.metroValue[key] = false;
+        }
+        for (let key in address.districtValue){
+          address.districtValue[key] = false;
+        }
+      }
+    }
+    console.log(suggestion);
+  }
+});
 
 class AddressHandler {
   constructor() {
     this.container = document.querySelector('.container');
-    this.district = [
+    this.districtNsk = [
       'Дзержинский район',
       'Железнодорожный район',
       'Заельцовский район',
-      'Калиниский район',
+      'Калининский район',
       'Кировский район',
       'Ленинский район',
       'Октябрьский район',
@@ -211,6 +236,14 @@ class AddressHandler {
       // 'Южный_(Ленинский р-н)',
       // 'Южный_(Первомайский р-н)',
     ];
+    this.districtKem = [
+      'Заводский район',
+      'Кедровка район',
+      'Кировский район',
+      'Ленинский район',
+      'Рудничный район',
+      'Центральный район',
+    ]
     this.districtArray = [];
     this.districtValue = {
       dzerzhinskiy : false,
@@ -223,6 +256,9 @@ class AddressHandler {
       pervomayskiy : false,
       sovetskiy : false,
       centralniy : false,
+      zavodskoy : false,
+      kedrovka : false,
+      rudnichiy : false,
     };
     this.metroArray = [];
     this.metroValue = {
@@ -245,23 +281,27 @@ class AddressHandler {
     this.currentElem = '';
     this.countRoom = [];
     this.objectFilter = {};
-    this.address = '';
-    this.request = true;
+    this.addressValue = '';
+    this.addressObject = '';
+    this.currentRegion = 'Новосибирская обл, ';
     this.cards = [];
     this.copyCards = [];
     this.startPaginat = 0;
     this.countPaginat = 0;
     this.balancePaginat = 0;
     this.currentPaginatActive = 0;
+    this.historyFilter = '';
   }
   init(){
     this.handlerSource();
     this.container.addEventListener('click', event => {
       if(event.target.dataset.name === 'metro'){
+        document.querySelector('.suggestions-suggestions').setAttribute('style', 'display: none;')
         this.openModule('Поиск по станции метро', this.metroLayout());
         selectStyle('.metro__select', `${this.metroTime ? this.metroTime : '15 минут'}`);
         this.checkCurrentElem();
       } else if (event.target.dataset.name === 'district'){
+        document.querySelector('.suggestions-suggestions').setAttribute('style', 'display: none;')
         this.openModule('', this.districtLayout());
         this.checkCurrentElem();
       } else if (event.target.dataset.name === 'extra'){
@@ -272,6 +312,7 @@ class AddressHandler {
         this.setAllValue();
         this.setLoader();
         this.sendToServer().then(data => {
+          console.log(data)
           this.setCountCard(data);
           new Cards(data).init();
           document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
@@ -284,14 +325,9 @@ class AddressHandler {
             this.clearPaginationContainer();
           }
           this.removeLoader();
+          document.querySelector('#map').innerHTML = '';
+          this.initMap(this.cards);
         });
-      } else if (event.target.dataset.address === 'street'){
-        this.addressValue = event.target.dataset.value;
-        this.metroArray = [];
-        this.districtArray = [];
-        // this.setAddressLayout();
-        this.showChangeMetroDistrict();
-        this.checkCurrentElem();
       } else if (event.target.dataset.input === 'reqTypeofRealty'){
         document.querySelector(`INPUT[name='reqTypeofRealty']`).value = event.target.dataset.value;
         this.checkCurrentElem();
@@ -336,53 +372,179 @@ class AddressHandler {
         if (event.target.dataset.card === 'alert'){
           this.openAlert(event.target.dataset.req);
         } else if (event.target.dataset.card === 'reserv'){
-
+          const addFloat = this.cards.find(card => card.reqNumber === event.target.dataset.req);
+          const floatInArr = basket.fullness.find(card => card.reqNumber === event.target.dataset.req)
+          if (floatInArr){
+            return
+          } else {
+            basket.fullness.push(addFloat);
+            basket.init();
+          }
+          console.log(basket.fullness)
         }
+      } else if (event.target.dataset.name === 'basket'){
+        if (basket.fullness.length > 0){
+          const elem = document.querySelector(`.${event.target.dataset.name}__block`);
+          if (elem.classList.contains('visible')){
+            this.checkCurrentElem();
+            elem.classList.remove('visible');
+            this.currentElem = elem;
+          } else {
+            this.checkCurrentElem();
+          }
+        }
+      } else if (event.target.dataset.basket === 'clear'){
+        basket.fullness = [];
+        basket.init();
+        this.checkCurrentElem();
+      } else if (event.target.dataset.basket === 'save'){
+        if (dealObject){
+          this.checkCurrentElem();
+          this.setLoader();
+          this.sendCompilation(dealObject).then(() => {
+            basket.fullness = [];
+            basket.init();
+            document.querySelector('.loader__img').style.backgroundImage='url(https://crm.centralnoe.ru/dealincom/assets/statusOk.gif)'
+            setTimeout(() => {
+              this.removeLoader();
+            }, 500)
+          });
+        } else {
+          let req = {
+            action : 'getDeals',
+            author : currentUserId,
+          }
+          this.getDealOrHistory(req).then(data => {
+            this.openModule('Выберете сделку', this.dealLayout(data));
+            this.checkCurrentElem();
+          });
+        }
+      } else if (event.target.dataset.name === 'story'){
+        //todo разкомментить
+
+        // if (dealObject){
+          let req = {
+            action : 'historySearch',
+            dealId : 1,
+          }
+          this.getDealOrHistory(req).then(data => {
+            this.historyFilter = data;
+            this.openModule('История поиска по сделке', this.historyLayout(data));
+          })
+        // }
+      } else if (event.target.dataset.open === 'openCard'){
+        this.openCard(event.target.dataset.req, event.target.dataset.source);
+      } else if (event.target.dataset.name === 'map'){
+        const heightEmpty = window.innerHeight - document.querySelector('.search-form').offsetHeight + document.querySelector('.search-form').offsetTop - 20;
+        if (this.cards.length > 0){
+          if(event.target.classList.contains('btn-map_active')){
+            document.querySelector('#map').removeAttribute('style');
+            document.querySelector('.cards').classList.remove('visible');
+            document.querySelector('.pagination').classList.remove('visible');
+            document.querySelector('.last-elem').classList.remove('visible');
+            document.querySelector('.map__wrapper').classList.add('visible');
+            event.target.classList.toggle('btn-map_active');
+            document.querySelector('.map__right').innerHTML = '';
+            document.querySelector('.map__right').classList.remove('map__bar_open');
+          } else {
+            document.querySelector('#map').setAttribute('style', `height: ${heightEmpty}px;`);
+            document.querySelector('.cards').classList.add('visible');
+            document.querySelector('.pagination').classList.add('visible');
+            document.querySelector('.last-elem').classList.add('visible');
+            document.querySelector('.map__wrapper').classList.remove('visible');
+            event.target.classList.toggle('btn-map_active');
+          }
+        }
+      }
+      else if (event.target.dataset.clear === 'filter'){
+        location.reload();
       }
     });
 
     for (let input of document.querySelectorAll('.start__input')){
       input.addEventListener('focus', () => {
-        if (input.name !== 'houseNumber'){
-          this.checkCurrentElem();
-          const elem = document.querySelector(`.${input.name}__block`);
-          elem.classList.remove('visible');
-          this.currentElem = elem;
+        this.checkCurrentElem();
           if(input.name === 'address'){
-            input.value = this.addressValue;
+            if (this.addressValue.length === 0){
+              input.value = this.currentRegion;
+              setTimeout(() => {
+                input.selectionStart = input.value.length;
+              }, 50)
+            } else if (this.addressValue.length > 0){
+              input.value = this.addressValue;
+            }
+            const currentRegion = document.querySelector('.place__text').innerHTML;
+            setTimeout(() => {
+              const btnGroup = document.querySelector('.address__btn');
+              if (!btnGroup){
+                if (currentRegion === 'Новосибирская область'){
+                  document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
+                    `<div data-elem="check" class="address__btn">
+                      <button data-elem="check" data-name="metro" class="address__btn-item"><span class="address__title">Метро</span><span class="address__arrow"></span></button>
+                      <button data-elem="check" data-name="district" class="address__btn-item"><span class="address__title">Район и микрорайон</span><span class="address__arrow"></span></button>
+                  </div>`)
+                } else if (currentRegion === 'Кемеровская область'){
+                  document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
+                    `<div data-elem="check" class="address__btn">                      
+                      <button data-elem="check" data-name="district" class="address__btn-item"><span class="address__title">Район и микрорайон</span><span class="address__arrow"></span></button>
+                  </div>`)
+                }
+              }
+            }, 500)
+          } else {
+            const elem = document.querySelector(`.${input.name}__block`);
+            elem.classList.remove('visible');
+            this.currentElem = elem;
           }
-        }
       })
       if (input.name === 'address'){
         input.addEventListener('keyup', () => {
-          if(input.value.length > 0){
-            this.getStreet(input.value).then(data => {
-              if (data.length > 0){
-                this.request = false;
-                this.renderStreet(data, input, 'streetName');
+          const currentRegion = document.querySelector('.place__text').innerHTML;
+          setTimeout(() => {
+            const btnGroup = document.querySelector('.address__btn');
+            if (!btnGroup){
+              if (currentRegion === 'Новосибирская область'){
+                document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
+                  `<div data-elem="check" class="address__btn">
+                      <button data-elem="check" data-name="metro" class="address__btn-item"><span class="address__title">Метро</span><span class="address__arrow"></span></button>
+                      <button data-elem="check" data-name="district" class="address__btn-item"><span class="address__title">Район и микрорайон</span><span class="address__arrow"></span></button>
+                  </div>`)
+              } else if (currentRegion === 'Кемеровская область'){
+                document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
+                  `<div data-elem="check" class="address__btn">                      
+                      <button data-elem="check" data-name="district" class="address__btn-item"><span class="address__title">Район и микрорайон</span><span class="address__arrow"></span></button>
+                  </div>`)
               }
-            });
-          } else {
+            }
+          }, 500)
+          if (input.value.length === 0){
             this.addressValue = '';
+            this.addressObject = '';
             input.value = '';
-            this.setAddressLayout();
-            this.showChangeMetroDistrict();
           }
         })
         input.addEventListener('blur', () => {
-          if (this.addressValue.length === 0 && this.metroArray.length === 0 && this.metroArray.length === 0){
-            input.value = '';
+          const currentRegion = document.querySelector('.place__text').innerHTML;
+          let regionValue = '';
+          if (currentRegion === 'Новосибирская область'){
+            regionValue = novosibirsk;
+          } else if (currentRegion === 'Кемеровская область'){
+            regionValue = kemerovo;
+          }
+          if (this.addressObject){
+            if (this.addressObject.data.region === regionValue){
+              this.showChangeMetroDistrict();
+            } else {
+              this.addressValue = '';
+              this.addressObject = '';
+              input.value = '';
+            }
           } else {
-            input.value = `${this.addressValue.length > 0 ? this.addressValue : ''} ${this.metroArray.length > 0 || this.districtArray.length > 0 ? `Выбрано ${this.metroArray.length + this.districtArray.length}` : ''}`;
+            this.showChangeMetroDistrict();
           }
         })
-      } else if (input.name === 'houseNumber'){
-        input.addEventListener('keyup', () => {
-          if (input.value.length > 0){
-            document.querySelector(`.${input.name}-x`).classList.add('start__input-cross');
-          } else {
-            document.querySelector(`.${input.name}-x`).classList.remove('start__input-cross');
-          }
+        input.addEventListener('click', () => {
+          input.selectionStart = input.value.length;
         })
       }
     }
@@ -390,12 +552,218 @@ class AddressHandler {
     document.body.addEventListener('click', event => {
       if (event.target.dataset.elem !== 'check'){
         this.checkCurrentElem();
-        this.showChangeMetroDistrict();
       }
     })
 
     this.handlerPriceFilter();
   }
+  //todo доделать поинты с адресами и т д
+  initMap(cards){
+    // let cords = ['55.030204', '82.920430'];
+    // ymaps.ready(init);
+    // function init(){
+    //   var myMap = new ymaps.Map("map", {
+    //     center: cords,
+    //     zoom: 17,
+    //     controls: ['zoomControl', 'fullscreenControl'],
+    //   })
+    //   for (let point of cards){
+    //     if (point.lat && point.lng){
+    //       let cordsPoint = [];
+    //       cordsPoint.push(point.lat);
+    //       cordsPoint.push(point.lng);
+    //       var myGeoObject = new ymaps.GeoObject({
+    //         geometry: {
+    //           type: "Point", // тип геометрии - точка
+    //           coordinates: cordsPoint, // координаты точки
+    //         }
+    //       });
+    //       myMap.geoObjects.add(myGeoObject);
+    //     }
+    //   }
+    //   // myMap.behaviors.disable('scrollZoom');
+    //   // if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+    //   //   //... отключаем перетаскивание карты
+    //   //   myMap.behaviors.disable('drag');
+    //   // }
+    // }
+    ymaps.ready(function () {
+      var myMap = new ymaps.Map('map', {
+          center: [55.030204, 82.920430],
+          zoom: 11,
+          behaviors: ['default', 'scrollZoom']
+        }, {
+          searchControlProvider: 'yandex#search'
+        }),
+        /**
+         * Создадим кластеризатор, вызвав функцию-конструктор.
+         * Список всех опций доступен в документации.
+         * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/Clusterer.xml#constructor-summary
+         */
+        clusterer = new ymaps.Clusterer({
+          /**
+           * Через кластеризатор можно указать только стили кластеров,
+           * стили для меток нужно назначать каждой метке отдельно.
+           * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/option.presetStorage.xml
+           */
+          preset: 'islands#invertedVioletClusterIcons',
+          openBalloonOnClick: false,
+          /**
+           * Ставим true, если хотим кластеризовать только точки с одинаковыми координатами.
+           */
+          groupByCoordinates: false,
+          /**
+           * Опции кластеров указываем в кластеризаторе с префиксом "cluster".
+           * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/ClusterPlacemark.xml
+           */
+          clusterDisableClickZoom: true,
+          clusterHideIconOnBalloonOpen: false,
+          geoObjectHideIconOnBalloonOpen: false
+        }),
+        /**
+         * Функция возвращает объект, содержащий данные метки.
+         * Поле данных clusterCaption будет отображено в списке геообъектов в балуне кластера.
+         * Поле balloonContentBody - источник данных для контента балуна.
+         * Оба поля поддерживают HTML-разметку.
+         * Список полей данных, которые используют стандартные макеты содержимого иконки метки
+         * и балуна геообъектов, можно посмотреть в документации.
+         * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/GeoObject.xml
+         */
+        getPointData = function (point) {
+          return {
+            reqNumber: point[2]
+          };
+        },
+        /**
+         * Функция возвращает объект, содержащий опции метки.
+         * Все опции, которые поддерживают геообъекты, можно посмотреть в документации.
+         * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/GeoObject.xml
+         */
+        getPointOptions = function (point) {
+          return {
+            preset: 'islands#violetIcon',
+            reqNumber: point[2]
+          };
+        },
+        points = [],
+        geoObjects = [];
+      /**
+       * заполняем points (метки) акутальными данными
+       */
+      for (let point of cards){
+        if (point.lat && point.lng){
+          let cordsPoint = [];
+          cordsPoint.push(point.lat);
+          cordsPoint.push(point.lng);
+          cordsPoint.push(point.reqNumber);
+          points.push(cordsPoint);
+        }
+      }
+      /**
+       * Данные передаются вторым параметром в конструктор метки, опции - третьим.
+       * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/Placemark.xml#constructor-summary
+       */
+      for(var i = 0, len = points.length; i < len; i++) {
+        geoObjects[i] = new ymaps.Placemark(points[i], getPointData(points[i]), getPointOptions(points[i]));
+      }
+
+      /**
+       * Можно менять опции кластеризатора после создания.
+       */
+      clusterer.options.set({
+        gridSize: 80,
+        clusterDisableClickZoom: true
+      });
+
+      /**
+       * В кластеризатор можно добавить javascript-массив меток (не геоколлекцию) или одну метку.
+       * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/Clusterer.xml#add
+       */
+      clusterer.add(geoObjects);
+      myMap.geoObjects.add(clusterer);
+
+      myMap.geoObjects.events.add('click', function (e) {
+        var object = e.get('target');
+        if (object.options._name === 'geoObject'){
+          document.querySelector('.map__right').innerHTML = '';
+          document.querySelector('.map__right').classList.add('map__bar_open');
+          renderCard(findCard(object.properties._data.reqNumber));
+        } else if (object.options._name === 'cluster'){
+          document.querySelector('.map__right').innerHTML = '';
+          document.querySelector('.map__right').classList.add('map__bar_open');
+          for (let item of object.properties._data.geoObjects){
+            renderCard(findCard(item.properties._data.reqNumber));
+          }
+        }
+      });
+
+      myMap.events.add('click', function (e) {
+        document.querySelector('.map__right').classList.add('map__bar_close');
+        setTimeout(() => {
+          document.querySelector('.map__right').innerHTML = '';
+          document.querySelector('.map__right').classList.remove('map__bar_open');
+          document.querySelector('.map__right').classList.remove('map__bar_close');
+        }, 500)
+      });
+
+    });
+    function findCard(reqNumber){
+      return cards.find(item => item.reqNumber === reqNumber)
+    }
+    function renderCard(card){
+      document.querySelector('.map__right').insertAdjacentHTML('beforeend', 
+        `<div class="map-card"> 
+                <img class="map-card__photo" src="${card.reqPhoto}" alt="photo"> 
+                <span data-open="openCard" data-req="${card.reqNumber}"
+                  data-source="${card.reqType}" class="map-card__street">
+                  ${card.reqTypeofRealty === "Квартира" || card.reqTypeofRealty === "Дом"
+                  || card.reqTypeofRealty === "Комната"
+                  ? `${card.reqRoomCount ? `${card.reqRoomCount}к, ` : ''}`
+                  : ''}
+                  ${card.reqStreet ? `ул. ${card.reqStreet}, ` : ''}
+                  ${card.reqHouseNumber ? `д. ${card.reqHouseNumber}` : ''}
+                </span>            
+                <span class="map-card__city">
+                  ${card.reqCity ? `${card.reqCity}, ` : ''}
+                  ${card.reqRayon ? `${card.reqRayon} р-н` : ''}
+                </span>
+                <div class="map-card__wrap">
+                  ${card.reqFlatTotalArea ? `<span class="map-card__flat">${card.reqFlatTotalArea} кв<sup>2</sup></span>` : ''}
+                  ${card.reqFloor && card.reqFloors ? `<span class="map-card__floor">${card.reqFloor}/${card.reqFloors} эт. </span>` : ''}
+                  ${card.reqTypeofRealty === "Дом" || card.reqTypeofRealty === "Земля" && card.reqLandArea ?
+                  `<span class="map-card">
+                      Учаток ${card.reqLandArea} сот.
+                  </span>`
+                  : ''}
+                </div>
+                <div class="map-card__wrap">
+                  <span class="map-card__price">${card.reqPrice ? `${card.reqPrice} тыс. ₽` : ''}</span>
+                  ${card.reqTypeofRealty === "Земля" ? '' : `<span class="map-card__price-meter">${getPriceMeter(card)} ₽/кв.м</span>`}
+                </div>
+                <div class="map-card__wrap map-card__wrap_between"> 
+                  <img class="map-card__logo" src="${card.reqLogo}" alt="logo">
+                  <button class="ui-btn">зарезервировать</button>
+                </div>
+              </div>`)
+    }
+    function getPriceMeter(card){
+      if (card.reqPrice && card.reqFlatTotalArea){
+        if (card.reqPrice === '0' || card.reqFlatTotalArea === '0'){
+          return `0`
+        } else {
+          return ((+card.reqPrice / +card.reqFlatTotalArea) * 1000).toFixed(0);
+        }
+      }
+    }
+  }
+  openCard(idReq, source) {
+    const typeA = source;
+    let ScrW = window.screen.width*0.95;
+    let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source="+typeA+"&id="+idReq;
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+    return true;
+  }
+
   async sendToServer(){
     this.objectFilter.action = 'get';
 
@@ -411,7 +779,7 @@ class AddressHandler {
       body: raw
     };
 
-    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/catalogFilter.php", requestOptions);
+    let response = await fetch("https://50970.vds.miran.ru:553/Servers/Search/Catalog.php", requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
@@ -421,37 +789,65 @@ class AddressHandler {
     this.copyCards = JSON.parse(JSON.stringify(this.cards));
     return jsonA;
   }
+  async getDealOrHistory(req){
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    const raw = JSON.stringify(req);
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: raw
+    };
 
-  async getStreet(value){
-    let response = await fetch(`https://crm.centralnoe.ru/dealincom/factory/getaddress.php?req=${value}`);
+    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/newSelectionDeamon.php", requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
+
     let jsonA = await response.json();
+    console.log(jsonA)
     return jsonA;
   }
-  renderStreet(data, input, valueName){
-    const container = document.querySelector(`.${input.name}__text`);
-    document.querySelector(`.${input.name}__block`).classList.remove('visible')
-    container.innerHTML = '';
-    if (data.length === 0){
-      // container.classList.add('visible');
-      this.request = true;
-    } else {
-      if (data.length > 3){
-        for (let i = 0; i < 3; i++){
-          container.insertAdjacentHTML('beforeend',
-            `<p data-value="${data[i][valueName]}" data-address="street" data-elem="check" class="search__item">${data[i][valueName]}</p>`)
-        }
-      } else if (data.length <= 3 && data.length !== 0){
-        for (let item of data){
-          container.insertAdjacentHTML('beforeend',
-            `<p data-value="${item[valueName]}" data-address="street" data-elem="check" class="search__item">${item[valueName]}</p>`)
-        }
-      }
-      // container.classList.remove('visible');
-      this.request = true;
+  async sendCompilation(dealNumber){
+    let req = {
+      action : 'makeOffer',
+      dealId : dealNumber,
+      offers : this.setCompilationObject(),
     }
+    console.log(req)
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    const raw = JSON.stringify(req);
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: raw
+    };
+
+    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/newSelectionDeamon.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
+
+    let jsonA = await response.json();
+  }
+
+  setCompilationObject(){
+    let compilationArr = [];
+    for (let item of basket.fullness){
+      compilationArr.push({
+        "source" : `${item.reqType}`,
+        "reqNumber" : `${item.reqNumber}`,
+        "reqType" : `${item.reqTypeofRealty}`
+      })
+    }
+    return compilationArr;
   }
 
   handlerSource(){
@@ -492,6 +888,13 @@ class AddressHandler {
       this.addressValue = '';
       this.metroArray = [];
       this.districtArray = [];
+      this.addressObject = '';
+      for (let key in this.districtValue){
+        this.districtValue[key] = false;
+      }
+      for (let key in this.metroValue){
+        this.metroValue[key] = false;
+      }
     }
   }
 
@@ -500,9 +903,10 @@ class AddressHandler {
     this.objectFilter.area = this.districtArray.length === 0 ? null : this.districtArray;
     this.objectFilter.metro = this.metroArray.length === 0 ? null : this.metroArray;
     this.objectFilter.reqRoomCount = [];
-    this.objectFilter.street = this.addressValue;
-    const houseNumber = document.querySelector(`INPUT[name='houseNumber']`).value;
-    this.objectFilter.houseNumber = houseNumber ? houseNumber : null;
+    this.objectFilter.street = this.addressObject ? this.addressObject.data.street ? this.addressObject.data.street : null : null;
+    this.objectFilter.city = this.addressObject ? this.addressObject.data.city ? this.addressObject.data.city : null : null;
+    this.objectFilter.settlement = this.addressObject ? this.addressObject.data.settlement ? this.addressObject.data.settlement : null : null;
+    this.objectFilter.houseNumber = this.addressObject ? this.addressObject.data.house ? this.addressObject.data.house : null : null;
     for (let room of this.countRoom){
       this.objectFilter.reqRoomCount.push(room.value);
     }
@@ -529,56 +933,48 @@ class AddressHandler {
       document.querySelector(`.${event.target.dataset.input}-x`).classList.add('start__input-cross');
     }
   }
-  setAddressLayout(){
-    const addressContainer = document.querySelector('.address__block');
-    addressContainer.innerHTML = '';
-    addressContainer.insertAdjacentHTML('beforeend',
-          `<div data-elem="check" class="address__text">
-                    <span data-elem="check">Начните вводить или выберите объект в выпадающем списке</span>
-                </div>
-                <div data-elem="check" class="address__btn">
-                    <button data-elem="check" data-name="metro" class="address__btn-item"><span class="address__title">Метро</span><span class="address__arrow"></span></button>
-                    <button data-elem="check" data-name="district" class="address__btn-item"><span class="address__title">Район и микрорайон</span><span class="address__arrow"></span></button>
-                </div>`)
-  }
   showChangeMetroDistrict(){
-    const textContainer = document.querySelector('.address__text');
-    if (this.metroArray.length > 0 || this.districtArray.length > 0 || this.addressValue){
-      textContainer.innerHTML = '';
-      textContainer.insertAdjacentHTML('beforeend', `<span class="address__title" data-elem="check">Поиск в любом из этих мест</span>`);
+    if (this.metroArray.length > 0 || this.districtArray.length > 0 || this.addressValue.length > 0){
       if (this.addressValue.length > 0 ){
-        document.querySelector(`INPUT[name='address']`).value = this.addressValue;
-        textContainer.insertAdjacentHTML('beforeend', `<span data-elem="check">${this.addressValue}</span>`);
+        setTimeout(() => {
+          document.querySelector(`INPUT[name='address']`).value = this.addressValue;
+        },200)
       }
 
       if (this.metroArray.length > 4){
-        textContainer.insertAdjacentHTML('beforeend', `<span data-elem="check">${this.metroArray.length} станций метро</span>`);
-        document.querySelector(`INPUT[name='address']`).value = `${this.metroArray.length} станций метро`;
+        setTimeout(() => {
+          document.querySelector(`INPUT[name='address']`).value = `${this.metroArray.length} станций метро`;
+        },200)
       } else if (this.metroArray.length !== 0 && this.metroArray.length <= 4){
-        let valueMetro = '';
-        for (let value of this.metroArray){
-          textContainer.insertAdjacentHTML('beforeend', `<span data-elem="check">${value}</span>`);
-          valueMetro += `${value}, `;
-        }
-        document.querySelector(`INPUT[name='address']`).value = valueMetro.slice(0, -2);
+        setTimeout(() => {
+          let valueMetro = '';
+          for (let value of this.metroArray){
+            valueMetro += `${value}, `;
+          }
+          document.querySelector(`INPUT[name='address']`).value = valueMetro.slice(0, -2);
+        },200)
       }
 
       if (this.districtArray.length > 4){
-        textContainer.insertAdjacentHTML('beforeend', `<span data-elem="check">${this.districtArray.length} районов</span>`);
-        document.querySelector(`INPUT[name='address']`).value = `${this.districtArray.length} районов`;
+        setTimeout(() => {
+          document.querySelector(`INPUT[name='address']`).value = `${this.districtArray.length} районов`;
+        },200)
       } else if (this.districtArray.length !== 0 && this.districtArray.length <= 4){
-        let valueDistrict = '';
-        for (let value of this.districtArray){
-          textContainer.insertAdjacentHTML('beforeend', `<span data-elem="check">${value}</span>`);
-          valueDistrict += `${value}, `;
-        }
-        document.querySelector(`INPUT[name='address']`).value = valueDistrict.slice(0, -2);
+        setTimeout(() => {
+          let valueDistrict = '';
+          for (let value of this.districtArray){
+            valueDistrict += `${value}, `;
+          }
+          document.querySelector(`INPUT[name='address']`).value = valueDistrict.slice(0, -2);
+        },200)
       }
-      document.querySelector(`.address-x`).classList.add('start__input-cross');
+      setTimeout(() => {
+        document.querySelector(`.address-x`).classList.add('start__input-cross');
+      }, 200)
     } else {
-      textContainer.innerHTML = '';
-      textContainer.insertAdjacentHTML('beforeend', `<span data-elem="check">Начните вводить или выберите объект в выпадающем списке</span>`);
-      document.querySelector(`INPUT[name='address']`).value = '';
+      setTimeout(() => {
+        document.querySelector(`INPUT[name='address']`).value = '';
+      },200)
     }
   }
 
@@ -597,7 +993,6 @@ class AddressHandler {
     if (priceFrom.value.length === 0 && priceTo.value.length === 0){
       document.querySelector(`INPUT[name='reqPrice']`).value = '';
       document.querySelector(`.${event.target.dataset.input}-x`).classList.remove('start__input-cross');
-      this.objectFilter.reqPrice = [];
     } else {
       this.objectFilter.reqPrice = [];
       this.objectFilter.reqPrice.push(priceFrom.value ? priceFrom.value : null, priceTo.value ? priceTo.value : null);
@@ -637,51 +1032,84 @@ class AddressHandler {
 
     module.addEventListener('click', event => {
       if (event.target.dataset.name === 'close') {
-          this.closeModule(module);
-      } else if (event.target.dataset.region){
-          document.querySelector('.place__text').innerHTML = event.target.dataset.region;
-          this.closeModule(module);
-      } else if (event.target.dataset.name === 'allcheck'){
-          this.setCheckboxMetro(module, event);
-      } else if (event.target.dataset.metro === 'save'){
-          event.preventDefault();
-          this.setValueMetro(module);
-          this.closeModule(module);
-          this.showChangeMetroDistrict();
-      } else if (event.target.dataset.metro === 'clear'){
-          event.preventDefault();
-          this.clearValueMetro(module);
-      } else if (event.target.dataset.form === 'save'){
-          event.preventDefault();
-          this.setValueDistrict(module);
-          this.closeModule(module);
-          this.showChangeMetroDistrict();
-      } else if (event.target.dataset.form === 'clear'){
-          event.preventDefault();
-          this.clearValueDistrict(module);
-      } else if (event.target.dataset.district){
-          const allCheckedInputs = module.querySelectorAll(`INPUT[type='checkbox']`);
-          const clickName = event.target.dataset.district;
-
-          for (let item of allCheckedInputs){
-            if (item.value === clickName){
-              item.click();
-            }
-          }
-          searchInput.value = '';
-          this.filter = [];
-          this.isVisibleSearch();
-          searchInput.focus();
-      } else if (!event.target.dataset.district && searchInput){
-          searchInput.value = '';
-          this.filter = [];
-          this.isVisibleSearch();
-      } else if (event.target.dataset.extra === 'save'){
-          this.setValueExtra(module);
         this.closeModule(module);
+      } else if (event.target.dataset.region){
+        document.querySelector('.place__text').innerHTML = event.target.dataset.region;
+        this.currentRegion = event.target.dataset.value;
+        this.closeModule(module);
+      } else if (event.target.dataset.name === 'allcheck'){
+        this.setCheckboxMetro(module, event);
+      } else if (event.target.dataset.metro === 'save'){
+        event.preventDefault();
+        this.setValueMetro(module);
+        this.closeModule(module);
+        this.showChangeMetroDistrict();
+      } else if (event.target.dataset.metro === 'clear'){
+        event.preventDefault();
+        this.clearValueMetro(module);
+      } else if (event.target.dataset.form === 'save'){
+        event.preventDefault();
+        this.setValueDistrict(module);
+        this.closeModule(module);
+        this.showChangeMetroDistrict();
+      } else if (event.target.dataset.form === 'clear'){
+        event.preventDefault();
+        this.clearValueDistrict(module);
+      } else if (event.target.dataset.district){
+        const allCheckedInputs = module.querySelectorAll(`INPUT[type='checkbox']`);
+        const clickName = event.target.dataset.district;
+
+        for (let item of allCheckedInputs){
+          if (item.value === clickName){
+            item.click();
+          }
+        }
+        searchInput.value = '';
+        this.filter = [];
+        this.isVisibleSearch();
+        searchInput.focus();
+      } else if (!event.target.dataset.district && searchInput){
+        searchInput.value = '';
+        this.filter = [];
+        this.isVisibleSearch();
+      } else if (event.target.dataset.extra === 'save'){
+        this.setValueExtra(module);
+        this.closeModule(module);
+      } else if (event.target.dataset.extra === 'clear'){
+        event.preventDefault();
+        this.clearValueExtra(module);
       } else if (event.target.dataset.name === 'sendAlert'){
         this.sendAlert(this.setReqNumber(event.target.dataset.req)).then(() => {
           this.closeModule(module);
+        });
+      } else if (event.target.dataset.deal === 'item'){
+        this.closeModule(module);
+        this.setLoader();
+        this.sendCompilation(event.target.dataset.id).then(() => {
+          basket.fullness = [];
+          basket.init();
+          document.querySelector('.loader__img').style.backgroundImage='url(https://crm.centralnoe.ru/dealincom/assets/statusOk.gif)'
+          setTimeout(() => {
+            this.removeLoader();
+          }, 500)
+        });
+      } else if (event.target.dataset.history){
+        this.objectFilter = JSON.parse(this.historyFilter[event.target.dataset.history].data);
+        this.closeModule(module);
+        this.setLoader();
+        this.sendToServer().then(data => {
+          this.setCountCard(data);
+          new Cards(data).init();
+          document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
+          if (data.length > 100){
+            this.startPaginat = 0;
+            this.currentPaginatActive = 0;
+            this.setPagination();
+            this.renderPagination();
+          } else {
+            this.clearPaginationContainer();
+          }
+          this.removeLoader();
         });
       }
     })
@@ -728,8 +1156,12 @@ class AddressHandler {
       }
     }
     this.addressValue = '';
+    this.addressObject = '';
     this.districtArray = [];
     this.metroTime = metroTime.innerHTML;
+    for (let key in this.districtValue){
+      this.districtValue[key] = false;
+    }
   }
   clearValueMetro(module){
     const allCheckedInputs = module.querySelectorAll(`INPUT[type='checkbox']`);
@@ -755,7 +1187,11 @@ class AddressHandler {
       }
     }
     this.addressValue = '';
+    this.addressObject = '';
     this.metroArray = [];
+    for (let key in this.metroValue){
+      this.metroValue[key] = false;
+    }
   }
   clearValueDistrict(module){
     const allCheckedInputs = module.querySelectorAll(`INPUT[type='checkbox']`);
@@ -764,15 +1200,36 @@ class AddressHandler {
     }
     this.districtArray = [];
   }
+  clearValueExtra(module){
+    document.querySelector('.count-extra').innerHTML = '';
+    document.querySelector('.count-extra').classList.add('visible');
+    const allInputs = module.querySelectorAll('INPUT');
+    for (let input of allInputs){
+      if (input.type === 'text'){
+        input.value = '';
+      } else if (input.type === 'radio' || input.type === 'checkbox'){
+        if (input.value === 'nothing'){
+          input.checked = true;
+        } else {
+          input.checked = false;
+        }
+      }
+    }
+  }
   districtFilter(value){
     const regexp = new RegExp(value, 'i');
-    this.filter = this.district.filter(district => regexp.test(district));
+    const currentRegion = document.querySelector('.place__text').innerHTML;
+    if (currentRegion === 'Новосибирская область'){
+      this.filter = this.districtNsk.filter(district => regexp.test(district));
+    } else if (currentRegion === 'Кемеровская область'){
+      this.filter = this.districtKem.filter(district => regexp.test(district));
+    }
     this.isVisibleSearch();
   }
   isVisibleSearch(){
     const searchBlock = document.querySelector('.district__hide');
 
-    if (this.filter.length === 0 || this.filter.length === this.district.length){
+    if (this.filter.length === 0){
       if (!searchBlock.classList.contains('visible')){
         searchBlock.classList.add('visible');
       }
@@ -794,33 +1251,46 @@ class AddressHandler {
     }
   }
 
-  setValueExtra(module){
+  setValueExtra(module) {
+    let countFilter = 0;
     this.objectFilter.reqFlatTotalArea = [];
     this.objectFilter.reqKitchenArea = [];
     this.objectFilter.reqFlatLivingArea = [];
     this.objectFilter.reqFloor = [];
     this.objectFilter.reqFloorCount = [];
     const allInputs = module.querySelectorAll('INPUT');
-    for (let input of allInputs){
-      if (input.type === 'radio'){
-        if (input.checked){
-          if (input.value === "nothing"){
+    for (let input of allInputs) {
+      if (input.type === 'radio') {
+        if (input.checked) {
+          if (input.value === "nothing") {
             this.objectFilter[input.name] = null;
-          } else if (input.value === "true"){
+          } else if (input.value === "true") {
+            countFilter++;
             this.objectFilter[input.name] = true;
           } else if (input.value === "false") {
             this.objectFilter[input.name] = false;
           } else {
             this.objectFilter[input.name] = input.value;
+            countFilter++;
           }
         }
-      } else if (input.type === 'checkbox'){
+      } else if (input.type === 'checkbox') {
         this.objectFilter[input.name] = input.checked;
-      } else if (input.type === 'text'){
+        if (input.checked) {
+          countFilter++;
+        }
+      } else if (input.type === 'text') {
         this.objectFilter[input.name].push(`${input.value.length === 0 ? null : input.value}`);
+        if (input.value.length > 0) {
+          countFilter++;
+        }
       }
+      console.log(this.objectFilter);
     }
-    console.log(this.objectFilter);
+    if (countFilter > 0){
+      document.querySelector('.count-extra').innerHTML = `${countFilter}`;
+      document.querySelector('.count-extra').classList.remove('visible');
+    }
   }
 
   regionLayout(){
@@ -830,8 +1300,8 @@ class AddressHandler {
                 Текущее местоположение ${currentPlace}
               </span>
               <div class="region__wrap"> 
-                <span class="region__btn ui-btn" data-region="Новосибирская область">Новосибирская область</span>
-                <span class="region__btn ui-btn" data-region="Кемеровская область">Кемеровская область</span>
+                <span class="region__btn ui-btn" data-region="Новосибирская область" data-value="Новосибирская обл, ">Новосибирская область</span>
+                <span class="region__btn ui-btn" data-region="Кемеровская область" data-value="Кемеровская область - Кузбасс, ">Кемеровская область</span>
               </div>
             </div>                        
             <div class="metro__footer module__footer"> 
@@ -918,690 +1388,725 @@ class AddressHandler {
               <button class="module__reset" data-metro="clear">Очистить</button>
             </div>`
   }
-  districtLayout(){
-    const currentY = window.pageYOffset;
-
-    return `<div style="top: ${currentY}" class="module">
-              <form class="module__form district__form">
-                <div class="district">
-                  <span data-name="close" class="btn-close"></span>
-                    <div class="district__left">
-                      <div class="module__header">
-                        <h2 class="module__head">Районы</h2>
-                      </div>
-                      <div class="district__wrap">
-                        <label class="module__label">
-                          <input name="Дзержинский" type="checkbox">
-                          <span>Дзержинский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Железнодорожный" type="checkbox">
-                          <span>Железнодорожный</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Заельцовский" type="checkbox">
-                          <span>Заельцовский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Калиниский" type="checkbox">
-                          <span>Калиниский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Кировский" type="checkbox">
-                          <span>Кировский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Ленинский" type="checkbox">
-                          <span>Ленинский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Октябрьский" type="checkbox">
-                          <span>Октябрьский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Первомайский" type="checkbox">
-                          <span>Первомайский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Советский" type="checkbox">
-                          <span>Советский</span>
-                        </label>
-                        <label class="module__label">
-                          <input name="Центральный" type="checkbox">
-                          <span>Центральный</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="district__right">
-                      <div class="module__header district__header">
-                        <h2 class="module__head">Микрорайоны</h2>
-                        <div class="district__search-wrap">
-                          <input class="district__search" type="text">
-                          <div class="district__hide visible"></div>
-                        </div>
-                      </div>
-                      <div class="district__wrap district__wrap-right">
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">А</span>
-                          <label class="module__label">
-                            <input name="Авиастроителей" type="checkbox">
-                            <span>Авиастроителей</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Акатуйский" type="checkbox">
-                            <span>Акатуйский</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Б</span>
-                          <label class="module__label">
-                            <input name="Башня" type="checkbox">
-                            <span>Башня</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Беловежский" type="checkbox">
-                            <span>Беловежский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Береговой_ж/м" type="checkbox">
-                            <span>Береговой ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Березовое" type="checkbox">
-                            <span>Березовое</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Берёзовая_роща" type="checkbox">
-                            <span>Берёзовая роща</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Благовещенский" type="checkbox">
-                            <span>Благовещенский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Богдана_Хмельницкого" type="checkbox">
-                            <span>Богдана Хмельницкого</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Ботанический_ж/м" type="checkbox">
-                            <span>Ботанический ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Бугринская_роща" type="checkbox">
-                            <span>Бугринская роща</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">В</span>
-                          <label class="module__label">
-                            <input name="Вертковская" type="checkbox">
-                            <span>Вертковская</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Вверхняя_зона_Академгородка" type="checkbox">
-                            <span>Вверхняя зона Академгородка</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Весенний" type="checkbox">
-                            <span>Весенний</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Военный_городок" type="checkbox">
-                            <span>Военный городок</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Вокзал" type="checkbox">
-                            <span>Вокзал</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Волочаевская" type="checkbox">
-                            <span>Волочаевская</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Волочаевский_ж/м" type="checkbox">
-                            <span>Волочаевский ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Восточный_МЖК" type="checkbox">
-                            <span>Восточный МЖК</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Восход" type="checkbox">
-                            <span>Восход</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Г</span>
-                          <label class="module__label">
-                            <input name="ГПНТБ" type="checkbox">
-                            <span>ГПНТБ</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Гвардейский" type="checkbox">
-                            <span>Гвардейский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Горбольница" type="checkbox">
-                            <span>Горбольница</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Городской_аэропорт" type="checkbox">
-                            <span>Городской аэропорт</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Горский" type="checkbox">
-                            <span>Горский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Гэсстроевский" type="checkbox">
-                            <span>Гэсстроевский</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Д</span>
-                          <label class="module__label">
-                            <input name="ДК_Кирова" type="checkbox">
-                            <span>ДК Кирова</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="ДК_Энергия" type="checkbox">
-                            <span>ДК Энергия</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Депутатский" type="checkbox">
-                            <span>Депутатский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Дивногорский" type="checkbox">
-                            <span>Дивногорский</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Е</span>
-                          <label class="module__label">
-                            <input name="Европейский_берег" type="checkbox">
-                            <span>Европейский берег</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Ерестинский" type="checkbox">
-                            <span>Ерестинский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Есенина" type="checkbox">
-                            <span>Есенина</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">З</span>
-                          <label class="module__label">
-                            <input name="Закаменский" type="checkbox">
-                            <span>Закаменский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Западный_ж/м" type="checkbox">
-                            <span>Западный ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name=Затон"" type="checkbox">
-                            <span>Затон</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Затулинский_ж/м" type="checkbox">
-                            <span>Затулинский ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Зеленая_горка" type="checkbox">
-                            <span>Зеленая горка</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Золотая_горка" type="checkbox">
-                            <span>Золотая горка</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Золотая_нива" type="checkbox">
-                            <span>Золотая нива</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">И</span>
-                          <label class="module__label">
-                            <input name="Иподромский" type="checkbox">
-                            <span>Иподромский</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">К</span>
-                          <label class="module__label">
-                            <input name="КСМ" type="checkbox">
-                            <span>КСМ</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Каменский" type="checkbox">
-                            <span>Каменский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Карьер_Мочище" type="checkbox">
-                            <span>Карьер Мочище</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Кирова" type="checkbox">
-                            <span>Кирова</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Клюквенный" type="checkbox">
-                            <span>Клюквенный</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Ключ-Камышенское_плато" type="checkbox">
-                            <span>Ключ-Камышенское плато</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Ключевой" type="checkbox">
-                            <span>Ключевой</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Коминтерна" type="checkbox">
-                            <span>Коминтерна</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Кропоткинский_ж/м" type="checkbox">
-                            <span>Кропоткинский ж/м</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Л</span>
-                          <label class="module__label">
-                            <input name="Лесопервалка" type="checkbox">
-                            <span>Лесопервалка</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Линейный" type="checkbox">
-                            <span>Линейный</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">М</span>
-                          <label class="module__label">
-                            <input name="Матвеевка" type="checkbox">
-                            <span>Матвеевка</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Минделеевский" type="checkbox">
-                            <span>Минделеевский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Мира_(Расточка)" type="checkbox">
-                            <span>Мира (Расточка)</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Молодежный" type="checkbox">
-                            <span>Молодежный</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Н</span>
-                          <label class="module__label">
-                            <input name="Нарымский_сквер" type="checkbox">
-                            <span>Нарымский сквер</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Нижняя_Ельцовка" type="checkbox">
-                            <span>Нижняя Ельцовка</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Нижняя_зона_Академгородка" type="checkbox">
-                            <span>Нижняя зона Академгородка</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Никитинский" type="checkbox">
-                            <span>Никитинский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Новомарусино" type="checkbox">
-                            <span>Новомарусино</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">О</span>
-                          <label class="module__label">
-                            <input name="Облбольница" type="checkbox">
-                            <span>Облбольница</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="ОбьГЭС" type="checkbox">
-                            <span>ОбьГЭС</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Огурцово" type="checkbox">
-                            <span>Огурцово</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">П</span>
-                          <label class="module__label">
-                            <input name="Палласа" type="checkbox">
-                            <span>Палласа</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Памирский" type="checkbox">
-                            <span>Памирский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Пашино_пос." type="checkbox">
-                            <span>Пашино пос.</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Пермский" type="checkbox">
-                            <span>Пермский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Планировочный_ж/м" type="checkbox">
-                            <span>Планировочный ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Плановая" type="checkbox">
-                            <span>Плановая</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Плановый_пос." type="checkbox">
-                            <span>Плановый пос.</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Плехановский_ж/м" type="checkbox">
-                            <span>Плехановский ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Площадь_Калинина" type="checkbox">
-                            <span>Площадь Калинина</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Площадь_Маркса" type="checkbox">
-                            <span>Площадь Маркса</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Площадь_Свердлова" type="checkbox">
-                            <span>Площадь Свердлова</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Площадь_Станиславского" type="checkbox">
-                            <span>Площадь Станиславского</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Плющихинсий_ж/м" type="checkbox">
-                            <span>Плющихинсий ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Посёлок_РМЗ" type="checkbox">
-                            <span>Посёлок РМЗ</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Прибрежный" type="checkbox">
-                            <span>Прибрежный</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Приозёрный" type="checkbox">
-                            <span>Приозёрный</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Проспект_Дзержинского" type="checkbox">
-                            <span>Проспект Дзержинского</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Просторный_ж/м" type="checkbox">
-                            <span>Просторный ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="пос._Геологов" type="checkbox">
-                            <span>пос. Геологов</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Р</span>
-                          <label class="module__label">
-                            <input name="Радиостанция" type="checkbox">
-                            <span>Радиостанция</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Родники_(6-й_мкр)" type="checkbox">
-                            <span>Родники (6-й мкр)</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">С</span>
-                          <label class="module__label">
-                            <input name="Сад_Дзержинского" type="checkbox">
-                            <span>Сад Дзержинского</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Сад_Кирова" type="checkbox">
-                            <span>Сад Кирова</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Сад_Мичуринцев" type="checkbox">
-                            <span>Сад Мичуринцев</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Северный_пос." type="checkbox">
-                            <span>Северный пос.</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Северо-Чемской_ж/м" type="checkbox">
-                            <span>Северо-Чемской ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Снегири_(5-й_мкр)" type="checkbox">
-                            <span>Снегири (5-й мкр)</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Совсибирь" type="checkbox">
-                            <span>Совсибирь</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Станиславский_ж/м" type="checkbox">
-                            <span>Станиславский ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Сто_домов" type="checkbox">
-                            <span>Сто домов</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Стрижи" type="checkbox">
-                            <span>Стрижи</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Студенческий" type="checkbox">
-                            <span>Студенческий</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Сухарная" type="checkbox">
-                            <span>Сухарная</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Сухой_лог" type="checkbox">
-                            <span>Сухой лог</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Т</span>
-                          <label class="module__label">
-                            <input name="ТРЦ_АУРА" type="checkbox">
-                            <span>ТРЦ АУРА</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Телецентр" type="checkbox">
-                            <span>Телецентр</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Тихвинский" type="checkbox">
-                            <span>Тихвинский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Тихий_центр" type="checkbox">
-                            <span>Тихий центр</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Троллейный_ж/м" type="checkbox">
-                            <span>Троллейный ж/м</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Ф</span>
-                          <label class="module__label">
-                            <input name="Фабричный" type="checkbox">
-                            <span>Фабричный</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Фрунзенский" type="checkbox">
-                            <span>Фрунзенский</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Х</span>
-                          <label class="module__label">
-                            <input name="Хилокский" type="checkbox">
-                            <span>Хилокский</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Ц</span>
-                          <label class="module__label">
-                            <input name="ЦУМ" type="checkbox">
-                            <span>ЦУМ</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Центр" type="checkbox">
-                            <span>Центр</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Центр_(Красный_проспект)" type="checkbox">
-                            <span>Центр (Красный проспект)</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Центральная_Пермовайка" type="checkbox">
-                            <span>Центральная Пермовайка</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Ц</span>
-                          <label class="module__label">
-                            <input name="Челюскинский_ж/м" type="checkbox">
-                            <span>Челюскинский ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Чистая_слобода" type="checkbox">
-                            <span>Чистая слобода</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Ш</span>
-                          <label class="module__label">
-                            <input name="Шевченский" type="checkbox">
-                            <span>Шевченский</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Шлюз" type="checkbox">
-                            <span>Шлюз</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Э</span>
-                          <label class="module__label">
-                            <input name="Энергостроителей" type="checkbox">
-                            <span>Энергостроителей</span>
-                          </label>
-                        </div>
-                        <div class="microdistrict-list">
-                          <span class="microdistrict-title">Ю</span>
-                          <label class="module__label">
-                            <input name="Юбилейный_(4-й_мкр)" type="checkbox">
-                            <span>Юбилейный (4-й мкр)</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Юго-Западный_ж/м" type="checkbox">
-                            <span>Юго-Западный ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Южно-Чемской_ж/м" type="checkbox">
-                            <span>Южно-Чемской ж/м</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Южный_(Ленинский_р-н)" type="checkbox">
-                            <span>Южный (Ленинский р-н)</span>
-                          </label>
-                          <label class="module__label">
-                            <input name="Южный_(Первомайский_р-н)" type="checkbox">
-                            <span>Южный (Первомайский р-н)</span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-                <div class="module__footer district__footer">
-                  <button class="module__save" type="button">Сохранить</button>
-                  <button class="module__reset" type="reset"><span>Очистить</span></button>
-                </div>
-              </form>
-            </div>`
-  }
+  //with district
   // districtLayout(){
-  //   return `<div class="district">
-  //             <div class="district__left">
-  //               <div class="module__header">
-  //                 <h2 class="module__head">Районы</h2>
-  //                 <div class="district__search-wrap">
-  //                   <input class="district__search" type="text">
-  //                   <div class="district__hide visible"></div>
-  //                 </div>
+  //   const currentY = window.pageYOffset;
+  //
+  //   return `<div style="top: ${currentY}" class="module">
+  //             <form class="module__form district__form">
+  //               <div class="district">
+  //                 <span data-name="close" class="btn-close"></span>
+  //                   <div class="district__left">
+  //                     <div class="module__header">
+  //                       <h2 class="module__head">Районы</h2>
+  //                     </div>
+  //                     <div class="district__wrap">
+  //                       <label class="module__label">
+  //                         <input name="Дзержинский" type="checkbox">
+  //                         <span>Дзержинский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Железнодорожный" type="checkbox">
+  //                         <span>Железнодорожный</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Заельцовский" type="checkbox">
+  //                         <span>Заельцовский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Калиниский" type="checkbox">
+  //                         <span>Калиниский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Кировский" type="checkbox">
+  //                         <span>Кировский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Ленинский" type="checkbox">
+  //                         <span>Ленинский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Октябрьский" type="checkbox">
+  //                         <span>Октябрьский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Первомайский" type="checkbox">
+  //                         <span>Первомайский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Советский" type="checkbox">
+  //                         <span>Советский</span>
+  //                       </label>
+  //                       <label class="module__label">
+  //                         <input name="Центральный" type="checkbox">
+  //                         <span>Центральный</span>
+  //                       </label>
+  //                     </div>
+  //                   </div>
+  //                   <div class="district__right">
+  //                     <div class="module__header district__header">
+  //                       <h2 class="module__head">Микрорайоны</h2>
+  //                       <div class="district__search-wrap">
+  //                         <input class="district__search" type="text">
+  //                         <div class="district__hide visible"></div>
+  //                       </div>
+  //                     </div>
+  //                     <div class="district__wrap district__wrap-right">
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">А</span>
+  //                         <label class="module__label">
+  //                           <input name="Авиастроителей" type="checkbox">
+  //                           <span>Авиастроителей</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Акатуйский" type="checkbox">
+  //                           <span>Акатуйский</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Б</span>
+  //                         <label class="module__label">
+  //                           <input name="Башня" type="checkbox">
+  //                           <span>Башня</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Беловежский" type="checkbox">
+  //                           <span>Беловежский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Береговой_ж/м" type="checkbox">
+  //                           <span>Береговой ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Березовое" type="checkbox">
+  //                           <span>Березовое</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Берёзовая_роща" type="checkbox">
+  //                           <span>Берёзовая роща</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Благовещенский" type="checkbox">
+  //                           <span>Благовещенский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Богдана_Хмельницкого" type="checkbox">
+  //                           <span>Богдана Хмельницкого</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Ботанический_ж/м" type="checkbox">
+  //                           <span>Ботанический ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Бугринская_роща" type="checkbox">
+  //                           <span>Бугринская роща</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">В</span>
+  //                         <label class="module__label">
+  //                           <input name="Вертковская" type="checkbox">
+  //                           <span>Вертковская</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Вверхняя_зона_Академгородка" type="checkbox">
+  //                           <span>Вверхняя зона Академгородка</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Весенний" type="checkbox">
+  //                           <span>Весенний</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Военный_городок" type="checkbox">
+  //                           <span>Военный городок</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Вокзал" type="checkbox">
+  //                           <span>Вокзал</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Волочаевская" type="checkbox">
+  //                           <span>Волочаевская</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Волочаевский_ж/м" type="checkbox">
+  //                           <span>Волочаевский ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Восточный_МЖК" type="checkbox">
+  //                           <span>Восточный МЖК</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Восход" type="checkbox">
+  //                           <span>Восход</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Г</span>
+  //                         <label class="module__label">
+  //                           <input name="ГПНТБ" type="checkbox">
+  //                           <span>ГПНТБ</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Гвардейский" type="checkbox">
+  //                           <span>Гвардейский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Горбольница" type="checkbox">
+  //                           <span>Горбольница</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Городской_аэропорт" type="checkbox">
+  //                           <span>Городской аэропорт</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Горский" type="checkbox">
+  //                           <span>Горский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Гэсстроевский" type="checkbox">
+  //                           <span>Гэсстроевский</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Д</span>
+  //                         <label class="module__label">
+  //                           <input name="ДК_Кирова" type="checkbox">
+  //                           <span>ДК Кирова</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="ДК_Энергия" type="checkbox">
+  //                           <span>ДК Энергия</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Депутатский" type="checkbox">
+  //                           <span>Депутатский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Дивногорский" type="checkbox">
+  //                           <span>Дивногорский</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Е</span>
+  //                         <label class="module__label">
+  //                           <input name="Европейский_берег" type="checkbox">
+  //                           <span>Европейский берег</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Ерестинский" type="checkbox">
+  //                           <span>Ерестинский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Есенина" type="checkbox">
+  //                           <span>Есенина</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">З</span>
+  //                         <label class="module__label">
+  //                           <input name="Закаменский" type="checkbox">
+  //                           <span>Закаменский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Западный_ж/м" type="checkbox">
+  //                           <span>Западный ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name=Затон"" type="checkbox">
+  //                           <span>Затон</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Затулинский_ж/м" type="checkbox">
+  //                           <span>Затулинский ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Зеленая_горка" type="checkbox">
+  //                           <span>Зеленая горка</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Золотая_горка" type="checkbox">
+  //                           <span>Золотая горка</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Золотая_нива" type="checkbox">
+  //                           <span>Золотая нива</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">И</span>
+  //                         <label class="module__label">
+  //                           <input name="Иподромский" type="checkbox">
+  //                           <span>Иподромский</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">К</span>
+  //                         <label class="module__label">
+  //                           <input name="КСМ" type="checkbox">
+  //                           <span>КСМ</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Каменский" type="checkbox">
+  //                           <span>Каменский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Карьер_Мочище" type="checkbox">
+  //                           <span>Карьер Мочище</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Кирова" type="checkbox">
+  //                           <span>Кирова</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Клюквенный" type="checkbox">
+  //                           <span>Клюквенный</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Ключ-Камышенское_плато" type="checkbox">
+  //                           <span>Ключ-Камышенское плато</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Ключевой" type="checkbox">
+  //                           <span>Ключевой</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Коминтерна" type="checkbox">
+  //                           <span>Коминтерна</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Кропоткинский_ж/м" type="checkbox">
+  //                           <span>Кропоткинский ж/м</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Л</span>
+  //                         <label class="module__label">
+  //                           <input name="Лесопервалка" type="checkbox">
+  //                           <span>Лесопервалка</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Линейный" type="checkbox">
+  //                           <span>Линейный</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">М</span>
+  //                         <label class="module__label">
+  //                           <input name="Матвеевка" type="checkbox">
+  //                           <span>Матвеевка</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Минделеевский" type="checkbox">
+  //                           <span>Минделеевский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Мира_(Расточка)" type="checkbox">
+  //                           <span>Мира (Расточка)</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Молодежный" type="checkbox">
+  //                           <span>Молодежный</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Н</span>
+  //                         <label class="module__label">
+  //                           <input name="Нарымский_сквер" type="checkbox">
+  //                           <span>Нарымский сквер</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Нижняя_Ельцовка" type="checkbox">
+  //                           <span>Нижняя Ельцовка</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Нижняя_зона_Академгородка" type="checkbox">
+  //                           <span>Нижняя зона Академгородка</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Никитинский" type="checkbox">
+  //                           <span>Никитинский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Новомарусино" type="checkbox">
+  //                           <span>Новомарусино</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">О</span>
+  //                         <label class="module__label">
+  //                           <input name="Облбольница" type="checkbox">
+  //                           <span>Облбольница</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="ОбьГЭС" type="checkbox">
+  //                           <span>ОбьГЭС</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Огурцово" type="checkbox">
+  //                           <span>Огурцово</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">П</span>
+  //                         <label class="module__label">
+  //                           <input name="Палласа" type="checkbox">
+  //                           <span>Палласа</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Памирский" type="checkbox">
+  //                           <span>Памирский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Пашино_пос." type="checkbox">
+  //                           <span>Пашино пос.</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Пермский" type="checkbox">
+  //                           <span>Пермский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Планировочный_ж/м" type="checkbox">
+  //                           <span>Планировочный ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Плановая" type="checkbox">
+  //                           <span>Плановая</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Плановый_пос." type="checkbox">
+  //                           <span>Плановый пос.</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Плехановский_ж/м" type="checkbox">
+  //                           <span>Плехановский ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Площадь_Калинина" type="checkbox">
+  //                           <span>Площадь Калинина</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Площадь_Маркса" type="checkbox">
+  //                           <span>Площадь Маркса</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Площадь_Свердлова" type="checkbox">
+  //                           <span>Площадь Свердлова</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Площадь_Станиславского" type="checkbox">
+  //                           <span>Площадь Станиславского</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Плющихинсий_ж/м" type="checkbox">
+  //                           <span>Плющихинсий ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Посёлок_РМЗ" type="checkbox">
+  //                           <span>Посёлок РМЗ</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Прибрежный" type="checkbox">
+  //                           <span>Прибрежный</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Приозёрный" type="checkbox">
+  //                           <span>Приозёрный</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Проспект_Дзержинского" type="checkbox">
+  //                           <span>Проспект Дзержинского</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Просторный_ж/м" type="checkbox">
+  //                           <span>Просторный ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="пос._Геологов" type="checkbox">
+  //                           <span>пос. Геологов</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Р</span>
+  //                         <label class="module__label">
+  //                           <input name="Радиостанция" type="checkbox">
+  //                           <span>Радиостанция</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Родники_(6-й_мкр)" type="checkbox">
+  //                           <span>Родники (6-й мкр)</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">С</span>
+  //                         <label class="module__label">
+  //                           <input name="Сад_Дзержинского" type="checkbox">
+  //                           <span>Сад Дзержинского</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Сад_Кирова" type="checkbox">
+  //                           <span>Сад Кирова</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Сад_Мичуринцев" type="checkbox">
+  //                           <span>Сад Мичуринцев</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Северный_пос." type="checkbox">
+  //                           <span>Северный пос.</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Северо-Чемской_ж/м" type="checkbox">
+  //                           <span>Северо-Чемской ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Снегири_(5-й_мкр)" type="checkbox">
+  //                           <span>Снегири (5-й мкр)</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Совсибирь" type="checkbox">
+  //                           <span>Совсибирь</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Станиславский_ж/м" type="checkbox">
+  //                           <span>Станиславский ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Сто_домов" type="checkbox">
+  //                           <span>Сто домов</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Стрижи" type="checkbox">
+  //                           <span>Стрижи</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Студенческий" type="checkbox">
+  //                           <span>Студенческий</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Сухарная" type="checkbox">
+  //                           <span>Сухарная</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Сухой_лог" type="checkbox">
+  //                           <span>Сухой лог</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Т</span>
+  //                         <label class="module__label">
+  //                           <input name="ТРЦ_АУРА" type="checkbox">
+  //                           <span>ТРЦ АУРА</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Телецентр" type="checkbox">
+  //                           <span>Телецентр</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Тихвинский" type="checkbox">
+  //                           <span>Тихвинский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Тихий_центр" type="checkbox">
+  //                           <span>Тихий центр</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Троллейный_ж/м" type="checkbox">
+  //                           <span>Троллейный ж/м</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Ф</span>
+  //                         <label class="module__label">
+  //                           <input name="Фабричный" type="checkbox">
+  //                           <span>Фабричный</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Фрунзенский" type="checkbox">
+  //                           <span>Фрунзенский</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Х</span>
+  //                         <label class="module__label">
+  //                           <input name="Хилокский" type="checkbox">
+  //                           <span>Хилокский</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Ц</span>
+  //                         <label class="module__label">
+  //                           <input name="ЦУМ" type="checkbox">
+  //                           <span>ЦУМ</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Центр" type="checkbox">
+  //                           <span>Центр</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Центр_(Красный_проспект)" type="checkbox">
+  //                           <span>Центр (Красный проспект)</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Центральная_Пермовайка" type="checkbox">
+  //                           <span>Центральная Пермовайка</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Ц</span>
+  //                         <label class="module__label">
+  //                           <input name="Челюскинский_ж/м" type="checkbox">
+  //                           <span>Челюскинский ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Чистая_слобода" type="checkbox">
+  //                           <span>Чистая слобода</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Ш</span>
+  //                         <label class="module__label">
+  //                           <input name="Шевченский" type="checkbox">
+  //                           <span>Шевченский</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Шлюз" type="checkbox">
+  //                           <span>Шлюз</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Э</span>
+  //                         <label class="module__label">
+  //                           <input name="Энергостроителей" type="checkbox">
+  //                           <span>Энергостроителей</span>
+  //                         </label>
+  //                       </div>
+  //                       <div class="microdistrict-list">
+  //                         <span class="microdistrict-title">Ю</span>
+  //                         <label class="module__label">
+  //                           <input name="Юбилейный_(4-й_мкр)" type="checkbox">
+  //                           <span>Юбилейный (4-й мкр)</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Юго-Западный_ж/м" type="checkbox">
+  //                           <span>Юго-Западный ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Южно-Чемской_ж/м" type="checkbox">
+  //                           <span>Южно-Чемской ж/м</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Южный_(Ленинский_р-н)" type="checkbox">
+  //                           <span>Южный (Ленинский р-н)</span>
+  //                         </label>
+  //                         <label class="module__label">
+  //                           <input name="Южный_(Первомайский_р-н)" type="checkbox">
+  //                           <span>Южный (Первомайский р-н)</span>
+  //                         </label>
+  //                       </div>
+  //                     </div>
+  //                   </div>
   //               </div>
-  //               <div class="district__wrap">
-  //                 <label class="module__label">
-  //                   <input name="dzerzhinskiy" type="checkbox" value="Дзержинский" ${this.districtValue.dzerzhinskiy ? 'checked ' : ''}>
-  //                   <span>Дзержинский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="zheleznodorozhniy" type="checkbox" value="Железнодорожный" ${this.districtValue.zheleznodorozhniy ? 'checked ' : ''}>
-  //                   <span>Железнодорожный</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="zaelovskiy" type="checkbox" value="Заельцовский" ${this.districtValue.zaelovskiy ? 'checked ' : ''}>
-  //                   <span>Заельцовский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="kalininskiy" type="checkbox" value="Калиниский" ${this.districtValue.kalininskiy ? 'checked ' : ''}>
-  //                   <span>Калиниский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="kirovskiy" type="checkbox" value="Кировский" ${this.districtValue.kirovskiy ? 'checked ' : ''}>
-  //                   <span>Кировский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="leninskiy" type="checkbox" value="Ленинский" ${this.districtValue.leninskiy ? 'checked ' : ''}>
-  //                   <span>Ленинский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="oktyabrskiy" type="checkbox" value="Октябрьский" ${this.districtValue.oktyabrskiy ? 'checked ' : ''}>
-  //                   <span>Октябрьский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="pervomayskiy" type="checkbox" value="Первомайский" ${this.districtValue.pervomayskiy ? 'checked ' : ''}>
-  //                   <span>Первомайский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="sovetskiy" type="checkbox" value="Советский" ${this.districtValue.sovetskiy ? 'checked ' : ''}>
-  //                   <span>Советский</span>
-  //                 </label>
-  //                 <label class="module__label">
-  //                   <input name="centralniy" type="checkbox" value="Центральный" ${this.districtValue.centralniy ? 'checked ' : ''}>
-  //                   <span>Центральный</span>
-  //                 </label>
+  //               <div class="module__footer district__footer">
+  //                 <button class="module__save" type="button">Сохранить</button>
+  //                 <button class="module__reset" type="reset"><span>Очистить</span></button>
   //               </div>
-  //             </div>
-  //           </div>
-  //           <div class="module__footer district__footer">
-  //             <button data-form="save" class="module__save">Сохранить</button>
-  //             <button class="module__reset" data-form="clear">Очистить</button>
+  //             </form>
   //           </div>`
   // }
+  getArea(){
+    const currentRegion = document.querySelector('.place__text').innerHTML;
+    if (currentRegion === 'Новосибирская область'){
+      return `<div class="district__wrap">
+                  <label class="module__label">
+                    <input name="dzerzhinskiy" type="checkbox" value="Дзержинский" ${this.districtValue.dzerzhinskiy ? 'checked ' : ''}>
+                    <span>Дзержинский</span>
+                  </label>   
+                  <label class="module__label">
+                    <input name="zheleznodorozhniy" type="checkbox" value="Железнодорожный" ${this.districtValue.zheleznodorozhniy ? 'checked ' : ''}>
+                    <span>Железнодорожный</span>
+                  </label>   
+                  <label class="module__label">
+                    <input name="zaelovskiy" type="checkbox" value="Заельцовский" ${this.districtValue.zaelovskiy ? 'checked ' : ''}>
+                    <span>Заельцовский</span>
+                  </label>                         
+                  <label class="module__label">
+                    <input name="kalininskiy" type="checkbox" value="Калининский" ${this.districtValue.kalininskiy ? 'checked ' : ''}>
+                    <span>Калиниский</span>
+                  </label>
+                  <label class="module__label">
+                    <input name="kirovskiy" type="checkbox" value="Кировский" ${this.districtValue.kirovskiy ? 'checked ' : ''}>
+                    <span>Кировский</span>
+                  </label>                          
+                  <label class="module__label">
+                    <input name="leninskiy" type="checkbox" value="Ленинский" ${this.districtValue.leninskiy ? 'checked ' : ''}>
+                    <span>Ленинский</span>
+                  </label>                          
+                  <label class="module__label">
+                    <input name="oktyabrskiy" type="checkbox" value="Октябрьский" ${this.districtValue.oktyabrskiy ? 'checked ' : ''}>
+                    <span>Октябрьский</span>
+                  </label>                          
+                  <label class="module__label">
+                    <input name="pervomayskiy" type="checkbox" value="Первомайский" ${this.districtValue.pervomayskiy ? 'checked ' : ''}>
+                    <span>Первомайский</span>
+                  </label>                          
+                  <label class="module__label">
+                    <input name="sovetskiy" type="checkbox" value="Советский" ${this.districtValue.sovetskiy ? 'checked ' : ''}>
+                    <span>Советский</span>
+                  </label>                          
+                  <label class="module__label">
+                    <input name="centralniy" type="checkbox" value="Центральный" ${this.districtValue.centralniy ? 'checked ' : ''}>
+                    <span>Центральный</span>
+                  </label>
+                </div>`
+    } else if (currentRegion === 'Кемеровская область'){
+      return `<div class="district__wrap">
+                  <label class="module__label">
+                    <input name="zavodskoy" type="checkbox" value="Заводский" ${this.districtValue.zavodskoy ? 'checked ' : ''}>
+                    <span>Заводский</span>
+                  </label>   
+                  <label class="module__label">
+                    <input name="kedrovka" type="checkbox" value="Кедровка" ${this.districtValue.kedrovka ? 'checked ' : ''}>
+                    <span>Кедровка</span>
+                  </label>   
+                  <label class="module__label">
+                    <input name="kirovskiy" type="checkbox" value="Кировский" ${this.districtValue.kirovskiy ? 'checked ' : ''}>
+                    <span>Кировский</span>
+                  </label>                         
+                  <label class="module__label">
+                    <input name="leninskiy" type="checkbox" value="Ленинский" ${this.districtValue.leninskiy ? 'checked ' : ''}>
+                    <span>Ленинский</span>
+                  </label>
+                  <label class="module__label">
+                    <input name="rudnichiy" type="checkbox" value="Рудничный" ${this.districtValue.rudnichiy ? 'checked ' : ''}>
+                    <span>Рудничный</span>
+                  </label>                          
+                  <label class="module__label">
+                    <input name="centralniy" type="checkbox" value="Центральный" ${this.districtValue.centralniy ? 'checked ' : ''}>
+                    <span>Центральный</span>
+                  </label>
+                </div>`
+    }
+  }
+  districtLayout(){
+    const area = this.getArea();
+    return `<div class="district">
+              <div class="district__left">                      
+                <div class="module__header"> 
+                  <h2 class="module__head">Районы</h2>
+                  <div class="district__search-wrap">
+                    <input class="district__search" type="text">
+                    <div class="district__hide visible"></div>
+                  </div>
+                </div>
+                ${area}   
+              </div>
+            </div>
+            <div class="module__footer district__footer"> 
+              <button data-form="save" class="module__save">Сохранить</button>
+              <button class="module__reset" data-form="clear">Очистить</button>
+            </div>`
+  }
   extraOpenLayout(){
     return `<div class="extra"> 
               <div class="row"> 
@@ -1648,12 +2153,12 @@ class AddressHandler {
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="Adjacent" name="reqTypeofLayout" type="radio" value="Смежная" 
-                    ${this.objectFilter.reqTypeofLayout === 'adjacent' ? 'checked' : ''}>
+                    ${this.objectFilter.reqTypeofLayout === 'Смежная' ? 'checked' : ''}>
                     <label class="row__label" for="Adjacent">Смежная</label>
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="Isolated" name="reqTypeofLayout" type="radio" value="Изолированная" 
-                    ${this.objectFilter.reqTypeofLayout === 'isolated' ? 'checked' : ''}>
+                    ${this.objectFilter.reqTypeofLayout === 'Изолированная' ? 'checked' : ''}>
                     <label class="row__label" for="Isolated">Изолированная</label>
                   </div>
                 </div>
@@ -1668,12 +2173,12 @@ class AddressHandler {
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="Combined" name="reqBathroomType" type="radio" value="Совмещенный" 
-                    ${this.objectFilter.reqBathroomType === 'combined' ? 'checked' : ''}>
+                    ${this.objectFilter.reqBathroomType === 'Совмещенный' ? 'checked' : ''}>
                     <label class="row__label" for="Combined">Совмещенный</label>
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="Separated" name="reqBathroomType" type="radio" value="Раздельный" 
-                    ${this.objectFilter.reqBathroomType === 'separated' ? 'checked' : ''}>
+                    ${this.objectFilter.reqBathroomType === 'Раздельный' ? 'checked' : ''}>
                     <label class="row__label" for="Separated">Раздельный</label>
                   </div>                       
                 </div>
@@ -1683,7 +2188,7 @@ class AddressHandler {
                 <div class="row__items"> 
                   <div class="row__toggle"> 
                     <input class="row__radio" id="nothingGallery" name="reqGalleryAvailability" type="radio" value="nothing"
-                    ${this.objectFilter.reqGalleryAvailability === null ? '' : 'checked'}>
+                    ${this.objectFilter.reqGalleryAvailability ? '' : 'checked'}>
                     <label class="row__label" for="nothingGallery">Неважно</label>
                   </div>
                   <div class="row__toggle"> 
@@ -1708,22 +2213,22 @@ class AddressHandler {
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="NoRenovation" name="reqRepairStatus" type="radio" value="Без ремонта" 
-                    ${this.objectFilter.reqRepairStatus === 'noRenovation' ? 'checked' : ''}>
+                    ${this.objectFilter.reqRepairStatus === 'Без ремонта' ? 'checked' : ''}>
                     <label class="row__label" for="NoRenovation">Без ремонта</label>
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="Cosmetic" name="reqRepairStatus" type="radio" value="Косметический" 
-                    ${this.objectFilter.reqRepairStatus === 'cosmetic' ? 'checked' : ''}>
+                    ${this.objectFilter.reqRepairStatus === 'Косметический' ? 'checked' : ''}>
                     <label class="row__label" for="Cosmetic">Косметический</label>
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="Renovation" name="reqRepairStatus" type="radio" value="Евроремонт" 
-                    ${this.objectFilter.reqRepairStatus === 'renovation' ? 'checked' : ''}>
+                    ${this.objectFilter.reqRepairStatus === 'Евроремонт' ? 'checked' : ''}>
                     <label class="row__label" for="Renovation">Евроремонт</label>
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="Designer" name="reqRepairStatus" type="radio" value="Дизайнерский" 
-                    ${this.objectFilter.reqRepairStatus === 'designer' ? 'checked' : ''}>
+                    ${this.objectFilter.reqRepairStatus === 'Дизайнерский' ? 'checked' : ''}>
                     <label class="row__label" for="Designer">Дизайнерский</label>
                   </div>
                 </div>
@@ -1770,12 +2275,12 @@ class AddressHandler {
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="old" name="typeObject" type="radio" value="Вторичка" 
-                    ${this.objectFilter.typeObject === 'old' ? 'checked' : ''}>
+                    ${this.objectFilter.typeObject === 'Вторичка' ? 'checked' : ''}>
                     <label class="row__label" for="old">Вторичка</label>
                   </div>
                   <div class="row__toggle"> 
                     <input class="row__radio" id="new" name="typeObject" type="radio" value="Новостройка" 
-                    ${this.objectFilter.typeObject === 'new' ? 'checked' : ''}>
+                    ${this.objectFilter.typeObject === 'Новостройка' ? 'checked' : ''}>
                     <label class="row__label" for="new">Новостройка</label>
                   </div>
                 </div>
@@ -1793,7 +2298,7 @@ class AddressHandler {
             </div>
             <div class="metro__footer module__footer"> 
               <button data-extra="save" class="module__save" type="button">Сохранить</button>
-              <button class="module__reset row__input_right" type="reset"><span>Очистить</span></button>
+              <button data-extra="clear" class="module__reset row__input_right"><span>Очистить</span></button>
             </div>`
   }
   handlerExtraInputValue(){
@@ -1804,6 +2309,65 @@ class AddressHandler {
         event.target.value = event.target.value.replace(/[^\d]/g, '');
       })
     }
+  }
+  getDealItems(data){
+    let items = '';
+    for (let item of data){
+      items += `<p class="deal__text">${item.TITLE} <span data-deal="item" data-id="${item.ID}" class="ui-btn">выбрать</span></p>`
+    }
+    return items;
+  }
+  dealLayout(data){
+    const dealItem = this.getDealItems(data);
+    return `<div class="deal">
+              ${dealItem} 
+            </div>            
+            <div class="metro__footer module__footer"> 
+            </div>`
+  }
+  getTableBody(data){
+    let body = '';
+    let indexHistory = 0;
+    for (let row of data){
+      const dataRow = JSON.parse(row.data);
+      console.log(JSON.parse(row.data))
+      body += `<tr> 
+                <td>${row.createdDate.split(" ")[0].split('-').reverse().join('.')} ${row.createdDate.split(" ")[1].split('.')[0]}</td>
+                <td>${dataRow.reqTypeofRealty}</td>
+                <td>${dataRow.street ? dataRow.street : ''}</td>
+                <td>
+                    ${dataRow.reqFlatTotalArea ? dataRow.reqFlatTotalArea[0] ? `от ${dataRow.reqFlatTotalArea[0]} ` : '' : ''}
+                    ${dataRow.reqFlatTotalArea ? dataRow.reqFlatTotalArea[1] ? `до ${dataRow.reqFlatTotalArea[1]} ` : '' : ''}
+                </td>
+                <td>
+                    ${dataRow.reqPrice ? dataRow.reqPrice[0] ? `от ${dataRow.reqPrice[0]} ` : '' : ''}
+                    ${dataRow.reqPrice ? dataRow.reqPrice[1] ? `до ${dataRow.reqPrice[1]} ` : '' : ''}
+                </td>
+                <td class="history_last"><span class="ui-btn" data-history="${indexHistory}">применить</span></td>
+              </tr>`
+      indexHistory++;
+    }
+    return body;
+  }
+  historyLayout(data){
+    const tableBody = this.getTableBody(data);
+    return `<div class="history">
+              <table class="history__table"> 
+                <thead class="history__head"> 
+                  <tr> 
+                    <td>Дата</td>
+                    <td>Тип недвижимости</td>
+                    <td>Улица</td>
+                    <td>Площадь</td>
+                    <td>Цена</td>
+                    <td></td>
+                  </tr>
+                </thead>
+                ${tableBody}
+              </table>
+            </div> 
+            <div class="metro__footer module__footer">
+            </div>`
   }
 
   checkCurrentElem(){
@@ -1919,6 +2483,7 @@ class AddressHandler {
     const paginationContainer = document.querySelectorAll('.pagination')
     for (let container of paginationContainer){
       container.innerHTML = '';
+      container.classList.remove('visible');
       if (this.countPaginat > 5){
         container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-border" data-border="start" data-paginat="0">в начало</span>`);
         container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-paginat_left" data-direction="prev"></span>`);
@@ -1932,7 +2497,7 @@ class AddressHandler {
         container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-paginat_right" data-direction="next"></span>`);
         container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-border" data-border="end" data-paginat="${this.countPaginat - 1}">в конец</span>`);
       } else{
-        for (let i = 0; i < this.startPaginat + 5; i++){
+        for (let i = 0; i < this.countPaginat; i++){
           if (i === +this.currentPaginatActive){
             container.insertAdjacentHTML('beforeend', `<span class="btn btn-count btn-paginat btn_active" data-paginat="${i}">${i+1}</span>`);
           } else {
@@ -1970,6 +2535,7 @@ class AddressHandler {
     const paginationContainer = document.querySelectorAll('.pagination');
     for (let container of paginationContainer){
       container.innerHTML = '';
+      container.classList.add('visible');
     }
   }
 
@@ -2078,7 +2644,7 @@ class AddressHandler {
       containerCentr.classList.remove('visible');
       for (let i = 0; i < centr; i++){
         containerCentr.innerHTML = '';
-        containerCentr.innerHTML = centr;
+        containerCentr.innerHTML = centr < 5000 ? centr : `> ${centr}`;
       }
     } else {
       containerCentr.innerHTML = '';
@@ -2087,7 +2653,7 @@ class AddressHandler {
     if (all > 0){
       containerAll.classList.remove('visible');
       containerAll.innerHTML = '';
-      containerAll.innerHTML = all;
+      containerAll.innerHTML = all < 5000 ? all : `> ${all}`;
     } else {
       containerAll.innerHTML = '';
       containerAll.classList.add('visible');
@@ -2136,20 +2702,22 @@ class Cards {
                     <img class="card__img" src="${this.cards[i].reqPhoto}" alt="img">
                     <div class="card__wrap">
                         <div class="card__info">
-                            <a href="#" class="card__title card__link">
-                              ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом" || this.cards[i].reqTypeofRealty === "Комната" 
+                            <span data-open="openCard" data-req="${this.cards[i].reqNumber}" 
+                            data-source="${this.cards[i].reqType}" class="card__title card__link">
+                              ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом" 
+                              || this.cards[i].reqTypeofRealty === "Комната"
                               ? `${this.cards[i].reqRoomCount ? `${this.cards[i].reqRoomCount}к, ` : ''}`
                               : ''}
                               ${this.cards[i].reqStreet ? `ул. ${this.cards[i].reqStreet}, ` : ''}
                               ${this.cards[i].reqHouseNumber ? `д. ${this.cards[i].reqHouseNumber}` : ''}
-                            </a>
+                            </span>
                             <span class="card__text">
                               ${this.cards[i].reqCity ? `${this.cards[i].reqCity}, ` : ''}
                               ${this.cards[i].reqRayon ? `${this.cards[i].reqRayon} р-н` : ''}
                             </span>
                             <span class="card__text">
-                            ${this.cards[i].nearMetro ? 
-                            `<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            ${this.cards[i].nearMetro ?
+        `                    <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.56623 0L5 5.22145L2.46689 0L0.364238 6.29837H0V7H2.13576V6.331H1.80464L2.84768 3.50816L4.7351 7H5.24834L7.13576 3.47552L8.19536 6.29837H7.81457V7H10V6.29837H9.6192L7.56623 0Z" fill="#E84533"/>
                             </svg>` : ''}
                             ${this.cards[i].nearMetro ? this.cards[i].nearMetro : ''}
@@ -2159,10 +2727,10 @@ class Cards {
                         <div class="card__info">
                             ${this.cards[i].reqFlatTotalArea ? `<span class="card__title">${this.cards[i].reqFlatTotalArea} кв<sup>2</sup></span>` : ''}
                             ${this.cards[i].reqFloor && this.cards[i].reqFloors ? `<span class="card__text">${this.cards[i].reqFloor}/${this.cards[i].reqFloors} эт. </span>` : ''}
-                            ${this.cards[i].reqTypeofRealty === "Дом" || this.cards[i].reqTypeofRealty === "Земля" && this.cards[i].reqLandArea ? 
+                            ${this.cards[i].reqTypeofRealty === "Дом" || this.cards[i].reqTypeofRealty === "Земля" || this.cards[i].reqTypeofRealty === "Земельный участок" && this.cards[i].reqLandArea ?
                             `<span class="${this.cards[i].reqFlatTotalArea || this.cards[i].reqFloor ? 'card__text' : 'card__title'}"> 
                                 Учаток ${this.cards[i].reqLandArea} сот.
-                            </span>` 
+                            </span>`
                             : ''}
                         </div>
                         <div class="card__info card_right">
@@ -2221,8 +2789,38 @@ class Cards {
   }
 }
 
+class Basket {
+  constructor() {
+    this.fullness = [];
+    this.countContainer = document.querySelector('.count-basket');
+    this.itemsContainer = document.querySelector('.basket__items');
+  }
+  init() {
+    if (this.fullness.length > 0){
+      this.countContainer.innerHTML = `${this.fullness.length}`;
+      this.countContainer.classList.remove('visible');
+    } else {
+      this.countContainer.innerHTML = ``;
+      this.countContainer.classList.add('visible');
+    }
+    this.renderItems();
+  }
+  renderItems(){
+    this.itemsContainer.innerHTML = '';
+    for (let item of this.fullness){
+      this.itemsContainer.insertAdjacentHTML('beforeend',
+        `<p class="basket__item" data-elem="check">
+                ${item.reqStreet ? `ул. ${item.reqStreet}, ` : ''}
+                ${item.reqHouseNumber ? `д. ${item.reqHouseNumber}` : ''}
+                <span data-elem="check">${item.reqPrice ? `${item.reqPrice } тыс. ₽` : ''}</span>
+              </p>`)
+    }
+  }
+}
+
 const address = new AddressHandler();
 address.init();
+const basket = new Basket();
 
 const priceLeft = document.querySelector('.price_left');
 priceLeft.addEventListener('keyup', event => {

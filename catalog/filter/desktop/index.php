@@ -182,6 +182,6 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <div class='pagination last-elem visible'></div>
 </div>
 
-<script src="test.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
