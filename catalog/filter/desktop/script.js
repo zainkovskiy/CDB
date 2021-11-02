@@ -559,34 +559,6 @@ class AddressHandler {
   }
   //todo доделать поинты с адресами и т д
   initMap(cards){
-    // let cords = ['55.030204', '82.920430'];
-    // ymaps.ready(init);
-    // function init(){
-    //   var myMap = new ymaps.Map("map", {
-    //     center: cords,
-    //     zoom: 17,
-    //     controls: ['zoomControl', 'fullscreenControl'],
-    //   })
-    //   for (let point of cards){
-    //     if (point.lat && point.lng){
-    //       let cordsPoint = [];
-    //       cordsPoint.push(point.lat);
-    //       cordsPoint.push(point.lng);
-    //       var myGeoObject = new ymaps.GeoObject({
-    //         geometry: {
-    //           type: "Point", // тип геометрии - точка
-    //           coordinates: cordsPoint, // координаты точки
-    //         }
-    //       });
-    //       myMap.geoObjects.add(myGeoObject);
-    //     }
-    //   }
-    //   // myMap.behaviors.disable('scrollZoom');
-    //   // if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-    //   //   //... отключаем перетаскивание карты
-    //   //   myMap.behaviors.disable('drag');
-    //   // }
-    // }
     ymaps.ready(function () {
       var myMap = new ymaps.Map('map', {
           center: [55.030204, 82.920430],
@@ -606,7 +578,7 @@ class AddressHandler {
            * стили для меток нужно назначать каждой метке отдельно.
            * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/option.presetStorage.xml
            */
-          preset: 'islands#invertedVioletClusterIcons',
+          // preset: 'islands#invertedVioletClusterIcons',
           openBalloonOnClick: false,
           /**
            * Ставим true, если хотим кластеризовать только точки с одинаковыми координатами.
@@ -618,7 +590,17 @@ class AddressHandler {
            */
           clusterDisableClickZoom: true,
           clusterHideIconOnBalloonOpen: false,
-          geoObjectHideIconOnBalloonOpen: false
+          geoObjectHideIconOnBalloonOpen: false,
+          // Макет метки кластера pieChart.
+          clusterIconLayout: 'default#pieChart',
+          // Радиус диаграммы в пикселях.
+          clusterIconPieChartRadius: 25,
+          // Радиус центральной части макета.
+          clusterIconPieChartCoreRadius: 10,
+          // Ширина линий-разделителей секторов и внешней обводки диаграммы.
+          clusterIconPieChartStrokeWidth: 3,
+          // Определяет наличие поля balloon.
+          hasBalloon: false
         }),
         /**
          * Функция возвращает объект, содержащий данные метки.
@@ -640,10 +622,19 @@ class AddressHandler {
          * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/GeoObject.xml
          */
         getPointOptions = function (point) {
-          return {
-            preset: 'islands#violetIcon',
-            reqNumber: point[2]
-          };
+          if (point[3] === '1c'){
+            return {
+              // preset: 'islands#violetIcon',
+              iconColor: `#0c54a0`,
+              reqNumber: point[2]
+            };
+          } else if (point[3] === 'pars'){
+            return {
+              // preset: 'islands#violetIcon',
+              iconColor: `#DB425A`,
+              reqNumber: point[2]
+            };
+          }
         },
         points = [],
         geoObjects = [];
@@ -656,6 +647,7 @@ class AddressHandler {
           cordsPoint.push(point.lat);
           cordsPoint.push(point.lng);
           cordsPoint.push(point.reqNumber);
+          cordsPoint.push(point.reqType);
           points.push(cordsPoint);
         }
       }
