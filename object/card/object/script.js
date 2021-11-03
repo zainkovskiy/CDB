@@ -113,7 +113,7 @@ class Render {
       var myMap = new ymaps.Map("map", {
         center: cords,
         zoom: 17,
-        controls: ['zoomControl', 'fullscreenControl'],
+        controls: [],
       });
       var myGeoObject = new ymaps.GeoObject({
         geometry: {

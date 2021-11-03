@@ -10,15 +10,23 @@ $rawDATA =  base64_decode(file_get_contents('php://input'));
 $arrApplicationParams = json_decode($rawDATA, true);
 $arrClients = json_encode($arrApplicationParams['dealClients'], true);
 
-		if (!$arrClients) {
-							$arrClients = '{}';
-		}
+    if (!$arrClients) {
+              $arrClients = '{}';
+    }
 // ИНИЦИАЛИЗАЦИЯ ОКРУЖЕНИЯ
 
 CJSCore::Init();
 
 if($USER->IsAuthorized()){
 $APPLICATION->ShowHead();}
+
+$userName = CUser::GetLogin();
+
+if ($userName == 'mischenkoiv' || $userName == 'zainkovskiyaa') {
+
+} else {
+  header('Location: https://crm.centralnoe.ru');
+}
 
 \Bitrix\Main\UI\Extension::load("ui.forms");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
@@ -29,7 +37,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <script src="//api.bitrix24.com/api/v1/"></script>
+    <script src="//api.bitrix24.com/api/v1/"> </script>
     <SCRIPT>
       // UID Текущего пользователя
       let currentUserId = '<? echo($arrApplicationParams['activeUserID']) ;?>';
@@ -45,8 +53,13 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       let dealObject = '<? echo($arrApplicationParams['dealObject']);?>';
       // JSON c Клиентами сделки
       let dealClients = '<? echo($arrClients);?>';
+
+        BX24.ready(async () => {
+        BX24.resizeWindow(window.innerWidth,  1100, () => {} );
+        });
     </SCRIPT>
-    <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -178,10 +191,10 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
         <div id="map"></div>
         <div class="map__right"></div>
     </div>
-    <div class='cards'></div>
+    <div class='cards'>
+    </div>
     <div class='pagination last-elem visible'></div>
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>

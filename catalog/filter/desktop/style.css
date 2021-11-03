@@ -2,16 +2,14 @@
 body {
   position: relative;
   margin: 0 auto;
-  height: 100vh;
   font-family: sans-serif;
   background-color: #eef2f4;
-  display: flex;
-  justify-content: center;
 }
 
 .container {
-  max-width: 920px;
+  width: 100%;
   position: relative;
+  margin: 0 auto;
 }
 
 input[type=checkbox] {
@@ -120,6 +118,9 @@ ul {
 }
 
 .search-form {
+  position: sticky;
+  top: 0;
+  z-index: 999;
   width: 100%;
   padding: 20px;
   background-color: white;
@@ -240,7 +241,7 @@ ul {
   grid-column-start: 1;
   grid-column-end: 3;
   position: relative;
-  width: 60%;
+  width: 28%;
 }
 .sort__wrap {
   background-color: white;
@@ -881,7 +882,7 @@ ul {
   grid-column-end: 3;
 }
 .source__wrap {
-  width: 30%;
+  width: 28%;
   position: relative;
 }
 .source__wrap:first-child {
@@ -939,7 +940,8 @@ ul {
 }
 
 .cards {
-  margin: 20px 0 0 0;
+  max-width: 900px;
+  margin: 20px auto 0 auto;
   position: relative;
 }
 
@@ -1040,12 +1042,24 @@ ul {
   margin: 0 0 0 10px;
   cursor: pointer;
   padding: 5px;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
 }
 .card__btn:hover {
-  background-color: #efefef;
+  background-color: #e3e3e3;
 }
 .card__btn:active {
+  background-color: #fff;
+}
+.card__btn_select {
+  background-color: #184767;
+  border: 1px solid #184767;
+}
+.card__btn_select:hover {
+  background-color: #4e8099;
+  border: 1px solid #4e8099;
+  box-shadow: 0 1px 10.3px #007fbf;
+}
+.card__btn_select:active {
   background-color: #fff;
 }
 .card_last {

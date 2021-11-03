@@ -368,20 +368,24 @@ class AddressHandler {
           top: 0,
           behavior: "smooth"
         });
-      } else if (event.target.dataset.card){
-        if (event.target.dataset.card === 'alert'){
-          this.openAlert(event.target.dataset.req);
-        } else if (event.target.dataset.card === 'reserv'){
-          const addFloat = this.cards.find(card => card.reqNumber === event.target.dataset.req);
-          const floatInArr = basket.fullness.find(card => card.reqNumber === event.target.dataset.req)
-          if (floatInArr){
-            return
-          } else {
-            basket.fullness.push(addFloat);
-            basket.init();
-          }
-          console.log(basket.fullness)
+      } else if (event.target.dataset.card === 'reserv'){
+        const addFloat = this.cards.find(card => card.reqNumber === event.target.dataset.req);
+        const floatInArr = basket.fullness.find(card => card.reqNumber === event.target.dataset.req);
+        event.target.classList.toggle('card__btn_select');
+        if (floatInArr){
+          addFloat.basketAdd = 0;
+          document.querySelector(`.btn${event.target.dataset.req}`).classList.remove('card__btn_select');
+          basket.fullness.splice(basket.fullness.indexOf(floatInArr), 1);
+          basket.init();
+        } else {
+          document.querySelector(`.btn${event.target.dataset.req}`).classList.add('card__btn_select');
+          addFloat.basketAdd = 1;
+          basket.fullness.push(addFloat);
+          basket.init();
         }
+        document.querySelector('#map').innerHTML = '';
+        this.initMap(this.cards);
+        console.log(basket.fullness)
       } else if (event.target.dataset.name === 'basket'){
         if (basket.fullness.length > 0){
           const elem = document.querySelector(`.${event.target.dataset.name}__block`);
@@ -394,8 +398,15 @@ class AddressHandler {
           }
         }
       } else if (event.target.dataset.basket === 'clear'){
+        for (let card of basket.fullness){
+          const find = this.cards.find(item => item.reqNumber === card.reqNumber);
+          find.basketAdd = 0;
+          document.querySelector(`.btn${find.reqNumber}`).classList.remove('card__btn_select');
+        }
         basket.fullness = [];
         basket.init();
+        document.querySelector('#map').innerHTML = '';
+        this.initMap(this.cards);
         this.checkCurrentElem();
       } else if (event.target.dataset.basket === 'save'){
         if (dealObject){
@@ -563,9 +574,9 @@ class AddressHandler {
       var myMap = new ymaps.Map('map', {
           center: [55.030204, 82.920430],
           zoom: 11,
-          behaviors: ['default', 'scrollZoom']
+          controls: [],
         }, {
-          searchControlProvider: 'yandex#search'
+          // searchControlProvider: 'yandex#search'
         }),
         /**
          * Создадим кластеризатор, вызвав функцию-конструктор.
@@ -622,7 +633,14 @@ class AddressHandler {
          * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/GeoObject.xml
          */
         getPointOptions = function (point) {
-          if (point[3] === '1c'){
+          const find = cards.find(item => item.reqNumber === point[2]);
+          if (find && find.basketAdd === 1){
+            return {
+              // preset: 'islands#violetIcon',
+              iconColor: `#00d438`,
+              reqNumber: point[2]
+            };
+          } else if (point[3] === '1c'){
             return {
               // preset: 'islands#violetIcon',
               iconColor: `#0c54a0`,
@@ -635,6 +653,20 @@ class AddressHandler {
               reqNumber: point[2]
             };
           }
+
+          // if (point[3] === '1c'){
+          //   return {
+          //     // preset: 'islands#violetIcon',
+          //     iconColor: `#0c54a0`,
+          //     reqNumber: point[2]
+          //   };
+          // } else if (point[3] === 'pars'){
+          //   return {
+          //     // preset: 'islands#violetIcon',
+          //     iconColor: `#DB425A`,
+          //     reqNumber: point[2]
+          //   };
+          // }
         },
         points = [],
         geoObjects = [];
@@ -690,12 +722,17 @@ class AddressHandler {
       });
 
       myMap.events.add('click', function (e) {
-        document.querySelector('.map__right').classList.add('map__bar_close');
-        setTimeout(() => {
-          document.querySelector('.map__right').innerHTML = '';
-          document.querySelector('.map__right').classList.remove('map__bar_open');
-          document.querySelector('.map__right').classList.remove('map__bar_close');
-        }, 500)
+        console.log(window.pageYOffset)
+        if (document.querySelector('.map__right').innerHTML === ''){
+          return
+        } else {
+          document.querySelector('.map__right').classList.add('map__bar_close');
+          setTimeout(() => {
+            document.querySelector('.map__right').innerHTML = '';
+            document.querySelector('.map__right').classList.remove('map__bar_open');
+            document.querySelector('.map__right').classList.remove('map__bar_close');
+          }, 500)
+        }
       });
 
     });
@@ -723,7 +760,7 @@ class AddressHandler {
                   ${card.reqFlatTotalArea ? `<span class="map-card__flat">${card.reqFlatTotalArea} кв<sup>2</sup></span>` : ''}
                   ${card.reqFloor && card.reqFloors ? `<span class="map-card__floor">${card.reqFloor}/${card.reqFloors} эт. </span>` : ''}
                   ${card.reqTypeofRealty === "Дом" || card.reqTypeofRealty === "Земля" && card.reqLandArea ?
-                  `<span class="map-card">
+                  `<span class="map-card__flat">
                       Учаток ${card.reqLandArea} сот.
                   </span>`
                   : ''}
@@ -734,7 +771,19 @@ class AddressHandler {
                 </div>
                 <div class="map-card__wrap map-card__wrap_between"> 
                   <img class="map-card__logo" src="${card.reqLogo}" alt="logo">
-                  <button class="ui-btn">зарезервировать</button>
+                  <button class="card__btn ${card.basketAdd === 1 ? 'card__btn_select' : ''}" data-req="${card.reqNumber}" data-card="reserv"> 
+                    <svg class="event-none" width="30" height="30" fill="#BEC1C0" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                    \t viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                    <g id="Layer_1_1_">
+                    <polygon points="21.707,8.707 20.293,7.293 12,15.586 8.707,12.293 7.293,13.707 12,18.414 \t"/>
+                    <rect x="25" y="12" width="18" height="2"/>
+                    <polygon points="21.707,20.707 20.293,19.293 12,27.586 8.707,24.293 7.293,25.707 12,30.414 \t"/>
+                    <rect x="25" y="24" width="18" height="2"/>
+                    <polygon points="21.707,32.707 20.293,31.293 12,39.586 8.707,36.293 7.293,37.707 12,42.414 \t"/>
+                    <rect x="25" y="36" width="18" height="2"/>
+                    </g>
+                    </svg>
+                  </button>
                 </div>
               </div>`)
     }
@@ -891,6 +940,7 @@ class AddressHandler {
   }
 
   setAllValue(){
+    this.objectFilter.fullAddress = this.addressValue ? this.addressValue : null;
     this.objectFilter.metroDistance = this.metroTime ? this.metroTime : null;
     this.objectFilter.area = this.districtArray.length === 0 ? null : this.districtArray;
     this.objectFilter.metro = this.metroArray.length === 0 ? null : this.metroArray;
@@ -1087,20 +1137,11 @@ class AddressHandler {
         });
       } else if (event.target.dataset.history){
         this.objectFilter = JSON.parse(this.historyFilter[event.target.dataset.history].data);
+        console.log(this.objectFilter)
         this.closeModule(module);
         this.setLoader();
         this.sendToServer().then(data => {
-          this.setCountCard(data);
-          new Cards(data).init();
-          document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
-          if (data.length > 100){
-            this.startPaginat = 0;
-            this.currentPaginatActive = 0;
-            this.setPagination();
-            this.renderPagination();
-          } else {
-            this.clearPaginationContainer();
-          }
+          this.setHistoryValue(data);
           this.removeLoader();
         });
       }
@@ -1115,6 +1156,56 @@ class AddressHandler {
   closeModule(module){
     document.querySelector('HTML').removeAttribute("style");
     module.remove();
+  }
+
+  setHistoryValue(data){
+    this.setCountCard(data);
+    new Cards(data).init();
+    document.querySelector('#map').innerHTML = '';
+    this.initMap(this.cards);
+
+    document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
+    document.querySelector(`INPUT[name='reqTypeofRealty']`).value = `${this.objectFilter.reqTypeofRealty}`;
+    document.querySelector(`INPUT[name='address']`).value = `${this.objectFilter.fullAddress ? this.objectFilter.fullAddress : ''}`;
+    this.objectFilter.fullAddress ? this.addressValue = this.objectFilter.fullAddress : this.addressValue = '';
+    this.objectFilter.fullAddress ? document.querySelector('.address-x').classList.add('start__input-cross') : '';
+
+    if (this.objectFilter.extraFilter){
+      document.querySelector('.count-extra').innerHTML = `${this.objectFilter.extraFilter}`;
+      document.querySelector('.count-extra').classList.remove('visible');
+    } else {
+      document.querySelector('.count-extra').innerHTML = ``;
+      document.querySelector('.count-extra').classList.add('visible');
+    }
+
+    if (this.objectFilter.reqRoomCount){
+      const checkboxAll = document.querySelector('.room__check').querySelectorAll(`INPUT[type='checkbox']`);
+      for (let checkbox of checkboxAll){
+        for (let value of this.objectFilter.reqRoomCount){
+          if (checkbox.value === value){
+            this.countRoom.push(checkbox);
+            checkbox.checked = true;
+          }
+        }
+      }
+      document.querySelector(`INPUT[name='reqRoomCount']`).value = `Выбрано ${this.countRoom.length}`;
+      document.querySelector('.reqRoomCount-x').classList.add('start__input-cross');
+    }
+
+    if(this.objectFilter.reqPrice){
+      document.querySelector(`INPUT[name='reqPrice']`).value =
+        `${this.objectFilter.reqPrice[0] ? `от ${this.objectFilter.reqPrice[0]}` : ''} ${this.objectFilter.reqPrice[1] ? `до ${this.objectFilter.reqPrice[1]}` : ''}`;
+      document.querySelector(`.reqPrice-x`).classList.add('start__input-cross');
+    }
+
+    if (data.length > 100){
+      this.startPaginat = 0;
+      this.currentPaginatActive = 0;
+      this.setPagination();
+      this.renderPagination();
+    } else {
+      this.clearPaginationContainer();
+    }
   }
 
   setCheckboxMetro(module, event){
@@ -1277,12 +1368,13 @@ class AddressHandler {
           countFilter++;
         }
       }
-      console.log(this.objectFilter);
     }
     if (countFilter > 0){
       document.querySelector('.count-extra').innerHTML = `${countFilter}`;
       document.querySelector('.count-extra').classList.remove('visible');
+      this.objectFilter.extraFilter = countFilter;
     }
+    console.log(this.objectFilter);
   }
 
   regionLayout(){
@@ -2322,14 +2414,13 @@ class AddressHandler {
     let indexHistory = 0;
     for (let row of data){
       const dataRow = JSON.parse(row.data);
-      console.log(JSON.parse(row.data))
       body += `<tr> 
                 <td>${row.createdDate.split(" ")[0].split('-').reverse().join('.')} ${row.createdDate.split(" ")[1].split('.')[0]}</td>
                 <td>${dataRow.reqTypeofRealty}</td>
                 <td>${dataRow.street ? dataRow.street : ''}</td>
                 <td>
-                    ${dataRow.reqFlatTotalArea ? dataRow.reqFlatTotalArea[0] ? `от ${dataRow.reqFlatTotalArea[0]} ` : '' : ''}
-                    ${dataRow.reqFlatTotalArea ? dataRow.reqFlatTotalArea[1] ? `до ${dataRow.reqFlatTotalArea[1]} ` : '' : ''}
+                    ${dataRow.reqFlatTotalArea ? dataRow.reqFlatTotalArea[0] && dataRow.reqFlatTotalArea[0] !== 'null' ? `от ${dataRow.reqFlatTotalArea[0]} ` : '' : ''}
+                    ${dataRow.reqFlatTotalArea ? dataRow.reqFlatTotalArea[1] && dataRow.reqFlatTotalArea[1] !== 'null' ? `до ${dataRow.reqFlatTotalArea[1]} ` : '' : ''}
                 </td>
                 <td>
                     ${dataRow.reqPrice ? dataRow.reqPrice[0] ? `от ${dataRow.reqPrice[0]} ` : '' : ''}
@@ -2455,8 +2546,6 @@ class AddressHandler {
     if (this.balancePaginat > 0){
       this.countPaginat++
     }
-    console.log(this.countPaginat)
-    console.log(this.balancePaginat)
   }
   setPaginationActive(event){
     const allPagination = document.querySelectorAll('.btn-count');
@@ -2734,7 +2823,7 @@ class Cards {
                         </div>
                         <div class="card__info card_end">
                             <div class="card__btn-list">
-                                <button class="card__btn" data-req="${this.cards[i].reqNumber}" data-card="reserv"> 
+                                <button class="card__btn btn${this.cards[i].reqNumber}" data-req="${this.cards[i].reqNumber}" data-card="reserv"> 
                                   <svg class="event-none" width="30" height="30" fill="#BEC1C0" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                   \t viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                                   <g id="Layer_1_1_">
@@ -2745,26 +2834,6 @@ class Cards {
                                   <polygon points="21.707,32.707 20.293,31.293 12,39.586 8.707,36.293 7.293,37.707 12,42.414 \t"/>
                                   <rect x="25" y="36" width="18" height="2"/>
                                   </g>
-                                  </svg>
-                                </button>
-                                <button class="card__btn" data-req="${this.cards[i].reqNumber}" data-card="alert">
-                                  <svg class="event-none" width="30" height="30" fill="#BEC1C0" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                  \t viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-                                  <g><g>
-                                  <path d="M505.403,406.394L295.389,58.102c-8.274-13.721-23.367-22.245-39.39-22.245c-16.023,0-31.116,8.524-39.391,22.246
-                                  \t\t\tL6.595,406.394c-8.551,14.182-8.804,31.95-0.661,46.37c8.145,14.42,23.491,23.378,40.051,23.378h420.028
-                                  \t\t\tc16.56,0,31.907-8.958,40.052-23.379C514.208,438.342,513.955,420.574,505.403,406.394z M477.039,436.372
-                                  \t\t\tc-2.242,3.969-6.467,6.436-11.026,6.436H45.985c-4.559,0-8.784-2.466-11.025-6.435c-2.242-3.97-2.172-8.862,0.181-12.765
-                                  \t\t\tL245.156,75.316c2.278-3.777,6.433-6.124,10.844-6.124c4.41,0,8.565,2.347,10.843,6.124l210.013,348.292
-                                  \t\t\tC479.211,427.512,479.281,432.403,477.039,436.372z"/>
-                                  </g></g><g><g>
-                                  <path d="M256.154,173.005c-12.68,0-22.576,6.804-22.576,18.866c0,36.802,4.329,89.686,4.329,126.489
-                                  \t\t\tc0.001,9.587,8.352,13.607,18.248,13.607c7.422,0,17.937-4.02,17.937-13.607c0-36.802,4.329-89.686,4.329-126.489
-                                  \t\t\tC278.421,179.81,268.216,173.005,256.154,173.005z"/>
-                                  </g></g><g><g>
-                                  <path d="M256.465,353.306c-13.607,0-23.814,10.824-23.814,23.814c0,12.68,10.206,23.814,23.814,23.814
-                                  \t\t\tc12.68,0,23.505-11.134,23.505-23.814C279.97,364.13,269.144,353.306,256.465,353.306z"/>
-                                  </g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
                                   </svg>
                                 </button>
                             </div>
@@ -2827,3 +2896,6 @@ priceRight.addEventListener('keyup', event => {
   let rightValue = event.target.value.split(' ').join('');
   event.target.value = rightValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 })
+setTimeout(()=>{
+  document.querySelector('.container').scrollIntoView();
+}, 1000)
