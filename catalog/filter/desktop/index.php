@@ -54,7 +54,10 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       // JSON c Клиентами сделки
       let dealClients = '<? echo($arrClients);?>';
         BX24.ready(async () => {
-        BX24.resizeWindow(window.innerWidth, 900, () => {} );
+        console.log(window.screen.availHeight);
+        console.log(window.innerHeight);
+        const h = window.innerHeight + 100;
+        BX24.resizeWindow(window.innerWidth, h, () => {} );
         });
     </SCRIPT>
         <meta name="viewport"
