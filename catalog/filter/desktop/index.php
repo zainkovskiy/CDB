@@ -56,7 +56,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
         BX24.ready(async () => {
         console.log(window.screen.availHeight);
         console.log(window.innerHeight);
-        const h = window.innerHeight + 100;
+        const h = window.screen.availHeight - 100;
         BX24.resizeWindow(window.innerWidth, h, () => {} );
         });
     </SCRIPT>
@@ -65,8 +65,8 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js?s=<?=rand(0, 1000000)?>"></script>
     <link href="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.6.0/dist/css/suggestions.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.6.0/dist/js/jquery.suggestions.min.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=9b339b12-4d97-4522-b2e5-da5a5da1c7f6&lang=ru_RU" type="text/javascript"></script>
@@ -75,32 +75,6 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
 <body>
 <div class="container">
     <div class="search-form">
-        <div class="source">
-          <div class="source__wrap">
-            <input checked class="source__input" name="1c" id="centr" type="checkbox">
-            <label class="source__label source__label-centr" for="centr"></label>
-            <span class='count count-centr visible'></span>
-          </div>
-          <div class="source__wrap">
-            <input class="source__input" name="pars" id="all" type="checkbox">
-            <label class="source__label source__label-all" for="all"></label>
-            <span class='count count-all visible'></span>
-          </div>
-        </div>
-        <div class='basket'>
-            <button title="Корзина" data-elem="check" class="btn btn-basket" data-name="basket"></button>
-            <button title="Сохраненные фильтры" class="btn btn-story" data-name="story"></button>
-            <span class='count count-basket visible'></span>
-            <div data-elem="check" class="basket__wrap basket__block visible">
-                <div data-elem="check" class='basket__items'>
-
-                </div>
-                <div class='basket__btn-wrap'>
-                    <button data-elem="check" class="ui-btn" data-basket="save">сохранить</button>
-                    <button data-elem="check" class="ui-btn ui-btn-danger-dark" data-basket="clear">очистить</button>
-                </div>
-            </div>
-        </div>
         <span class="search-form__title">Тип недвижимости</span>
         <div class="place">
             <span title="выберете регион" class="search-form__title place__text" data-region="reqRegion">Новосибирская область</span>
@@ -108,6 +82,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
         </div>
         <span class="search-form__title">Комнаты</span>
         <span class="search-form__title">Цена в тыс. руб.</span>
+        <span class="filter-clear" data-clear='filter'>Сбросить все фильтры</span>
         <div class="type">
             <input data-elem="check" class="start__input" name="reqTypeofRealty" type="text" value="Квартиры" autocomplete="new-password" readonly>
             <span class='start__input-arrow'></span>
@@ -160,13 +135,27 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                 </div>
             </div>
         </div>
-        <div class="between-text">
-            <span class="search-form__title">Выберете сортировку</span>
-            <span class="filter-clear" data-clear='filter'>Сбросить все фильтры</span>
+        <div class="buttons">
+                  <div class="source__wrap">
+                    <input checked class="source__input" name="1c" id="centr" type="checkbox">
+                    <label class="source__label source__label-centr" for="centr"></label>
+                  </div>
+                  <div class="source__wrap">
+                    <input class="source__input" name="pars" id="all" type="checkbox">
+                    <label class="source__label source__label-all" for="all"></label>
+                  </div>
+              <div class='btn__wrap-extra'>
+              <button title="Еще фильтры" class="btn btn-setting" data-name="extra"></button>
+              <span class='count count-extra visible'></span>
+            </div>
+            <button title="Поиск" class="ui-btn btn-search" data-name="search">найти</button>
         </div>
+    </div>
+    <div class='setting'>
         <div class="sort">
+            <span class="search-form__title">Выберете сортировку</span>
             <input data-elem="check" class="start__input" name='sort' value="Сортировка по умолчанию" readonly>
-            <span class='start__input-arrow'></span>
+            <span class='start__input-arrow start__input-arrow_sort'></span>
             <div data-elem="check" class="sort__wrap sort__block visible">
                 <span data-action="default" data-input="sort" data-value="Сортировка по умолчанию" data-elem="check" class="type__select">Сортировка по умолчанию</span>
                 <span data-action="newOld" data-input="sort" data-value="Дата публикации от новых к старым" data-elem="check" class="type__select">Дата публикации от новых к старым</span>
@@ -178,14 +167,21 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                 <span data-action="wordLast" data-input="sort" data-value="Адрес от Я до А" data-elem="check" class="type__select">Адрес от Я до А</span>
             </div>
         </div>
-        <div class="buttons">
+        <p class='quantity'></p>
+        <div class='basket'>
             <button title="Карта" class="btn btn-map" data-name="map"></button>
-            <div class='btn__wrap-extra'>
-              <button title="Еще фильтры" class="btn btn-setting" data-name="extra"></button>
-              <span class='count count-extra visible'></span>
-              <span class="tooltips-test"></span>
+            <button title="Корзина" data-elem="check" class="btn btn-basket" data-name="basket"></button>
+            <button title="Сохраненные фильтры" class="btn btn-story" data-name="story"></button>
+            <span class='count count-basket visible'></span>
+            <div data-elem="check" class="basket__wrap basket__block visible">
+                <div data-elem="check" class='basket__items'>
+
+                </div>
+                <div class='basket__btn-wrap'>
+                    <button data-elem="check" class="ui-btn" data-basket="save">сохранить</button>
+                    <button data-elem="check" class="ui-btn ui-btn-danger-dark" data-basket="clear">очистить</button>
+                </div>
             </div>
-            <button title="Поиск" class="ui-btn btn-search" data-name="search">найти</button>
         </div>
     </div>
     <div class='pagination visible'></div>
@@ -197,6 +193,6 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     </div>
     <div class='pagination last-elem visible'></div>
 </div>
-<script src="script.js"></script>
+<script src="script.js?s=<?=rand(0, 1000000)?>"></script>
 </body>
 </html>

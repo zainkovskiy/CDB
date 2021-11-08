@@ -118,16 +118,14 @@ ul {
 }
 
 .search-form {
-  position: sticky;
-  top: 0;
-  z-index: 4;
   width: 100%;
   padding: 20px;
   background-color: white;
   display: grid;
-  grid-template-columns: 1fr 45% 1fr 1fr;
+  grid-template-columns: 1fr 45% 1fr 1fr 1fr;
   grid-template-rows: repeat(2, auto);
   grid-gap: 10px;
+  margin: 0 0 10px 0;
 }
 .search-form__title {
   font-size: 14px;
@@ -195,6 +193,9 @@ ul {
   top: calc(50% - 5px);
   right: 10px;
 }
+.start__input-arrow_sort {
+  top: calc(50% + 4px);
+}
 .start__input-cross {
   pointer-events: auto;
   background-image: url("img/close.svg");
@@ -238,10 +239,7 @@ ul {
 }
 
 .sort {
-  grid-column-start: 1;
-  grid-column-end: 3;
   position: relative;
-  width: 28%;
 }
 .sort__wrap {
   background-color: white;
@@ -250,7 +248,6 @@ ul {
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   padding: 5px 0;
   z-index: 5;
-  width: 100%;
 }
 
 .room {
@@ -279,6 +276,26 @@ ul {
 .room__text {
   width: 100%;
   display: inline-block;
+}
+
+.setting {
+  position: sticky;
+  top: -1;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+}
+
+.quantity {
+  color: #8F9091;
+  font-size: 15px;
+  margin: 0;
+}
+.quantity span {
+  font-weight: 700;
 }
 
 .between-text {
@@ -757,8 +774,8 @@ ul {
 .basket {
   display: flex;
   justify-content: flex-end;
-  grid-column-start: 4;
-  grid-column-end: 5;
+  grid-column-start: 5;
+  grid-column-end: 6;
   position: relative;
 }
 .basket__wrap {
@@ -787,9 +804,6 @@ ul {
 
 .buttons {
   display: flex;
-  justify-content: flex-end;
-  grid-column-start: 3;
-  grid-column-end: 5;
 }
 
 .btn {
@@ -839,7 +853,6 @@ ul {
 
 .btn-basket {
   background-image: url("img/basket.svg");
-  margin: 0 10px;
 }
 
 .btn-story {
@@ -875,17 +888,8 @@ ul {
   justify-content: center;
 }
 
-.source {
-  display: flex;
-  height: 39px;
-  grid-column-start: 1;
-  grid-column-end: 3;
-}
 .source__wrap {
-  width: 28%;
   position: relative;
-}
-.source__wrap:first-child {
   margin: 0 10px 0 0;
 }
 .source__input {
@@ -897,16 +901,18 @@ ul {
 }
 .source__label {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 39px;
+  height: 39px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  border: 1px solid black;
+  background-color: #efefef;
+  border: 1px solid #efefef;
   border-radius: 5px;
   cursor: pointer;
 }
 .source__label-centr {
+  background-size: 60%;
   background-image: url("img/centr-small.png");
 }
 .source__label-all {
@@ -1082,6 +1088,7 @@ ul {
 }
 
 .loader {
+  z-index: 999;
   position: absolute;
   top: 0;
   width: 100vw;

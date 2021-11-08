@@ -438,9 +438,11 @@ class AddressHandler {
             action : 'historySearch',
             dealId : 1,
           }
+          this.setLoader();
           this.getDealOrHistory(req).then(data => {
             this.historyFilter = data;
             this.openModule('История поиска по сделке', this.historyLayout(data));
+            this.removeLoader();
           })
         // }
       } else if (event.target.dataset.open === 'openCard'){
@@ -568,7 +570,6 @@ class AddressHandler {
 
     this.handlerPriceFilter();
   }
-  //todo доделать поинты с адресами и т д
   initMap(cards){
     ymaps.ready(function () {
       var myMap = new ymaps.Map('map', {
@@ -1137,6 +1138,7 @@ class AddressHandler {
         });
       } else if (event.target.dataset.history){
         this.objectFilter = JSON.parse(this.historyFilter[event.target.dataset.history].data);
+        this.objectFilter.fromHistory = true;
         console.log(this.objectFilter)
         this.closeModule(module);
         this.setLoader();
@@ -1334,7 +1336,7 @@ class AddressHandler {
     }
   }
 
-  setValueExtra(module) {
+  setValueExtra(module){
     let countFilter = 0;
     this.objectFilter.reqFlatTotalArea = [];
     this.objectFilter.reqKitchenArea = [];
@@ -1373,6 +1375,8 @@ class AddressHandler {
       document.querySelector('.count-extra').innerHTML = `${countFilter}`;
       document.querySelector('.count-extra').classList.remove('visible');
       this.objectFilter.extraFilter = countFilter;
+    } else {
+      document.querySelector('.count-extra').classList.add('visible');
     }
     console.log(this.objectFilter);
   }
@@ -2097,7 +2101,7 @@ class AddressHandler {
   //               </div>
   //             </form>
   //           </div>`
-  // }
+  // }ы
   getArea(){
     const currentRegion = document.querySelector('.place__text').innerHTML;
     if (currentRegion === 'Новосибирская область'){
@@ -2708,36 +2712,11 @@ class AddressHandler {
   }
 
   setCountCard(cards){
-    const containerCentr = document.querySelector('.count-centr');
-    const containerAll = document.querySelector('.count-all');
-    let centr = 0;
-    let all = 0;
-    if (cards.length > 0){
-      for (let card of cards){
-        if (card.reqType === '1c'){
-          centr++;
-        } else if (card.reqType === 'pars'){
-          all++;
-        }
-      }
-    }
-    if (centr > 0){
-      containerCentr.classList.remove('visible');
-      for (let i = 0; i < centr; i++){
-        containerCentr.innerHTML = '';
-        containerCentr.innerHTML = centr < 5000 ? centr : `> ${centr}`;
-      }
+    const quantity = document.querySelector('.quantity');
+    if (cards.length < 5000){
+      quantity.innerHTML = `Найденно <span>${cards.length}</span> объектов`;
     } else {
-      containerCentr.innerHTML = '';
-      containerCentr.classList.add('visible');
-    }
-    if (all > 0){
-      containerAll.classList.remove('visible');
-      containerAll.innerHTML = '';
-      containerAll.innerHTML = all < 5000 ? all : `> ${all}`;
-    } else {
-      containerAll.innerHTML = '';
-      containerAll.classList.add('visible');
+      quantity.innerHTML = `Найденно <span>5000+</span> объектов`;
     }
   }
 }
