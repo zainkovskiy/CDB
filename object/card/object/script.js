@@ -392,9 +392,6 @@ class Render {
                     || regExp.test(this.obj.docType) ? 'isVisible' : ''}">
                     Зарезервировать
               </button>
-              <!-- <button class="btn_edit ui-btn ui-btn-primary ${this.obj.privileges.user === 'owner' ? this.obj.privileges.user : 'isVisible'}">
-                Редактировать
-              </button>  -->
               <a class="btn_edit ui-btn ui-btn-primary-dark ${this.obj.privileges.user === 'owner' ? this.obj.privileges.user : 'isVisible'}"
               href="https://crm.centralnoe.ru/CDB/object/card/add/?login=yes&action=old&id=${this.obj.reqNumber}&contact=${phoneOwner}">
               Редактировать</a>
