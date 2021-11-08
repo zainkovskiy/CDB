@@ -120,7 +120,7 @@ ul {
 .search-form {
   position: sticky;
   top: 0;
-  z-index: 999;
+  z-index: 4;
   width: 100%;
   padding: 20px;
   background-color: white;

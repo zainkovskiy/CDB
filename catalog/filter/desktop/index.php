@@ -53,9 +53,8 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       let dealObject = '<? echo($arrApplicationParams['dealObject']);?>';
       // JSON c Клиентами сделки
       let dealClients = '<? echo($arrClients);?>';
-
         BX24.ready(async () => {
-        BX24.resizeWindow(window.innerWidth,  1100, () => {} );
+        BX24.resizeWindow(window.innerWidth, 900, () => {} );
         });
     </SCRIPT>
         <meta name="viewport"
