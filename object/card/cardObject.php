@@ -35,11 +35,11 @@ $arrStr = '?'.$arrStr;
     document.querySelector('HTML').setAttribute('style', 'overflow: hidden;');
 </script>
 <div style="padding:0px;">
-  <iframe src="https://crm.centralnoe.ru/objectCard/object/<?echo($arrStr);?>" width="100%" style="border: none">
+  <iframe class="iframe__object" src="https://crm.centralnoe.ru/objectCard/object/<?echo($arrStr);?>" width="100%" style="border: none">
 
  </iframe>
 </div>
 <script>
     const heightWindow = window.innerHeight;
-    document.querySelector('iframe').setAttribute('height', `${heightWindow}px`);
+    document.querySelector('.iframe__object').setAttribute('height', `${heightWindow}px`);
 </script>
