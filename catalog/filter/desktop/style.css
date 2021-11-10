@@ -1220,7 +1220,6 @@ ul {
 }
 .history__table td {
   padding: 10px;
-  border-bottom: 1px solid #cbbdbd;
 }
 .history_last {
   display: flex;
