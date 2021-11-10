@@ -508,7 +508,6 @@ class Render {
   getAllPrice(){
     let price = 0;
     for (let item of this.owner){
-      console.log(item.relation.costForClient)
       price += +item.relation.costForClient;
     }
     return price;
@@ -1762,23 +1761,24 @@ c
 
   checkDone(){
     const progressItems = document.querySelectorAll('.progress__number');
+    console.log(progressItems)
     const changeText = document.querySelector('.save-change__text');
     if (app.copyOwner.agencyagreement.docType === 'Эксклюзив'){
       if (app.copyOwner.chiefAccepted !== '0' || app.copyOwner.moderatorAccepted !== '0'){
         app.copyOwner.agencyagreement.chiefAccepted = '0';
         app.copyOwner.agencyagreement.moderatorAccepted = '0';
         progressItems[3].classList.remove('progress__number_active');
-        progressItems[4].classList.remove('progress__number_active');
         if (changeText){changeText.remove()}
         return true;
       } else {
         return false;
       }
-    } else if (app.copyOwner.agencyagreement.docType === 'Рекламный'){
+    } else {
       if (app.copyOwner.chiefAccepted !== '0' || app.copyOwner.moderatorAccepted !== '0'){
         app.copyOwner.agencyagreement.chiefAccepted = '0';
         app.copyOwner.agencyagreement.moderatorAccepted = '0';
         progressItems[3].classList.remove('progress__number_active');
+        progressItems[4].classList.remove('progress__number_active');
         if (changeText){changeText.remove()}
         return true;
       } else {
