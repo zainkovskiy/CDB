@@ -6,7 +6,6 @@ class Add {
   }
   init(){
     this.container.insertAdjacentHTML('beforeend', new Header(this.obj.reqTypeofRealty).render());
-    new Handler().init();
     if (add.obj.Rights === 'Full'){
       selectStyle('.reqStatus', 'reqStatus',
         `${add.obj.reqStatus ? add.obj.reqStatus : 'Выберете'}`);
@@ -33,8 +32,9 @@ class Add {
       document.querySelector('.error').classList.add('error_active');
       document.querySelector('.header').setAttribute('style', 'pointer-events: none;');
     } else {
-      storySearch.push('Новосибирская область')
+      storySearch.push('Новосибирская область');
     }
+    new Handler().init();
   }
   getAction(){
     if (action === 'new'){
@@ -345,6 +345,7 @@ class Handler{
               `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберете'}`);
             selectStyle('.reqMaterial', 'reqMaterial',
               `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+            this.handlerPrice();
             break
           case 'room':
             this.form.innerHTML = '';
@@ -363,6 +364,7 @@ class Handler{
               `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
             selectStyle('.reqHouseType', 'reqHouseType',
               `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+            this.handlerPrice();
             break
           case 'house':
             this.form.innerHTML = '';
@@ -383,6 +385,7 @@ class Handler{
               `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
             selectStyle('.reqDrainage', 'reqDrainage',
               `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+            this.handlerPrice();
             break
           case 'ground':
             this.form.innerHTML = '';
@@ -395,6 +398,7 @@ class Handler{
               `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
             selectStyle('.reqGroundCategory', 'reqGroundCategory',
               `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберете'}`);
+            this.handlerPrice();
             break
           case 'garage':
             this.form.innerHTML = '';
@@ -405,6 +409,7 @@ class Handler{
               `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
             selectStyle('.reqGarageType', 'reqGarageType',
               `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберете'}`);
+            this.handlerPrice();
             break
         }
       })
@@ -528,6 +533,16 @@ class Handler{
         this.openInfo();
       }
     })
+    this.handlerPrice();
+  }
+  handlerPrice(){
+    const price = document.querySelector(`INPUT[name='reqPrice']`);
+    if (price){
+      const overstatePrice = document.querySelector(`INPUT[name='reqOverstatePrice']`);
+      price.addEventListener('keyup', event => {
+        overstatePrice.value = price.value;
+      })
+    }
   }
   async sendEditObject(request1Cnamed){
     const myHeaders = new Headers();
@@ -698,6 +713,7 @@ class Handler{
     }
     return countTrue === Object.keys(library).length;
   }
+
   isValidInput(allInput){
     const library = {
       reqRegion: true,
@@ -722,6 +738,7 @@ class Handler{
       reqAreaForSell3: true,
       reqShareForSale: true,
       reqShareForAll: true,
+      reqOverstatePrice: true,
     }
     const libraryRegExp = {
       reqRegion: /(.|\s)*\S(.|\s)*/,
@@ -737,6 +754,7 @@ class Handler{
       reqFloor: /^\d*$/,
       reqFloorCount: /^\d*$/,
       reqPrice: /^\d{1,6}$/,
+      reqOverstatePrice: /^\d{1,6}$/,
       reqHouseBuildDate: /(.|\s)*\S(.|\s)*/,
       reqLandArea: /^\d*\.?\d*?$/,
       reqFlatArea: /^\d*\.?\d*?$/,
@@ -1504,6 +1522,12 @@ class Float{
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" id="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autocomplete="new-password">
+              </div> 
+              <div class="form__item">
+                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                autocomplete="new-password">
               </div>
             </div>
             <div class="infoHouse"> 
@@ -1724,6 +1748,12 @@ class Room{
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                autocomplete="new-password">
               </div>
             </div>
             <div class="infoHouse"> 
@@ -1972,6 +2002,12 @@ class House{
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>
+              <div class="form__item">
+                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                autocomplete="new-password">
+              </div>
             </div>                
             <div class="comment"> 
               <span class="form__title">Коментарии</span>
@@ -2072,6 +2108,12 @@ class Ground{
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
+              </div>               
+              <div class="form__item">
+                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                autocomplete="new-password">
               </div>
             </div>                        
             <div class="comment"> 
@@ -2180,6 +2222,12 @@ class Garage{
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
+              </div>               
+              <div class="form__item">
+                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                autocomplete="new-password">
               </div>
             </div>                        
             <div class="comment"> 
