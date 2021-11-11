@@ -4,6 +4,7 @@ class App {
     this.owner = {};
     this.copyOwner = {};
     this.newClient = {};
+    this.extendedFiles = [];
     this.testList = [
       {
         place: 'Петухова, 17',
@@ -71,7 +72,7 @@ class App {
   init(){
     document.querySelector('.agency').scrollIntoView();
     this.container.insertAdjacentHTML('beforeend', new Render(this.owner.agencyagreement).render());
-    new File().init();
+    new File(this.container).init();
     selectStyle('.contract__select', `${this.owner.agencyagreement.typeOfLaw ? this.owner.agencyagreement.typeOfLaw : 'Выбрать'}`);
     new Handler().init();
     this.initTooltip();
@@ -523,6 +524,11 @@ class Render {
       }
     }
   }
+  extendDate(){
+    let dateNextMouth = new Date();
+    dateNextMouth = new Date (dateNextMouth.setMonth(dateNextMouth.getMonth() + 1));
+    return new Date(this.obj.expired) < dateNextMouth;
+  }
 
   render(){
     const owner = this.isOwner();
@@ -568,6 +574,7 @@ class Render {
                   <p class="summary__text">Тип: <span class="summary__text-span">${this.obj.params.typeOfRealty ? this.obj.params.typeOfRealty : ''}</span></p>
                   <p class="summary__text">Стоимость объекта: <span class="summary__text-span">${this.obj.params.price ? this.obj.params.price : '0'} тыс ₽</span></p>
                   <p class="summary__text">Стоимость услуги: <span class="summary__text-span costForClient">${priceAll} ₽</span></p>
+                  <p class="summary__text ${this.obj.isExtended === '1' ? '' : 'isVisible'} isValidText">ДОУ на рассмотрении модератора</p>
                 </div>
               <div class="title__header"> 
                 <span class="title__header-text clients__title-head">Клиенты</span>
@@ -641,8 +648,13 @@ class Render {
                     </div>
                   </div> 
                   <div class="contract__wrap"> 
-                    <span class="contract__title">Срок дейcтвия</span>
-                    <input name="expired" class="contract__date-input" type="date" value="${expired}">
+                    <div class="contract__title-wrap"> 
+                        <span class="contract__title">Срок дейcтвия</span>
+                        <span data-expired='extend' class="contract__title contract__title-btn 
+                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'}"
+                        ${this.obj.moderatorAccepted === '1' ? 'disabled' : ''}>Продлить</span>
+                    </div>
+                    <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''}" type="date" value="${expired}">
                   </div> 
                 </div>                 
                 <div class="title__header"> 
@@ -784,32 +796,36 @@ class ProgressBar{
 }
 
 class File {
-  constructor() {
-    this.container = document.querySelectorAll('.file');
+  constructor(container, source) {
+    this.container = container;
+    this.fileInputs = this.container.querySelectorAll('.file');
+    this.source = source;
   }
   init(){
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("dragenter", this.dragenter, false);
     });
 
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("dragover", this.dragover, false);
     });
 
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("dragleave", this.dragleave, false);
     });
 
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("drop", this.drop, false);
     });
 
-    for (let item of document.querySelectorAll('.file__input')){
+    for (let item of this.container.querySelectorAll('.file__input')){
       item.addEventListener('change', event => {
         event.target.parentElement.style.background = "#E5E5E5";
         const files = event.target.files;
-        new SendFile(files, event.target.name).init().then(()=>{
-          document.querySelector('.save-change').classList.add('save-change_active');
+        new SendFile(files, event.target.name, this.source).init().then(()=>{
+          if (this.source !== 'extended'){
+            document.querySelector('.save-change').classList.add('save-change_active');
+          }
         });
       })
     }
@@ -839,16 +855,20 @@ class File {
   drop(e) {
     e.stopPropagation();
     e.preventDefault();
-    document.querySelector('.save-change').classList.add('save-change_active');
     let files = e.dataTransfer.files;
-    new SendFile(files, e.target.dataset.container).init();
+    new SendFile(files, e.target.dataset.container, this.source).init().then(() => {
+      if (this.source !== 'extended'){
+        document.querySelector('.save-change').classList.add('save-change_active');
+      }
+    });
   }
 }
 
 class SendFile{
-  constructor(files, container) {
+  constructor(files, container, source) {
     this.files = files;
     this.container = container;
+    this.source = source;
   }
   async init(){
     let data = new FormData();
@@ -913,7 +933,11 @@ class SendFile{
           UID: 'F' + Math.floor(Math.random()*1000)
         }
         this.renderFiles(fileObj);
-        app.copyOwner.agencyagreement.documents.push(fileObj);
+        if (this.source === 'extended'){
+          app.extendedFiles.push(fileObj);
+        } else {
+          app.copyOwner.agencyagreement.documents.push(fileObj);
+        }
       }
     }
   }
@@ -921,10 +945,10 @@ class SendFile{
     const fileName = `<div class="file__item uid${file.UID}">
                                 <p class="file__files"><span>${file.documentName}</span></p>
                                 <div class="file__icon">
-                                  <a class="file__svg file__svg-download" href="${file.URI}"
+                                  <a class="file__svg file__svg-download ${this.source === 'extended' ? 'isVisible' : ''}" href="${file.URI}"
                                   target="_blank"
                                      download="${file.documentName}"></a>
-                                  <span class="file__burger" data-uid="${file.UID}" data-burger="burger"></span>
+                                  <span class="file__burger ${this.source === 'extended' ? 'isVisible' : ''}" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
                                         <button data-uid="${file.UID}" data-action="edit" class="burger__btn">Редактировать</button>
@@ -1442,6 +1466,8 @@ class Handler{
         this.clearObject();
       } else if (event.target.dataset.clear === 'docs'){
         this.clearDocs();
+      } else if (event.target.dataset.expired === 'extend'){
+        this.openExtended();
       } else {
         this.checkCurrentElem();
       }
@@ -1520,7 +1546,7 @@ class Handler{
         if (findInClient){
           const indexClient = app.copyOwner.agencyagreement.signatories.indexOf(item);
           const indexFile = item.documents.indexOf(findInClient);
-c
+
           document.querySelector('.save-change').classList.add('save-change_active');
         }
       }
@@ -1860,6 +1886,74 @@ c
     this.currentClient = '';
     this.currentClientUID = '';
   }
+  openExtended(){
+    const layoutExtended = `<div> 
+                              <div class="contract__wrap"> 
+                                <span class="contract__title">Новый срок</span>
+                                <input class="contract__date-input" type="date">
+                              </div>
+                              <div class="upload__wrap upload__wrap-module"> 
+                                <div data-container="extended" class="file upload_width "> 
+                                  <input name="extended" class="file__input" id="file_extended" type="file" multiple="">
+                                  <label class="file__label" for="file_extended"></label>
+                                  <span class="file__text">Загрузите документ</span>
+                                </div>
+                                <div class="file__container container__extended"></div>   
+                              </div>  
+                              <div> 
+                                <button data-extended="yes" class="ui-btn ui-btn-primary-dark">сохранить и уведомить модератора</button>                           
+                                <button data-answer="no"  class="ui-btn ui-btn-danger-light">отмена</button>       
+                              </div>                
+                            </div>`
+    this.openModule(layoutExtended);
+    new File(document.querySelector('.module'), 'extended').init();
+  }
+  isValidExtended(module){
+    const validValue = {
+      date: false,
+      file: false,
+    }
+    const inputDate = module.querySelector(`INPUT[type='date']`);
+    if (inputDate.value.length === 0 || new Date(inputDate.value) <= new Date()){
+      inputDate.classList.add('isValid');
+      validValue.date = false;
+    } else {
+      inputDate.classList.remove('isValid');
+      validValue.date = true;
+    }
+    if(app.extendedFiles.length === 0){
+      module.querySelector('.file').classList.add('isValid');
+      validValue.file = false;
+    } else {
+      module.querySelector('.file').classList.remove('isValid');
+      validValue.file = true;
+    }
+    return validValue.date && validValue.file;
+  }
+  async sendExtended(module){
+    const request1Cnamed = {
+      action: `setExtended`,
+      UID: app.copyOwner.agencyagreement.UID,
+      date: module.querySelector(`INPUT[type='date']`).value,
+      URI: app.extendedFiles,
+    }
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    const raw = JSON.stringify(request1Cnamed);
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: raw
+    };
+
+    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/agreementViewer.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
+  }
   openQuestion(name){
     const dataName = name.split('_').join(' ');
     const layoutQuestions = `<div> 
@@ -1949,6 +2043,7 @@ c
       if (event.target.classList.contains('module__close')){
         this.closeModule(module);
       } else if (event.target.dataset.answer === 'no'){
+        app.extendedFiles = [];
         this.closeModule(module);
       } else if (event.target.dataset.answer === 'yes'){
         this.removeClientFromDom();
@@ -1978,6 +2073,13 @@ c
         app.copyOwner.agencyagreement.documents.push(findInDoc);
         new SendFile().renderFiles(findInDoc);
         this.closeModule(module);
+      } else if (event.target.dataset.extended === 'yes'){
+        if (this.isValidExtended(module)){
+          this.sendExtended(module).then(() => {
+            this.closeModule(module);
+            location.reload();
+          })
+        }
       }
     })
   };

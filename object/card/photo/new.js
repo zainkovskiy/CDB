@@ -190,6 +190,11 @@ class Render{
                         <option>Вид из окна</option>
                         <option>Фасад</option>
                         <option>Планировка</option>
+                        <option>Двор</option>
+                        <option>Подъезд</option>
+                        <option>Лестница</option>
+                        <option>Прихожая</option>
+                        <option>Лоджия</option>
                     </select>
                   </div>
                 </div>
@@ -541,19 +546,19 @@ class File {
     this.container = document.querySelectorAll('.photo__upload');
   }
   init(){
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("dragenter", this.dragenter, false);
     });
 
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("dragover", this.dragover, false);
     });
 
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("dragleave", this.dragleave, false);
     });
 
-    this.container.forEach((e, i) => {
+    this.fileInputs.forEach((e, i) => {
       e.addEventListener("drop", this.drop, false);
     });
 

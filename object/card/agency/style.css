@@ -276,6 +276,10 @@
 .upload__wrap {
   width: 23%;
 }
+.upload__wrap-module {
+  width: 100%;
+  margin: 20px 0;
+}
 
 .documents {
   display: flex;
@@ -445,6 +449,25 @@ input[type=radio] {
   line-height: 24px;
   font-weight: 400;
   color: #484848;
+}
+.contract__title-wrap {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.contract__title-btn {
+  font-weight: 700;
+  color: #8F9091;
+  width: auto;
+  cursor: pointer;
+  border: 1px dashed #8F9091;
+  border-bottom: none;
+  padding: 0 5px;
+}
+.contract__title-btn:hover {
+  color: grey;
+  border: 1px solid #8F9091;
+  border-bottom: none;
 }
 .contract__toggle-item {
   width: 50%;

@@ -263,6 +263,10 @@
   margin: 20px 0 0 0;
   &__wrap{
     width: 23%;
+    &-module{
+      width: 100%;
+      margin: 20px 0;
+    }
   }
 }
 .documents{
@@ -433,6 +437,25 @@ input[type=radio]{
     line-height: 24px;
     font-weight: 400;
     color: #484848;
+    &-wrap{
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+    &-btn{
+      font-weight: 700;
+      color: #8F9091;
+      width: auto;
+      cursor: pointer;
+      border: 1px dashed #8F9091;
+      border-bottom: none;
+      padding: 0 5px;
+      &:hover{
+        color: grey;
+        border: 1px solid #8F9091;
+        border-bottom: none;
+      }
+    }
   }
   &__toggle-item{
     width: 50%;
