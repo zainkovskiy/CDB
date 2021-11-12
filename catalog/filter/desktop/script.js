@@ -2766,10 +2766,11 @@ class Cards {
                             data-source="${this.cards[i].reqType}" class="card__title card__link">
                               ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом" 
                               || this.cards[i].reqTypeofRealty === "Комната"
-                              ? `${this.cards[i].reqRoomCount ? `${this.cards[i].reqRoomCount}к, ` : ''}`
+                              ? `${this.cards[i].reqRoomCount ? `${this.cards[i].reqRoomCount}к ` : ''}`
                               : ''}
-                              ${this.cards[i].reqStreet ? `ул. ${this.cards[i].reqStreet}, ` : ''}
-                              ${this.cards[i].reqHouseNumber ? `д. ${this.cards[i].reqHouseNumber}` : ''}
+                              ${this.cards[i].reqStreet ? `ул. ${this.cards[i].reqStreet} ` : ''}
+                              ${this.cards[i].reqTypeofRealty === 'Дом' || this.cards[i].reqTypeofRealty === 'Земля' || this.cards[i].reqTypeofRealty === 'Гараж' ? '' 
+                              : this.cards[i].reqHouseNumber ? `д. ${this.cards[i].reqHouseNumber}` : ''}
                             </span>
                             <span class="card__text">
                               ${this.cards[i].reqCity ? `${this.cards[i].reqCity}, ` : ''}
