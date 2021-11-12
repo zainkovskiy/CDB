@@ -976,6 +976,9 @@ ul {
     &:hover{
       color: #00cbff;
     }
+    &:visited{
+      color: blueviolet;
+    }
   }
   &__statistic{
     display: flex;

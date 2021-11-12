@@ -315,6 +315,7 @@ class AddressHandler {
           console.log(data)
           this.setCountCard(data);
           new Cards(data).init();
+          this.handlerLinkToStop();
           document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
           if (data.length > 100){
             this.startPaginat = 0;
@@ -569,6 +570,14 @@ class AddressHandler {
     })
 
     this.handlerPriceFilter();
+  }
+  handlerLinkToStop(){
+    const linkALl = document.querySelectorAll('A');
+    for (let link of linkALl){
+      link.addEventListener('click', e => {
+        e.preventDefault();
+      })
+    }
   }
   initMap(cards){
     ymaps.ready(function () {
@@ -2140,8 +2149,9 @@ class Cards {
       layout += `<div class="card">
                     <img class="card__img" src="${this.cards[i].reqPhoto}" alt="img">
                     <div class="card__wrap">
-                        <div class="card__info">
-                            <span data-open="openCard" data-req="${this.cards[i].reqNumber}" 
+                        <div class="card__info">                 
+                            <a target="_blank" href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=${this.cards[i].reqType}&id=${this.cards[i].reqNumber}" 
+                            data-open="openCard" data-req="${this.cards[i].reqNumber}" 
                             data-source="${this.cards[i].reqType}" class="card__title card__link">
                               ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом" 
                               || this.cards[i].reqTypeofRealty === "Комната"
@@ -2150,7 +2160,7 @@ class Cards {
                               ${this.cards[i].reqStreet ? `ул. ${this.cards[i].reqStreet} ` : ''}
                               ${this.cards[i].reqTypeofRealty === 'Дом' || this.cards[i].reqTypeofRealty === 'Земля' || this.cards[i].reqTypeofRealty === 'Гараж' ? '' 
                               : this.cards[i].reqHouseNumber ? `д. ${this.cards[i].reqHouseNumber}` : ''}
-                            </span>
+                            </a>
                             <span class="card__text">
                               ${this.cards[i].reqCity ? `${this.cards[i].reqCity}, ` : ''}
                               ${this.cards[i].reqRayon ? `${this.cards[i].reqRayon} р-н` : ''}

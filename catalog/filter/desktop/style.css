@@ -1006,6 +1006,9 @@ ul {
 .card__link:hover {
   color: #00cbff;
 }
+.card__link:visited {
+  color: blueviolet;
+}
 .card__statistic {
   display: flex;
 }
