@@ -22,7 +22,7 @@ $APPLICATION->ShowHead();}
 
 $userName = CUser::GetLogin();
 
-if ($userName == 'mischenkoiv' || $userName == 'zainkovskiyaa') {
+if ($userName == 'mischenkoiv' || $userName == 'zainkovskiyaa' || $userName == 'osmanovnyu') {
 
 } else {
   header('Location: https://crm.centralnoe.ru');
