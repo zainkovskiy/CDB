@@ -50,6 +50,6 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
 </head>
 <body>
 <div class="photo-page container"></div>
-<script src='new.js?s=<?=rand(0, 1000000)?>'></script>
+<script src='script.js?s=<?=rand(0, 1000000)?>'></script>
 </body>
 </html>
