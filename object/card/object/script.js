@@ -269,13 +269,11 @@ class Render {
               <span class="mobile-toggle__span"></span>
             </label>
             <nav class="change-page">
-              <a class="ui-btn ui-btn-secondary ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>
+              <a class="ui-btn ui-btn-secondary ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
+              <a class="ui-btn ui-btn-icon-page change-page__link ${this.obj.privileges.card === 'full'
+      ? this.obj.privileges.card : 'isVisible'}" href="../agency/?source=${source}&id=${UID}">ДОУ</a>
               <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full'
       ? this.obj.privileges.card : 'isVisible'}" href="../photo/?source=${source}&id=${UID}&IDDEAL=${deal}">Фото</a>
-              
-             <a class="ui-btn ui-btn-icon-page change-page__link ${this.obj.privileges.card === 'full'
-      ? this.obj.privileges.card : 'isVisible'}" href="../agency/?source=${source}&id=${UID}">ДОУ</a>
-              
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link 
               ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' || login === 'denishevalf' ? '' : 'isVisible'}" 
               href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a> -->

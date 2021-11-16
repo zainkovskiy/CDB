@@ -189,8 +189,8 @@ class Render {
             </label>
             <nav class="change-page">
               <a class="ui-btn ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>
-              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${UID}&IDDEAL=${deal}">Фото</a>
               <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a>
+              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${UID}&IDDEAL=${deal}">Фото</a>
               <a class="ui-btn change-page__link" href="../promotion/?source=${source}&id=${UID}&IDDEAL=${deal}">Реклама</a>
               <a class="ui-btn ui-btn ui-btn-secondary ui-btn-icon-done change-page__link" href="../buySell/?source=${source}&id=${UID}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav>
@@ -259,7 +259,7 @@ class Render {
                     ${realtorButtons} 
                   </div>
                 </div>
-                <div class="control__item ${loginID === this.obj.analist.UID ? '' : 'control__item_disabled'}"> 
+                <div class="control__item ${this.obj.analist ? loginID === this.obj.analist.UID ? '' : 'control__item_disabled' : 'control__item_disabled'}"> 
                   <div class="control__title">
                     <span class="control__text control_analist">аналитик</span>
                   </div>
@@ -268,7 +268,7 @@ class Render {
                     <button data-control="minus" class="ui-btn ui-btn-light-border control__btn" ${this.obj.status === 5 ? '' : 'disabled'}>отклонить</button>
                   </div>
                 </div>
-                <div class="control__item ${loginID === this.obj.expert.UID ? '' : 'control__item_disabled'}"> 
+                <div class="control__item ${this.obj.expert ? loginID === this.obj.expert.UID ? '' : 'control__item_disabled' : 'control__item_disabled'} "> 
                   <div class="control__title">
                     <span class="control__text control_expert">эксперт</span>
                   </div>

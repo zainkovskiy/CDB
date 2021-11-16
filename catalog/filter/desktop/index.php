@@ -74,6 +74,10 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
 </head>
 <body>
 <div class="container">
+    <div class="methodical">
+      <span>Как работать с каталогом?</span>
+      <button data-info="catalog" class="ui-btn ui-btn-primary-dark">инфо</button>
+    </div>
     <div class="search-form">
         <span class="search-form__title">Тип недвижимости</span>
         <div class="place">

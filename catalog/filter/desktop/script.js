@@ -469,9 +469,10 @@ class AddressHandler {
             event.target.classList.toggle('btn-map_active');
           }
         }
-      }
-      else if (event.target.dataset.clear === 'filter'){
+      } else if (event.target.dataset.clear === 'filter'){
         location.reload();
+      } else if (event.target.dataset.info === 'catalog'){
+        this.openInfo();
       }
     });
 
@@ -570,6 +571,10 @@ class AddressHandler {
     })
 
     this.handlerPriceFilter();
+  }
+  openInfo(){
+    let readyString = `https://crm.centralnoe.ru/CDB/object/card/info/catalog/index.html`;
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
   }
   handlerLinkToStop(){
     const linkALl = document.querySelectorAll('A');
@@ -1584,7 +1589,7 @@ class AddressHandler {
                 <div class="row__text row__text_bold">Площадь м<sup>2</sup></div>
                 <div class="row__items"> 
                   <div class="row__item"> 
-                    <div class="row__text">Общая</div>
+                    <div class="row__text">Общая<i class="i">*</i></div>
                     <div class="row__inputs">
                       <input name="reqFlatTotalArea" class="row__input row__input_left" type="text" 
                       placeholder="от" autocomplete="off" 
@@ -1705,7 +1710,7 @@ class AddressHandler {
                 </div>
               </div>
               <div class="row"> 
-                <div class="row__text row__text_bold">Этаж</div>
+                <div class="row__text row__text_bold">Этаж<i class="i">*</i></div>
                 <div class="row__items"> 
                   <div class="row__item"> 
                     <input name="reqFloor" class="row__input row__input_left" type="text" placeholder="от" autocomplete="off" 
@@ -1737,7 +1742,7 @@ class AddressHandler {
                 </div>                 
                 </div>
               <div class="row"> 
-                <div class="row__text row__text_bold">Тип объекта</div>
+                <div class="row__text row__text_bold">Тип объекта<i class="i">*</i></div>
                 <div class="row__items"> 
                   <div class="row__toggle"> 
                     <input class="row__radio" id="nothingObject" name="typeObject" type="radio" value="nothing" 
@@ -1762,7 +1767,7 @@ class AddressHandler {
                   <div class="row__item"> 
                     <input name="isShowAgent" class="row__checkbox" type="checkbox" id="isAgent"
                     ${this.objectFilter.isShowAgent ? 'checked' : ''}>
-                    <label class="row__label-check" for="isAgent">Не выводить агентсва</label>
+                    <label class="row__label-check" for="isAgent">Не выводить агенства<i class="i">*</i></label>
                   </div>
                   <div class="row__item"> 
                     <input name="isReserve" class="row__checkbox" type="checkbox" id="isReserve"
@@ -1772,6 +1777,7 @@ class AddressHandler {
                 </div>
               </div>
             </div>
+            <p class="extra__about">При поиске по внешней базе недвижимости (по рекламным площадкам) будут учитываться только фильтры отмеченные звездочкой <i class="i">*</i></p>
             <div class="metro__footer module__footer"> 
               <button data-extra="save" class="module__save" type="button">Сохранить</button>
               <button data-extra="clear" class="module__reset row__input_right"><span>Очистить</span></button>
