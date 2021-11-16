@@ -34,7 +34,7 @@ if (array_search(30,$arrUserGroup) === false) {
 <head>
 <script>
     let source ='<? echo($source); ?>';
-    let UID ='<? echo($id); ?>';
+    let objectUID ='<? echo($id); ?>';
     let login ='<? echo($ActiveUser); ?>';
     let loginID ='<? echo($ActiveUserID); ?>';
     let deal = '<? echo($_GET['IDDEAL']); ?>';

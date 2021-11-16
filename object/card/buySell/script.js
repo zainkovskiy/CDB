@@ -1,3 +1,5 @@
+const UID = atob(objectUID);
+
 const APIobj = "https://50970.vds.miran.ru:553/Servers/Internal/Deal.php";
 const APIusers = "https://crm.centralnoe.ru/dealincom/connector/Users.php";
 const APIchats = "https://50970.vds.miran.ru:553/Servers/Internal/Negotiation.php";
@@ -189,10 +191,10 @@ class Render {
             </label>
             <nav class="change-page">
               <a class="ui-btn ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>
-              <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a>
-              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${UID}&IDDEAL=${deal}">Фото</a>
-              <a class="ui-btn change-page__link" href="../promotion/?source=${source}&id=${UID}&IDDEAL=${deal}">Реклама</a>
-              <a class="ui-btn ui-btn ui-btn-secondary ui-btn-icon-done change-page__link" href="../buySell/?source=${source}&id=${UID}&IDDEAL=${deal}">ПДКП/ДКП</a>
+              <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ДОУ</a>
+              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>
+              <a class="ui-btn change-page__link" href="../promotion/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Реклама</a>
+              <a class="ui-btn ui-btn ui-btn-secondary ui-btn-icon-done change-page__link" href="../buySell/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav>
             <div class="container_grey">
               <div class="progress">

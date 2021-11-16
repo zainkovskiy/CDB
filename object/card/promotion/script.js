@@ -1,3 +1,5 @@
+const UID = atob(objectUID);
+
 class Promotion {
   constructor() {
     this.container = document.querySelector('.promotion');
@@ -63,15 +65,15 @@ class RenderTop{
             </label>
             <nav class="change-page">
               <a class="ui-btn ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
-              <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${UID}">ДОУ</a>
-              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${UID}&IDDEAL=${deal}">Фото</a>
+              <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${objectUID}">ДОУ</a>
+              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>
                             
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link
               ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' ? '' : 'isVisible'}" 
               href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a> -->
               
-              <a class="ui-btn ui-btn-secondary change-page__link" href="../promotion/?source=${source}&id=${UID}&IDDEAL=${deal}">Реклама</a>
-              <a class="ui-btn ui-btn-icon-done change-page__link disable" href="../buySell/?source=${source}&id=${UID}&IDDEAL=${deal}">ПДКП/ДКП</a>
+              <a class="ui-btn ui-btn-secondary change-page__link" href="../promotion/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Реклама</a>
+              <a class="ui-btn ui-btn-icon-done change-page__link disable" href="../buySell/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav> 
             <div class="header">
             <div class="place">

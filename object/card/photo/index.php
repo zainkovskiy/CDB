@@ -23,7 +23,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
 <head>
 <script>
     let source ='<? echo($source); ?>';
-    let UID ='<? echo($id); ?>';
+    let objectUID ='<? echo($id); ?>';
     let login ='<? echo($ActiveUser); ?>';
     let deal = '<? echo($_GET['IDDEAL']); ?>';
 </script>

@@ -69,7 +69,7 @@ class App{
         }
       });
     }
-
+    console.log(btoa(UID))
     new Handler(this.obj).init();
   }
 
@@ -271,17 +271,17 @@ class Render {
             <nav class="change-page">
               <a class="ui-btn ui-btn-secondary ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
               <a class="ui-btn ui-btn-icon-page change-page__link ${this.obj.privileges.card === 'full'
-      ? this.obj.privileges.card : 'isVisible'}" href="../agency/?source=${source}&id=${UID}">ДОУ</a>
+      ? this.obj.privileges.card : 'isVisible'}" href="../agency/?source=${source}&id=${btoa(UID)}">ДОУ</a>
               <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full'
-      ? this.obj.privileges.card : 'isVisible'}" href="../photo/?source=${source}&id=${UID}&IDDEAL=${deal}">Фото</a>
+      ? this.obj.privileges.card : 'isVisible'}" href="../photo/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Фото</a>
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link 
               ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' || login === 'denishevalf' ? '' : 'isVisible'}" 
               href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a> -->
 
               <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full'
-      ? this.obj.privileges.card : 'isVisible'}" href="../promotion/?source=${source}&id=${UID}&IDDEAL=${deal}">Реклама</a>
+      ? this.obj.privileges.card : 'isVisible'}" href="../promotion/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Реклама</a>
               <a class="ui-btn ui-btn-icon-done change-page__link ${this.obj.privileges.card === 'full'
-      ? this.obj.privileges.card : 'isVisible'}" href="../buySell/?source=${source}&id=${UID}&IDDEAL=${deal}">ПДКП/ДКП</a>
+      ? this.obj.privileges.card : 'isVisible'}" href="../buySell/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav>
             <div class="carousel"> 
                 <div class="slider">
@@ -327,15 +327,16 @@ class Render {
                 <span class="about__title">${this.obj.street ? this.obj.street : ''}</span>
                 <div class="about__address">     
                   <p class="text p_margin">${this.obj.city ? `${this.obj.city},` : ''} ${this.obj.area ? this.obj.area : ''} р-н</p>
-                  <p class="text p_margin">
-                  <svg width="11" height="6" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  ${this.obj.metroDistance ? this.obj.metroDistance >= 60 ? '' :
+                    `<p class="text p_margin">
+                    <svg width="11" height="6" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M8.41193 0L5.8457 4.47552L3.31259 0L1.20994 
-                      5.3986H0.845703V6H2.98146V5.42657H2.65034L3.69339 3.00699L5.5808 6H6.09405L7.98146 
-                      2.97902L9.04107 5.3986H8.66027V6H10.8457V5.3986H10.4649L8.41193 0Z" fill="#E84533"/>
-                  </svg>
-                  ${this.obj.metro ? this.obj.metro : ''}
-                  <span class="text text_grey text_right">&#8226;  ${this.obj.metroDistance ? this.obj.metroDistance : ''} мин. пешком</span>
-                  </p>
+                                  5.3986H0.845703V6H2.98146V5.42657H2.65034L3.69339 3.00699L5.5808 6H6.09405L7.98146 
+                                  2.97902L9.04107 5.3986H8.66027V6H10.8457V5.3986H10.4649L8.41193 0Z" fill="#E84533"/>
+                    </svg>
+                    ${this.obj.metro ? this.obj.metro : ''}
+                    <span class="text text_grey text_right">&#8226;  ${this.obj.metroDistance ? this.obj.metroDistance : ''} мин. пешком</span>
+                  </p>` : ''}
                 </div>
                 ${this.obj.community ? `<p class="text p_margin">${this.obj.community}</p>` : ''}       
               </div>
