@@ -319,6 +319,13 @@
   color: #484848;
 }
 
+.requisites {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(4, auto);
+}
+
 .clients {
   display: grid;
   grid-template-rows: 1fr;
@@ -538,6 +545,10 @@ input {
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr;
 }
+.form__title_wrap {
+  display: flex;
+  justify-content: space-between;
+}
 .form__item {
   display: flex;
   flex-direction: column;
@@ -609,6 +620,15 @@ input {
 .form__btn:hover {
   background: #1A202C;
   color: #ffffff;
+}
+
+.match {
+  display: flex;
+}
+.match__input {
+  appearance: auto;
+  align-self: center;
+  margin: 0 5px 0 0;
 }
 
 .price {

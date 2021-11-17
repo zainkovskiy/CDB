@@ -1061,11 +1061,17 @@ class Form {
                               <div class="tab-pane fade" id="pills-address" role="tabpanel" aria-labelledby="pills-address-tab">
                                 <div class="form__address">
                                   <div class="form__item form__address_first">
-                                      <span class="contract__title">Адрес постоянной реистрации</span>
+                                      <span class="contract__title">Адрес постоянной регистрации</span>
                                       <input id="address_form" type="text" name="registrationAddress" value="" autocomplete="off">
                                   </div>
-                                  <div class="form__item form__address_second">
-                                      <span class="contract__title">Адрес проживания</span>
+                                  <div class="form__item form__address_second">                                
+                                    <div class="form__title_wrap">
+                                    <span class="contract__title">Адрес проживания</span>
+                                    <div class="match"> 
+                                      <input class="match__input" id="match" type="checkbox">
+                                      <label class="contract__title" for="match">Совпадает</label>
+                                    </div>
+                                  </div>
                                       <input id="address_form" type="text" name="residentialAddress" value="" autocomplete="off">
                                   </div>
                                     <div class="form__toggle"> 
@@ -1135,12 +1141,18 @@ class Form {
                                     <span class="contract__title">ИНН</span>
                                     <input id="requisites_form" type="text" name="inn" value="" autocomplete="off">
                                   </div>
-                                  <div class="form__item form__address_first">
+                                  <div class="form__item">
                                     <span class="contract__title">Юридический адрес</span>
                                     <input id="requisites_form" type="text" name="registrationAddress" value="" autocomplete="off">
                                   </div>
-                                  <div class="form__item form__address_second">
-                                    <span class="contract__title">Фактический адрес</span>
+                                  <div class="form__item">
+                                    <div class="form__title_wrap">
+                                      <span class="contract__title">Фактический адрес</span>
+                                      <div class="match"> 
+                                        <input class="match__input" id="match" type="checkbox">
+                                        <label class="contract__title" for="match">Совпадает</label>
+                                      </div>
+                                    </div>
                                     <input id="requisites_form" type="text" name="residentialAddress" value="" autocomplete="off">
                                   </div>
                                 </div>
@@ -1402,7 +1414,7 @@ class Form {
     }
     app.copyOwner.agencyagreement.signatories.push(newClient);
     app.newClient = newClient;
-    new File().init();
+    new File(app.container).init();
     document.querySelector('.costForClient').innerHTML = '';
     document.querySelector('.costForClient').insertAdjacentHTML('beforeend', `${new Render(app.copyOwner.agencyagreement).getAllPrice()} ₽`);
   }
@@ -2100,6 +2112,23 @@ class Handler{
     const module = document.querySelector('.module-form');
     const form = document.querySelector('.form');
     const htmlDom = document.querySelector('HTML');
+    const registrationAddress = form.querySelector(`INPUT[name='registrationAddress']`);
+    const residentialAddress = form.querySelector(`INPUT[name='residentialAddress']`);
+
+    form.querySelector('#match').addEventListener('change', event => {
+      if (event.target.checked){
+        residentialAddress.value = registrationAddress.value;
+        residentialAddress.setAttribute('disabled', 'disabled');
+        registrationAddress.addEventListener('keyup', setAddressValue);
+      } else {
+        registrationAddress.removeEventListener('keyup', setAddressValue)
+        residentialAddress.removeAttribute('disabled');
+      }
+    })
+
+    function setAddressValue(){
+      residentialAddress.value = registrationAddress.value;
+    }
 
     form.addEventListener('reset', event =>{
       htmlDom.removeAttribute("style");
@@ -2108,7 +2137,9 @@ class Handler{
 
     form.addEventListener('submit', event =>{
       event.preventDefault();
-      const allInputs = event.target.querySelectorAll('input');
+      const allInputs = Array.from(event.target.querySelectorAll(`INPUT`));
+      allInputs.splice(allInputs.indexOf(allInputs.find(item => item.type === 'checkbox')), 1);
+
       if (new Form().validForm(allInputs, event.target.dataset.face)){
         htmlDom.removeAttribute("style");
         module.remove();
@@ -2336,12 +2367,18 @@ class EditClient{
                               <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                                 <div class="form__address">
                                   <div class="form__item form__address_first">
-                                      <span class="contract__title">Адрес постоянной реистрации</span>
+                                      <span class="contract__title">Адрес постоянной регистрации</span>
                                       <input id="address_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress}" autocomplete="off">
                                   </div>
                                   <div class="form__item form__address_second">
+                                    <div class="form__title_wrap">
                                       <span class="contract__title">Адрес проживания</span>
-                                      <input id="address_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress}" autocomplete="off">
+                                      <div class="match"> 
+                                        <input class="match__input" id="match" type="checkbox">
+                                        <label class="contract__title" for="match">Совпадает</label>
+                                      </div>
+                                    </div>
+                                    <input id="address_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress}" autocomplete="off">
                                   </div>
                                   <div class="form__toggle"> 
                                     <span class="contract__title">Объем владения</span>
@@ -2400,7 +2437,7 @@ class EditClient{
                             </li>
                             <li class="nav-item" role="presentation">
                               <button class="nav-link type_form-pills" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Тип права</button>
-                            </li>
+                            </li>s
                           </ul>
                             <div class="tab-content" id="pills-tabContent">
                               <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -2413,12 +2450,18 @@ class EditClient{
                                     <span class="contract__title">ИНН</span>
                                     <input id="requisites_form" type="text" name="inn" value="${this.currentCLient.inn}" autocomplete="off">
                                   </div>
-                                  <div class="form__item form__address_first">
+                                  <div class="form__item">
                                     <span class="contract__title">Юридический адрес</span>
                                     <input id="requisites_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress}" autocomplete="off">
                                   </div>
-                                  <div class="form__item form__address_second">
-                                    <span class="contract__title">Фактический адрес</span>
+                                  <div class="form__item">
+                                    <div class="form__title_wrap">
+                                      <span class="contract__title">Фактический адрес</span>
+                                      <div class="match"> 
+                                        <input class="match__input" id="match" type="checkbox">
+                                        <label class="contract__title" for="match">Совпадает</label>
+                                      </div>
+                                    </div>
                                     <input id="requisites_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress}" autocomplete="off">
                                   </div>
                                 </div>
@@ -2470,6 +2513,23 @@ class EditClient{
     const module = document.querySelector('.module-form');
     const form = document.querySelector('.form');
     const htmlDom = document.querySelector('HTML');
+    const registrationAddress = form.querySelector(`INPUT[name='registrationAddress']`);
+    const residentialAddress = form.querySelector(`INPUT[name='residentialAddress']`);
+
+    form.querySelector('#match').addEventListener('change', event => {
+      if (event.target.checked){
+        residentialAddress.value = registrationAddress.value;
+        residentialAddress.setAttribute('disabled', 'disabled');
+        registrationAddress.addEventListener('keyup', setAddressValue);
+      } else {
+        registrationAddress.removeEventListener('keyup', setAddressValue)
+        residentialAddress.removeAttribute('disabled');
+      }
+    })
+
+    function setAddressValue(){
+      residentialAddress.value = registrationAddress.value;
+    }
 
     form.addEventListener('reset', event =>{
       htmlDom.removeAttribute("style");
@@ -2478,7 +2538,8 @@ class EditClient{
 
     form.addEventListener('submit', event =>{
       event.preventDefault();
-      const allInputs = event.target.querySelectorAll('input');
+      const allInputs = Array.from(event.target.querySelectorAll(`INPUT`));
+      allInputs.splice(allInputs.indexOf(allInputs.find(item => item.type === 'checkbox')), 1);
       if (this.validForm(allInputs, event.target.dataset.face)){
         this.setNewChange(allInputs, event.target.dataset.face);
         this.renderChange();
@@ -2487,7 +2548,7 @@ class EditClient{
         document.querySelector('.save-change').classList.add('save-change_active');
       }
     });
-  }l
+  }
   setNewChange(allInputs, type){
     const editClient = {
       relation: {},
