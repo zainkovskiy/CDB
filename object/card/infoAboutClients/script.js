@@ -53,11 +53,11 @@ class Render{
               value="${this.obj.PHONE ? this.obj.PHONE : ''}">
             </div>
             <div class="button__items">
-              <button data-name="makeDeal" class="button__item button__item_green">создать сделку</button>
-              <button data-name="phoneIncorrect" class="button__item button__item_red">не правильный номер</button>
-              <button data-name="phoneNotAnswer" class="button__item button__item_red">не дозвонился</button>
-              <button data-name="clientNahuiPoslal" class="button__item button__item_red">отказ клиента</button>
-              <button data-name="otherAgency" class="button__item button__item_red">другое агенство</button>
+              <button data-form="makeDeal" data-text="Создать сделку" class="button__item button__item_green">создать сделку</button>
+              <button data-form="phoneIncorrect" data-text="Не правильный номер" class="button__item button__item_red">не правильный номер</button>
+              <button data-form="phoneNotAnswer" data-text="Не дозвонился" class="button__item button__item_red">не дозвонился</button>
+              <button data-form="clientNahuiPoslal" data-text="Отказ клиента" class="button__item button__item_red">отказ клиента</button>
+              <button data-form="otherAgency" data-text="Другое агенство" class="button__item button__item_red">другое агенство</button>
             </div>`
   }
 }
@@ -69,21 +69,10 @@ class Handler{
   init(){
     this.container.addEventListener('click', event => {
       if (event.target.tagName === 'BUTTON'){
-        if (this.validForm(document.querySelectorAll(`INPUT[type='text']`), event.target.dataset.name)){
-          this.setNewValue((document.querySelectorAll(`INPUT[type='text']`)));
-          this.setLoader();
-          this.sendAction(event.target.dataset.name).then(data => {
-            this.removeLoader();
-            if (data.result === 'ok' && data.deal){
-              const contact = document.querySelector(`INPUT[name='PHONE']`).value;
-              location=`https://crm.centralnoe.ru/objectCard/add/?action=frompars&id=${UID}&contact=${contact}&deal=${data.deal}`;
-            } else {
-              BX.SidePanel.Instance.close();
-            }
-          })
+        if (event.target.dataset.form){
+          this.openModule(event.target.dataset.form, event.target.dataset.text);
         }
-      }
-       else {
+      } else {
           return
       }
     })
@@ -168,6 +157,52 @@ class Handler{
     let jsonA = await response.json();
     console.log(jsonA)
     return jsonA;
+  }
+
+  openModule(action,text){
+    const htmlDom = document.querySelector('HTML');
+    htmlDom.setAttribute("style", "overflow-y:hidden;");
+
+    const currentY = window.pageYOffset;
+    const layout = `<div style="top: ${currentY}px;" class="module">
+                          <span class="module__close"></span>
+                          <div class="module__wrap"> 
+                            <p class="module__text">${text}?</p>
+                            <div class="module__btn-group"> 
+                              <button data-name="${action}" class="ui-btn ui-btn-primary-dark">Да</button>                           
+                              <button data-answer="no"  class="ui-btn ui-btn-danger-light">Нет</button>    
+                            </div>                       
+                          </div>                    
+                    </div>`
+    this.container.insertAdjacentHTML('beforebegin', layout);
+    this.handlerModule();
+  }
+  handlerModule(){
+    const module = document.querySelector('.module');
+    module.addEventListener('click', event => {
+      if (event.target.dataset.answer === 'no'){
+        this.closeModule(module);
+      } else if (event.target.dataset.name){
+          if (this.validForm(document.querySelectorAll(`INPUT[type='text']`), event.target.dataset.name)){
+            this.setNewValue((document.querySelectorAll(`INPUT[type='text']`)));
+            this.setLoader();
+            this.sendAction(event.target.dataset.name).then(data => {
+              this.removeLoader();
+              if (data.result === 'ok' && data.deal){
+                const contact = document.querySelector(`INPUT[name='PHONE']`).value;
+                location=`https://crm.centralnoe.ru/objectCard/add/?action=frompars&id=${UID}&contact=${contact}&deal=${data.deal}`;
+              } else {
+                BX.SidePanel.Instance.close();
+              }
+            })
+          }
+      }
+    })
+  }
+  closeModule(module){
+    const htmlDom = document.querySelector('HTML');
+    htmlDom.removeAttribute("style");
+    module.remove();
   }
 
   setLoader(){
