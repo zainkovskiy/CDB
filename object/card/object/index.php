@@ -13,7 +13,7 @@ $ActiveUser = CUser::GetLogin();
 \Bitrix\Main\UI\Extension::load("ui.notification");
 \Bitrix\Main\UI\Extension::load("ui.buttons.icons");
 
-CJSCore::Init(['ui','sidepanel','jquery2']);
+CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
 ?>
 <!DOCTYPE html>
 <html lang="ru">

@@ -342,7 +342,9 @@ class Render {
               </div>
               <div class="about__right">
                   <div class="about__price"> 
-                    <span class="about__title">${this.obj.price ? this.obj.price : ''} тыс. ₽</span>           
+                    ${this.obj.reqOverstate === '1' ? `<span class="about__title">${this.obj.reqOverstatePrice ? this.obj.reqOverstatePrice : ''} тыс. ₽</span>` : ''}          
+                    ${this.obj.reqOverstate === '1' ? `<span class="text text_grey">с завышением</span>` : ''}
+                    <span class="${this.obj.reqOverstate === '1'? 'info__area-text strikethrough' : 'about__title'}">${this.obj.price ? this.obj.price : ''} тыс. ₽</span>  
                     <span class="text text_grey">${priceMeter} ₽/кв.м
                     </span>     
                   </div>                                

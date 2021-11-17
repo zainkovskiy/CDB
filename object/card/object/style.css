@@ -428,4 +428,8 @@
   margin: 0 0 10px 0;
 }
 
+.strikethrough {
+  text-decoration: line-through;
+}
+
 /*# sourceMappingURL=style.css.map */
