@@ -1456,7 +1456,13 @@ class Handler{
         this.currentElem = document.querySelector('.add');
         this.checkCurrentElem();
       } else if (event.target.dataset.save === 'all'){
-        this.handlerSaveYes();
+        if (this.checkClients()){
+          document.querySelector('.save-change-error').innerHTML = '';
+          this.handlerSaveYes();
+        } else {
+          document.querySelector('.save-change-error').innerHTML = '';
+          document.querySelector('.save-change-error').insertAdjacentHTML('beforeend', `<p class="save-change-text">Данные по клиенту не корректны</p>`)
+        }
       } else if (event.target.dataset.save === 'no'){
         this.reloadPage();
       } else if (event.target.dataset.client === 'delete'){
@@ -1494,6 +1500,33 @@ class Handler{
       }
     })
   }
+  checkClients(){
+    for (let client of app.copyOwner.agencyagreement.signatories){
+      if (client.type === 'private'){
+        if (client.born === "2000-01-01 00:00:00"){
+          return false;
+        }
+
+        if (client.name === 0 || client.name === '0' || client.name.length === 0){
+          return false;
+        }
+
+        if (client.lastName === 0 || client.lastName === '0' || client.lastName.length === 0){
+          return false;
+        }
+
+        if (client.secondName === 0 || client.secondName === '0'){
+          return false;
+        }
+      } else if (client.type === 'legal'){
+        if (client.inn === 0 || client.inn === '0' || client.inn.length === 0){
+          return false;
+        }
+      }
+    }
+    return true
+  }
+
   openEditFile(findInDoc){
     const layout = `<div> 
                           <div class="edit__wrap"> 
@@ -2308,7 +2341,7 @@ class EditClient{
                                 <div class="form__fio">
                                   <div class="form__item">
                                     <span class="contract__title">Фамилия</span>
-                                    <input id="fio_form" type="text" name="lastName" value="${this.currentCLient.lastName}" autocomplete="off">
+                                    <input id="fio_form" type="text" name="lastName" value="${this.currentCLient.lastName ? this.currentCLient.lastName : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Дата рождения</span>
@@ -2316,11 +2349,11 @@ class EditClient{
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Имя</span>
-                                    <input id="fio_form" type="text" name="name" value="${this.currentCLient.name}" autocomplete="off">
+                                    <input id="fio_form" type="text" name="name" value="${this.currentCLient.name ? this.currentCLient.name : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Гражданство</span>
-                                    <input id="fio_form" type="text" name="nationality" value="${this.currentCLient.nationality}" autocomplete="off">
+                                    <input id="fio_form" type="text" name="nationality" value="${this.currentCLient.nationality ? this.currentCLient.nationality : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Отчество</span>
@@ -2336,7 +2369,7 @@ class EditClient{
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Комиссия</span>
-                                    <input id="fio_form" type="text" name="costForClient" value="${this.currentCLient.relation.costForClient}" autocomplete="off">
+                                    <input id="fio_form" type="text" name="costForClient" value="${this.currentCLient.relation.costForClient ? this.currentCLient.relation.costForClient : ''}" autocomplete="off">
                                   </div>
                               </div>
                               </div>
@@ -2344,11 +2377,11 @@ class EditClient{
                                 <div class="form__passport">
                                   <div class="form__item">
                                     <span class="contract__title">Серия</span>
-                                    <input id="passport_form" type="text" name="passRange" value="${this.currentCLient.passRange}" autocomplete="off">
+                                    <input id="passport_form" type="text" name="passRange" value="${this.currentCLient.passRange ? this.currentCLient.passRange : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Номер</span>
-                                    <input id="passport_form" type="text" name="passNumber" value="${this.currentCLient.passNumber}" autocomplete="off">
+                                    <input id="passport_form" type="text" name="passNumber" value="${this.currentCLient.passNumber ? this.currentCLient.passNumber : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Дата выдачи</span>
@@ -2356,11 +2389,11 @@ class EditClient{
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Код подразделения</span>
-                                    <input id="passport_form" type="text" name="passCode" value="${this.currentCLient.passCode}" autocomplete="off">
+                                    <input id="passport_form" type="text" name="passCode" value="${this.currentCLient.passCode ? this.currentCLient.passCode : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item form__passport-getPassport">
                                     <span class="contract__title">Кем выдан</span>
-                                    <input id="passport_form" type="text" name="passGranted" value="${this.currentCLient.passGranted}" autocomplete="off">
+                                    <input id="passport_form" type="text" name="passGranted" value="${this.currentCLient.passGranted ? this.currentCLient.passGranted : ''}" autocomplete="off">
                                   </div>
                               </div>
                               </div>
@@ -2368,7 +2401,7 @@ class EditClient{
                                 <div class="form__address">
                                   <div class="form__item form__address_first">
                                       <span class="contract__title">Адрес постоянной регистрации</span>
-                                      <input id="address_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress}" autocomplete="off">
+                                      <input id="address_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress ? this.currentCLient.registrationAddress : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item form__address_second">
                                     <div class="form__title_wrap">
@@ -2378,7 +2411,7 @@ class EditClient{
                                         <label class="contract__title" for="match">Совпадает</label>
                                       </div>
                                     </div>
-                                    <input id="address_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress}" autocomplete="off">
+                                    <input id="address_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress ? this.currentCLient.residentialAddress : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__toggle"> 
                                     <span class="contract__title">Объем владения</span>
@@ -2444,15 +2477,15 @@ class EditClient{
                                 <div class="requisites">
                                   <div class="form__item">
                                     <span class="contract__title">Название организации</span>
-                                    <input id="requisites_form" type="text" name="name" value="${this.currentCLient.name}" autocomplete="off">
+                                    <input id="requisites_form" type="text" name="name" value="${this.currentCLient.name ? this.currentCLient.name : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">ИНН</span>
-                                    <input id="requisites_form" type="text" name="inn" value="${this.currentCLient.inn}" autocomplete="off">
+                                    <input id="requisites_form" type="text" name="inn" value="${this.currentCLient.inn ? this.currentCLient.inn : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Юридический адрес</span>
-                                    <input id="requisites_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress}" autocomplete="off">
+                                    <input id="requisites_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress ? this.currentCLient.registrationAddress : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <div class="form__title_wrap">
@@ -2462,7 +2495,7 @@ class EditClient{
                                         <label class="contract__title" for="match">Совпадает</label>
                                       </div>
                                     </div>
-                                    <input id="requisites_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress}" autocomplete="off">
+                                    <input id="requisites_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress ? this.currentCLient.residentialAddress : ''}" autocomplete="off">
                                   </div>
                                 </div>
                               </div>    
