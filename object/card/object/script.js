@@ -366,11 +366,13 @@ class Render {
             </div>
             <div class="info wrapper">
                   <div class="info__area mobile-margin_bottom">
-                    <p class="title p_margin">Общая площадь<span class="info__area-text info__area-text_left">${this.obj.totalArea ? this.obj.totalArea : ''} кв.м</span></p>
-                    <p class="title p_margin">Жилая площадь<span class="info__area-text info__area-text_right">${this.obj.livingArea ? this.obj.livingArea : ''} кв.м</span></p>
+                    <p class="title p_margin">Общая площадь<span class="info__area-text info__area-text_left">
+                    ${this.obj.typeRealty === 'Земельный участок' ? `${this.obj.totalArea ? `${this.obj.totalArea} соток` : ''}` : `${this.obj.totalArea ? `${this.obj.totalArea} кв.м.` : ''}`}
+                    </span></p>
+                    <p class="title p_margin">Жилая площадь<span class="info__area-text info__area-text_right">${this.obj.livingArea ? `${this.obj.livingArea} кв.м.` : ''}</span></p>
                   </div>                 
                   <div class="info__area">
-                    <p class="title p_margin">Площадь кухни<span class="info__area-text info__area-text_left">${this.obj.kitchenArea ? this.obj.kitchenArea : ''} кв.м</span></p>
+                    <p class="title p_margin">Площадь кухни<span class="info__area-text info__area-text_left">${this.obj.kitchenArea ? `${this.obj.kitchenArea} кв.м.` : ''}</span></p>
                     <p class="title p_margin">Этаж<span class="info__area-text info__area-text_right">${this.obj.floor ? this.obj.floor : ''}</span></p>
                   </div>
                   <div class="info__info"> 
