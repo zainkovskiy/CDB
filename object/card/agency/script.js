@@ -208,7 +208,7 @@ class Render {
     return `<div class="clients__card id${id}">
                   <div class="clients__item-wrap">
                     <div class="clients__name-wrap">
-                      <h4 class="clients__name">${item.lastName} ${item.name} ${item.secondName}</h4>
+                      <h4 class="clients__name">${item.lastName ? item.lastName : ''} ${item.name ? item.name : ''} ${item.secondName ? item.secondName: ''}</h4>
                       <div class="clients__group"> 
                            <span data-id="id${id}" data-uid="${item.UID}" data-client="edit"
                                   class="clients__edit clients__btn ${accessRights}"></span>
@@ -217,7 +217,7 @@ class Render {
                                   class="clients__delete clients__btn ${accessRights}"></span>
                       </div>    
                     </div>   
-                    <p class="clients__commission">Комиссия клиента <span>${item.relation.costForClient} ₽</span></p>           
+                    <p class="clients__commission">Комиссия клиента <span>${item.relation.costForClient ? item.relation.costForClient : ''} ₽</span></p>           
                   </div>
                     <div class="accordion accordion-flush container-section" id="passport_client-${id}">
                       <div class="accordion-item">
@@ -231,15 +231,15 @@ class Render {
                                 <div class="clients__wrap_left"> 
                                   <p class="clients__text">Пол<span>${item.gender ? item.gender : 'Не указан'}</span></p>
                                   <p class="clients__text">Дата рождения<span>${born}</span></p>
-                                  <p class="clients__text">Гражданство<span>${item.nationality}</span></p>
-                                  <p class="clients__text">Место рождения<span>${item.bornLocality}</span></p>
+                                  <p class="clients__text">Гражданство<span>${item.nationality ? item.nationality : ''}</span></p>
+                                  <p class="clients__text">Место рождения<span>${item.bornLocality ? item.bornLocality : ''}</span></p>
                                 </div>
                                 <div class="clients__wrap_right"> 
-                                  <p class="clients__text">Срия и номер паспорта<span>${item.passRange} ${item.passNumber}</span></p>
-                                  <p class="clients__text">Выдан<span>${item.passGranted}</span></p>
+                                  <p class="clients__text">Срия и номер паспорта<span>${item.passRange ? item.passRange : ''} ${item.passNumber ? item.passNumber : ''}</span></p>
+                                  <p class="clients__text">Выдан<span>${item.passGranted ? item.passGranted : ''}</span></p>
                                   <div class="clients__data-code"> 
                                     <p class="clients__text">Дата выдачи<span>${passDate}</span></p>
-                                    <p class="clients__text">Код подразделения<span>${item.passCode}</span></p>
+                                    <p class="clients__text">Код подразделения<span>${item.passCode ? item.passCode : ''}</span></p>
                                   </div>
                                 </div>
                             </div>
@@ -262,8 +262,8 @@ class Render {
                         </h2>
                         <div id="address_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#address_client-${id}">
                             <div class="clients__padding"> 
-                              <p class="clients__text">Адрес постоянной реистрации<span>${item.registrationAddress}</span></p>
-                              <p class="clients__text">Адрес проживания<span>${item.residentialAddress}</span></p>
+                              <p class="clients__text">Адрес постоянной реистрации<span>${item.registrationAddress ? item.registrationAddress : ''}</span></p>
+                              <p class="clients__text">Адрес проживания<span>${item.residentialAddress ? item.residentialAddress : ''}</span></p>
                             </div>
                         </div>     
                       </div>
@@ -277,12 +277,12 @@ class Render {
                         </h2>
                         <div id="doc_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#doc_client-${id}">
                             <div class="clients__wrap clients__grid"> 
-                              <p class="clients__text">Тип права<span>${item.relation.typeOfOwnership}</span></p>
+                              <p class="clients__text">Тип права<span>${item.relation.typeOfOwnership ? item.relation.typeOfOwnership : ''}</span></p>
                               <p class="clients__text">Номер доверенности${item.relation.typeOfOwnership === 'Доверенность' 
-                                ? `<span>${item.relation.attorneyValue}</span>` : `<span></span>`}</p>
-                              <p class="clients__text">Объем владения<span>${item.relation.scopeOfOwnership}</span></p>
+                                ? `<span>${item.relation.attorneyValue}</span>` : ``}</p>
+                              <p class="clients__text">Объем владения<span>${item.relation.scopeOfOwnership ? item.relation.scopeOfOwnership : ''}</span></p>
                               <p class="clients__text">Размер доли${item.relation.scopeOfOwnership === 'Доля'
-                                ? `<span>${item.relation.percentageOfOwnership}</span>` : `<span></span>`}</p>
+                                ? `<span>${item.relation.percentageOfOwnership}</span>` : ``}</p>
                             </div>
                             <span class="clients__border"></span>
                             <div data-container="doc-${item.UID}" class="file ${accessRights}"> 
@@ -301,12 +301,12 @@ class Render {
     const accessRights = this.getAccessRights();
     return `<div class="clients__card id${id}"> 
                   <div class="clients__name-wrap">
-                    <h4 class="clients__name">${item.name}</h4>
+                    <h4 class="clients__name">${item.name ? item.name : ''}</h4>
                     <div class="clients__group"> 
                          <span data-id="id${id}" data-uid="${item.UID}" data-client="edit"
                                 class="clients__edit clients__btn ${accessRights}"></span>
                          <span data-id="id${id}" data-uid="${item.UID}" data-client="delete" 
-                                data-name="${item.name}"
+                                data-name="${item.name ? item.name : ''}"
                                 class="clients__delete clients__btn ${accessRights}"></span>
                     </div>                  
                   </div>
@@ -319,7 +319,7 @@ class Render {
                         </h2>
                         <div id="passport_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#passport_client-${id}">
                             <div class="clients__wrap"> 
-                            <p class="clients__text">ИНН<span>${item.inn}</span></p>
+                            <p class="clients__text">ИНН<span>${item.inn ? item.inn : ''}</span></p>
 <!--                                <div class="clients__wrap_left"> -->
 <!--                                </div>-->
 <!--                                <div class="clients__wrap_right"> -->
@@ -344,8 +344,8 @@ class Render {
                         </h2>
                         <div id="address_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#address_client-${id}">
                             <div class="clients__padding"> 
-                              <p class="clients__text">Юридический адрес<span>${item.registrationAddress}</span></p>
-                              <p class="clients__text">Фактичесикй адрес<span>${item.residentialAddress}</span></p>
+                              <p class="clients__text">Юридический адрес<span>${item.registrationAddress ? item.registrationAddress : ''}</span></p>
+                              <p class="clients__text">Фактичесикй адрес<span>${item.residentialAddress ? item.residentialAddress : ''}</span></p>
                             </div>
                         </div>     
                       </div>
@@ -359,12 +359,12 @@ class Render {
                         </h2>
                         <div id="doc_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#doc_client-${id}">
                             <div class="clients__wrap clients__grid"> 
-                              <p class="clients__text">Тип права<span>${item.relation.typeOfOwnership}</span></p>
+                              <p class="clients__text">Тип права<span>${item.relation.typeOfOwnership ? item.relation.typeOfOwnership : ''}</span></p>
                               <p class="clients__text">Номер доверенности${item.relation.typeOfOwnership === 'Доверенность' 
-                                ? `<span>${item.relation.attorneyValue}</span>` : `<span></span>`}</p>
-                              <p class="clients__text">Объем владения<span>${item.relation.scopeOfOwnership}</span></p>
+                                ? `<span>${item.relation.attorneyValue}</span>` : ``}</p>
+                              <p class="clients__text">Объем владения<span>${item.relation.scopeOfOwnership ? item.relation.scopeOfOwnership : ''}</span></p>
                               <p class="clients__text">Размер доли${item.relation.scopeOfOwnership === 'Доля'
-                                ? `<span>${item.relation.percentageOfOwnership}</span>` : `<span></span>`}</p>
+                                ? `<span>${item.relation.percentageOfOwnership}</span>` : ``}</p>
                             </div>
                             <span class="clients__border"></span>
                             <div data-container="doc-${item.UID}" class="file ${accessRights}"> 
@@ -1107,9 +1107,12 @@ class Form {
                                 </div>  
                               </div>
                             </div>
-                            <div> 
-                              <button class="form__btn" type="submit">Создать</button>
-                              <button class="form__btn" type="reset">Закрыть</button>
+                            <div class="footer"> 
+                              <div> 
+                                <button class="form__btn" type="submit">Сохранить</button>
+                                <button class="form__btn" type="reset">Закрыть</button>
+                              </div>
+                              <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
                             </div>
                           </form>
                         </div>`
@@ -1192,9 +1195,12 @@ class Form {
                                 </div>  
                               </div>
                             </div>
-                            <div> 
-                              <button class="form__btn" type="submit">Создать</button>
-                              <button class="form__btn" type="reset">Закрыть</button>
+                            <div class="footer"> 
+                              <div> 
+                                <button class="form__btn" type="submit">Сохранить</button>
+                                <button class="form__btn" type="reset">Закрыть</button>
+                              </div>
+                              <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
                             </div>
                           </form>
                         </div>`
@@ -2357,11 +2363,11 @@ class EditClient{
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Отчество</span>
-                                    <input id="fio_form" type="text" name="secondName" value="${this.currentCLient.secondName}" autocomplete="off">
+                                    <input id="fio_form" type="text" name="secondName" value="${this.currentCLient.secondName ? this.currentCLient.secondName : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
                                     <span class="contract__title">Место рождения</span>
-                                    <input id="fio_form" type="text" name="bornLocality" value="${this.currentCLient.bornLocality}" autocomplete="off">
+                                    <input id="fio_form" type="text" name="bornLocality" value="${this.currentCLient.bornLocality ? this.currentCLient.bornLocality : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__toggle">
                                     <span class="contract__title">Пол</span>
@@ -2446,9 +2452,12 @@ class EditClient{
                                 </div>  
                               </div>
                             </div>
-                            <div> 
-                              <button class="form__btn" type="submit">Сохранить</button>
-                              <button class="form__btn" type="reset">Закрыть</button>
+                            <div class="footer"> 
+                              <div> 
+                                <button class="form__btn" type="submit">Сохранить</button>
+                                <button class="form__btn" type="reset">Закрыть</button>
+                              </div>
+                              <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
                             </div>
                           </form>
                         </div>`
@@ -2534,9 +2543,12 @@ class EditClient{
                                 </div>  
                               </div>
                             </div>
-                            <div> 
-                              <button class="form__btn" type="submit">Сохранить</button>
-                              <button class="form__btn" type="reset">Закрыть</button>
+                            <div class="footer"> 
+                              <div> 
+                                <button class="form__btn" type="submit">Сохранить</button>
+                                <button class="form__btn" type="reset">Закрыть</button>
+                              </div>
+                              <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
                             </div>
                           </form>
                         </div>`

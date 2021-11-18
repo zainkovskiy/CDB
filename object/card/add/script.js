@@ -1356,7 +1356,7 @@ class Float{
               <label id="reqTypeofRealty" class="buttons__label part" for="part">переуступка дду</label>
             </div> 
             <div class="place"> 
-              <span class="form__title">местоположение</span>
+              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
               <div class="form__item form_width">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
@@ -1384,15 +1384,15 @@ class Float{
               <div id="map"></div>   
             </div>          
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости</span>
+              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">Обязательны к заполнению все поля, кроме Застройщика</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Номер квартиры</span> 
                 <input name="reqFlat" id="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (общая/жилая/кухня)</span> 
+                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (общая/жилая/кухня) <i class="simbol">*</i> разделитель точка</span> 
                 <div class="form__item_wrap"> 
-                  <input name="reqFlatTotalArea" id="reqFlatTotalArea" class="form__input form__input_width" type="text" placeholder="общая" 
+                  <input name="reqFlatTotalArea" id="reqFlatTotalArea" class="form__input form__input_width" type="text" placeholder="пример 11.1" 
                   value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" autocomplete="new-password">
                   <input name="reqFlatLivingArea" id="reqFlatLivingArea" class="form__input form__input_width" type="text" placeholder="жилая" 
                   value="${add.obj.reqFlatLivingArea ? add.obj.reqFlatLivingArea : ''}" autocomplete="new-password">
@@ -1518,7 +1518,7 @@ class Float{
               </div>
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности</span>
+              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" id="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autocomplete="new-password">
@@ -1531,7 +1531,7 @@ class Float{
               </div>
             </div>
             <div class="infoHouse"> 
-              <span class="form__title">информация о доме</span>
+              <span class="form__title">информация о доме<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Год постройки</span> 
                 <input name="reqHouseBuildDate" class="form__input" type="date" id="reqHouseBuildDate"
@@ -1556,7 +1556,7 @@ class Float{
               </div>
             </div> 
             <div class="comment"> 
-              <span class="form__title">Коментарии</span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>
             <div class="buttons-footer"> 
@@ -1572,7 +1572,7 @@ class Room{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение</span>
+              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
               <div class="form__item form_width">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
@@ -1600,15 +1600,15 @@ class Room{
               <div id="map"></div>  
             </div>                 
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости</span>
+              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. При заполнении ОБЯЗАТЕЛЬНО укажите площадь каждой комнаты на продажу, в соответствующих полях. В случае если комната не является объектом, укажите Долю на продажу и общую долю в помещении.</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Номер квартиры</span> 
                 <input name="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (общая/жилая/кухня)</span> 
+                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (общая/жилая/кухня) <i class="simbol">*</i> Разделитель точка</span> 
                 <div class="form__item_wrap"> 
-                  <input name="reqFlatTotalArea" class="form__input form__input_width" type="text" placeholder="общая" 
+                  <input name="reqFlatTotalArea" class="form__input form__input_width" type="text" placeholder="пример 11.1" 
                   value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}">
                   <input name="reqFlatLivingArea" class="form__input form__input_width" type="text" placeholder="жилая" 
                   value="${add.obj.reqFlatLivingArea ? add.obj.reqFlatLivingArea : ''}">
@@ -1637,7 +1637,7 @@ class Room{
                 </div>
               </div>  
               <div class="form__item form_width">
-                <span class="form__subtitle">Количество комнат на продажу</span> 
+                <span class="form__subtitle">Количество комнат на продажу и их площадь <i class="simbol">*</i> Разделитель точка</span> 
                 <div class="form__countRooms"> 
                   <div class="form__countRooms-wrap">
                     <input ${add.obj.reqRoomsForSale === '1' ? 'checked' : ''} 
@@ -1645,7 +1645,7 @@ class Room{
                     <label class="buttons__label buttons__label_border form__countRooms-item oneSale" for="oneSale">1</label>
                     <input class="form__input reqAreaForSell reqAreaForSell1" name="reqAreaForSell" type="text"
                     ${add.obj.reqRoomsForSale === '1' ||  add.obj.reqRoomsForSale === '2' ||  add.obj.reqRoomsForSale === '3'? '' : 'disabled'} 
-                    value="${add.obj.reqAreaForSell ? add.obj.reqAreaForSell : ''}">
+                    value="${add.obj.reqAreaForSell ? add.obj.reqAreaForSell : ''}" placeholder="площадь комнаты 1">
                   </div>
                   <div class="form__countRooms-wrap">
                     <input ${add.obj.reqRoomsForSale === '2' ? 'checked' : ''} 
@@ -1653,7 +1653,7 @@ class Room{
                     <label class="buttons__label buttons__label_border form__countRooms-item twoSale" for="twoSale">2</label>
                     <input class="form__input reqAreaForSell reqAreaForSell2" name="reqAreaForSell2" type="text"
                     ${add.obj.reqRoomsForSale === '2' ||  add.obj.reqRoomsForSale === '3'? '' : 'disabled'} 
-                    value="${add.obj.reqAreaForSell2 ? add.obj.reqAreaForSell2 : ''}">
+                    value="${add.obj.reqAreaForSell2 ? add.obj.reqAreaForSell2 : ''}" placeholder="площадь комнаты 2">
                   </div>
                   <div class="form__countRooms-wrap">
                     <input ${add.obj.reqRoomsForSale === '3' ? 'checked' : ''} 
@@ -1661,7 +1661,7 @@ class Room{
                     <label class="buttons__label buttons__label_border form__countRooms-item threeSale" for="threeSale">3</label>
                     <input class="form__input reqAreaForSell reqAreaForSell3" name="reqAreaForSell3" type="text"
                     ${add.obj.reqRoomsForSale === '3'? '' : 'disabled'} 
-                    value="${add.obj.reqAreaForSell3 ? add.obj.reqAreaForSell3 : ''}">
+                    value="${add.obj.reqAreaForSell3 ? add.obj.reqAreaForSell3 : ''}" placeholder="площадь комнаты 3">
                   </div>
                 </div>
               </div>   
@@ -1744,7 +1744,7 @@ class Room{
               </div>
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности</span>
+              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
@@ -1757,7 +1757,7 @@ class Room{
               </div>
             </div>
             <div class="infoHouse"> 
-              <span class="form__title">информация о доме</span>
+              <span class="form__title">информация о доме<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
               <div class="form__item"> 
                 <span class="form__subtitle">Тип дома</span> 
                 <select class="reqHouseType" name="reqHouseType"> 
@@ -1797,7 +1797,7 @@ class Room{
               </div>
             </div>     
             <div class="comment"> 
-              <span class="form__title">Коментарии</span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>       
             <div class="buttons-footer"> 
@@ -1813,7 +1813,7 @@ class House{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение</span>
+              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
               <div class="form__item form_width">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
@@ -1849,21 +1849,21 @@ class House{
               <div id="map"></div>
             </div>           
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости</span>
+              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. Если на продажу выставляется часть дома, укажите долю на продажу и долю всего.</p></i></span>
               <div class="form__item">
-                 <span class="form__subtitle">Площадь участка (в сотках)</span> 
+                 <span class="form__subtitle">Площадь участка (в сотках) <i class="simbol">*</i> Разделитель точка</span> 
                 <input name="reqLandArea" class="form__input" type="text" value="${add.obj.reqLandArea ? add.obj.reqLandArea : ''}">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Площадь дома m<sup>2</sup></span> 
-                <input name="reqFlatTotalArea" class="form__input" type="text" value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}">
+                <span class="form__subtitle">Площадь дома m<sup>2</sup> &nbsp;<i class="simbol">*</i> Разделитель точка</span> 
+                <input name="reqFlatTotalArea" class="form__input" type="text" value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" placeholder="пример 11.1">
               </div>     
               <div class="form__item">
                  <span class="form__subtitle">Этажность</span> 
                 <input name="reqFloorCount" class="form__input" type="text" value="${add.obj.reqFloorCount ? add.obj.reqFloorCount : ''}">
               </div>  
               <div class="form__item">
-                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (жилая/кухня)</span> 
+                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (жилая/кухня) <i class="simbol">*</i> Разделитель точка</span> 
                 <div class="form__item_wrap">
                   <input name="reqFlatLivingArea" class="form__input form__input_50" type="text" placeholder="жилая" 
                   value="${add.obj.reqFlatLivingArea ? add.obj.reqFlatLivingArea : ''}" autocomplete="new-password">
@@ -1997,7 +1997,7 @@ class House{
               </div>          
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности</span>
+              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
@@ -2010,7 +2010,7 @@ class House{
               </div>
             </div>                
             <div class="comment"> 
-              <span class="form__title">Коментарии</span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>        
             <div class="buttons-footer"> 
@@ -2026,7 +2026,7 @@ class Ground{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение</span>
+              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
               <div class="form__item form_width">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
@@ -2062,9 +2062,9 @@ class Ground{
               <div id="map"></div>
             </div>                
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости</span>
+              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. Если на продажу выставляется часть земли, укажите долю на продажу и долю всего.</p></i></span>
               <div class="form__item">
-                 <span class="form__subtitle">Площадь участка (в сотках)</span> 
+                 <span class="form__subtitle">Площадь участка (в сотках) <i class="simbol">*</i> Разделитель точка</span> 
                 <input name="reqLandArea" class="form__input" type="text" value="${add.obj.reqLandArea ? add.obj.reqLandArea : ''}">
               </div>     
               <div class="form__item">
@@ -2104,7 +2104,7 @@ class Ground{
               </div>         
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности</span>
+              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
@@ -2117,7 +2117,7 @@ class Ground{
               </div>
             </div>                        
             <div class="comment"> 
-              <span class="form__title">Коментарии</span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>
             <div class="buttons-footer"> 
@@ -2132,7 +2132,7 @@ class Ground{
 class Garage{
   render(){
     return `<div class="place"> 
-              <span class="form__title">местоположение</span>
+              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
               <div class="form__item form_width">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
@@ -2168,10 +2168,10 @@ class Garage{
               <div id="map"></div>
             </div>
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости</span>
+              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
               <div class="form__item">
-                 <span class="form__subtitle">Площадь m<sup>2</sup></span> 
-                <input name="reqFlatTotalArea" class="form__input" type="text" value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}">
+                 <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp;<i class="simbol">*</i> Разделитель точка</span> 
+                <input name="reqFlatTotalArea" class="form__input" type="text" value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" placeholder="пример 11.1">
               </div>                   
               <div class="form__item"> 
                 <span class="form__subtitle">Материал стен</span>               
@@ -2218,7 +2218,7 @@ class Garage{
               </div>            
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности</span>
+              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
@@ -2231,7 +2231,7 @@ class Garage{
               </div>
             </div>                        
             <div class="comment"> 
-              <span class="form__title">Коментарии</span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>
             <div class="buttons-footer"> 

@@ -1,6 +1,35 @@
 body{
   overflow-y: initial !important;
 }
+i{
+  color: red;
+  font-size: 24px;
+  position: relative;
+  cursor: default;
+  &:hover .guid{
+    display: block;
+  }
+}
+.simbol{
+  color: red;
+  font-size: 18px;
+}
+.guid{
+  position: absolute;
+  margin: 0;
+  color: black;
+  font-size: 11px;
+  top: 0;
+  left: 15px;
+  text-transform: lowercase;
+  display: none;
+  z-index: 99;
+  border-radius: 5px;
+  background-color: #a3d6ff;
+  padding: 10px;
+  width: 200px;
+}
+
 .header{
   border-radius: 5px;
   background-color: white;
@@ -192,6 +221,9 @@ body{
     cursor: pointer;
     border: 1px solid #c4c4c4;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     &_border{
       border-right: none;
     }
@@ -288,6 +320,13 @@ select:-webkit-autofill:focus {
   -webkit-text-fill-color: inherit !important;
   -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+input::placeholder{
+  color: #c5c3c3;
+}
+input:disabled{
+  background-color: #c5c3c3;
 }
 
 .isValid{
