@@ -110,6 +110,13 @@
   border-bottom: 1px solid #E9ECEE;
 }
 
+.owner__phone__btn {
+  cursor: pointer;
+}
+.owner__phone__btn:hover {
+  fill: #399fc2;
+}
+
 .description {
   grid-area: description;
 }
@@ -162,6 +169,10 @@
   flex-direction: column;
   justify-content: space-between;
   grid-area: contacts;
+}
+.contacts__link {
+  color: #0a58ca;
+  text-decoration: none;
 }
 .contacts__wrap {
   display: flex;

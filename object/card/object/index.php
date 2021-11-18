@@ -1,5 +1,7 @@
 <?php
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/dealincom/class/iHelper.php");
+
 CJSCore::Init();
 
 if($USER->IsAuthorized()){
@@ -12,6 +14,7 @@ $ActiveUser = CUser::GetLogin();
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 \Bitrix\Main\UI\Extension::load("ui.notification");
 \Bitrix\Main\UI\Extension::load("ui.buttons.icons");
+\Bitrix\Main\UI\Extension::load("ui.tooltip");
 
 CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
 ?>

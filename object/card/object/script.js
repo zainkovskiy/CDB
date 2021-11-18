@@ -357,13 +357,11 @@ class Render {
               <div class="contacts__wrap">
                   <span class="title">Риелтор</span> 
                   <div class="contacts__name"> 
-                    <img class="contacts__img" src="${this.obj.ownerPhoto ? this.obj.ownerPhoto : `../img/placeholder-user.png`}" alt="">    
-                    <span class="text">${this.obj.owner ? this.obj.owner : ''}</span>    
-                  </div>               
-                  <span class="text text-phone">
-                  <svg class="contacts__phone" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.50224 7.77605C5.08572 8.96893 6.05266 9.93147 7.24818 10.5095C7.33565 10.551 7.4324 10.5689 7.52892 10.5616C7.62544 10.5543 7.71839 10.522 7.79863 10.4679L9.55895 9.29405C9.63681 9.24213 9.72638 9.21046 9.81956 9.2019C9.91275 9.19334 10.0066 9.20816 10.0926 9.24502L13.3858 10.6564C13.4977 10.7039 13.5911 10.7865 13.652 10.8917C13.7128 10.997 13.7378 11.1191 13.7232 11.2398C13.6191 12.0543 13.2217 12.8029 12.6054 13.3455C11.9891 13.8881 11.1961 14.1874 10.375 14.1875C7.83887 14.1875 5.40661 13.18 3.61329 11.3867C1.81997 9.59337 0.8125 7.16111 0.8125 4.62498C0.812543 3.80385 1.11189 3.01089 1.65448 2.39458C2.19707 1.77826 2.94571 1.38086 3.76021 1.27677C3.88088 1.26216 4.00302 1.28717 4.10824 1.34802C4.21346 1.40887 4.29605 1.50227 4.34357 1.61414L5.75619 4.91024C5.79272 4.9955 5.80761 5.08847 5.79952 5.18087C5.79144 5.27327 5.76062 5.36224 5.70983 5.43985L4.54008 7.22718C4.48684 7.30758 4.45537 7.40042 4.44874 7.49662C4.4421 7.59283 4.46054 7.6891 4.50224 7.77605V7.77605Z" stroke="#BDBDBD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>${this.obj.ownerPhone ? this.obj.ownerPhone : ''}</span>                             
+                    <img class="contacts__img" src="${this.obj.ownerPhoto ? this.obj.ownerPhoto : `../img/placeholder-user.png`}" alt="photo">    
+                    <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.ownerId}" bx-tooltip-user-id="${this.obj.ownerId}">
+                        ${this.obj.owner ? this.obj.owner : ''}
+                    </a>  
+                  </div>                                         
               </div>
             </div>
             <div class="info wrapper">

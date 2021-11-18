@@ -1,12 +1,8 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
-require_once($_SERVER["DOCUMENT_ROOT"]."/dealincom/class/iHelper.php");
-
-
 
 CJSCore::Init();
-
 
 \Bitrix\Main\UI\Extension::load("ui.forms");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
@@ -34,8 +30,9 @@ $arrStr = '?'.$arrStr;
 <script>
     document.querySelector('HTML').setAttribute('style', 'overflow: hidden;');
 </script>
+<script src="//api.bitrix24.com/api/v1/"></script>
 <div style="padding:0px;">
-  <iframe class="iframe__object" src="https://crm.centralnoe.ru/objectCard/object/<?echo($arrStr);?>" width="100%" style="border: none">
+  <iframe class="iframe__object" src="https://crm.centralnoe.ru/CDB/object/card/object/<?echo($arrStr);?>&DOMAIN=crm.centralnoe.ru&PROTOCOL=1&LANG=ru&APP_SID=85f058f87260c1b15d0cecac7d8d8062" width="100%" style="border: none">
 
  </iframe>
 </div>

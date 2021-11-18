@@ -324,7 +324,7 @@ class Render {
                       <img class="card__img expert__img" 
                       src="${this.obj.expert ? `${this.obj.expert.PERSONAL_PHOTO ? this.obj.expert.PERSONAL_PHOTO : `../img/placeholder-user.png`}` : `../img/placeholder-user.png`}">
                       <b class="expert__text"> 
-                        <a target="_blank" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.expert ? `${this.obj.expert.UID ? this.obj.expert.UID : ''}` : ''}/" 
+                        <a onclick="event.preventDefault()" target="_blank" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.expert ? `${this.obj.expert.UID ? this.obj.expert.UID : ''}` : ''}/" 
                         bx-tooltip-user-id="${this.obj.expert ? `${this.obj.expert.UID ? this.obj.expert.UID : ''}` : ''}">
                           ${this.obj.expert ? `${this.obj.expert.FULL_NAME !== ' ' ? this.obj.expert.FULL_NAME : 'Назначить'}` : 'Назначить'}
                         </a>
@@ -337,7 +337,7 @@ class Render {
                       <img class="card__img analist__img" 
                       src="${this.obj.analist ? `${this.obj.analist.PERSONAL_PHOTO ? this.obj.analist.PERSONAL_PHOTO : `../img/placeholder-user.png`}` : `../img/placeholder-user.png`}">
                       <b class="analist__text"> 
-                        <a target="_blank" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.expert ? `${this.obj.expert.UID ? this.obj.expert.UID : ''}` : ''}/"
+                        <a onclick="event.preventDefault()" target="_blank" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.expert ? `${this.obj.expert.UID ? this.obj.expert.UID : ''}` : ''}/"
                           bx-tooltip-user-id="${this.obj.analist ? `${this.obj.analist.UID ? this.obj.analist.UID : ''}` : ''}">
                           ${this.obj.analist ? `${this.obj.analist.FULL_NAME !== ' ' ? this.obj.analist.FULL_NAME : 'Назначить'}` : 'Назначить'}
                         </a>

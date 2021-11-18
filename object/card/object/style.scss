@@ -115,6 +115,12 @@
     border-bottom: 1px solid #E9ECEE;
   }
 }
+.owner__phone__btn{
+  cursor: pointer;
+  &:hover{
+    fill: #399fc2;
+  }
+}
 
 .description{
   grid-area: description;
@@ -168,6 +174,10 @@
   flex-direction: column;
   justify-content: space-between;
   grid-area: contacts;
+  &__link{
+    color: #0a58ca;
+    text-decoration: none;
+  }
   &__wrap{
     display: flex;
     flex-direction: column;
