@@ -261,7 +261,11 @@ class Header {
               <button data-info="add" class="ui-btn ui-btn-primary-dark">инфо</button>
             </div>
             <div class="header"> 
-              <span class="header__title">Объект недвижимости</span>
+              <div class="header__wrap"> 
+                <span class="header__title">Объект недвижимости</span>
+                <a href="../object/?source=1c&id=${UID}&IDDEAL=${deal}" class="header__back ${action === 'new' && !contact ? 'inVisible' : ''}">Вернуться к объекту</a>
+                <span onclick="BX.SidePanel.Instance.close([immediately=false])" class="header__back">Вернуться к сделке</span>
+              </div>
               <div class="change-obj"> 
                 <input 
                     ${this.type === 'Квартира' ||  this.type === 'Переуступка ДДУ'  || this.type === 'Новостройка (от застройщика)' ? 'checked' : ''} 
@@ -519,6 +523,10 @@ class Handler{
                   this.openCard(data.dublicate[0]);
                 }
               })
+            } else {
+              //todo не открывает вопрос
+              //todo сделать редирект нового объекта на CDB
+              this.openQuestion();
             }
           });
         } else if (event.target.dataset.save === 'no'){
@@ -574,6 +582,39 @@ class Handler{
     let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source="+typeA+"&id="+idReq;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
     return true;
+  }
+
+  openQuestion(){
+    const htmlDom = document.querySelector('HTML');
+    htmlDom.setAttribute("style", "overflow-y:hidden;");
+
+    const currentY = window.pageYOffset;
+    const layout = `<div style="top: ${currentY}px;" class="module">
+                          <span class="module__close"></span>
+                          <div class="module__wrap"> 
+                            <div> 
+                              <p>Перейти к объекту</p>
+                              <a href="../object/?source=1c&id=${UID}&IDDEAL=${deal}" data-answer="yes" class="ui-btn ui-btn-danger-light">Да</a>                           
+                              <button data-answer="no"  class="ui-btn ui-btn-primary-dark">Нет</button>                           
+                            </div>
+                          </div>                          
+                    </div>`
+    this.container.insertAdjacentHTML('beforebegin', layout);
+    this.handlerQuestion();
+  }
+  handlerQuestion(){
+    const module = document.querySelector('.module');
+    module.addEventListener('click', event => {
+      if (event.target.dataset.answer === 'no'){
+        this.closeQuestion(module);
+      }
+    })
+  }
+
+  closeQuestion(module){
+    const htmlDom = document.querySelector('HTML');
+    htmlDom.removeAttribute("style");
+    module.remove();
   }
 
   isValid(allRadio, allInput, allSelect){
@@ -739,6 +780,7 @@ class Handler{
       reqShareForSale: true,
       reqShareForAll: true,
       reqOverstatePrice: true,
+      reqAdditionalLandmark: true,
     }
     const libraryRegExp = {
       reqRegion: /(.|\s)*\S(.|\s)*/,
@@ -766,6 +808,7 @@ class Handler{
       reqAreaForSell3: /^\d*\.?\d*?$/,
       reqShareForSale: /^\d*$/,
       reqShareForAll: /^\d*$/,
+      reqAdditionalLandmark: /\.*/,
     }
     for (let item of allInput){
       if (!item.classList.contains('ymaps-2-1-79-searchbox-input__input') && !item.disabled && !item.classList.contains('room__radio')){
@@ -795,7 +838,7 @@ class Handler{
             item.classList.remove('isValid');
           }
         } else {
-          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper'){
+          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark'){
             if (item.value.length === 0){
               library[item.name] = false;
               item.classList.add('isValid');
@@ -1356,8 +1399,8 @@ class Float{
               <label id="reqTypeofRealty" class="buttons__label part" for="part">переуступка дду</label>
             </div> 
             <div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item form_width">
+              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+              <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
@@ -1380,6 +1423,10 @@ class Float{
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" id="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Дополнительный ориентир</span> 
+                <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
             </div>          
@@ -1526,7 +1573,7 @@ class Float{
               <div class="form__item">
                 <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
               </div>
             </div>
@@ -1572,8 +1619,8 @@ class Room{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item form_width">
+              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
+              <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
@@ -1596,7 +1643,11 @@ class Room{
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
-              </div>              
+              </div>                  
+              <div class="form__item">
+                <span class="form__subtitle">Дополнительный ориентир</span> 
+                <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>          
               <div id="map"></div>  
             </div>                 
             <div class="info"> 
@@ -1752,7 +1803,7 @@ class Room{
               <div class="form__item">
                 <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
               </div>
             </div>
@@ -1813,8 +1864,8 @@ class House{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item form_width">
+              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
+              <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
@@ -1837,6 +1888,10 @@ class House{
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Дополнительный ориентир</span> 
+                <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
@@ -2005,7 +2060,7 @@ class House{
               <div class="form__item">
                 <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
               </div>
             </div>                
@@ -2026,7 +2081,7 @@ class Ground{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
+              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
               <div class="form__item form_width">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
@@ -2050,6 +2105,10 @@ class Ground{
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Дополнительный ориентир</span> 
+                <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
@@ -2112,7 +2171,7 @@ class Ground{
               <div class="form__item">
                 <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
               </div>
             </div>                        
@@ -2132,7 +2191,7 @@ class Ground{
 class Garage{
   render(){
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
+              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
               <div class="form__item form_width">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
@@ -2156,7 +2215,11 @@ class Garage{
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
-              </div>              
+              </div>                         
+              <div class="form__item">
+                <span class="form__subtitle">Дополнительный ориентир</span> 
+                <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>   
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
                 <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
@@ -2226,7 +2289,7 @@ class Garage{
               <div class="form__item">
                 <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : add.obj.reqPrice}" 
+                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
               </div>
             </div>                        

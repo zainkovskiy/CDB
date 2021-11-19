@@ -39,6 +39,22 @@ i:hover .guid {
   padding: 20px;
   box-sizing: border-box;
 }
+.header__wrap {
+  display: flex;
+  align-items: center;
+}
+.header__back {
+  font-size: 12px;
+  white-space: nowrap;
+  margin: 0 0 0 5px;
+  color: #3690ff;
+  cursor: pointer;
+  text-decoration: none;
+}
+.header__back:hover {
+  text-decoration: underline;
+  color: #91c2ff;
+}
 .header__title {
   display: block;
   width: 100%;
@@ -530,6 +546,43 @@ input:disabled {
 .methodical span {
   color: #399fc2;
   font-size: 16px;
+}
+
+.inVisible {
+  display: none;
+}
+
+.module {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #373737b3;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+  align-items: center;
+}
+.module__wrap {
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px;
+}
+.module__close {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+  height: 40px;
+  width: 40px;
+  background-image: url("../img/button-close.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-size: contain;
+}
+.module__close:hover {
+  opacity: 1;
 }
 
 /*# sourceMappingURL=style.css.map */

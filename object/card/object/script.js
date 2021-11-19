@@ -394,7 +394,7 @@ class Render {
                     Зарезервировать
               </button>
               <a class="btn_edit ui-btn ui-btn-primary-dark ${this.obj.privileges.user === 'owner' ? this.obj.privileges.user : 'isVisible'}"
-              href="https://crm.centralnoe.ru/CDB/object/card/add/?login=yes&action=old&id=${this.obj.reqNumber}&contact=${phoneOwner}">
+              href="https://crm.centralnoe.ru/CDB/object/card/add/?login=yes&action=old&id=${this.obj.reqNumber}&contact=${phoneOwner}&curdeal=${deal}">
               Редактировать</a>
               
               <a class="btn_edit ui-btn ui-btn-primary-dark ${this.obj.privileges.user === 'owner' ? this.obj.privileges.user : 'disable'}" 
