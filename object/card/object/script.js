@@ -462,6 +462,17 @@ class Handler {
     }
   }
 
+  setLoader(){
+    const currentY = window.pageYOffset;
+    const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
+    document.body.insertAdjacentHTML('beforeend', loader);
+    document.body.setAttribute('style', 'overflow: hidden;');
+  }
+  removeLoader(){
+    document.body.removeAttribute('style');
+    document.querySelector('.loader').remove();
+  }
+
   openModule(field){
     const htmlDom = document.querySelector('HTML');
     htmlDom.setAttribute("style", "overflow-y:hidden;");
@@ -485,13 +496,17 @@ class Handler {
         this.closeModule(module);
         this.statusImg = false;
       } else if (event.target.dataset.name === 'sendAlert'){
+        this.setLoader();
         this.sendAlert().then(() => {
+          this.removeLoader();
           this.closeModule(module);
         })
       } else if (event.target.dataset.name === 'cancelAlert'){
         this.closeModule(module);
       } else if (event.target.dataset.name === 'sendOrderPhoto'){
+        this.setLoader();
         this.sendOrderPhoto(module).then(() => {
+          this.removeLoader();
           alert('Заявка принята');
           this.closeModule(module);
         })
