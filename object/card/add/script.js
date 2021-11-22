@@ -264,7 +264,7 @@ class Header {
               <div class="header__wrap"> 
                 <span class="header__title">Объект недвижимости</span>
                 <a href="../object/?source=1c&id=${UID}&IDDEAL=${deal}" class="header__back ${action === 'new' && !contact ? 'inVisible' : ''}">Вернуться к объекту</a>
-                <span onclick="BX.SidePanel.Instance.close([immediately=false])" class="header__back">Вернуться к сделке</span>
+                <span onclick="BX.SidePanel.Instance.close([immediately=false])" class="header__back">Закрыть вкладку</span>
               </div>
               <div class="change-obj"> 
                 <input 
@@ -468,7 +468,7 @@ class Handler{
               document.querySelector('.error__text').innerHTML = `Заявка успешно создана, номер заявки: ${data.reqNumber}`;
               document.querySelector('.error').classList.add('error_active');
               setTimeout(() => {
-                location=`https://crm.centralnoe.ru/objectCard/object/?login=yes&source=1c&id=${data.reqNumber}`;
+                location=`https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=1c&id=${data.reqNumber}`;
               }, 3000);
             } else if (data.result === 'error' && data.reason === 'has dublicate'){
               document.querySelector('.error__text').innerHTML = `Найден дубликат: <span class="error__dublicate" data-dublicate="openCard">${data.dublicate[0]}</span>`;
@@ -524,8 +524,6 @@ class Handler{
                 }
               })
             } else {
-              //todo не открывает вопрос
-              //todo сделать редирект нового объекта на CDB
               this.openQuestion();
             }
           });
@@ -590,16 +588,15 @@ class Handler{
 
     const currentY = window.pageYOffset;
     const layout = `<div style="top: ${currentY}px;" class="module">
-                          <span class="module__close"></span>
                           <div class="module__wrap"> 
-                            <div> 
-                              <p>Перейти к объекту</p>
+                            <p class="module__text">Перейти к объекту</p>
+                            <div class="module__buttons">
                               <a href="../object/?source=1c&id=${UID}&IDDEAL=${deal}" data-answer="yes" class="ui-btn ui-btn-danger-light">Да</a>                           
                               <button data-answer="no"  class="ui-btn ui-btn-primary-dark">Нет</button>                           
                             </div>
                           </div>                          
                     </div>`
-    this.container.insertAdjacentHTML('beforebegin', layout);
+    document.body.insertAdjacentHTML('beforebegin', layout);
     this.handlerQuestion();
   }
   handlerQuestion(){

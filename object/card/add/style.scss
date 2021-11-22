@@ -548,4 +548,14 @@ input:disabled{
       opacity: 1;
     }
   }
+  &__text{
+    margin: 0 0 20px 0;
+    font-family: sans-serif;
+    font-weight: 700;
+    color: grey;
+  }
+  &__buttons{
+    display: flex;
+    justify-content: space-between;
+  }
 }

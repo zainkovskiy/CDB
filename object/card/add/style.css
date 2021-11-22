@@ -584,5 +584,15 @@ input:disabled {
 .module__close:hover {
   opacity: 1;
 }
+.module__text {
+  margin: 0 0 20px 0;
+  font-family: sans-serif;
+  font-weight: 700;
+  color: grey;
+}
+.module__buttons {
+  display: flex;
+  justify-content: space-between;
+}
 
 /*# sourceMappingURL=style.css.map */
