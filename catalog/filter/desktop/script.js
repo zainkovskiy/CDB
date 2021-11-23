@@ -2153,7 +2153,7 @@ class Cards {
       const priceMeter = this.getPriceMeter(this.cards[i]);
       const actualDate = this.getDate(this.cards[i]);
       layout += `<div class="card">
-                    <img class="card__img" src="${this.cards[i].reqPhoto}" alt="img">
+                    <img class="card__img" src="${this.cards[i].reqPhoto}" alt="img" onerror="errorImg(this)">
                     <div class="card__wrap">
                         <div class="card__info">                 
                             <a target="_blank" href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=${this.cards[i].reqType}&id=${this.cards[i].reqNumber}" 
@@ -2168,7 +2168,7 @@ class Cards {
                               : this.cards[i].reqHouseNumber ? `д. ${this.cards[i].reqHouseNumber}` : ''}
                             </a>
                             <span class="card__text">
-                              ${this.cards[i].reqCity ? `${this.cards[i].reqCity}, ` : ''}
+                              ${this.cards[i].reqCity ? `${this.cards[i].reqCity} ` : ''}
                               ${this.cards[i].reqRayon ? `${this.cards[i].reqRayon} р-н` : ''}
                             </span>
                             <span class="card__text">
@@ -2223,6 +2223,9 @@ class Cards {
 
     return layout;
   }
+}
+function errorImg(img){
+  img.src = 'https://crm.centralnoe.ru/dealincom/assets/empty_photo.jpg';
 }
 
 class Basket {

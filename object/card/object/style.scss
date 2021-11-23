@@ -33,7 +33,7 @@
     display: flex;
     justify-content: space-between;
     grid-column-start: 1;
-    grid-column-end: 4;
+    grid-column-end: 3;
     flex-direction: column;
   }
   &__header{
@@ -65,9 +65,7 @@
   }
   &__logo{
     display: flex;
-    justify-content: flex-end;
-    grid-row-start: 3;
-    grid-column-start: 2;
+    justify-content: flex-start;
     &-item{
       display: block;
       height: 40px;
@@ -75,12 +73,15 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      margin: 0 10px 0 0;
     }
     &-doc{
       text-align: left;
-      grid-column-start: 1;
       display: flex;
       align-items: flex-end;
+      justify-content: flex-end;
+      grid-row-start: 3;
+      grid-column-start: 2;
     }
   }
 }
