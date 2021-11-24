@@ -6,8 +6,8 @@ mb_internal_encoding("UTF-8");
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
-$rawDATA =  base64_decode(file_get_contents('php://input'));
-$arrApplicationParams = json_decode($rawDATA, true);
+$rawDATA =  base64_decode($_REQUEST['params']);
+$arrApplicationParams = json_decode($rawDATA, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 $arrClients = json_encode($arrApplicationParams['dealClients'], true);
 
     if (!$arrClients) {
@@ -50,7 +50,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       // Категория сделки
       let dealCategory = '<? echo($arrApplicationParams['dealCategory']);?>';
       // Номер заявки
-      let dealObject = '<? echo($arrApplicationParams['dealObject']);?>';
+      let activeDeal = '<? echo($arrApplicationParams['activeDeal']);?>';
       // JSON c Клиентами сделки
       let dealClients = '<? echo($arrClients);?>';
         BX24.ready(async () => {
@@ -75,8 +75,11 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
 <body>
 <div class="container">
     <div class="methodical">
-      <span>Как работать с каталогом?</span>
-      <button data-info="catalog" class="ui-btn ui-btn-primary-dark">инфо</button>
+        <div>
+            <span>Как работать с каталогом?</span>
+            <button data-info="catalog" class="ui-btn ui-btn-primary-dark">инфо</button>
+        </div>
+        <span class='alert' title="сообщить об ошибке" data-alert="open"></span>
     </div>
     <div class="search-form">
         <span class="search-form__title">Тип недвижимости</span>
@@ -162,7 +165,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
             <span class='start__input-arrow start__input-arrow_sort'></span>
             <div data-elem="check" class="sort__wrap sort__block visible">
                 <span data-action="default" data-input="sort" data-value="Сортировка по умолчанию" data-elem="check" class="type__select">Сортировка по умолчанию</span>
-                <span data-action="newOld" data-input="sort" data-value="Дата публикации от новых к старым" data-elem="check" class="type__select">Дата публикации от новых к старым</span>
+                <span data-action="newOld" data-input="sort" data-value="Дата публикации от новых к старым" data-elem="check" class="type__select">По дате обновления</span>
                 <span data-action="priceLow" data-input="sort" data-value="Цена от низкой к высокой" data-elem="check" class="type__select">Цена от низкой к высокой</span>
                 <span data-action="priceHigh" data-input="sort" data-value="Цена от высокой к низкой" data-elem="check" class="type__select">Цена от высокой к низкой</span>
                 <span data-action="areaLow" data-input="sort" data-value="Площадь от меньшей к большей" data-elem="check" class="type__select">Площадь от меньшей к большей</span>

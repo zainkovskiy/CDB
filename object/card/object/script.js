@@ -203,7 +203,7 @@ class Render {
     } else {
       let logos = '';
       for (let logo of this.obj.advURL){
-        logos += `<a class="about__logo-item" href='${logo.URL}' target="_blank" style="background-image: url(${logo.logo})"></a>`
+        logos += `<a class="about__logo-item" href='${logo.URL}' target="_blank" style="background-image: url(${logo.logo})" title="нажмите чтобы перейти на площадку"></a>`
       }
       return logos
     }

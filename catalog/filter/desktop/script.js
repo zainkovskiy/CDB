@@ -294,6 +294,7 @@ class AddressHandler {
   }
   init(){
     this.handlerSource();
+    this.hideButtonStory();
     this.container.addEventListener('click', event => {
       if(event.target.dataset.name === 'metro'){
         document.querySelector('.suggestions-suggestions').setAttribute('style', 'display: none;')
@@ -410,10 +411,11 @@ class AddressHandler {
         this.initMap(this.cards);
         this.checkCurrentElem();
       } else if (event.target.dataset.basket === 'save'){
-        if (dealObject){
+        if (activeDeal){
           this.checkCurrentElem();
           this.setLoader();
-          this.sendCompilation(dealObject).then(() => {
+          this.sendCompilation(activeDeal).then(() => {
+            this.setReserveItem();
             basket.fullness = [];
             basket.init();
             document.querySelector('.loader__img').style.backgroundImage='url(https://crm.centralnoe.ru/dealincom/assets/statusOk.gif)'
@@ -434,7 +436,7 @@ class AddressHandler {
       } else if (event.target.dataset.name === 'story'){
         //todo разкомментить
 
-        // if (dealObject){
+        // if (activeDeal){
           let req = {
             action : 'historySearch',
             dealId : 1,
@@ -473,6 +475,10 @@ class AddressHandler {
         location.reload();
       } else if (event.target.dataset.info === 'catalog'){
         this.openInfo();
+      } else if (event.target.dataset.alert === 'open'){
+        this.openModule('Сообщить об ошибке', this.alertErrorLayout());
+        const sound = new Audio('audio/bell-sound.mp3')
+        sound.play();
       }
     });
 
@@ -572,6 +578,20 @@ class AddressHandler {
 
     this.handlerPriceFilter();
   }
+  hideButtonStory(){
+    if (activeDeal.length === 0){
+      document.querySelector('.btn-story').classList.add('visible');
+      document.querySelector('.btn-basket').setAttribute('style', 'margin: 0;');
+    }
+  }
+  setReserveItem(){
+    for (let card of basket.fullness){
+      const find = this.cards.find(item => item.reqNumber === card.reqNumber);
+      document.querySelector(`.btn${find.reqNumber}`).classList.remove('card__btn_select');
+      document.querySelector(`.btn${find.reqNumber}`).classList.add('card__btn_reserve');
+    }
+  }
+
   openInfo(){
     let readyString = `https://crm.centralnoe.ru/CDB/object/card/info/catalog/index.html`;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
@@ -757,7 +777,8 @@ class AddressHandler {
     function renderCard(card){
       document.querySelector('.map__right').insertAdjacentHTML('beforeend', 
         `<div class="map-card"> 
-                <img class="map-card__photo" src="${card.reqPhoto}" alt="photo"> 
+                <img data-open="openCard" data-req="${card.reqNumber}"
+                  data-source="${card.reqType}" class="map-card__photo" src="${card.reqPhoto}" alt="photo"> 
                 <span data-open="openCard" data-req="${card.reqNumber}"
                   data-source="${card.reqType}" class="map-card__street">
                   ${card.reqTypeofRealty === "Квартира" || card.reqTypeofRealty === "Дом"
@@ -822,6 +843,7 @@ class AddressHandler {
 
   async sendToServer(){
     this.objectFilter.action = 'get';
+    this.objectFilter.dealId = activeDeal;
 
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
@@ -976,6 +998,7 @@ class AddressHandler {
       }
     }
     this.objectFilter.reqRegion = document.querySelector('.place__text').innerHTML;
+    this.objectFilter.dealId = activeDeal;
     console.log(this.objectFilter)
   }
   setRoomValue(event){
@@ -1143,6 +1166,7 @@ class AddressHandler {
         this.closeModule(module);
         this.setLoader();
         this.sendCompilation(event.target.dataset.id).then(() => {
+          this.setReserveItem();
           basket.fullness = [];
           basket.init();
           document.querySelector('.loader__img').style.backgroundImage='url(https://crm.centralnoe.ru/dealincom/assets/statusOk.gif)'
@@ -1160,6 +1184,25 @@ class AddressHandler {
           this.setHistoryValue(data);
           this.removeLoader();
         });
+      } else if (event.target.dataset.input === 'error'){
+        this.currentElem = document.querySelector(`.block-${event.target.dataset.error}`);
+        this.currentElem.classList.toggle('visible');
+      } else if (event.target.dataset.parrent){
+        document.querySelector(`.input-${event.target.dataset.parrent}`).innerHTML = event.target.innerHTML;
+        this.checkCurrentElem();
+      } else if (event.target.dataset.error === 'close'){
+        this.closeModule(module);
+      } else if (event.target.dataset.error === 'send'){
+        const textarea = module.querySelector('.error-information__area');
+        if (textarea.value.length === 0){
+          textarea.classList.add('isValid');
+        } else {
+          textarea.classList.remove('isValid');
+          this.closeModule(module);
+          this.alertErrorSend(module);
+        }
+      } else {
+        this.checkCurrentElem();
       }
     })
 
@@ -1172,6 +1215,64 @@ class AddressHandler {
   closeModule(module){
     document.querySelector('HTML').removeAttribute("style");
     module.remove();
+  }
+
+  async alertErrorSend(module){
+    const errorInformation = {
+      source: module.querySelector('.input-source').innerHTML,
+      reason: module.querySelector('.input-reason').innerHTML,
+      text: module.querySelector('.error-information__area').value,
+      author: currentUserLogin,
+      deal: `${activeDeal.length === 0 ? 0 : activeDeal}`,
+    }
+    const raw = JSON.stringify(errorInformation);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: raw,
+    };
+    let response  = await fetch("https://crm.centralnoe.ru/dealincom/factory/errorMaker.php", requestOptions);
+  }
+  alertErrorLayout(){
+    return `<div class="error-information"> 
+              <span class="error-information__text">Заполните обязательные поля формы обратной связи, после чего нажмите кнопку "Отправить"</span>
+              <div class="error-information__wrap"> 
+                <span class="error-information__title">Выберете истоник ошибки</span> 
+                <div class="error-information__select"> 
+                  <div class="error-information__input input-source" data-input="error" data-error="source">Каталог ОН</div>
+                  <div class="error-information__block visible block-source"> 
+                    <span data-parrent="source" class="error-information__block-item">Каталог ОН</span>
+                    <span data-parrent="source" class="error-information__block-item">Подборки ОН</span>
+                    <span data-parrent="source" class="error-information__block-item">Отчет продавцу</span>
+                  </div>
+                </div>
+              </div>            
+              <div class="error-information__wrap"> 
+                <span class="error-information__title">Выберете причину обращения</span>
+                <div class="error-information__select"> 
+                  <div class="error-information__input input-reason" data-input="error" data-error="reason">Некорректный результат поиска</div>
+                  <div class="error-information__block visible block-reason"> 
+                    <span data-parrent="reason" class="error-information__block-item">Некорректный результат поиска</span>
+                    <span data-parrent="reason" class="error-information__block-item">Ошибка на станице</span>
+                    <span data-parrent="reason" class="error-information__block-item">Консультация</span>
+                  </div>
+                </div>
+              </div>
+              <div class="error-information__wrap-area">
+                <span class="error-information__title">Опишите что произошло</span>
+                <textarea class="error-information__area" cols="30" rows="10"></textarea>
+              </div>  
+            </div>            
+            <div class="metro__footer module__footer"> 
+              <button data-error="send" class="module__save" type="button">Отправить</button>
+              <button data-error="close" class="module__reset row__input_right"><span>Отменить</span></button>
+            </div>`
   }
 
   setHistoryValue(data){
@@ -1873,7 +1974,7 @@ class AddressHandler {
     if (action === 'default'){
       new Cards(this.cards).init();
     } else if (action === 'newOld'){
-      this.sortCardNumberMin('reqUpdateTime')
+      this.sortCardNumberMax('reqUpdateTime')
       new Cards(this.copyCards).init();
     } else if (action === 'priceLow'){
       this.sortCardNumberMin('reqPrice')
@@ -1962,9 +2063,11 @@ class AddressHandler {
     const paginationContainer = document.querySelectorAll('.pagination')
     for (let container of paginationContainer){
       container.innerHTML = '';
-      container.classList.remove('visible');
+      if (document.querySelector('.map__wrapper').classList.contains('visible')){
+        container.classList.remove('visible');
+      }
       if (this.countPaginat > 5){
-        container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-border" data-border="start" data-paginat="0">в начало</span>`);
+        container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-border" data-border="start" data-paginat="0">Первая</span>`);
         container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-paginat_left" data-direction="prev"></span>`);
         for (let i = this.startPaginat; i < this.startPaginat + 5; i++){
           if (i === +this.currentPaginatActive){
@@ -1974,7 +2077,7 @@ class AddressHandler {
           }
         }
         container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-paginat_right" data-direction="next"></span>`);
-        container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-border" data-border="end" data-paginat="${this.countPaginat - 1}">в конец</span>`);
+        container.insertAdjacentHTML('beforeend', `<span class="btn btn-paginat btn-border" data-border="end" data-paginat="${this.countPaginat - 1}">Последняя</span>`);
       } else{
         for (let i = 0; i < this.countPaginat; i++){
           if (i === +this.currentPaginatActive){
@@ -2108,9 +2211,9 @@ class AddressHandler {
   setCountCard(cards){
     const quantity = document.querySelector('.quantity');
     if (cards.length < 5000){
-      quantity.innerHTML = `Найденно <span>${cards.length}</span> объектов`;
+      quantity.innerHTML = `Найдено <span>${cards.length}</span> объектов`;
     } else {
-      quantity.innerHTML = `Найденно <span>5000+</span> объектов`;
+      quantity.innerHTML = `Найдено <span>5000+</span> объектов`;
     }
   }
 }
@@ -2131,11 +2234,13 @@ class Cards {
   }
   getPriceMeter(card){
     if (card.reqPrice && card.reqFlatTotalArea){
-      if (card.reqPrice === '0' || card.reqFlatTotalArea === '0'){
-        return `0`
+      if (card.reqPrice === '0' || card.reqFlatTotalArea === '0' || card.reqTypeofRealty === "Земельный участок"){
+        return ``
       } else {
-        return ((+card.reqPrice / +card.reqFlatTotalArea) * 1000).toFixed(0);
+        return `<span class="card__text card__text_grey">${((+card.reqPrice / +card.reqFlatTotalArea) * 1000).toFixed(0)}  ₽/кв.м</span>`;
       }
+    } else {
+      return ''
     }
   }
   getDate(card){
@@ -2153,12 +2258,12 @@ class Cards {
       const priceMeter = this.getPriceMeter(this.cards[i]);
       const actualDate = this.getDate(this.cards[i]);
       layout += `<div class="card">
-                    <img class="card__img" src="${this.cards[i].reqPhoto}" alt="img" onerror="errorImg(this)">
+                    <img data-open="openCard" data-req="${this.cards[i].reqNumber}" data-source="${this.cards[i].reqType}" class="card__img" src="${this.cards[i].reqPhoto}" alt="img" onerror="errorImg(this)">
                     <div class="card__wrap">
                         <div class="card__info">                 
-                            <a target="_blank" href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=${this.cards[i].reqType}&id=${this.cards[i].reqNumber}" 
+                            <a href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=${this.cards[i].reqType}&id=${this.cards[i].reqNumber}" 
                             data-open="openCard" data-req="${this.cards[i].reqNumber}" 
-                            data-source="${this.cards[i].reqType}" class="card__title card__link">
+                            data-source="${this.cards[i].reqType}" class="card__title card__link" onclick="event.preventDefault()">
                               ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом" 
                               || this.cards[i].reqTypeofRealty === "Комната"
                               ? `${this.cards[i].reqRoomCount ? `${this.cards[i].reqRoomCount}к ` : ''}`
@@ -2191,14 +2296,14 @@ class Cards {
                         </div>
                         <div class="card__info card_right">
                             <span class="card__title">${this.cards[i].reqPrice ? `${this.cards[i].reqPrice} тыс. ₽` : ''}</span>
-                            ${this.cards[i].reqTypeofRealty === "Земля" ? '' : `<span class="card__text card__text_grey">${priceMeter} ₽/кв.м</span>`}                           
+                            ${priceMeter}                           
                             <span class="card__text">
                             ${this.cards[i].reqDocType ? this.cards[i].reqDocType : ''}
                             </span>
                         </div>
                         <div class="card__info card_end">
                             <div class="card__btn-list">
-                                <button class="card__btn btn${this.cards[i].reqNumber}" data-req="${this.cards[i].reqNumber}" data-card="reserv"> 
+                                <button class="card__btn btn${this.cards[i].reqNumber}" data-req="${this.cards[i].reqNumber}" data-card="reserv" title="добавить в подборку"> 
                                   <svg class="event-none" width="30" height="30" fill="#BEC1C0" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                   \t viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                                   <g id="Layer_1_1_">

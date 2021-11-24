@@ -125,6 +125,7 @@ ul {
   & span{
     color: #399fc2;
     font-size: 16px;
+    margin: 0 20px 0 0;
   }
 }
 .search-form{
@@ -142,6 +143,24 @@ ul {
     color: #8F9091;
     display: flex;
     align-items: center;
+  }
+}
+.alert{
+  display: block;
+  width: 39px;
+  height: 39px;
+  background-image: url('img/alarm_bell.svg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition: opacity .3s,
+              transform .3s;
+  &:hover{
+    opacity: .6;
+  }
+  &:active{
+    transform: rotate(-15deg);
   }
 }
 .house{
@@ -954,11 +973,12 @@ ul {
     max-width: 192px;
     height: 152px;
     object-fit: cover;
+    cursor: pointer;
   }
   &__wrap{
     display: grid;
     grid-template-rows: auto;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 300px 1fr 1fr;
     grid-gap: 10px;
     margin: 0 0 0 16px;
     width: 100%;
@@ -1059,6 +1079,13 @@ ul {
       }
       &:active{
         background-color: #fff;
+      }
+    }
+    &_reserve{
+      background-color: #47e307;
+      border: 1px solid #47e307;
+      & svg{
+        fill: black;
       }
     }
   }
@@ -1222,7 +1249,7 @@ ul {
   }
   &__head{
     position: sticky;
-    top: 0;
+    top: -1px;
     background-color: white;
     box-shadow: 0 3px 5px -5px rgb(34 60 80 / 50%);
     z-index: 99;
@@ -1289,6 +1316,7 @@ ul {
     width: 100%;
     object-fit: cover;
     margin: 0 0 10px 0;
+    cursor: pointer;
   }
   &__street{
     font-size: 15px;
@@ -1349,4 +1377,77 @@ ul {
     height: 39px;
     object-fit: contain;
   }
+}
+
+.error-information{
+  width: 60%;
+  margin: 20px auto;
+  &__text{
+    text-align: center;
+    font-size: 16px;
+    display: block;
+    margin: 0 0 20px 0;
+    font-weight: 700;
+  }
+  &__wrap{
+    margin: 0 0 20px 0;
+    &-area{
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  &__title{
+    font-size: 14px;
+    font-weight: 400;
+    color: #8F9091;
+    display: flex;
+    align-items: center;
+    margin: 0 0 10px 0;
+  }
+  &__select{
+    position: relative;
+  }
+  &__input{
+    color: black;
+    border: 1px solid #c4c4c4;
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    text-overflow: ellipsis;
+    user-select: none;
+    cursor: pointer;
+  }
+  &__area{
+    resize: none;
+    outline: none;
+    border: 1px solid #c4c4c4;
+    font-size: 15px;
+    font-family: sans-serif;
+    padding: 10px;
+  }
+  &__block{
+    background-color: white;
+    position: absolute;
+    margin: 10px 0 0 0;
+    box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+    padding: 5px 0;
+    z-index: 5;
+    width: 100%;
+    border-radius: 5px;
+    &-item{
+      width: 100%;
+      display: flex;
+      padding: 10px;
+      cursor: pointer;
+      box-sizing: border-box;
+      white-space: nowrap;
+      user-select: none;
+      &:hover{
+        background: #f2f2f2;
+      }
+    }
+  }
+}
+.isValid{
+  border: 1px solid red;
 }
