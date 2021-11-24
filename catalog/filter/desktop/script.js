@@ -294,7 +294,7 @@ class AddressHandler {
   }
   init(){
     this.handlerSource();
-    this.hideButtonStory();
+    this.hideButtonStart();
     this.container.addEventListener('click', event => {
       if(event.target.dataset.name === 'metro'){
         document.querySelector('.suggestions-suggestions').setAttribute('style', 'display: none;')
@@ -479,6 +479,8 @@ class AddressHandler {
         this.openModule('Сообщить об ошибке', this.alertErrorLayout());
         const sound = new Audio('audio/bell-sound.mp3')
         sound.play();
+      } else if (event.target.dataset.name === 'add'){
+        this.openNewObject();
       }
     });
 
@@ -578,9 +580,10 @@ class AddressHandler {
 
     this.handlerPriceFilter();
   }
-  hideButtonStory(){
+  hideButtonStart(){
     if (activeDeal.length === 0){
       document.querySelector('.btn-story').classList.add('visible');
+      document.querySelector('.btn-add').classList.add('visible');
       document.querySelector('.btn-basket').setAttribute('style', 'margin: 0;');
     }
   }
@@ -838,6 +841,11 @@ class AddressHandler {
     let ScrW = window.screen.width*0.95;
     let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source="+typeA+"&id="+idReq;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+    return true;
+  }
+  openNewObject(){
+    let readyString = `https://crm.centralnoe.ru/CDB/object/card/add/?curdeal=${activeDeal}&action=new&contact=${JSON.parse(dealClients)[0].PHONE}`
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 1100, });
     return true;
   }
 
@@ -1197,9 +1205,16 @@ class AddressHandler {
         if (textarea.value.length === 0){
           textarea.classList.add('isValid');
         } else {
+          const moduleValue = {
+            source: module.querySelector('.input-source').innerHTML,
+            reason: module.querySelector('.input-reason').innerHTML,
+            text: module.querySelector('.error-information__area').value,
+          }
+          this.sayThanks();
           textarea.classList.remove('isValid');
-          this.closeModule(module);
-          this.alertErrorSend(module);
+          this.alertErrorSend(moduleValue).then(() => {
+            this.closeModule(module);
+          });
         }
       } else {
         this.checkCurrentElem();
@@ -1217,11 +1232,11 @@ class AddressHandler {
     module.remove();
   }
 
-  async alertErrorSend(module){
+  async alertErrorSend(moduleValue){
     const errorInformation = {
-      source: module.querySelector('.input-source').innerHTML,
-      reason: module.querySelector('.input-reason').innerHTML,
-      text: module.querySelector('.error-information__area').value,
+      source: moduleValue.source,
+      reason: moduleValue.reason,
+      text: moduleValue.text,
       author: currentUserLogin,
       deal: `${activeDeal.length === 0 ? 0 : activeDeal}`,
     }
@@ -1273,6 +1288,13 @@ class AddressHandler {
               <button data-error="send" class="module__save" type="button">Отправить</button>
               <button data-error="close" class="module__reset row__input_right"><span>Отменить</span></button>
             </div>`
+  }
+  sayThanks(){
+    const errorBlock = document.querySelector('.error-information');
+    errorBlock.innerHTML = '';
+    errorBlock.insertAdjacentHTML('beforeend' ,
+      '<p class="error-information__text error-information__thanks">Сообщение об ошибке отправлено. Cпасибо что помогаете нам стать лучше!</p>');
+    document.querySelector('.module__footer').innerHTML = '';
   }
 
   setHistoryValue(data){

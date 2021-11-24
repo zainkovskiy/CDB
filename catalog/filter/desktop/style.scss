@@ -850,6 +850,9 @@ ul {
     position: relative;
   }
 }
+.btn-add{
+  margin: 0 10px 0 0;
+}
 .btn_active{
   background-color: white;
 }
@@ -1388,6 +1391,9 @@ ul {
     display: block;
     margin: 0 0 20px 0;
     font-weight: 700;
+  }
+  &__tanks{
+    margin: 20px 0 20px 0;
   }
   &__wrap{
     margin: 0 0 20px 0;

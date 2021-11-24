@@ -22,12 +22,6 @@ $APPLICATION->ShowHead();}
 
 $userName = CUser::GetLogin();
 
-if ($userName == 'mischenkoiv' || $userName == 'zainkovskiyaa' || $userName == 'osmanovnyu') {
-
-} else {
-  header('Location: https://crm.centralnoe.ru');
-}
-
 \Bitrix\Main\UI\Extension::load("ui.forms");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 \Bitrix\Main\UI\Extension::load("ui.hint");
@@ -176,6 +170,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
         </div>
         <p class='quantity'></p>
         <div class='basket'>
+            <button title="Новый объект" class="btn-add ui-btn ui-btn-primary" data-name="add">Добавить новый объект</button>
             <button title="Карта" class="btn btn-map" data-name="map"></button>
             <button title="Корзина" data-elem="check" class="btn btn-basket" data-name="basket"></button>
             <button title="Сохраненные фильтры" class="btn btn-story" data-name="story"></button>
