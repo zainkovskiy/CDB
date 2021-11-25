@@ -900,6 +900,11 @@ ul {
 
 .btn-basket {
   background-image: url("img/basket.svg");
+  position: relative;
+}
+
+.basket__wrapper {
+  position: relative;
 }
 
 .btn-story {
@@ -1227,7 +1232,7 @@ ul {
   font-size: 12px;
 }
 .count-basket {
-  right: 44px;
+  right: 0;
 }
 
 .suggestions-promo {

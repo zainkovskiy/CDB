@@ -873,6 +873,10 @@ ul {
 }
 .btn-basket{
   background-image: url("img/basket.svg");
+  position: relative;
+}
+.basket__wrapper{
+  position: relative;
 }
 .btn-story{
   background-image: url("img/time-story.svg");
@@ -1193,7 +1197,7 @@ ul {
   border: 1px solid black;
   font-size: 12px;
   &-basket{
-    right: 44px;
+    right: 0;
   }
 }
 .suggestions{

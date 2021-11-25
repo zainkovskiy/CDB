@@ -172,9 +172,11 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
         <div class='basket'>
             <button title="Новый объект" class="btn-add ui-btn ui-btn-primary" data-name="add">Добавить новый объект</button>
             <button title="Карта" class="btn btn-map" data-name="map"></button>
-            <button title="Корзина" data-elem="check" class="btn btn-basket" data-name="basket"></button>
+            <div class="basket__wrapper">
+                <button title="Корзина" data-elem="check" class="btn btn-basket" data-name="basket"></button>
+                <span class='count count-basket visible'></span>
+            </div>
             <button title="Сохраненные фильтры" class="btn btn-story" data-name="story"></button>
-            <span class='count count-basket visible'></span>
             <div data-elem="check" class="basket__wrap basket__block visible">
                 <div data-elem="check" class='basket__items'>
 

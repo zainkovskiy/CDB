@@ -380,7 +380,8 @@ class AddressHandler {
           basket.fullness.splice(basket.fullness.indexOf(floatInArr), 1);
           basket.init();
         } else {
-          document.querySelector(`.btn${event.target.dataset.req}`).classList.add('card__btn_select');
+          const btnFromList = document.querySelector(`.btn${event.target.dataset.req}`);
+          btnFromList ? btnFromList.classList.add('card__btn_select') : '';
           addFloat.basketAdd = 1;
           basket.fullness.push(addFloat);
           basket.init();
@@ -403,7 +404,9 @@ class AddressHandler {
         for (let card of basket.fullness){
           const find = this.cards.find(item => item.reqNumber === card.reqNumber);
           find.basketAdd = 0;
-          document.querySelector(`.btn${find.reqNumber}`).classList.remove('card__btn_select');
+          if (document.querySelector(`.btn${find.reqNumber}`)){
+            document.querySelector(`.btn${find.reqNumber}`).classList.remove('card__btn_select');
+          }
         }
         basket.fullness = [];
         basket.init();
