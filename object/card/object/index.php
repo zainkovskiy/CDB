@@ -44,9 +44,9 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="chief-slider.js"></script>
+    <script src="../../../toolsForProject/chief-slider/chief-slider.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
-    <link rel="stylesheet" href="chief-slider.css">
+    <link rel="stylesheet" href="../../../toolsForProject/chief-slider/chief-slider.css">
     <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <link rel="stylesheet" href="../main.css?s=<?=rand(0, 1000000)?>">
     <link rel="stylesheet" href="../select.css?s=<?=rand(0, 1000000)?>">
