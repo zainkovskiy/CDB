@@ -30,16 +30,16 @@ class App {
     this.items = data.data;
     this.serverTime = data.serverTime;
     this.container = document.querySelector('.main');
-    this.currentItem = '';
+    this.currentItem = data.data[0];
     this.currentElem = '';
     this.timerUpdateItems = setInterval(() => {
-      this.getNewItems();
-    }, 300000);
+      // this.getNewItems();
+    }, 3000)
   }
   init(){
-    this.getItem(this.items[0].reqNumber);
+    // this.getItem(this.currentItem.reqNumber);
     // todo удалить снизу костыль
-    // this.getItem(57424000046);
+    this.getItem(57424000046);
     this.container.insertAdjacentHTML('beforeend', this.layout());
     this.currentElem = document.querySelector('.list__item');
     this.currentElem.classList.add('list__item_active');
@@ -48,10 +48,10 @@ class App {
   getStatus(item){
     return 'btn_status_approved'
   }
-  getList(itemsArr){
+  getList(){
 
     let listLayout = '';
-    for (let item of itemsArr){
+    for (let item of this.items){
       listLayout += `<div class="list__item" data-item="${item.reqNumber}"> 
                       <div class="list__status"> 
                         <span class="btn_status ${this.getStatus(item)}"></span>
@@ -65,12 +65,8 @@ class App {
     }
     return listLayout;
   }
-  getCenterLayout(){
-
-  }
   layout(){
-    const list = this.getList(this.items);
-    const centerLayout = this.getCenterLayout();
+    const list = this.getList();
     return `<div class="header"></div>
               <div class="left-side">
               <div class="left-side__input"> 
@@ -100,16 +96,13 @@ class App {
     this.currentElem = newElem;
     this.currentElem.classList.add('list__item_active');
   }
-
   getItem(reqNumber){
     api.getJson({
       action: 'getItem',
       reqNumber: reqNumber,
     }).then(item => {
       //todo отрисовывать объект в центре
-      this.currentItem = item;
-      console.log(`this is item`);
-      console.log(this.currentItem);
+      console.log(item)
     })
   }
   getNewItems(){
@@ -119,10 +112,8 @@ class App {
     }).then(newData => {
       this.serverTime = newData.serverTime;
       if (+newData.items > 0){
-        this.items.push(newData.data);
-        document.querySelector('.list').insertAdjacentHTML('beforeend', this.getList(newData.data));
+      //todo отрисовать и запушить newData.data
       }
-      console.log('this is update');
       console.log(newData);
     })
   }
