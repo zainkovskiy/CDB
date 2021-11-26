@@ -168,6 +168,90 @@ body {
 
 .center-side {
   grid-area: center;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: max-content 1fr max-content;
+  grid-gap: 10px;
+}
+.center-side__empty {
+  font-size: 24px;
+  text-align: center;
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: grey;
+}
+.center-side__top {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  grid-gap: 10px;
+}
+
+.card__title {
+  font-size: 26px;
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.8px;
+}
+.card__info-text {
+  padding: 8px 0 8px 0;
+  border-bottom: 1px solid grey;
+  color: grey;
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0.8px;
+  font-size: 13px;
+  margin: 0;
+}
+.card__info-text span {
+  color: black;
+  margin: 0 0 0 20px;
+  font-weight: 400;
+}
+.card__comment {
+  margin: 20px 0 0 0;
+}
+.card__comment-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: grey;
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  letter-spacing: 0.8px;
+}
+.card__comment-field {
+  width: 100%;
+  resize: none;
+  margin: 10px 0 0 0;
+  box-sizing: border-box;
+}
+
+.slider__item {
+  flex: 0 0 16.666%;
+  max-width: 16.666%;
+}
+
+.slider__photo {
+  height: 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%;
+  cursor: pointer;
+  border: none;
+}
+
+.photo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.photo__img {
+  width: 80%;
+  height: 600px;
+  object-fit: contain;
 }
 
 .right-side {
