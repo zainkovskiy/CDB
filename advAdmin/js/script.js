@@ -45,16 +45,14 @@ class App {
     this.currentElem.classList.add('list__item_active');
     this.handler();
   }
-  getStatus(item){
-    return 'btn_status_approved'
-  }
+
   getList(itemsArr){
 
     let listLayout = '';
     for (let item of itemsArr){
       listLayout += `<div class="list__item" data-item="${item.reqNumber}"> 
                       <div class="list__status"> 
-                        <span class="btn_status ${this.getStatus(item)}"></span>
+                        <span class="btn_status btn_status_question"></span>
                       </div>
                       <div class="list__text_wrap"> 
                         <span class="list__text list__req">${item.reqNumber}</span>

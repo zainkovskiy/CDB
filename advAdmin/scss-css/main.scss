@@ -62,6 +62,10 @@ body{
     background-color: #ED2121;
     background-image: url("../img/denied.svg");
   }
+  &_question{
+    background-color: #d5d5d5;
+    background-image: url("../img/question-mark.svg");
+  }
 }
 
 /* SCROLLBAR */

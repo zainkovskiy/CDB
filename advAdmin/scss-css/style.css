@@ -61,6 +61,10 @@ body {
   background-color: #ED2121;
   background-image: url("../img/denied.svg");
 }
+.btn_status_question {
+  background-color: #d5d5d5;
+  background-image: url("../img/question-mark.svg");
+}
 
 /* SCROLLBAR */
 /* Let's get this party started */
