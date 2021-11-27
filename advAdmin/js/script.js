@@ -54,7 +54,7 @@ class App {
     for (let item of itemsArr){
       listLayout += `<div class="list__item" data-item="${item.reqNumber}"> 
                       <div class="list__status"> 
-                        <span class="btn_status btn_status_question"></span>
+                        <span class="btn__status btn__status_question"></span>
                       </div>
                       <div class="list__text_wrap"> 
                         <span class="list__text list__req">${item.reqNumber}</span>
@@ -104,16 +104,29 @@ class App {
       }
     }
   }
+  getStatus(photo){
+    switch (photo.status){
+      case 'approved':
+        return 'btn__status_approved'
+      case 'denied':
+        return 'btn__status_denied'
+      case 'pending':
+        return ''
+    }
+  }
   getPhotoItem(files){
     if (files.length > 0){
       const regExp = new RegExp('pdf', 'i');
       const placeholderPDF = 'https://crm.centralnoe.ru/advertisement/img/default/pdf.png';
       let photos = {
         photoLayout: '',
-        startPhoto: regExp.test(files[0].url) ? placeholderPDF : files[0].url
+        startPhoto: regExp.test(files[0].url) ? placeholderPDF : files[0].url,
+        startStatus: this.getStatus(files[0]),
       };
       for (let photo of files){
-        photos.photoLayout += `<div class="slider__item slider__photo" data-img=${photo.url} style="background-image: url(${regExp.test(photo.url) ? placeholderPDF : photo.url})"></div>`
+        photos.photoLayout += `<div class="slider__item slider__photo" data-img=${photo.url} style="background-image: url(${regExp.test(photo.url) ? placeholderPDF : photo.url})">
+                                  <span class="btn__status ${this.getStatus(photo)} photo__status"></span>
+                                </div>`
       }
       return photos;
     } else {

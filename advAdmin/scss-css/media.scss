@@ -1,0 +1,14 @@
+@media (max-width: 1600px) {
+  .center-side__top{
+    grid-template-columns: 200px 1fr 200px;
+  }
+  .card__info-text{
+    font-size: 11px;
+  }
+  .photo__img{
+    height: 400px;
+  }
+  .slider__photo{
+    height: 100px;
+  }
+}

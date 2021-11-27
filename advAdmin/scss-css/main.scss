@@ -45,7 +45,7 @@ body{
   }
 }
 
-.btn_status{
+.btn__status{
   display: block;
   width: 26px;
   height: 26px;
@@ -58,7 +58,7 @@ body{
     background-color: #BBED21;
     background-image: url("../img/approved.svg");
   }
-  &__denied{
+  &_denied{
     background-color: #ED2121;
     background-image: url("../img/denied.svg");
   }
