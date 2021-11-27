@@ -31,6 +31,7 @@ class App {
     this.serverTime = data.serverTime;
     this.container = document.querySelector('.main');
     this.currentItem = '';
+    this.currentPhoto = '';
     this.currentElem = '';
     this.docsFiles = [];
     this.photoFiles = [];
@@ -43,8 +44,6 @@ class App {
     this.currentElem = document.querySelector('.list__item');
     this.currentElem.classList.add('list__item_active');
     this.getItem(this.items[0].reqNumber);
-    // todo удалить снизу костыль
-    // this.getItem(57424000046);
     this.handler();
   }
 
@@ -116,6 +115,7 @@ class App {
   }
   getPhotoItem(files){
     if (files.length > 0){
+      this.currentPhoto = files[0];
       const regExp = new RegExp('pdf', 'i');
       const placeholderPDF = 'https://crm.centralnoe.ru/advertisement/img/default/pdf.png';
       let photos = {
@@ -173,10 +173,26 @@ class App {
                 </div>
               </div>
               <div class="photo"> 
-                <img class="photo__img" src="${photo.startPhoto}" alt="photo">   
+                <img class="photo__img" src="${photo.startPhoto}" alt="photo">
+                <span class="btn__status ${photo.startStatus} photo__status"></span>   
               </div>                
             </div>
             <div class="center-side__bottom"> 
+              <div class="bottom"> 
+                <div class="bottom__left"> 
+                  <button class="button" data-get="photos">фото ${this.photoFiles.length}</button>
+                  <button class="button" data-get="docs">док. ${this.docsFiles.length}</button>
+                </div>
+                <div class="bottom__center"> 
+                  <button class="button button_approved">одобрить все</button>
+                  <button class="button button_approved">одобрить</button>
+                  <button class="button button_denied">отказать</button>
+                  <button class="button button_denied">отказать все</button>
+                </div>
+                <div> 
+                  <input class="input" type="text">
+                </div>
+              </div>
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -199,8 +215,23 @@ class App {
       if (event.target.dataset.item){
         this.toggleActive(event.target);
         this.getItem(event.target.dataset.item);
+      } else if (event.target.dataset.get === 'photos'){
+          if (this.photoFiles.length > 0){
+            this.setSliderPhoto(this.photoFiles);
+          }
+      } else if (event.target.dataset.get === 'docs'){
+          if (this.docsFiles.length > 0){
+            this.setSliderPhoto(this.docsFiles);
+          }
       }
     })
+  }
+  setSliderPhoto(files){
+    const sliderContainer = document.querySelector('.slider__items');
+    sliderContainer.innerHTML = '';
+    const photos = this.getPhotoItem(files);
+    sliderContainer.insertAdjacentHTML('beforeend', photos.photoLayout);
+    this.checkSlider();
   }
   toggleActive(newElem){
     this.currentElem.classList.remove('list__item_active');

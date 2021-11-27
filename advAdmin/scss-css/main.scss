@@ -36,12 +36,66 @@ body{
   font-weight: 400;
   font-style: normal;
   color: grey;
+  box-sizing: border-box;
   &::placeholder{
     opacity: .5;
   }
   &__search{
     border-radius: 20px;
     padding: 5px 10px;
+  }
+}
+.button{
+  border-radius: 5px;
+  outline: none;
+  padding: 10px;
+  font-size: 12px;
+  font-family: 'montserrat', sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: white;
+  background-color: grey;
+  border: 1px solid grey;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  margin: 0 10px 0 0;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  &:hover{
+    background-color: #545353;
+    border: 1px solid #545353;
+  }
+  &:active{
+    background-color: #cbcaca;
+  }
+  &:last-child{
+    margin: 0;
+  }
+  &_approved{
+    background-color: #bbed21;
+    color: #535c69;
+    border: 1px solid #bbed21;
+    &:hover{
+      background-color: #d2f95f;
+      border: 1px solid #d2f95f;
+    }
+    &:active{
+      background-color: #b2e232;
+      border: 1px solid #b2e232;
+    }
+  }
+  &_denied{
+    background-color: white;
+    color: #535c69;
+    border: 1px solid #535c69;
+    &:hover{
+      background-color: #cfd4d8;
+      border: 1px solid #c6cdd3;
+    }
+    &:active{
+      background-color: #dde2e5;
+      border: 1px solid #9fa4ab;
+    }
   }
 }
 
