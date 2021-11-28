@@ -833,6 +833,7 @@ ul {
 .basket__btn-wrap {
   display: flex;
   justify-content: space-between;
+  margin: 20px 0 0 0;
 }
 .basket__item {
   display: flex;
@@ -843,6 +844,10 @@ ul {
 }
 .basket__item span {
   margin: 0 0 0 20px;
+}
+.basket__items {
+  overflow: auto;
+  max-height: 400px;
 }
 
 .buttons {
