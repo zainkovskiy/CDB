@@ -821,6 +821,8 @@ ul {
     white-space: nowrap;
     border-bottom: 1px dashed #c4c4c4;
     margin: 0 0 20px 0;
+    overflow: auto;
+    max-height: 400px;
     & span {
       margin: 0 0 0 20px;
     }
