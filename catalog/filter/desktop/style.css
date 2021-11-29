@@ -829,10 +829,12 @@ ul {
   top: 39px;
   min-width: 300px;
   padding: 20px;
+  max-height: 70vh;
+  overflow: auto;
 }
 .basket__btn-wrap {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin: 20px 0 0 0;
 }
 .basket__item {
@@ -849,10 +851,6 @@ ul {
 }
 .basket__item span {
   margin: 0 0 0 20px;
-}
-.basket__items {
-  overflow: auto;
-  max-height: 400px;
 }
 
 .buttons {
