@@ -235,7 +235,7 @@ class Render {
                                   <p class="clients__text">Место рождения<span>${item.bornLocality ? item.bornLocality : ''}</span></p>
                                 </div>
                                 <div class="clients__wrap_right"> 
-                                  <p class="clients__text">Срия и номер паспорта<span>${item.passRange ? item.passRange : ''} ${item.passNumber ? item.passNumber : ''}</span></p>
+                                  <p class="clients__text">Серия и номер паспорта<span>${item.passRange ? item.passRange : ''} ${item.passNumber ? item.passNumber : ''}</span></p>
                                   <p class="clients__text">Выдан<span>${item.passGranted ? item.passGranted : ''}</span></p>
                                   <div class="clients__data-code"> 
                                     <p class="clients__text">Дата выдачи<span>${passDate}</span></p>

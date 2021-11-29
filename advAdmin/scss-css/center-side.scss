@@ -74,6 +74,14 @@
   border: none;
   position: relative;
 }
+.slider__status{
+  position: absolute;
+  top: 10px;
+  right: 25px;
+}
+.slider__select{
+  border: 3px solid #2067B0;
+}
 .photo{
   display: flex;
   align-items: flex-start;
@@ -83,11 +91,14 @@
     width: 80%;
     height: 600px;
     object-fit: contain;
+    cursor: pointer;
   }
   &__status{
     position: absolute;
     top: 10px;
-    right: 25px;
+    right: 10px;
+    width: 44px;
+    height: 44px;
   }
 }
 .bottom{

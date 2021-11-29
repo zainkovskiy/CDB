@@ -25,14 +25,36 @@ class Api {
   }
 }
 
+let transformImage = {
+  rotate: 0,
+  height: 100,
+  translate: {
+    '0': '-50%, 0%',
+    '90': '0%, 35%',
+    '-90': '0%, -35%',
+    '180': '50%, 0%',
+    '-180': '50%, 0%',
+    '270': '0%, -35%',
+    '-270': '0%, 35%',
+  },
+  'translate0': '-50%, 0%',
+  'translate90': '0%, 50%',
+  'translate-90': '0%, 50%',
+  'translate180': '50%, 0%',
+  'translate-180': '50%, 0%',
+  'translate270': '50%, 0%',
+  'translate-270': '50%, 0%',
+}
+
 class App {
   constructor(data) {
     this.items = data.data;
     this.serverTime = data.serverTime;
     this.container = document.querySelector('.main');
     this.currentItem = '';
+    this.currentItemActive = '';
+    this.slideActive = '';
     this.currentPhoto = '';
-    this.currentElem = '';
     this.docsFiles = [];
     this.photoFiles = [];
     this.timerUpdateItems = setInterval(() => {
@@ -41,10 +63,11 @@ class App {
   }
   init(){
     this.container.insertAdjacentHTML('beforeend', this.layout());
-    this.currentElem = document.querySelector('.list__item');
-    this.currentElem.classList.add('list__item_active');
+    this.currentItemActive = document.querySelector('.list__item');
+    this.currentItemActive.classList.add('list__item_active');
     this.getItem(this.items[0].reqNumber);
     this.handler();
+    this.handlerKeyboard();
   }
 
   getList(itemsArr){
@@ -88,6 +111,7 @@ class App {
     if (this.currentItem){
       centerField.insertAdjacentHTML('beforeend', this.centerLayout())
       this.checkSlider();
+      this.setStartSlideSelect();
     } else {
       centerField.insertAdjacentHTML('beforeend',`<p class="center-side__empty">Нет данных по объекту</p>`);
     }
@@ -110,22 +134,21 @@ class App {
       case 'denied':
         return 'btn__status_denied'
       case 'pending':
-        return ''
+        return 'btn__status_pending'
     }
   }
   getPhotoItem(files){
     if (files.length > 0){
       this.currentPhoto = files[0];
-      const regExp = new RegExp('pdf', 'i');
       const placeholderPDF = 'https://crm.centralnoe.ru/advertisement/img/default/pdf.png';
       let photos = {
         photoLayout: '',
-        startPhoto: regExp.test(files[0].url) ? placeholderPDF : files[0].url,
+        startPhoto: files[0].type === 'pdf' ? placeholderPDF : files[0].url,
         startStatus: this.getStatus(files[0]),
       };
       for (let photo of files){
-        photos.photoLayout += `<div class="slider__item slider__photo" data-img=${photo.url} style="background-image: url(${regExp.test(photo.url) ? placeholderPDF : photo.url})">
-                                  <span class="btn__status ${this.getStatus(photo)} photo__status"></span>
+        photos.photoLayout += `<div data-photo_id="${photo.id}" class="slider__item slider__photo" data-img=${photo.url} style="background-image: url(${photo.type === 'pdf' ? placeholderPDF : photo.url})">
+                                  <span class="btn__status ${this.getStatus(photo)} slider__status"></span>
                                 </div>`
       }
       return photos;
@@ -137,7 +160,9 @@ class App {
     const elms = document.querySelectorAll('.slider');
     for (let i = 0, len = elms.length; i < len; i++) {
       // инициализация elms[i] в качестве слайдера
-      new ChiefSlider(elms[i]);
+      new ChiefSlider(elms[i], {
+        loop: false,
+      });
     }
   }
   centerLayout(){
@@ -173,7 +198,7 @@ class App {
                 </div>
               </div>
               <div class="photo"> 
-                <img class="photo__img" src="${photo.startPhoto}" alt="photo">
+                <img data-open="photo" class="photo__img" src="${photo.startPhoto}" alt="photo">
                 <span class="btn__status ${photo.startStatus} photo__status"></span>   
               </div>                
             </div>
@@ -218,11 +243,106 @@ class App {
       } else if (event.target.dataset.get === 'photos'){
           if (this.photoFiles.length > 0){
             this.setSliderPhoto(this.photoFiles);
+            this.setMainPhoto();
+            this.setStartSlideSelect();
           }
       } else if (event.target.dataset.get === 'docs'){
           if (this.docsFiles.length > 0){
             this.setSliderPhoto(this.docsFiles);
+            this.setMainPhoto();
+            this.setStartSlideSelect();
           }
+      } else if (event.target.dataset.photo_id){
+        this.currentPhoto = this.currentItem.files.find(item => item.id === event.target.dataset.photo_id);
+        this.setMainPhoto();
+        this.setNewSlideSelect(event.target);
+      } else if (event.target.dataset.open === 'photo'){
+        transformImage.rotate = 0;
+        transformImage.height = 100;
+        this.openPhotoFullScreen();
+      }
+    })
+  }
+  openPhotoFullScreen(){
+    if (this.currentPhoto){
+      if (this.currentPhoto.type === 'jpg'){
+        this.openJPG();
+      } else if (this.currentPhoto.type === 'pdf'){
+        this.openPDF();
+      }
+    }
+  }
+  openJPG(){
+    document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
+
+    const currentY = window.pageYOffset;
+    const layout = `<div style="top: ${currentY}"  class="module">
+                      <span data-name="close" class="module__close"></span>
+                      <img class="module__img" src="${this.currentPhoto.url}" alt="photo"> 
+                      <div class="module__controller"> 
+                        <span data-rotate="left" class="module__btn module__left"></span>
+                        <span data-rotate="right" class="module__btn module__right"></span>
+                        <span data-scale="plus" class="module__btn module__zoom-plus"></span>
+                        <span data-scale="minus" class="module__btn module__zoom-minus"></span>
+                        <a href="${this.currentPhoto.url}" target="_blank" download class="module__btn module__download""></a>
+                      </div>
+                  </div>`
+    document.body.insertAdjacentHTML('beforebegin', layout);
+    this.handlerOpenJPG();
+  }
+  handlerOpenJPG(){
+    const module = document.querySelector('.module');
+    module.addEventListener('click', event => {
+      if (event.target.dataset.name === 'close'){
+        this.closeOpenJPG(module);
+      } else if(event.target.dataset.rotate === 'left'){
+        transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate -= 90;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`)
+      } else if(event.target.dataset.rotate === 'right'){
+        transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate += 90;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`)
+      } else if(event.target.dataset.scale === 'plus'){
+        transformImage.height += 5;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`);
+      } else if(event.target.dataset.scale === 'minus'){
+        transformImage.height -= 5;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`);
+      }
+    })
+  }
+  closeOpenJPG(module){
+    document.querySelector('HTML').removeAttribute("style");
+    module.remove();
+  }
+  openPDF(){
+
+  }
+  handlerKeyboard(){
+    document.body.addEventListener('keyup', event => {
+      console.log(event)
+      if (event.code === 'ArrowRight'){
+        const nextElem = this.slideActive.nextElementSibling;
+        if (nextElem){
+          const nextArrow = document.querySelector(`.slider__control[data-slide='next']`);
+          nextArrow.click();
+          this.currentPhoto = this.currentItem.files.find(item => item.id === nextElem.dataset.photo_id);
+          this.setMainPhoto();
+          this.setNewSlideSelect(nextElem);
+        }
+      } else if (event.code === 'ArrowLeft'){
+        const prevElem = this.slideActive.previousElementSibling;
+        if (prevElem){
+          const prevArrow = document.querySelector(`.slider__control[data-slide='prev']`);
+          prevArrow.click();
+          this.currentPhoto = this.currentItem.files.find(item => item.id === prevElem.dataset.photo_id);
+          this.setMainPhoto();
+          this.setNewSlideSelect(prevElem);
+        }
+      } else if (event.code === 'Escape'){
+        const module = document.querySelector('.module');
+        if (module){
+          this.closeOpenJPG(module);
+        }
       }
     })
   }
@@ -233,10 +353,29 @@ class App {
     sliderContainer.insertAdjacentHTML('beforeend', photos.photoLayout);
     this.checkSlider();
   }
+  setMainPhoto(){
+    document.querySelector('.photo__img').src = this.currentPhoto.url;
+    this.setStatus(document.querySelector('.photo__status'));
+  }
+  setStatus(elem){
+    elem.classList.remove('btn__status_approved');
+    elem.classList.remove('btn__status_denied');
+    elem.classList.remove('btn__status_pending');
+    elem.classList.add(`${this.getStatus(this.currentPhoto)}`);
+  }
+  setStartSlideSelect(){
+    this.slideActive = document.querySelector('.slider__photo ');
+    this.slideActive.classList.add('slider__select');
+  }
+  setNewSlideSelect(select){
+    this.slideActive.classList.remove('slider__select');
+    this.slideActive = select;
+    this.slideActive.classList.add('slider__select');
+  }
   toggleActive(newElem){
-    this.currentElem.classList.remove('list__item_active');
-    this.currentElem = newElem;
-    this.currentElem.classList.add('list__item_active');
+    this.currentItemActive.classList.remove('list__item_active');
+    this.currentItemActive = newElem;
+    this.currentItemActive.classList.add('list__item_active');
   }
   getItem(reqNumber){
     api.getJson({
