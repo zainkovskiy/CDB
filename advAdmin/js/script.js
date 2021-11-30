@@ -281,16 +281,16 @@ class App {
         this.closeOpenJPG(module);
       } else if(event.target.dataset.rotate === 'left'){
         transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate -= 90;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`)
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`)
       } else if(event.target.dataset.rotate === 'right'){
         transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate += 90;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`)
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`)
       } else if(event.target.dataset.scale === 'plus'){
         transformImage.height += 5;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`);
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`);
       } else if(event.target.dataset.scale === 'minus'){
         transformImage.height -= 5;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`);
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`);
       }
     })
   }
