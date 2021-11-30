@@ -153,16 +153,12 @@ body {
 }
 .module__img {
   height: 100%;
-  margin: 0 auto;
+  margin: auto;
   max-width: 100%;
   object-fit: contain;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
 }
 .module__close {
-  position: absolute;
+  position: fixed;
   z-index: 5;
   background-image: url("../img/close.svg");
   background-position: center;
