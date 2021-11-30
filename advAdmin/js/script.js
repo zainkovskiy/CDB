@@ -28,22 +28,6 @@ class Api {
 let transformImage = {
   rotate: 0,
   height: 100,
-  translate: {
-    '0': '-50%, 0%',
-    '90': '0%, 35%',
-    '-90': '0%, -35%',
-    '180': '50%, 0%',
-    '-180': '50%, 0%',
-    '270': '0%, -35%',
-    '-270': '0%, 35%',
-  },
-  'translate0': '-50%, 0%',
-  'translate90': '0%, 50%',
-  'translate-90': '0%, 50%',
-  'translate180': '50%, 0%',
-  'translate-180': '50%, 0%',
-  'translate270': '50%, 0%',
-  'translate-270': '50%, 0%',
 }
 
 class App {
@@ -297,16 +281,16 @@ class App {
         this.closeOpenJPG(module);
       } else if(event.target.dataset.rotate === 'left'){
         transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate -= 90;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`)
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`)
       } else if(event.target.dataset.rotate === 'right'){
         transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate += 90;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`)
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`)
       } else if(event.target.dataset.scale === 'plus'){
         transformImage.height += 5;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`);
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`);
       } else if(event.target.dataset.scale === 'minus'){
         transformImage.height -= 5;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg) translate(${transformImage.translate[transformImage.rotate.toString()]}); height: ${transformImage.height}%`);
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg; height: ${transformImage.height}%`);
       }
     })
   }
@@ -319,7 +303,6 @@ class App {
   }
   handlerKeyboard(){
     document.body.addEventListener('keyup', event => {
-      console.log(event)
       if (event.code === 'ArrowRight'){
         const nextElem = this.slideActive.nextElementSibling;
         if (nextElem){
