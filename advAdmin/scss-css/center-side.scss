@@ -61,6 +61,12 @@
     }
   }
 }
+.carousel{
+  padding: 10px;
+  border-bottom: 1px solid #c2c2c2;
+  border-top: 1px solid #c2c2c2;
+}
+
 .slider__item {
   flex: 0 0 16.666%;
   max-width: 16.666%;
@@ -89,7 +95,7 @@
   position: relative;
   &__img{
     width: 80%;
-    height: 600px;
+    height: 500px;
     object-fit: contain;
     cursor: pointer;
   }

@@ -1,4 +1,6 @@
 .header{
-  background-color: #727272;
   grid-area: header;
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }

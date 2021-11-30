@@ -73,15 +73,18 @@ class App {
   }
   layout(){
     const list = this.getList(this.items);
-    return `<div class="header"></div>
-              <div class="left-side">
-              <div class="left-side__input"> 
-                <input class="input input__search" type="search" placeholder="поиск">
+    return `<div class="header"> 
+              <button data-action="approved" data-control="application" class="button button_approved">одобрить</button>
+              <button data-action="denied" data-control="application" class="button button_denied">отказать</button>
+            </div>
+            <div class="left-side">
+            <div class="left-side__input"> 
+              <input class="input input__search" type="search" placeholder="поиск">
 <!--                <div></div>-->
-              </div> 
-              <div class="list"> 
-                ${list}
-              </div>
+            </div> 
+            <div class="list"> 
+              ${list}
+            </div>
             </div>
             <div class="center-side"> 
             </div>
@@ -111,8 +114,8 @@ class App {
       }
     }
   }
-  getStatus(photo){
-    switch (photo.status){
+  getStatus(status){
+    switch (status){
       case 'approved':
         return 'btn__status_approved'
       case 'denied':
@@ -128,11 +131,11 @@ class App {
       let photos = {
         photoLayout: '',
         startPhoto: files[0].type === 'pdf' ? placeholderPDF : files[0].url,
-        startStatus: this.getStatus(files[0]),
+        startStatus: this.getStatus(files[0].status),
       };
       for (let photo of files){
         photos.photoLayout += `<div data-photo_id="${photo.id}" class="slider__item slider__photo" data-img=${photo.url} style="background-image: url(${photo.type === 'pdf' ? placeholderPDF : photo.url})">
-                                  <span class="btn__status ${this.getStatus(photo)} slider__status"></span>
+                                  <span class="btn__status ${this.getStatus(photo.status)} slider__status"></span>
                                 </div>`
       }
       return photos;
@@ -193,10 +196,10 @@ class App {
                   <button class="button" data-get="docs">док. ${this.docsFiles.length}</button>
                 </div>
                 <div class="bottom__center"> 
-                  <button class="button button_approved">одобрить все</button>
-                  <button class="button button_approved">одобрить</button>
-                  <button class="button button_denied">отказать</button>
-                  <button class="button button_denied">отказать все</button>
+                  <button data-action="approved" data-control="all" class="button button_approved">одобрить все</button>
+                  <button data-action="approved" data-control="one" class="button button_approved">одобрить</button>
+                  <button data-action="denied" data-control="one" class="button button_denied">отказать</button>
+                  <button data-action="denied" data-control="all" class="button button_denied">отказать все</button>
                 </div>
                 <div> 
                   <input class="input" type="text">
@@ -244,9 +247,45 @@ class App {
         transformImage.rotate = 0;
         transformImage.height = 100;
         this.openPhotoFullScreen();
+      } else if(event.target.dataset.control){
+        this.switchActionSetStatus(event.target.dataset.action, event.target.dataset.control);
       }
     })
   }
+  switchActionSetStatus(action, control){
+    switch (control){
+      case 'all':
+        this.changeStatusAll(action);
+        break
+      case  'one':
+        this.changeStatusOne(action);
+        break
+      case 'application':
+        this.changeStatusApplication(action);
+        break
+    }
+  }
+  changeStatusAll(action){
+    let changeArr = this.currentPhoto.isDoc ? this.docsFiles : this.photoFiles;
+    let sliderStatusIcons = this.container.querySelectorAll('.slider__status');
+    this.setStatus(this.container.querySelector('.photo__status'), action);
+    for (let file of changeArr){
+      file.status = action;
+    }
+    for (let icon of sliderStatusIcons){
+      this.setStatus(icon, action);
+    }
+    console.log(this.currentItem)
+  }
+  changeStatusOne(action){
+    this.currentPhoto.status = action;
+    this.setStatus(this.slideActive.querySelector('span'), action);
+    this.setStatus(this.container.querySelector('.photo__status'), action);
+  }
+  changeStatusApplication(action){
+
+  }
+
   openPhotoFullScreen(){
     if (this.currentPhoto){
       if (this.currentPhoto.type === 'jpg'){
@@ -284,14 +323,16 @@ class App {
                         <div id="canvas_container">
                             <canvas id="pdf_renderer"></canvas>
                         </div>
-                        <div id="navigation_controls">
-                            <button id="go_previous">Previous</button>
-                            <input id="current_page" value="1" type="number"/>
-                            <button id="go_next">Next</button>
-                        </div>
-                        <div id="zoom_controls">  
-                            <button id="zoom_in">+</button>
-                            <button id="zoom_out">-</button>
+                        <div class="pdf_controls"> 
+                          <div id="navigation_controls">
+                            <button id="go_previous" class="module__btn module__prev"></button>
+                            <input id="current_page" class="input" value="1" type="number"/>
+                            <button id="go_next" class="module__btn module__next"></button>
+                          </div>
+                          <div id="zoom_controls">  
+                            <button id="zoom_in" class="module__btn module__zoom-plus"></button>
+                            <button id="zoom_out" class="module__btn module__zoom-minus"></button>
+                          </div>
                         </div>
                       </div>
                   </div>`
@@ -305,6 +346,8 @@ class App {
       currentPage: 1,
       zoom: 1
     }
+    // img/New_Horizons.pdf
+    // ${this.currentPhoto.url}
     pdfjsLib.getDocument(`img/New_Horizons.pdf`).then((pdf) => {
       console.log(pdf)
       myState.pdf = pdf;
@@ -409,6 +452,7 @@ class App {
     document.querySelector('HTML').removeAttribute("style");
     module.remove();
   }
+
   handlerKeyboard(){
     document.body.addEventListener('keyup', event => {
       if (event.code === 'ArrowRight'){
@@ -446,13 +490,13 @@ class App {
   }
   setMainPhoto(){
     document.querySelector('.photo__img').src = this.currentPhoto.url;
-    this.setStatus(document.querySelector('.photo__status'));
+    this.setStatus(document.querySelector('.photo__status'), this.currentPhoto.status);
   }
-  setStatus(elem){
+  setStatus(elem, status){
     elem.classList.remove('btn__status_approved');
     elem.classList.remove('btn__status_denied');
     elem.classList.remove('btn__status_pending');
-    elem.classList.add(`${this.getStatus(this.currentPhoto)}`);
+    elem.classList.add(`${this.getStatus(status)}`);
   }
   setStartSlideSelect(){
     this.slideActive = document.querySelector('.slider__photo ');
