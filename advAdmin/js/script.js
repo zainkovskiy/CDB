@@ -151,11 +151,7 @@ class App {
   }
   layout(){
     const list = this.getList(this.items);
-    return `<div class="header"> 
-              <button data-action="approved" data-control="application" class="button button_approved">одобрить</button>
-              <button data-action="denied" data-control="application" class="button button_denied">отказать</button>
-            </div>
-            <div class="left-side">
+    return `<div class="left-side">
             <div class="left-side__input"> 
               <input class="input input__search" type="search" placeholder="поиск">
               <div class="search__field inVisible"></div>
@@ -222,13 +218,23 @@ class App {
         startStatus: this.getStatus(files[0].status),
       };
       for (let photo of files){
-        photos.photoLayout += `<div data-photo_id="${photo.id}" class="slider__item slider__photo" data-img=${photo.url} style="background-image: url(${photo.type === 'pdf' ? placeholderPDF : photo.url})">
+        photos.photoLayout += `<div data-photo_id="${photo.id}" class="slider__item slider__photo" style="background-image: url(${photo.type === 'pdf' ? placeholderPDF : this.checkURL(photo.url)})">
                                   <span class="btn__status ${this.getStatus(photo.status)} slider__status"></span>
+                                  <span class="slider__reason">${photo.rejectionReason ? photo.rejectionReason : ''}</span>
+                                  <span class="btn__status ${+photo.web === 1 ? 'btn__status_web' : ''}"></span>
                                 </div>`
       }
       return photos;
     } else {
       return ''
+    }
+  }
+  checkURL(url){
+    const regExp = new RegExp(' ', 'i');
+    if (regExp.test(url)){
+      return url.replace(/ /g, '%20');
+    } else {
+      return url
     }
   }
   checkSlider(){
@@ -241,70 +247,97 @@ class App {
     }
   }
   centerLayout(){
-    const photo = this.getPhotoItem(this.docsFiles.length > 0 ? this.docsFiles : this.photoFiles);
-    return ` <span class="card__title">
+    const photo = this.getPhotoItem(this.currentItem.type.modType === 'first' ? this.docsFiles : this.photoFiles);
+    return `<div class="center-side__header">
+              <div class="${this.currentPhotoType ? 'inVisible' : ''}">    
+                <button data-action="approved" data-control="application" class="button button_approved">подтвердить</button>
+                <button data-action="denied" data-control="application" class="button button_denied">вернуть</button>
+              </div>
+              <span class="card__title">
                 ${this.currentItem.object.city ? `г. ${this.currentItem.object.city}` : ''} 
                 ${this.currentItem.object.street ? `ул.${this.currentItem.object.street}` : ''} 
                 ${this.currentItem.object.houseNumber ? `д. ${this.currentItem.object.houseNumber}` : ''} 
                 ${this.currentItem.objectRoom ? `кв. ${this.currentItem.objectRoom}` : ''} 
               </span>
+              <div class="contact">
+                  <img class="contact__img" src="${this.currentItem.author.PERSONAL_PHOTO ? this.currentItem.author.PERSONAL_PHOTO : ''}" alt="">
+                  <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.currentItem.author.UID}" bx-tooltip-user-id="${this.currentItem.author.UID}">
+                      ${this.currentItem.author.FULL_NAME ? this.currentItem.author.FULL_NAME : ''}
+                  </a>                               
+              </div>
+            </div>
             <div class="center-side__top"> 
               <div class="card">
                 <div class="card__info"> 
-                  <p class="card__info-text">Заявка:<span>${this.currentItem.ad ? this.currentItem.ad : ''} </span></p>
+                  <p class="card__info-text">Заявка: 
+                  ${this.currentItem.ad ? `<a target="_blank" href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?login=yes&source=1c&id=${this.currentItem.ad}">${this.currentItem.ad}</a>` : ''}
+                  </p>
                   <p class="card__info-text">Клиент:<span>${this.currentItem.clients[0] ? 
-                    `${this.currentItem.clients[0].secondName ? this.currentItem.clients[0].secondName : ''}
+                    `${this.currentItem.clients[0].lastName ? this.currentItem.clients[0].lastName : ''}
                     ${this.currentItem.clients[0].name ? this.currentItem.clients[0].name : ''}
-                    ${this.currentItem.clients[0].lastName ? this.currentItem.clients[0].lastName : ''}`
+                    ${this.currentItem.clients[0].secondName ? this.currentItem.clients[0].secondName : ''}`
                     : ''} </span>
                   </p>
-                  <p class="card__info-text">Тип отношений:<span>${this.currentItem.type.type ? this.currentItem.type.type : ''} </span></p>
+                  <p class="card__info-text">Тип договора:<span>${this.currentItem.type.type ? this.currentItem.type.type : ''} </span></p>
                   <p class="card__info-text">Срок действия:<span>${this.currentItem.publishedAt.stop ? this.currentItem.publishedAt.stop : ''} </span></p>
                   <p class="card__info-text">Тип объекста:<span>${this.currentItem.objectType ? 
                     `${this.currentItem.objectType.type ? this.currentItem.objectType.type : ''}
                     ${this.currentItem.objectType.rooms ? `(${this.currentItem.objectType.rooms}к.)` : ''}`
                     : ''} </span></p>
-                  <p class="card__info-text">Комната объекта:<span>${this.currentItem.objectRoom ? this.currentItem.objectRoom : ''} </span></p>
+                  <p class="card__info-text">Квартира:<span>${this.currentItem.objectRoom ? this.currentItem.objectRoom : ''} </span></p>
                   <p class="card__info-text">Доля объекта:<span>${this.currentItem.objectShare ? this.currentItem.objectShare : ''} </span></p>
                 </div> 
                 <div class="card__comment"> 
                   <span class="card__comment-title">Комментарий в рекламу</span>
                   <textarea class="card__comment-field input" cols="30" rows="5">${this.currentItem.comment ? this.currentItem.comment : ''}</textarea>
+                  <span data-comment="toggle" data-ok="${+this.currentItem.commentOk === 1 ? 'yes' : 'no'}"
+                    class="btn__status comment__status ${+this.currentItem.commentOk === 1 ? 'btn__status_approved' : 'btn__status_denied'}">
+                  </span>
                 </div>
               </div>
               <div class="photo"> 
-                <img data-open="photo" class="photo__img" src="${photo.startPhoto}" alt="photo">
-                <span class="btn__status ${photo.startStatus} photo__status"></span>   
-              </div>                
+                <div class="photo__wrap"> 
+                  <img data-open="photo" class="photo__img" src="${photo.startPhoto}" alt="нет фото">
+                  <span class="btn__status ${photo.startStatus} photo__status"></span>   
+                </div>
+              </div> 
+              <div class="info"> 
+              </div>               
             </div>
             <div class="center-side__bottom"> 
               <div class="bottom"> 
                 <div class="bottom__left"> 
-                  <button class="button" data-get="photos">фото ${this.photoFiles.length}</button>
-                  <button class="button" data-get="docs">док. ${this.docsFiles.length}</button>
+                  <button class="button button__center inVisible" data-get="docs">док. ${this.docsFiles.length}</button>
+                  <button class="button button__center inVisible" data-get="photos">фото ${this.photoFiles.length}</button>
                 </div>
                 <div class="bottom__center"> 
-                  <button data-action="approved" data-control="all" class="button button_approved">одобрить все</button>
-                  <button data-action="approved" data-control="one" class="button button_approved docs_hide ${this.currentPhotoType ? 'inVisible' : ''}">одобрить</button>
-                  <button data-action="denied" data-control="one" class="button button_denied docs_hide ${this.currentPhotoType ? 'inVisible' : ''}">отказать</button>
-                  <button data-action="denied" data-control="all" class="button button_denied">отказать все</button>
-                </div>
-                <div class="reason"> 
-                  <input data-input="reason" data-elem="check" data- class="input reason__input" type="text" readonly 
-                  value="${this.currentPhoto.rejectionReason ? this.currentPhoto.rejectionReason : ''}">
-                  <span data-elem="check" class="reason__arrow input__arrow"></span>
-                  <div data-elem="check" class="reason__list inVisible"> 
-                    <span data-reason="reason" data-elem="check" class="reason__item reason__item_empty">...</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Адрес объекта на фото</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Качество фотографии</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Лишние элементы</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Логотипы</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Люди на фото</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Плохая загрузка</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Повторная фотография</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Телевизор/логотипы</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Черновая/беловая</span>
-                    <span data-reason="reason" data-elem="check" class="reason__item">Явные недостатки</span>
+                  <div class="reason ${this.currentPhotoType ? 'inVisibility' : ''}"> 
+                    <input data-input="reason" data-elem="check" data- class="input reason__input" type="text" readonly 
+                    value="${this.currentPhoto.rejectionReason ? this.currentPhoto.rejectionReason : ''}">
+                    <span data-elem="check" class="reason__arrow input__arrow"></span>
+                    <div data-elem="check" class="reason__list inVisible"> 
+                      <span data-reason="reason" data-elem="check" class="reason__item reason__item_empty">...</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Адрес объекта на фото</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Качество фотографии</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Лишние элементы</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Логотипы</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Люди на фото</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Плохая загрузка</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Повторная фотография</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Телевизор/логотипы</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Черновая/беловая</span>
+                      <span data-reason="reason" data-elem="check" class="reason__item">Явные недостатки</span>
+                    </div>
+                  </div>
+                  <div class="${this.currentPhotoType ? '' : 'inVisible'}"> 
+                    <button data-action="approved" data-control="application" class="button button_approved">подтвердить</button>
+                    <button data-action="denied" data-control="application" class="button button_denied">вернуть</button>
+                  </div>
+                  <div class="${this.currentPhotoType ? 'inVisible' : ''}"> 
+                    <button data-action="approved" data-control="all" class="button button_approved">подтвердить все</button>
+                    <button data-action="approved" data-control="one" class="button button_approved docs_hide">подтвердить</button>
+                    <button data-action="denied" data-control="one" class="button button_denied docs_hide">вернуть</button>
+                    <button data-action="denied" data-control="all" class="button button_denied">вернуть все</button>
                   </div>
                 </div>
               </div>
@@ -335,6 +368,7 @@ class App {
             for (let elem of document.querySelectorAll('.docs_hide')){
               elem.classList.remove('inVisible');
             }
+            document.querySelector('.reason').classList.remove('inVisibility');
             this.setSliderPhoto(this.photoFiles);
             this.setMainPhoto();
             this.setStartSlideSelect();
@@ -344,6 +378,7 @@ class App {
             for (let elem of document.querySelectorAll('.docs_hide')){
               elem.classList.add('inVisible');
             }
+            document.querySelector('.reason').classList.add('inVisibility');
             this.setSliderPhoto(this.docsFiles);
             this.setMainPhoto();
             this.setStartSlideSelect();
@@ -372,6 +407,8 @@ class App {
           findItem.scrollIntoView({block: "start", behavior: "smooth"});
           this.toggleActive(findItem);
           this.getItem(event.target.dataset.search);
+      } else if (event.target.dataset.comment === 'toggle'){
+          this.commentToggle(event);
       }
     })
 
@@ -418,6 +455,20 @@ class App {
             </div>`
   }
 
+  commentToggle(event){
+    if (event.target.dataset.ok === 'yes'){
+      this.currentItem.commentOk = 0;
+      event.target.dataset.ok = 'no';
+      event.target.classList.remove('btn__status_approved');
+      event.target.classList.add('btn__status_denied');
+    } else if (event.target.dataset.ok === 'no'){
+      this.currentItem.commentOk = 1;
+      event.target.dataset.ok = 'yes';
+      event.target.classList.remove('btn__status_denied');
+      event.target.classList.add('btn__status_approved');
+    }
+  }
+
   switchActionSetStatus(action, control){
     switch (control){
       case 'all':
@@ -437,17 +488,25 @@ class App {
     this.setStatus(this.container.querySelector('.photo__status'), action);
     for (let file of changeArr){
       file.status = action;
+      if (action === 'approved'){
+        file.rejectionReason = '';
+      }
     }
     for (let icon of sliderStatusIcons){
       this.setStatus(icon, action);
     }
     if (action === 'denied' && this.currentPhotoType){
       this.openSelectReason();
+    } else if (action === 'approved'){
+      document.querySelector('.reason__input').value = '';
     }
-    console.log(this.currentItem)
   }
   changeStatusOne(action){
     this.currentPhoto.status = action;
+    if (action === 'approved'){
+      this.currentPhoto.rejectionReason = '';
+      document.querySelector('.reason__input').value = '';
+    }
     this.setStatus(this.slideActive.querySelector('span'), action);
     this.setStatus(this.container.querySelector('.photo__status'), action);
   }
@@ -455,7 +514,7 @@ class App {
     if (this.currentItem){
       if (action === 'approved'){
         this.setStatusCurrentItem(action);
-        this.sendItem('denied');
+        this.sendItem('approved');
       } else if (action === 'denied'){
         this.openSelectReason();
       }
@@ -594,7 +653,7 @@ class App {
     const currentY = window.pageYOffset;
     const layout = `<div style="top: ${currentY}"  class="module">
                       <span data-name="close" class="module__close"></span>
-                      <img class="module__img" src="${this.currentPhoto.url}" alt="photo"> 
+                      <img class="module__img" src="${this.currentPhoto.url}" alt="нет фото"> 
                       <div class="module__controller"> 
                         <span data-rotate="left" class="module__btn module__left"></span>
                         <span data-rotate="right" class="module__btn module__right"></span>
@@ -742,12 +801,14 @@ class App {
       } else if (event.target.dataset.name === 'apply'){
         this.deniedReason = [];
         const selectReason = module.querySelectorAll('INPUT:checked');
-        for (let reason of selectReason){
-          this.deniedReason.push(reasonApplication[reason.id]);
+        if (selectReason.length > 0){
+          for (let reason of selectReason){
+            this.deniedReason.push(reasonApplication[reason.id]);
+          }
+          this.setStatusCurrentItem('denied');
+          this.sendItem('denied');
+          this.closeModule(module);
         }
-        this.setStatusCurrentItem('denied');
-        this.sendItem('denied');
-        this.closeModule(module);
       }
     })
   }
@@ -834,9 +895,12 @@ class App {
     })
   }
   sendItem(status){
+    this.currentItem.comment = document.querySelector('.card__comment-field').value;
+    console.log(this.currentItem)
     api.getJson({
       action: 'setItem',
       reqStatus: status,
+      data: this.currentItem,
       reason: `${this.deniedReason.length > 0 ? this.deniedReason : ''}`,
     }).then(() => {
       this.subtractionQuantityType();
@@ -907,6 +971,11 @@ api.getJson({
   action : "getList"
 }).then(data => {
   console.log(data)
-  app = new App(data);
-  app.init();
+  if (data.items > 0){
+    console.log(data)
+    app = new App(data);
+    app.init();
+  } else {
+      document.querySelector('.main').insertAdjacentHTML('beforebegin', `<p class="center-side__empty">Нет объектов</p>`)
+  }
 })

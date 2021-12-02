@@ -18,14 +18,22 @@
     grid-template-columns: 300px 1fr 300px;
     grid-gap: 10px;
   }
+  &__header{
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+  }
 }
 .card{
+  display: grid;
+  grid-template-rows: min-content 1fr;
   &__title{
     font-size: 26px;
     font-family: "montserrat", sans-serif;
     font-weight: 400;
     font-style: normal;
     letter-spacing: 0.8px;
+    text-align: center;
+    grid-column-start: 2;
   }
   &__info-text{
     padding: 8px 0 8px 0;
@@ -37,6 +45,10 @@
     letter-spacing: 0.8px;
     font-size: 13px;
     margin: 0;
+    & a{
+      margin: 0 0 0 20px;
+      font-weight: 400;
+    }
     & span {
       color: black;
       margin: 0 0 0 20px;
@@ -45,6 +57,9 @@
   }
   &__comment{
     margin: 20px 0 0 0;
+    position: relative;
+    display: grid;
+    grid-template-rows: min-content 1fr;
     &-title{
       font-weight: 700;
       font-size: 15px;
@@ -61,6 +76,15 @@
     }
   }
 }
+.comment__status{
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  pointer-events: auto;
+}
 .carousel{
   padding: 10px;
   border-bottom: 1px solid #c2c2c2;
@@ -68,8 +92,8 @@
 }
 
 .slider__item {
-  flex: 0 0 16.666%;
-  max-width: 16.666%;
+  flex: 0 0 14.285%;
+  max-width: 14.285%;
 }
 .slider__photo{
   height: 150px;
@@ -88,23 +112,40 @@
 .slider__select{
   border: 3px solid #2067B0;
 }
+.slider__reason{
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 0px);
+  background-color: white;
+  font-size: 12px;
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  color: grey;
+  font-style: normal;
+  white-space: nowrap;
+  border-radius: 5px;
+}
 .photo{
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  position: relative;
+  &__wrap{
+    position: relative;
+  }
   &__img{
-    width: 80%;
     height: 500px;
     object-fit: contain;
     cursor: pointer;
   }
   &__status{
     position: absolute;
-    top: 10px;
-    right: 10px;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
     width: 44px;
     height: 44px;
+    opacity: .3;
   }
 }
 .bottom{
@@ -117,11 +158,34 @@
   &__center{
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
 }
 .reason{
   position: relative;
+  width: 400px;
   &__input{
     padding: 10px 20px 10px 10px;
+  }
+}
+
+.contact{
+  display: flex;
+  align-items: center;
+  & span{
+    color: grey;
+    font-family: "montserrat", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.8px;
+    font-size: 16px;
+  }
+  &__img{
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    margin: 0 15px 0 0;
   }
 }
