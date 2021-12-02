@@ -753,6 +753,7 @@ class ProgressBar{
           this.progressBar.notConcluded = true;
           this.progressBar.filled = true;
           this.progressBar.signed = true;
+          this.sendChekStatus();
         }
       }
     }
@@ -761,6 +762,26 @@ class ProgressBar{
       this.progressBar.filled = true;
     } else {
       this.progressBar.notConcluded = true;
+    }
+  }
+  async sendChekStatus(){
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: JSON.stringify({
+        "action" : "insNew",
+        "reqNumber" : UID,
+        "type" : 0
+      }),
+    };
+    let response = await fetch("https://50970.vds.miran.ru:553/Servers/Internal/AdAdmin.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
     }
   }
   render(){

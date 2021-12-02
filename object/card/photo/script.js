@@ -50,10 +50,42 @@ class Photo{
       this.copyPhotos = JSON.parse(JSON.stringify(this.photos));
       this.handlerPhoto = JSON.parse(JSON.stringify(this.photos));
       this.UIDMedia = jsonA[0].UIDMedia;
+      this.checkPhoto();
     }
     console.log('это приходит с сервера');
     console.log(this.photos)
     this.init();
+  }
+  checkPhoto(){
+    const sortPhoto = [];
+    for (let photo of this.photos){
+      if (photo.managerComment.length > 0 && photo.moderationStatus === "Failure" && photo.reason.length === 0 && photo.web === '1'){
+        sortPhoto.push(photo);
+      }
+    }
+    if (sortPhoto.length > 0){
+      this.sendCheckPhoto();
+    }
+  }
+  async sendCheckPhoto(){
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: JSON.stringify({
+        "action" : "insNew",
+        "reqNumber" : UID,
+        "type" : 1
+      }),
+    };
+    let response = await fetch("https://50970.vds.miran.ru:553/Servers/Internal/AdAdmin.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
   }
 }
 
