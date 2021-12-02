@@ -6,6 +6,7 @@
     display: flex;
     align-items: center;
     margin: 0 0 0 10px;
+    position: relative;
   }
 }
 .list{
@@ -69,5 +70,24 @@
   &__text_wrap, &__status{
     pointer-events: none;
     user-select: none;
+  }
+}
+.count{
+  display: flex;
+  justify-content: space-around;
+  height: 50px;
+  align-items: center;
+  &__item{
+    width: 30%;
+    font-size: 12px;
+    font-family: "montserrat", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
+    margin: 0;
+    & span{
+      display: block;
+      font-weight: 700;
+    }
   }
 }

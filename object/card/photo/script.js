@@ -150,8 +150,7 @@ class Render{
               
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${objectUID}">ДОУ</a> -->
               
-              <a class="ui-btn ui-btn-icon-page change-page__link
-              ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu'  || login === 'denishevalf' ? '' : 'isVisible'}" 
+              <a class="ui-btn ui-btn-icon-page change-page__link" 
               href="../agency/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ДОУ</a>
               
               <a class="ui-btn ui-btn-secondary change-page__link" href="../photo/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>              

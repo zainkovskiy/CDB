@@ -29,6 +29,32 @@ let transformImage = {
   rotate: 0,
   height: 100,
 }
+const placeholderPDF = 'https://crm.centralnoe.ru/advertisement/img/default/pdf.png';
+
+const reasonApplication = {
+  value1: 'Недостаточное кол-во подтвержденных объектов (менее 4-х)',
+  value2: 'Неверно указан АДРЕС объекта',
+  value3: 'Отсутствие доп соглашения о продлении',
+  value4: 'Не указан срок действия договора',
+  value5: 'Дубль',
+  value6: 'Для помещения необходимо добавить хотя бы одну фотографию интерьера',
+  value7: 'Нет в списке выкупленных объектов',
+  value8: 'Не предоставленны правопологающие документы',
+  value9: 'Неверно указан срок окончания ДОУ',
+  value10: 'Отсутствие информации в доп. соглашении',
+  value11: 'Неверно указан ТИП объекта',
+  value12: 'Не предоставлены документы, подтверждающие смену фамилии собственника',
+  value13: 'Недостаточное количество документов. Нет правоустанавливающего документа.',
+  value14: 'Нет даты подписания договора',
+  value15: 'Нет первой страницы ДОУ',
+  value16: 'Прикреплен пустой пакет документов',
+  value17: 'Данные в заявке и документов не совпадают',
+  value18: 'Нет подписей сторон',
+  value19: 'Документы невозможно проверить',
+  value20: 'Данный объект занесен в стоп-лист',
+  value21: 'Разные ФИО собственника и клиента',
+  value22: 'Иное',
+}
 
 class App {
   constructor(data) {
@@ -39,26 +65,78 @@ class App {
     this.currentItemActive = '';
     this.slideActive = '';
     this.currentPhoto = '';
+    this.currentPhotoType = true;
+    this.deniedReason = [];
     this.docsFiles = [];
     this.photoFiles = [];
-    this.timerUpdateItems = setInterval(() => {
-      this.getNewItems();
-    }, 300000)
+    this.timerUpdateItems = '';
+    this.timerClock = '';
+    this.quantityType = {
+      first: 0,
+      last: 0,
+      adv: 0,
+    }
+    this.filter = [];
   }
   init(){
+    this.setQuantityType(this.items);
     this.container.insertAdjacentHTML('beforeend', this.layout());
     this.currentItemActive = document.querySelector('.list__item');
     this.currentItemActive.classList.add('list__item_active');
     this.getItem(this.items[0].reqNumber);
     this.handler();
     this.handlerKeyboard();
+    this.setTimer();
+  }
+  setQuantityType(items){
+    for (let item of items){
+      if (item.reqType === 'sk'){
+        if (item.modType === 'first'){
+          this.quantityType.first++;
+        } else if (item.modType === 'last'){
+          this.quantityType.last++;
+        }
+      } else if (item.reqType === 'adv'){
+        this.quantityType.adv++;
+      }
+    }
+  }
+  subtractionQuantityType(){
+    const findItem = this.items.find(item => item.reqNumber === this.currentItem.ad);
+    if (findItem){
+      if (findItem.reqType === 'sk'){
+        if (findItem.modType === 'first'){
+          this.quantityType.first--;
+        } else if (findItem.modType === 'last'){
+          this.quantityType.last--;
+        }
+      } else if (findItem.reqType === 'adv'){
+        this.quantityType.adv--;
+      }
+      this.renderQuantity();
+    }
+  }
+  renderQuantity(){
+    document.querySelector('.count_first').innerHTML = `${this.quantityType.first}`;
+    document.querySelector('.count_last').innerHTML = `${this.quantityType.last}`;
+    document.querySelector('.count_adv').innerHTML = `${this.quantityType.adv}`;
+  }
+  setTimer(){
+    clearInterval(this.timerUpdateItems);
+    clearInterval(this.timerClock);
+    this.timerUpdateItems = setInterval(() => {
+      this.getNewItems();
+    }, 300000);
+    let date = new Date();
+    let deadline = new Date (date.setMinutes(date.getMinutes()+5));
+    this.initializeClock(deadline);
   }
 
   getList(itemsArr){
 
     let listLayout = '';
     for (let item of itemsArr){
-      listLayout += `<div class="list__item" data-item="${item.reqNumber}"> 
+      listLayout += `<div class="list__item id${item.reqNumber}" data-item="${item.reqNumber}"> 
                       <div class="list__status"> 
                         <span class="btn__status btn__status_question"></span>
                       </div>
@@ -80,16 +158,26 @@ class App {
             <div class="left-side">
             <div class="left-side__input"> 
               <input class="input input__search" type="search" placeholder="поиск">
-<!--                <div></div>-->
+              <div class="search__field inVisible"></div>
             </div> 
             <div class="list"> 
               ${list}
             </div>
+            <div class="count"> 
+              <p class="count__item">first<span class="count_first">${this.quantityType.first}</span></p>
+              <p class="count__item">last<span class="count_last">${this.quantityType.last}</span></p>
+              <p class="count__item">adv<span class="count_adv">${this.quantityType.adv}</span></p>
+            </div>
             </div>
             <div class="center-side"> 
             </div>
-            <div class="right-side"></div>
-            <div class="footer"></div>`
+            <div class="footer"> 
+            <div class="footer__update"> 
+              <span data-list="update" class="button"><span class="module__right button_update"></span></span>
+              <span class="minutes__text timer__text"></span> : 
+              <span class="seconds__text timer__text"></span>
+            </div>
+            </div>`
   }
 
   renderItem(){
@@ -127,7 +215,7 @@ class App {
   getPhotoItem(files){
     if (files.length > 0){
       this.currentPhoto = files[0];
-      const placeholderPDF = 'https://crm.centralnoe.ru/advertisement/img/default/pdf.png';
+      this.currentPhotoType = this.currentPhoto.isDoc;
       let photos = {
         photoLayout: '',
         startPhoto: files[0].type === 'pdf' ? placeholderPDF : files[0].url,
@@ -197,12 +285,27 @@ class App {
                 </div>
                 <div class="bottom__center"> 
                   <button data-action="approved" data-control="all" class="button button_approved">одобрить все</button>
-                  <button data-action="approved" data-control="one" class="button button_approved">одобрить</button>
-                  <button data-action="denied" data-control="one" class="button button_denied">отказать</button>
+                  <button data-action="approved" data-control="one" class="button button_approved docs_hide ${this.currentPhotoType ? 'inVisible' : ''}">одобрить</button>
+                  <button data-action="denied" data-control="one" class="button button_denied docs_hide ${this.currentPhotoType ? 'inVisible' : ''}">отказать</button>
                   <button data-action="denied" data-control="all" class="button button_denied">отказать все</button>
                 </div>
-                <div> 
-                  <input class="input" type="text">
+                <div class="reason"> 
+                  <input data-input="reason" data-elem="check" data- class="input reason__input" type="text" readonly 
+                  value="${this.currentPhoto.rejectionReason ? this.currentPhoto.rejectionReason : ''}">
+                  <span data-elem="check" class="reason__arrow input__arrow"></span>
+                  <div data-elem="check" class="reason__list inVisible"> 
+                    <span data-reason="reason" data-elem="check" class="reason__item reason__item_empty">...</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Адрес объекта на фото</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Качество фотографии</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Лишние элементы</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Логотипы</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Люди на фото</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Плохая загрузка</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Повторная фотография</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Телевизор/логотипы</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Черновая/беловая</span>
+                    <span data-reason="reason" data-elem="check" class="reason__item">Явные недостатки</span>
+                  </div>
                 </div>
               </div>
               <div class="carousel"> 
@@ -229,29 +332,92 @@ class App {
         this.getItem(event.target.dataset.item);
       } else if (event.target.dataset.get === 'photos'){
           if (this.photoFiles.length > 0){
+            for (let elem of document.querySelectorAll('.docs_hide')){
+              elem.classList.remove('inVisible');
+            }
             this.setSliderPhoto(this.photoFiles);
             this.setMainPhoto();
             this.setStartSlideSelect();
           }
       } else if (event.target.dataset.get === 'docs'){
           if (this.docsFiles.length > 0){
+            for (let elem of document.querySelectorAll('.docs_hide')){
+              elem.classList.add('inVisible');
+            }
             this.setSliderPhoto(this.docsFiles);
             this.setMainPhoto();
             this.setStartSlideSelect();
           }
       } else if (event.target.dataset.photo_id){
-        this.currentPhoto = this.currentItem.files.find(item => item.id === event.target.dataset.photo_id);
-        this.setMainPhoto();
-        this.setNewSlideSelect(event.target);
+          this.currentPhoto = this.currentItem.files.find(item => item.id === event.target.dataset.photo_id);
+          this.setMainPhoto();
+          this.setNewSlideSelect(event.target);
       } else if (event.target.dataset.open === 'photo'){
-        transformImage.rotate = 0;
-        transformImage.height = 100;
-        this.openPhotoFullScreen();
+          transformImage.rotate = 0;
+          transformImage.height = 100;
+          this.openPhotoFullScreen();
       } else if(event.target.dataset.control){
-        this.switchActionSetStatus(event.target.dataset.action, event.target.dataset.control);
+          this.switchActionSetStatus(event.target.dataset.action, event.target.dataset.control);
+      } else if (event.target.dataset.list === 'update'){
+          this.getNewItems();
+      } else if (event.target.dataset.input === 'reason'){
+          const reasonList = document.querySelector('.reason__list');
+          reasonList.setAttribute('style', `height: ${window.innerHeight - event.target.getBoundingClientRect().bottom - 50}px;`)
+          reasonList.classList.remove('inVisible');
+      } else if (event.target.dataset.reason === 'reason'){
+          this.setNewReason(event.target);
+      } else if (event.target.dataset.search){
+          document.querySelector('.search__field').classList.add('inVisible');
+          const findItem = document.querySelector(`.id${event.target.dataset.search}`)
+          findItem.scrollIntoView({block: "start", behavior: "smooth"});
+          this.toggleActive(findItem);
+          this.getItem(event.target.dataset.search);
+      }
+    })
+
+    const inputSearch = document.querySelector('.input__search');
+    inputSearch.addEventListener('keyup', () => {
+      this.renderFindItem(inputSearch.value);
+    })
+    inputSearch.addEventListener('blur', () => {
+      inputSearch.value = '';
+    })
+    
+    document.body.addEventListener('click', event => {
+      if (event.target.dataset.elem !== 'check'){
+        const reasonList = document.querySelector('.reason__list');
+        const searchField = document.querySelector('.search__field');
+        if (reasonList){
+          document.querySelector('.reason__list').classList.add('inVisible');
+        }
+        if (searchField){
+          document.querySelector('.search__field').classList.add('inVisible');
+        }
       }
     })
   }
+  renderFindItem(value){
+    this.filter = [];
+    const searchField = document.querySelector('.search__field');
+    searchField.innerHTML = '';
+    searchField.classList.remove('inVisible');
+    const regExp = new RegExp(value, 'i');
+    this.filter = this.items.filter(item => regExp.test(item.reqNumber) || regExp.test(item.reqStreet));
+    if (this.filter.length > 0){
+      for (let item of this.filter){
+        searchField.insertAdjacentHTML('beforeend', this.getFindItem(item));
+      }
+    } else {
+      searchField.insertAdjacentHTML('beforeend', `<p class="search__item">Нет совпадений</p>`);
+    }
+  }
+  getFindItem(item){
+    return `<div data-elem="check" data-search="${item.reqNumber}" class="search__item"> 
+              <span data-elem="check">${item.reqNumber}</span>
+              <span data-elem="check">${item.reqStreet} ${item.reqHouseNumber}</span>
+            </div>`
+  }
+
   switchActionSetStatus(action, control){
     switch (control){
       case 'all':
@@ -275,6 +441,9 @@ class App {
     for (let icon of sliderStatusIcons){
       this.setStatus(icon, action);
     }
+    if (action === 'denied' && this.currentPhotoType){
+      this.openSelectReason();
+    }
     console.log(this.currentItem)
   }
   changeStatusOne(action){
@@ -283,7 +452,131 @@ class App {
     this.setStatus(this.container.querySelector('.photo__status'), action);
   }
   changeStatusApplication(action){
+    if (this.currentItem){
+      if (action === 'approved'){
+        this.setStatusCurrentItem(action);
+        this.sendItem('denied');
+      } else if (action === 'denied'){
+        this.openSelectReason();
+      }
+    }
+  }
+  setStatusCurrentItem(status){
+    const statusIcon = this.currentItemActive.querySelector('.btn__status ');
+    statusIcon.classList.remove('btn__status_question');
+    this.setStatus(statusIcon, status);
+  }
+  setNewReason(reason){
+    document.querySelector('.reason__list').classList.add('inVisible');
+    document.querySelector('.reason__input').value = reason.innerHTML;
+    this.currentPhoto.rejectionReason = reason.innerHTML === '...' ? '' : reason.innerHTML;
+  }
 
+  openSelectReason(){
+    document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
+    const currentY = window.pageYOffset;
+    const layout = `<div style="top: ${currentY}"  class="module">
+                      <span data-name="close" class="module__close"></span>
+                      <div class="module__wrap"> 
+                        <p class="module__title">Причина</p>
+                        <div class="module__reason"> 
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value1">
+                              <label for="value1">Недостаточное кол-во подтвержденных объектов (менее 4-х)</label>
+                            </div>                             
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value2">
+                              <label for="value2">Неверно указан АДРЕС объекта</label>
+                            </div>                             
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value3">
+                              <label for="value3">Отсутствие доп соглашения о продлении</label>
+                            </div>                             
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value4">
+                              <label for="value4">Не указан срок действия договора</label>
+                            </div>                             
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value5">
+                              <label for="value5">Дубль</label>
+                            </div>                             
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value6">
+                              <label for="value6">Для помещения необходимо добавить хотя бы одну фотографию интерьера</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value7">
+                              <label for="value7">Нет в списке выкупленных объектов</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value8">
+                              <label for="value8">Не предоставленны правопологающие документы</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value9">
+                              <label for="value9">Неверно указан срок окончания ДОУ</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value10">
+                              <label for="value10">Отсутствие информации в доп. соглашении</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value11">
+                              <label for="value11">Неверно указан ТИП объекта</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value12">
+                              <label for="value12">Не предоставлены документы, подтверждающие смену фамилии собственника</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value13">
+                              <label for="value13">Недостаточное количество документов. Нет правоустанавливающего документа.</label>
+                            </div>                             
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value14">
+                              <label for="value14">Нет даты подписания договора</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value15">
+                              <label for="value15">Нет первой страницы ДОУ</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value16">
+                              <label for="value16">Прикреплен пустой пакет документов</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value17">
+                              <label for="value17">Данные в заявке и документов не совпадают</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value18">
+                              <label for="value18">Нет подписей сторон</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value19">
+                              <label for="value19">Документы невозможно проверить</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value20">
+                              <label for="value20">Данный объект занесен в стоп-лист</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value21">
+                              <label for="value21">Разные ФИО собственника и клиента</label>
+                            </div>                            
+                            <div class="module__reason-item">
+                              <input type="checkbox" id="value22">
+                              <label for="value22">Иное</label>
+                            </div>                            
+                        </div>
+                        <div> 
+                          <button data-name="apply" class="button button_approved">применить</button>
+                          <button data-name="close" class="button button_denied">отменить</button>
+                        </div>
+                      </div>
+                  </div>`
+    document.body.insertAdjacentHTML('beforebegin', layout);
+    this.handlerModule();
   }
 
   openPhotoFullScreen(){
@@ -311,7 +604,7 @@ class App {
                       </div>
                   </div>`
     document.body.insertAdjacentHTML('beforebegin', layout);
-    this.handlerOpenJPG();
+    this.handlerModule();
   }
   openPDF(){
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
@@ -338,7 +631,7 @@ class App {
                   </div>`
     document.body.insertAdjacentHTML('beforebegin', layout);
     this.callPDFjs();
-    this.handlerOpenJPG();
+    this.handlerModule();
   }
   callPDFjs(){
     const myState = {
@@ -348,7 +641,8 @@ class App {
     }
     // img/New_Horizons.pdf
     // ${this.currentPhoto.url}
-    pdfjsLib.getDocument(`img/New_Horizons.pdf`).then((pdf) => {
+    console.log(this.currentPhoto.url);
+    pdfjsLib.getDocument(`${this.currentPhoto.url}`).then((pdf) => {
       console.log(pdf)
       myState.pdf = pdf;
       render();
@@ -428,11 +722,11 @@ class App {
         render();
       });
   }
-  handlerOpenJPG(){
+  handlerModule(){
     const module = document.querySelector('.module');
     module.addEventListener('click', event => {
       if (event.target.dataset.name === 'close'){
-        this.closeOpenJPG(module);
+        this.closeModule(module);
       } else if(event.target.dataset.rotate === 'left'){
         transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate -= 90;
         document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`)
@@ -445,10 +739,19 @@ class App {
       } else if(event.target.dataset.scale === 'minus'){
         transformImage.height -= 5;
         document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`);
+      } else if (event.target.dataset.name === 'apply'){
+        this.deniedReason = [];
+        const selectReason = module.querySelectorAll('INPUT:checked');
+        for (let reason of selectReason){
+          this.deniedReason.push(reasonApplication[reason.id]);
+        }
+        this.setStatusCurrentItem('denied');
+        this.sendItem('denied');
+        this.closeModule(module);
       }
     })
   }
-  closeOpenJPG(module){
+  closeModule(module){
     document.querySelector('HTML').removeAttribute("style");
     module.remove();
   }
@@ -476,7 +779,7 @@ class App {
       } else if (event.code === 'Escape'){
         const module = document.querySelector('.module');
         if (module){
-          this.closeOpenJPG(module);
+          this.closeModule(module);
         }
       }
     })
@@ -489,8 +792,9 @@ class App {
     this.checkSlider();
   }
   setMainPhoto(){
-    document.querySelector('.photo__img').src = this.currentPhoto.url;
+    document.querySelector('.photo__img').src = this.currentPhoto.type === 'pdf' ? placeholderPDF : this.currentPhoto.url;
     this.setStatus(document.querySelector('.photo__status'), this.currentPhoto.status);
+    document.querySelector('.reason__input').value = this.currentPhoto.rejectionReason ? this.currentPhoto.rejectionReason : '';
   }
   setStatus(elem, status){
     elem.classList.remove('btn__status_approved');
@@ -517,7 +821,6 @@ class App {
       action: 'getItem',
       reqNumber: reqNumber,
     }).then(item => {
-      //todo отрисовывать объект в центре
       if(!Array.isArray(item)){
         this.currentItem = item;
         console.log('this is item')
@@ -530,19 +833,71 @@ class App {
       }
     })
   }
+  sendItem(status){
+    api.getJson({
+      action: 'setItem',
+      reqStatus: status,
+      reason: `${this.deniedReason.length > 0 ? this.deniedReason : ''}`,
+    }).then(() => {
+      this.subtractionQuantityType();
+      const nextItem = this.currentItemActive.nextElementSibling;
+      if (nextItem){
+        nextItem.scrollIntoView({block: "start", behavior: "smooth"})
+        this.toggleActive(nextItem);
+        this.getItem(nextItem.dataset.item);
+      } else {
+        const centerField = document.querySelector('.center-side');
+        centerField.innerHTML = '';
+        centerField.insertAdjacentHTML('beforeend',`<p class="center-side__empty">Обновите объекты</p>`);
+      }
+    })
+  }
   getNewItems(){
+    document.querySelector('.button_update').classList.add('button_load');
     api.getJson({
       action: 'getUpdates',
       serverTime: this.serverTime,
     }).then(newData => {
       this.serverTime = newData.serverTime;
+      document.querySelector('.button_update').classList.remove('button_load');
+      this.setTimer();
       if (+newData.items > 0){
         this.items.push(newData.data);
+        this.setQuantityType(newData.data);
         document.querySelector('.list').insertAdjacentHTML('beforeend', this.getList(newData.data));
+        this.renderQuantity();
       }
       console.log('this is update');
       console.log(newData);
     })
+  }
+
+  initializeClock(deadline){
+    const minutesSpan = document.querySelector('.minutes__text');
+    const secondsSpan = document.querySelector('.seconds__text');
+    function updateClock(){
+      let t = getTimeRemaining(deadline);
+      minutesSpan.innerHTML = `${t.minutes < 10 ? `0${t.minutes}` : t.minutes}`;
+      secondsSpan.innerHTML = `${t.seconds < 10 ? `0${t.seconds}` : t.seconds}`;
+      if(t.total<=0){
+        clearInterval(this.timerClock);
+      }
+    }
+    // updateClock();
+
+    this.timerClock = setInterval(updateClock,1000);
+
+    function getTimeRemaining(deadline){
+      let t = Date.parse(deadline) - Date.parse(new Date());
+      let seconds = Math.floor( (t/1000) % 60 );
+      let minutes = Math.floor( (t/1000/60) % 60 );
+
+      return {
+        'total': t,
+        'minutes': minutes,
+        'seconds': seconds,
+      };
+    }
   }
 }
 

@@ -19,7 +19,7 @@ body {
   display: grid;
   grid-template-columns: 200px 1fr 200px;
   grid-template-rows: 50px 1fr 50px;
-  grid-template-areas: "left header header" "left center right" "left footer right";
+  grid-template-areas: "left header header" "left center center" "left footer footer";
   height: 100vh;
 }
 
@@ -35,6 +35,8 @@ body {
   font-style: normal;
   color: grey;
   box-sizing: border-box;
+  text-overflow: ellipsis;
+  position: relative;
 }
 .input::placeholder {
   opacity: 0.5;
@@ -42,6 +44,20 @@ body {
 .input__search {
   border-radius: 20px;
   padding: 5px 10px;
+}
+.input__arrow {
+  pointer-events: none;
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-image: url("../img/arrow-down.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  top: calc(50% - 5px);
+  right: 10px;
 }
 
 .button {
@@ -98,7 +114,28 @@ body {
   background-color: #dde2e5;
   border: 1px solid #9fa4ab;
 }
+.button_update {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%;
+  width: 15px;
+  height: 15px;
+  display: block;
+  pointer-events: none;
+}
+.button_load {
+  animation: rotate 1s linear;
+  animation-fill-mode: forwards;
+}
 
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .btn__status {
   display: block;
   width: 26px;
@@ -151,6 +188,33 @@ body {
   align-items: center;
   justify-content: center;
   overflow: auto;
+}
+.module__wrap {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+.module__reason {
+  margin: 20px 0;
+}
+.module__reason-item {
+  padding: 5px 0;
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: grey;
+  user-select: none;
+}
+.module__reason-item:hover {
+  background: #f2f2f2;
+}
+.module__title {
+  font-size: 24px;
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: grey;
+  margin: 0;
 }
 .module__img {
   height: 100%;
@@ -266,6 +330,56 @@ body {
   margin: 0 20px 0 0;
 }
 
+.inVisible {
+  display: none;
+}
+
+.reason__list, .search__field {
+  background-color: white;
+  position: absolute;
+  margin: 10px 0 0 0;
+  box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+  padding: 5px 0;
+  z-index: 5;
+  width: 100%;
+  overflow: auto;
+  border-radius: 5px;
+}
+
+.search__field {
+  max-height: 70vh;
+  width: auto;
+  min-width: 100%;
+  margin: 50px 0 0 0;
+  top: 0;
+}
+
+.reason__item, .search__item {
+  width: 100%;
+  display: block;
+  padding: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  white-space: nowrap;
+  user-select: none;
+  font-weight: 400;
+  font-family: "montserrat", sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  letter-spacing: 0.8px;
+}
+.reason__item:hover, .search__item:hover {
+  background: #f2f2f2;
+}
+.reason__item_empty, .search__item_empty {
+  color: white;
+}
+
+.search__item span {
+  display: block;
+  pointer-events: none;
+}
+
 .header {
   grid-area: header;
   display: flex;
@@ -282,6 +396,7 @@ body {
   display: flex;
   align-items: center;
   margin: 0 0 0 10px;
+  position: relative;
 }
 
 .list {
@@ -346,6 +461,26 @@ body {
 .list__text_wrap, .list__status {
   pointer-events: none;
   user-select: none;
+}
+
+.count {
+  display: flex;
+  justify-content: space-around;
+  height: 50px;
+  align-items: center;
+}
+.count__item {
+  width: 30%;
+  font-size: 12px;
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  margin: 0;
+}
+.count__item span {
+  display: block;
+  font-weight: 700;
 }
 
 .center-side {
@@ -475,13 +610,26 @@ body {
   justify-content: center;
 }
 
-.right-side {
-  padding: 10px;
-  grid-area: right;
+.reason {
+  position: relative;
+}
+.reason__input {
+  padding: 10px 20px 10px 10px;
 }
 
 .footer {
   grid-area: footer;
+  display: flex;
+  align-items: center;
+}
+.footer__update {
+  display: flex;
+  align-items: center;
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  color: grey;
+  width: 100px;
+  margin-left: auto;
 }
 
 @media (max-width: 1600px) {
