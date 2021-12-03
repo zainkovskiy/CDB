@@ -183,9 +183,16 @@ class App {
       centerField.insertAdjacentHTML('beforeend', this.centerLayout())
       this.checkSlider();
       this.setStartSlideSelect();
+      this.setHeightForField();
     } else {
       centerField.insertAdjacentHTML('beforeend',`<p class="center-side__empty">Нет данных по объекту</p>`);
     }
+  }
+  setHeightForField(){
+    const requestField = document.querySelector('.request__field');
+    const messengerField = document.querySelector('.messenger__field');
+    requestField.setAttribute('style', `height: ${requestField.offsetHeight}px;`);
+    messengerField.setAttribute('style', `height: ${messengerField.offsetHeight}px;`);
   }
   sortFilesItem(){
     this.docsFiles = [];
@@ -246,8 +253,85 @@ class App {
       });
     }
   }
+  getMessages(){
+    if (this.currentItem.messages){
+      if (this.currentItem.messages.length > 0){
+        let messages = '';
+        for (let message of this.currentItem.messages){
+          messages += this.messageItem(message);
+        }
+        return messages;
+      } else {
+        return ''
+      }
+    } else {
+      return '';
+    }
+  }
+  messageItem(message){
+    return `<span class="messenger__message message${message.UID}">${message.comment}
+              <i data-message="edit" data-id="${message.UID}" class="messenger__btn messenger__btn_edit"></i>
+              <i data-message="delete" data-id="${message.UID}" class="messenger__btn messenger__btn_delete"></i>
+            </span>`
+  }
+  sendMessage(){
+    const messengerField = document.querySelector('.messenger__field');
+    const message = document.querySelector('.messenger__textarea');
+    if (message.value.length > 0 && message.value !== ' '){
+      api.getJson({
+        action: 'newComment',
+        reqNumber: this.currentItem.ad,
+        comment: message.value,
+      }).then(data => {
+        this.currentItem.messages.push(data);
+        messengerField.insertAdjacentHTML('beforeend', this.messageItem(data));
+        message.value = '';
+      })
+    }
+  }
+  deleteMessage(uid){
+    api.getJson({
+      action: 'delComment',
+      UID: uid,
+    }).then(() => {
+      const find = this.currentItem.messages.find(message => +message.UID === +uid);
+      this.currentItem.messages.splice(this.currentItem.messages.indexOf(find), 1);
+      document.querySelector(`.message${uid}`).remove();
+    })
+  }
+  editMessage(uid){
+    const find = this.currentItem.messages.find(message => +message.UID === +uid);
+    const messengerTextarea = document.querySelector('.messenger__textarea');
+    messengerTextarea.value = find.comment;
+    document.querySelector('.messenger__send-btn').dataset.message = 'done';
+    document.querySelector('.messenger__send-btn').setAttribute('data-id', `${find.UID}`);
+  }
+  sendEditMessage(uid){
+    const messengerTextarea = document.querySelector('.messenger__textarea');
+    if (messengerTextarea.value.length > 0 && messengerTextarea.value !== " "){
+      api.getJson({
+        action: 'editComment',
+        UID: uid,
+        comment: messengerTextarea.value,
+      }).then(() => {
+        const find = this.currentItem.messages.find(message => +message.UID === +uid);
+        find.comment = messengerTextarea.value;
+        document.querySelector(`.message${uid}`).innerHTML = `${messengerTextarea.value}
+                                                                    <i data-message="edit" data-id="${uid}" class="messenger__btn messenger__btn_edit"></i>
+                                                                    <i data-message="delete" data-id="${uid}" class="messenger__btn messenger__btn_delete"></i>`;
+        messengerTextarea.value = '';
+        document.querySelector('.messenger__send-btn').dataset.message = 'send';
+        document.querySelector('.messenger__send-btn').removeAttribute('data-id');
+      })
+    } else {
+        messengerTextarea.value = '';
+        document.querySelector('.messenger__send-btn').dataset.message = 'send';
+        document.querySelector('.messenger__send-btn').removeAttribute('data-id');
+    }
+  }
   centerLayout(){
     const photo = this.getPhotoItem(this.currentItem.type.modType === 'first' ? this.docsFiles : this.photoFiles);
+    const message = this.getMessages();
     return `<div class="center-side__header">
               <div class="${this.currentPhotoType ? 'inVisible' : ''}">    
                 <button data-action="approved" data-control="application" class="button button_approved">подтвердить</button>
@@ -261,16 +345,16 @@ class App {
               </span>
               <div class="contact">
                   <img class="contact__img" src="${this.currentItem.author.PERSONAL_PHOTO ? this.currentItem.author.PERSONAL_PHOTO : ''}" alt="">
-                  <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.currentItem.author.UID}" bx-tooltip-user-id="${this.currentItem.author.UID}">
+                  <span class="contact__link text" data-open="person" data-id="${this.currentItem.author.UID}">
                       ${this.currentItem.author.FULL_NAME ? this.currentItem.author.FULL_NAME : ''}
-                  </a>                               
+                  </span>                               
               </div>
             </div>
             <div class="center-side__top"> 
               <div class="card">
                 <div class="card__info"> 
                   <p class="card__info-text">Заявка: 
-                  ${this.currentItem.ad ? `<a target="_blank" href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?login=yes&source=1c&id=${this.currentItem.ad}">${this.currentItem.ad}</a>` : ''}
+                  <span data-open="card" data-req="${this.currentItem.ad}" class="card__info-text_link">${this.currentItem.ad}</span>
                   </p>
                   <p class="card__info-text">Клиент:<span>${this.currentItem.clients[0] ? 
                     `${this.currentItem.clients[0].lastName ? this.currentItem.clients[0].lastName : ''}
@@ -301,7 +385,26 @@ class App {
                   <span class="btn__status ${photo.startStatus} photo__status"></span>   
                 </div>
               </div> 
-              <div class="info"> 
+              <div class="info">
+                <div class="request"> 
+                  <span class="card__comment-title info__title">Поиск дублей</span>
+                  <div class="request__buttons"> 
+                    <button data-request="getHouseList" class="button request__btn">адрес</button>
+                    <button data-request="getClientList" class="button request__btn">контакт</button>
+                  </div>
+                  <div class="request__field"> 
+                  </div>
+                </div>
+                <div class="messenger"> 
+                  <span class="card__comment-title info__title">Для заметок</span>
+                  <div class="messenger__field"> 
+                    ${message}
+                  </div>
+                  <div class="messenger__send"> 
+                    <textarea class="messenger__textarea"></textarea>
+                    <span data-action="send" data-message="send" class="messenger__send-btn"></span>
+                  </div>
+                </div>
               </div>               
             </div>
             <div class="center-side__bottom"> 
@@ -409,6 +512,22 @@ class App {
           this.getItem(event.target.dataset.search);
       } else if (event.target.dataset.comment === 'toggle'){
           this.commentToggle(event);
+      } else if (event.target.dataset.request){
+          this.getRequest(event.target.dataset.request);
+      } else if (event.target.dataset.open === 'card'){
+        this.openCard(event.target.dataset.req);
+      } else if (event.target.dataset.open === 'person'){
+        let readyString = `/company/personal/user/${event.target.dataset.id}/`;
+        BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+        return true;
+      } else if (event.target.dataset.message === 'send'){
+          this.sendMessage();
+      } else if (event.target.dataset.message === 'delete'){
+          this.deleteMessage(event.target.dataset.id);
+      } else if (event.target.dataset.message === 'edit'){
+          this.editMessage(event.target.dataset.id);
+      } else if (event.target.dataset.message === 'done'){
+          this.sendEditMessage(event.target.dataset.id);
       }
     })
 
@@ -419,7 +538,7 @@ class App {
     inputSearch.addEventListener('blur', () => {
       inputSearch.value = '';
     })
-    
+
     document.body.addEventListener('click', event => {
       if (event.target.dataset.elem !== 'check'){
         const reasonList = document.querySelector('.reason__list');
@@ -433,6 +552,12 @@ class App {
       }
     })
   }
+  openCard(reqNumber){
+    let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=1c&id="+reqNumber;
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+    return true;
+  }
+
   renderFindItem(value){
     this.filter = [];
     const searchField = document.querySelector('.search__field');
@@ -466,6 +591,29 @@ class App {
       event.target.dataset.ok = 'yes';
       event.target.classList.remove('btn__status_denied');
       event.target.classList.add('btn__status_approved');
+    }
+  }
+
+  getRequest(action){
+    api.getJson({
+      action: action,
+      reqNumber: this.currentItem.ad,
+    }).then(data => {
+        this.renderAnswer(data);
+    })
+  }
+  renderAnswer(answers){
+    const requestField = document.querySelector('.request__field');
+    requestField.innerHTML = '';
+    if (answers){
+      for (let answer of answers){
+        requestField.insertAdjacentHTML('beforeend',
+          `<span data-open="card" data-req="${answer.reqNumber}" class="reason__item request__item">
+                    ${answer.reqTypeofRealty} ${answer.reqStreet} ${answer.reqHouseNumber}${answer.reqFlat ? `-${answer.reqFlat}` : ''}
+                </span>`)
+      }
+    } else {
+      requestField.insertAdjacentHTML('beforeend', `<span class="reason__item request__item">нет</span>`);
     }
   }
 

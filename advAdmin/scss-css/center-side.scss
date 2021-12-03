@@ -45,14 +45,17 @@
     letter-spacing: 0.8px;
     font-size: 13px;
     margin: 0;
-    & a{
-      margin: 0 0 0 20px;
-      font-weight: 400;
-    }
     & span {
       color: black;
       margin: 0 0 0 20px;
       font-weight: 400;
+    }
+    &_link{
+      margin: 0 0 0 20px;
+      font-weight: 400;
+      color: #1d96ff !important;
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
   &__comment{
@@ -174,18 +177,128 @@
 .contact{
   display: flex;
   align-items: center;
-  & span{
-    color: grey;
+  &__img{
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    margin: 0 15px 0 0;
+  }
+  &__link{
+    color: #1d96ff ;
+    text-decoration: underline;
+    cursor: pointer;
     font-family: "montserrat", sans-serif;
     font-weight: 400;
     font-style: normal;
     letter-spacing: 0.8px;
     font-size: 16px;
   }
-  &__img{
-    width: 50px;
-    height: 50px;
-    border-radius: 30px;
-    margin: 0 15px 0 0;
+}
+
+.info{
+  display: grid;
+  grid-template-rows: calc(50% - 5px) calc(50% - 5px);
+  grid-gap: 10px;
+  &__title{
+    margin: 0 0 10px 0;
+  }
+}
+
+.request{
+  display: flex;
+  flex-direction: column;
+  &__buttons{
+    display: flex;
+  }
+  &__btn{
+    width: 50%;
+  }
+  &__item{
+    white-space: normal;
+  }
+}
+.messenger__field, .request__field{
+  margin: 10px 0 0 0;
+  border: 1px solid grey;
+  border-radius: 5px;
+  height: 100%;
+  overflow: auto;
+}
+.messenger{
+  display: flex;
+  flex-direction: column;
+  &__field{
+    margin: 0;
+    border-radius: 5px 5px 0 0;
+    background-color: #c4f2fd;
+    border-bottom: none;
+    display: flex;
+    flex-direction: column;
+  }
+  &__message{
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    display: block;
+    width: fit-content;
+    font-family: "montserrat", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.8px;
+    font-size: 13px;
+    position: relative;
+  }
+  &__textarea{
+    resize: none;
+    width: 100%;
+    outline: none;
+    border: 1px solid grey;
+    border-radius: 0 0 0 5px;
+    font-family: "montserrat", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    padding: 5px;
+  }
+  &__send{
+    display: flex;
+    &-btn{
+      display: block;
+      width: 45px;
+      background-size: 70%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-image: url("../img/right-arrow-svgrepo-com.svg");
+      cursor: pointer;
+      border: 1px solid grey;
+      border-left: none;
+      border-radius: 0 0 5px 0;
+      &:hover{
+        background-color: #c0d7ff;
+      }
+      &:active{
+        background-color: #97b8ff;
+      }
+    }
+  }
+  &__btn{
+    display: block;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    &_edit{
+      right: 3px;
+      bottom: 3px;
+      background-image: url("../img/button-setting.svg");
+    }
+    &_delete{
+      right: 3px;
+      top: 3px;
+      background-image: url("../img/close.svg");
+    }
   }
 }
