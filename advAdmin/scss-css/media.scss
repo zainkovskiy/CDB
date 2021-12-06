@@ -17,4 +17,31 @@
   .bottom{
     grid-template-columns: 200px 1fr 200px;
   }
+  .button{
+    padding: 5px;
+    font-size: 11px;
+  }
+  .card__title{
+    font-size: 22px;
+  }
+  .contact__img{
+    width: 35px;
+    height: 35px;
+  }
+  .contact__link text{
+    font-size: 14px;
+  }
+  .reason__input {
+    padding: 5px 20px 5px 5px;
+  }
+  .card__comment-title{
+    font-size: 12px;
+  }
+  .messenger__message{
+    font-size: 11px;
+  }
+  .reason__item, .search__item{
+    padding: 5px;
+    font-size: 12px;
+  }
 }

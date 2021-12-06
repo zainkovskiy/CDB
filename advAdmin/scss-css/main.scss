@@ -68,6 +68,10 @@ img{
     top: calc(50% - 5px);
     right: 10px;
   }
+  &__checkbox{
+    appearance: none;
+    margin: 0;
+  }
 }
 .button{
   border-radius: 5px;
@@ -98,6 +102,10 @@ img{
   }
   &__center{
     align-self: flex-end;
+  }
+  &__filter{
+    width: 50%;
+    margin: 0;
   }
   &_approved{
     background-color: #bbed21;
@@ -173,7 +181,7 @@ img{
     background-color: #ffffff;
     background-image: url("../img/web.svg");
     position: absolute;
-    left: 25px;
+    left: 10px;
     top: 10px;
   }
 }
@@ -211,8 +219,13 @@ img{
     padding: 20px;
     border-radius: 5px;
   }
+  &__area{
+    margin: 0 0 20px 0;
+  }
   &__reason{
     margin: 20px 0;
+    max-height: 50%;
+    overflow: auto;
     &-item{
       padding: 5px 0;
       font-family: "montserrat", sans-serif;

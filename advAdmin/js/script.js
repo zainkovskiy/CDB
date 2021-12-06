@@ -20,8 +20,7 @@ class Api {
       throw new Error('Ответ сети был не ok.');
     }
 
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
   }
 }
 
@@ -144,10 +143,19 @@ class App {
                         <span class="list__text list__req">${item.reqNumber}</span>
                         <span class="list__text list__location">${item.reqStreet} ${item.reqHouseNumber}</span>
                       </div>
-                      <span class="list__text list__type">${item.reqType}</span>
+                      <span class="list__text list__type">${this.getType(item)}</span>
                      </div>`
     }
     return listLayout;
+  }
+  getType(item){
+    if (item.reqType === "sk" && item.modType === "first"){
+      return 'Перв.'
+    } else if (item.reqType === "sk" && item.modType === "last"){
+      return 'Осн.'
+    } else if (item.reqType === "adv"){
+      return 'РД'
+    }
   }
   layout(){
     const list = this.getList(this.items);
@@ -160,9 +168,9 @@ class App {
               ${list}
             </div>
             <div class="count"> 
-              <p class="count__item">first<span class="count_first">${this.quantityType.first}</span></p>
-              <p class="count__item">last<span class="count_last">${this.quantityType.last}</span></p>
-              <p class="count__item">adv<span class="count_adv">${this.quantityType.adv}</span></p>
+              <p class="count__item">Перв.<span class="count_first">${this.quantityType.first}</span></p>
+              <p class="count__item">Осн.<span class="count_last">${this.quantityType.last}</span></p>
+              <p class="count__item">РД<span class="count_adv">${this.quantityType.adv}</span></p>
             </div>
             </div>
             <div class="center-side"> 
@@ -344,7 +352,7 @@ class App {
                 ${this.currentItem.objectRoom ? `кв. ${this.currentItem.objectRoom}` : ''} 
               </span>
               <div class="contact">
-                  <img class="contact__img" src="${this.currentItem.author.PERSONAL_PHOTO ? this.currentItem.author.PERSONAL_PHOTO : ''}" alt="">
+                  <img class="contact__img" src="${this.currentItem.author.PERSONAL_PHOTO ? this.currentItem.author.PERSONAL_PHOTO : 'img/placeholder-user.png'}" alt="">
                   <span class="contact__link text" data-open="person" data-id="${this.currentItem.author.UID}">
                       ${this.currentItem.author.FULL_NAME ? this.currentItem.author.FULL_NAME : ''}
                   </span>                               
@@ -412,6 +420,11 @@ class App {
                 <div class="bottom__left"> 
                   <button class="button button__center inVisible" data-get="docs">док. ${this.docsFiles.length}</button>
                   <button class="button button__center inVisible" data-get="photos">фото ${this.photoFiles.length}</button>
+                  
+                  <div class="bottom__toggle item">
+                    <input class="input__checkbox filter__input" name="filter" type="checkbox" id="new" value="новые">
+                    <label class="bottom__btn button" for="new">новые</label>
+                  </div>
                 </div>
                 <div class="bottom__center"> 
                   <div class="reason ${this.currentPhotoType ? 'inVisibility' : ''}"> 
@@ -528,6 +541,12 @@ class App {
           this.editMessage(event.target.dataset.id);
       } else if (event.target.dataset.message === 'done'){
           this.sendEditMessage(event.target.dataset.id);
+      } else if (event.target.type === 'checkbox' && event.target.name === 'filter'){
+        if (event.target.checked){
+          this.showNewSliderItems();
+        } else{
+          this.showAllSliderItems();
+        }
       }
     })
 
@@ -552,6 +571,40 @@ class App {
       }
     })
   }
+
+  showAllSliderItems(){
+    if (this.currentPhotoType){
+      this.setSliderPhoto(this.docsFiles);
+    } else {
+      this.setSliderPhoto(this.photoFiles);
+    }
+    this.setMainPhoto();
+    this.setStartSlideSelect();
+    // const sliderPhotos = document.querySelectorAll('.slider__photo ');
+    // for (let photo of sliderPhotos){
+    //   if (photo.classList.contains('inVisible')){
+    //     photo.classList.remove('inVisible');
+    //   }
+    // }
+  }
+  showNewSliderItems(){
+    const pendingPhoto = [];
+    for (let photo of this.currentPhotoType ? this.docsFiles : this.photoFiles){
+      if (photo.status === 'pending'){
+        pendingPhoto.push(photo);
+      }
+    }
+    this.setSliderPhoto(pendingPhoto);
+    this.setMainPhoto();
+    this.setStartSlideSelect();
+    // const sliderPhotos = document.querySelectorAll('.slider__photo ');
+    // for (let photo of sliderPhotos){
+    //   if (photo.querySelector('.btn__status_denied') || photo.querySelector('.btn__status_approved ')){
+    //     photo.classList.add('inVisible');
+    //   }
+    // }
+  }
+
   openCard(reqNumber){
     let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=1c&id="+reqNumber;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
@@ -776,6 +829,7 @@ class App {
                               <label for="value22">Иное</label>
                             </div>                            
                         </div>
+                        <textarea class="module__area messenger__textarea" cols="30" rows="10"></textarea>
                         <div> 
                           <button data-name="apply" class="button button_approved">применить</button>
                           <button data-name="close" class="button button_denied">отменить</button>
@@ -869,7 +923,7 @@ class App {
       });
     }
     document.getElementById('go_previous')
-      .addEventListener('click', (e) => {
+      .addEventListener('click', () => {
         if(myState.pdf == null
           || myState.currentPage === 1) return;
         myState.currentPage -= 1;
@@ -879,7 +933,7 @@ class App {
       });
 
     document.getElementById('go_next')
-      .addEventListener('click', (e) => {
+      .addEventListener('click', () => {
         if(myState.pdf == null
           || myState.currentPage > myState.pdf
             ._pdfInfo.numPages)
@@ -916,14 +970,14 @@ class App {
       });
 
     document.getElementById('zoom_in')
-      .addEventListener('click', (e) => {
+      .addEventListener('click', () => {
         if(myState.pdf === null) return;
         myState.zoom += 0.5;
         render();
       });
 
     document.getElementById('zoom_out')
-      .addEventListener('click', (e) => {
+      .addEventListener('click', () => {
         if(myState.pdf == null) return;
         myState.zoom -= 0.5;
         render();
@@ -949,10 +1003,12 @@ class App {
       } else if (event.target.dataset.name === 'apply'){
         this.deniedReason = [];
         const selectReason = module.querySelectorAll('INPUT:checked');
+        const area = document.querySelector('.module__area ');
         if (selectReason.length > 0){
           for (let reason of selectReason){
             this.deniedReason.push(reasonApplication[reason.id]);
           }
+          area.value.length > 0 ? this.deniedReason.push(area.value) : '';
           this.setStatusCurrentItem('denied');
           this.sendItem('denied');
           this.closeModule(module);
@@ -969,21 +1025,29 @@ class App {
     document.body.addEventListener('keyup', event => {
       if (event.code === 'ArrowRight'){
         const nextElem = this.slideActive.nextElementSibling;
-        if (nextElem){
+        if (nextElem && !nextElem.classList.contains('inVisible')){
           const nextArrow = document.querySelector(`.slider__control[data-slide='next']`);
           nextArrow.click();
           this.currentPhoto = this.currentItem.files.find(item => item.id === nextElem.dataset.photo_id);
           this.setMainPhoto();
           this.setNewSlideSelect(nextElem);
+          const openPhoto = document.querySelector('.module__img');
+          if (openPhoto){
+            openPhoto.src = this.currentPhoto.url;
+          }
         }
       } else if (event.code === 'ArrowLeft'){
         const prevElem = this.slideActive.previousElementSibling;
-        if (prevElem){
+        if (prevElem && !prevElem.classList.contains('inVisible')){
           const prevArrow = document.querySelector(`.slider__control[data-slide='prev']`);
           prevArrow.click();
           this.currentPhoto = this.currentItem.files.find(item => item.id === prevElem.dataset.photo_id);
           this.setMainPhoto();
           this.setNewSlideSelect(prevElem);
+          const openPhoto = document.querySelector('.module__img');
+          if (openPhoto){
+            openPhoto.src = this.currentPhoto.url;
+          }
         }
       } else if (event.code === 'Escape'){
         const module = document.querySelector('.module');
