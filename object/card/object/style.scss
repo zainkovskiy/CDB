@@ -76,12 +76,15 @@
       margin: 0 10px 0 0;
     }
     &-doc{
-      text-align: left;
+      flex-direction: column;
       display: flex;
       align-items: flex-end;
       justify-content: flex-end;
       grid-row-start: 3;
       grid-column-start: 2;
+    }
+    &-status{
+      margin: 0 0 5px 0;
     }
   }
 }
@@ -445,6 +448,7 @@
   background-color: #9c9c9c73;
   display: flex;
   align-items: center;
+  z-index: 999;
   &__img{
     width: 70px;
     background-image: url("../img/loader.gif");
@@ -453,5 +457,16 @@
     background-position: center;
     height: 70px;
     margin: 0 auto;
+  }
+}
+.select{
+  position: relative;
+  width: 100%;
+  &__gap{
+    margin: 0;
+    white-space: nowrap;
+    &:after{
+      background-color: white;
+    }
   }
 }

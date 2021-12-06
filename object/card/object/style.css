@@ -73,12 +73,15 @@
   margin: 0 10px 0 0;
 }
 .about__logo-doc {
-  text-align: left;
+  flex-direction: column;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   grid-row-start: 3;
   grid-column-start: 2;
+}
+.about__logo-status {
+  margin: 0 0 5px 0;
 }
 
 .info {
@@ -452,6 +455,7 @@
   background-color: #9c9c9c73;
   display: flex;
   align-items: center;
+  z-index: 999;
 }
 .loader__img {
   width: 70px;
@@ -461,6 +465,18 @@
   background-position: center;
   height: 70px;
   margin: 0 auto;
+}
+
+.select {
+  position: relative;
+  width: 100%;
+}
+.select__gap {
+  margin: 0;
+  white-space: nowrap;
+}
+.select__gap:after {
+  background-color: white;
 }
 
 /*# sourceMappingURL=style.css.map */

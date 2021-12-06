@@ -5,10 +5,11 @@ class App{
   }
 
   async getJson() {
-    var request1Cnamed = new Object();
-    request1Cnamed.user = login;
-    request1Cnamed.source = source;
-    request1Cnamed.id = UID;
+    var request1Cnamed = {
+      user: login,
+      source: source,
+      id: UID,
+    };
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
@@ -27,13 +28,14 @@ class App{
       throw new Error('Ответ сети был не ok.');
     }
 
-    let jsonA = await response.json();
-    this.obj = jsonA;
+    this.obj = await response.json();
     this.init();
   }
 
   async setChart(){
-    var request1Cnamed = new Object();
+    var request1Cnamed = {
+      reqNumber: UID,
+    };
     request1Cnamed.reqNumber = UID;
 
     var myHeaders = new Headers();
@@ -53,8 +55,7 @@ class App{
       throw new Error('Ответ сети был не ok.');
     }
 
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
   }
 
   init(){
@@ -87,7 +88,7 @@ class App{
         new ChiefSlider(elms[i]);
       }
     } else {
-      const slider = new ChiefSlider('.slider', {
+      new ChiefSlider('.slider', {
         loop: false
       });
     }
@@ -132,7 +133,7 @@ class Render {
   isChart(){
       const currentX = document.documentElement.clientWidth;
       if (currentX < 500){
-        return `<div div class="chart" style="width:100%; height:auto;">
+        return `<div class="chart" style="width:100%; height:auto;">
                 <canvas id="myChart" width="320" height="320"></canvas>
               </div>`;
       } else {
@@ -277,17 +278,17 @@ class Render {
             </label>
             <nav class="change-page">
               <a class="ui-btn ui-btn-secondary ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
-              <a class="ui-btn ui-btn-icon-page change-page__link ${this.obj.privileges.card === 'full'
+              <a class="ui-btn ui-btn-icon-page change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
       ? this.obj.privileges.card : 'isVisible'}" href="../agency/?source=${source}&id=${btoa(UID)}">ДОУ</a>
-              <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full'
+              <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
       ? this.obj.privileges.card : 'isVisible'}" href="../photo/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Фото</a>
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link 
               ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' || login === 'denishevalf' ? '' : 'isVisible'}" 
               href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a> -->
 
-              <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full'
+              <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
       ? this.obj.privileges.card : 'isVisible'}" href="../promotion/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Реклама</a>
-              <a class="ui-btn ui-btn-icon-done change-page__link ${this.obj.privileges.card === 'full'
+              <a class="ui-btn ui-btn-icon-done change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
       ? this.obj.privileges.card : 'isVisible'}" href="../buySell/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav>
             <div class="carousel"> 
@@ -303,7 +304,7 @@ class Render {
                 <a href="#" class="slider__control" data-slide="prev"></a>
                 <a href="#" class="slider__control" data-slide="next"></a>
             </div>
-            </div>
+            </div> 
             <div class="about wrapper">
               <div class="about__date">
                 <div class="about__header">                  
@@ -357,7 +358,10 @@ class Render {
                   </div>                                
               </div>
               <div class="about__logo">${logo}</div>
-              <span class="text about__logo-doc">${docType}</span>   
+              <div class="about__logo-doc"> 
+                <span class="text about__logo-status">${this.obj.reqStatus ? this.obj.reqStatus : ''}</span>
+                <span class="text">${docType}</span>
+              </div>
             </div>
             <div class="contacts wrapper">
               ${client}
@@ -504,11 +508,20 @@ class Handler {
         this.closeModule(module);
         this.statusImg = false;
       } else if (event.target.dataset.name === 'sendAlert'){
-        this.setLoader();
-        this.sendAlert().then(() => {
-          this.removeLoader();
-          this.closeModule(module);
-        })
+        if (document.querySelector('.select__gap').innerHTML !== 'Выбрать'){
+          this.setLoader();
+          if (this.obj.privileges.card === 'ADB'){
+            this.sendADB().then(() => {
+              this.removeLoader();
+              this.closeModule(module);
+            })
+          } else{
+            this.sendAlert().then(() => {
+              this.removeLoader();
+              this.closeModule(module);
+            })
+          }
+        }
       } else if (event.target.dataset.name === 'cancelAlert'){
         this.closeModule(module);
       } else if (event.target.dataset.name === 'sendOrderPhoto'){
@@ -559,8 +572,6 @@ class Handler {
       this.currentImg = this.currentImg.previousElementSibling;
       module.remove();
       this.openImg();
-    } else {
-      return;
     }
   }
   nextImg(module){
@@ -568,8 +579,6 @@ class Handler {
       this.currentImg = this.currentImg.nextElementSibling;
       module.remove();
       this.openImg();
-    } else {
-      return;
     }
   }
 
@@ -581,14 +590,21 @@ class Handler {
                           <form class="form-alert">
                             <div class="form-alert__wrap">
                               <select class="form-alert__select">
-                                  <option>Изменить ответственного Риелтора</option>
-                                  <option>Изменить статус</option>
-                                  <option>Изменить цену</option>
-                                  <option>Иные причины</option>
-                                  <option>Пожаловаться на дубль Заявки</option>
-                                  <option>Проблема с адресом</option>
-                                  <option>Проблема с выгрузкой в рекламу</option>
-                                  <option>Проблема с информацией в Заявке</option>
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Изменить ответственного Риелтора</option>`}
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Изменить статус</option>`}
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Изменить цену</option>`}
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Иные причины</option>`}
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Пожаловаться на дубль Заявки</option>`}
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Проблема с адресом</option>`}
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Проблема с выгрузкой в рекламу</option>`}
+                                ${this.obj.privileges.card === 'ADB' ? '' : `<option>Проблема с информацией в Заявке</option>`}
+                                
+                                ${this.obj.privileges.card === 'ADB' ? `<option>Активная</option>` : ''}
+                                ${this.obj.privileges.card === 'ADB' ? `<option>Отмененная</option>` : ''}
+                                ${this.obj.privileges.card === 'ADB' ? `<option>Отложенная</option>` : ''}
+                                ${this.obj.privileges.card === 'ADB' ? `<option>Предварительно отменена</option>` : ''}
+                                ${this.obj.privileges.card === 'ADB' ? `<option>Выполненная</option>` : ''}
+                                ${this.obj.privileges.card === 'ADB' ? `<option>Ожидание сделки</option>` : ''}
                               </select>  
                             </div>                
                               <textarea placeholder="Введите коментарий для модератора" class="form-alert__area" 
@@ -598,7 +614,32 @@ class Handler {
                           <button data-name="cancelAlert" class="ui-btn ui-btn-light-border">Отменить</button>
                           </div>`
     this.openModule(layoutAlert);
-    selectStyle('.form-alert__select', 'Изменить ответственного Риелтора');
+    selectStyle('.form-alert__select', `${this.obj.privileges.card === 'ADB' ? `${this.obj.reqStatus ? this.obj.reqStatus : 'Выбрать'}` : 'Выбрать'}`);
+  }
+  async sendADB(){
+    const obj = {
+      action: 'setStatus',
+      status: document.querySelector('.select__gap').innerHTML,
+      comment: document.querySelector('.form-alert__area').value,
+      id: this.obj.reqNumber,
+      user: login,
+    };
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    let raw = JSON.stringify(obj);
+    let requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: raw
+    };
+
+    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/objectViewer.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
   }
   async sendAlert(){
     const obj = this.setAlert();
@@ -623,13 +664,12 @@ class Handler {
   setAlert(){
     const textField = document.querySelector('.form-alert__area');
     const selectField = document.querySelector('.form-alert__select');
-    const sendObj = {
+    return {
       userName: login,
       cardId: this.obj.reqNumber,
       selectInput: selectField.options[selectField.selectedIndex].text,
       comment: textField.value,
     };
-    return sendObj;
   }
 
   async sendOrderPhoto(container){
@@ -752,8 +792,7 @@ class ChartCallView{
           tooltip: {
             callbacks: {
               label: function(context) {
-                let label = ` ${context.dataset.label} ${context.dataset.oldDataset[context.dataIndex]}`;
-                return label;
+                return ` ${context.dataset.label} ${context.dataset.oldDataset[context.dataIndex]}`;
               }
             }
           },
