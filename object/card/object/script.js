@@ -332,7 +332,7 @@ class Render {
                 </div>         
               </div>
               <div>
-                <span class="about__title">${this.obj.street ? this.obj.street : ''}</span>
+                <span class="about__title">${this.obj.street ? this.obj.street : ''}${this.obj.privileges.card === 'ADB' ? `${this.obj.reqFlat ? `-${this.obj.reqFlat}` : ''}` : ''}</span>
                 <div class="about__address">     
                   <p class="text p_margin">${this.obj.city ? `${this.obj.city}` : ''} ${this.obj.area ? `${this.obj.area} р-н` : ''}</p>
                   ${this.obj.metroDistance ? this.obj.metroDistance >= 60 ? '' :
@@ -415,9 +415,9 @@ class Render {
               <button class="btn_edit ui-btn ui-btn-primary
                 ${this.obj.privileges.user !== 'owner' || this.obj.docType === 'Без договора' ? 'isVisible' : this.obj.privileges.user}"
                 data-name="photoOrder">Фотосъемка</button>
-              <button data-name="alert" class="btn_edit ui-btn ui-btn-danger-light">Вниманию модератора</button>
+              <button data-name="alert" class="btn_edit ui-btn ui-btn-danger-light">${this.obj.privileges.card === 'ADB' ? 'статус' : 'Вниманию модератора'}</button>
             </div>
-            <div class="story wrapper mobile_visible ${this.obj.privileges.card === 'full' ? this.obj.privileges.card
+            <div class="story wrapper mobile_visible ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'? this.obj.privileges.card
       : 'isVisible'}">${historyLayout}</div>
             <div class="description wrapper">
                 <span class="description__title">Описание</span>    

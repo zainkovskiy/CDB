@@ -291,6 +291,9 @@ class App {
         reqNumber: this.currentItem.ad,
         comment: message.value,
       }).then(data => {
+        if (this.currentItem.messages === 'null' || this.currentItem.messages === null){
+          this.currentItem.messages = [];
+        }
         this.currentItem.messages.push(data);
         messengerField.insertAdjacentHTML('beforeend', this.messageItem(data));
         message.value = '';
@@ -337,6 +340,7 @@ class App {
         document.querySelector('.messenger__send-btn').removeAttribute('data-id');
     }
   }
+  //todo сделать открывашку больше инфо для объекта pos.absol в div.card__info
   centerLayout(){
     const photo = this.getPhotoItem(this.currentItem.type.modType === 'first' ? this.docsFiles : this.photoFiles);
     const message = this.getMessages();
@@ -371,7 +375,8 @@ class App {
                     : ''} </span>
                   </p>
                   <p class="card__info-text">Тип договора:<span>${this.currentItem.type.type ? this.currentItem.type.type : ''} </span></p>
-                  <p class="card__info-text">Срок действия:<span>${this.currentItem.publishedAt.stop ? this.currentItem.publishedAt.stop : ''} </span></p>
+                  <p class="card__info-text">Срок действия:<span>${this.currentItem.publishedAt.stop ? 
+                    this.currentItem.publishedAt.stop.split(" ")[0].split('-').reverse().join('.') : ''} </span></p>
                   <p class="card__info-text">Тип объекста:<span>${this.currentItem.objectType ? 
                     `${this.currentItem.objectType.type ? this.currentItem.objectType.type : ''}
                     ${this.currentItem.objectType.rooms ? `(${this.currentItem.objectType.rooms}к.)` : ''}`
@@ -380,10 +385,12 @@ class App {
                   <p class="card__info-text">Доля объекта:<span>${this.currentItem.objectShare ? this.currentItem.objectShare : ''} </span></p>
                 </div> 
                 <div class="card__comment"> 
-                  <span class="card__comment-title">Комментарий в рекламу</span>
+                <!-- todo сделать card__comment-title на ширину минус btn__status, поставить кнопку вернуть кометарий -->
+                  <span class="card__comment-title">Комментарий</span>
                   <textarea class="card__comment-field input" cols="30" rows="5">${this.currentItem.comment ? this.currentItem.comment : ''}</textarea>
                   <span data-comment="toggle" data-ok="${+this.currentItem.commentOk === 1 ? 'yes' : 'no'}"
-                    class="btn__status comment__status ${+this.currentItem.commentOk === 1 ? 'btn__status_approved' : 'btn__status_denied'}">
+                    class="btn__status comment__status ${+this.currentItem.commentOk === 1 ? 'btn__status_approved' : 'btn__status_denied'}" 
+                    ${this.currentItem.type.modType === 'first' && this.currentItem.type.reqType === 'sk' ? 'disabled' : ''}>
                   </span>
                 </div>
               </div>
@@ -662,7 +669,7 @@ class App {
       for (let answer of answers){
         requestField.insertAdjacentHTML('beforeend',
           `<span data-open="card" data-req="${answer.reqNumber}" class="reason__item request__item">
-                    ${answer.reqTypeofRealty} ${answer.reqStreet} ${answer.reqHouseNumber}${answer.reqFlat ? `-${answer.reqFlat}` : ''}
+                    ${answer.reqStreet} ${answer.reqHouseNumber}${answer.reqFlat ? `-${answer.reqFlat}` : ''} ${answer.reqNumber}
                 </span>`)
       }
     } else {
