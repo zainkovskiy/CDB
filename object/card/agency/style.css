@@ -947,4 +947,8 @@ input {
   font-size: 18px;
 }
 
+.disabled {
+  opacity: 0.5;
+}
+
 /*# sourceMappingURL=style.css.map */

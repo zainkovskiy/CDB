@@ -531,6 +531,28 @@ class Render {
     dateNextMouth = new Date (dateNextMouth.setMonth(dateNextMouth.getMonth() + 1));
     return new Date(this.obj.expired) < dateNextMouth;
   }
+  setPromo(){
+    const promo = {
+      paper: '',
+      sms: '',
+      paperOpacity: '',
+      smsOpacity: '',
+      paperDisabled: '',
+      smsDisabled: '',
+    }
+    if (this.obj.docType === "Эксклюзив"){
+      promo.paper = 'checked';
+      promo.paperOpacity = 'disabled';
+      promo.smsOpacity = 'disabled' ;
+      promo.paperDisabled = 'disabled';
+      promo.smsDisabled = 'disabled';
+    } else if (this.obj.docType === "Рекламный" && +this.obj.isSms === 0){
+      promo.paper = 'checked';
+    } else if (this.obj.docType === "Рекламный" && +this.obj.isSms === 1){
+      promo.sms = 'checked';
+    }
+    return promo;
+  }
 
   render(){
     const owner = this.isOwner();
@@ -539,6 +561,7 @@ class Render {
     const expired = this.obj.expired ? this.obj.expired.split(" ")[0] : '';
     const progressBar = new ProgressBar(this.obj).render();
     const docType = this.setDocType();
+    const promo = this.setPromo();
     const typeOfOwnership = this.setTypeOfOwnership();
     const file = this.getFile();
     const saveChangeText = this.getSaveChangeText();
@@ -610,16 +633,16 @@ class Render {
                       <input name="docType" type="radio" id="promo" value="Рекламный" ${docType.promo}>
                       <label class='contract__btn' for="promo">Рекламный</label>
                     </div>
-                  </div>
+                  </div>                   
                   <div class="contract__wrap"> 
-                    <span class="contract__title">На кого?</span>
+                    <span class="contract__title">Вид договора</span>
                     <div class="contract__toggle-item item">
-                      <input name="typeOfOwnership" type="radio" id="owner" value="Владелец" ${typeOfOwnership.owner}>
-                      <label class='contract__btn' for="owner">Владелец</label>
+                        <input name="isSms" type="radio" id="paper" value="0" ${promo.paper} ${promo.paperDisabled}>
+                        <label class='contract__btn carrier__btn ${promo.paperOpacity}' for="paper">Бумажный</label>
                     </div>
                     <div class="contract__toggle-item item">
-                      <input name="typeOfOwnership" type="radio" id="proxy" value="Доверенное лицо" ${typeOfOwnership.proxy}>
-                      <label class='contract__btn' for="proxy">Доверенное лицо</label>
+                      <input name="isSms" type="radio" id="sms" value="1" ${promo.sms} ${promo.smsDisabled}>
+                      <label class='contract__btn carrier__btn ${promo.smsOpacity}' for="sms">СМС</label>
                     </div>
                   </div>
                   <div class="contract__wrap"> 
@@ -636,6 +659,17 @@ class Render {
                   <div class="contract__wrap"> 
                     <span class="contract__title">Укажите количество</span>
                     <input name="percentageOfOwnership" class="contract__number" type="text" placeholder="Пример 1/4" ${scopeOfOwnership.value}>
+                  </div>
+                  <div class="contract__wrap"> 
+                    <span class="contract__title">На кого?</span>
+                    <div class="contract__toggle-item item">
+                      <input name="typeOfOwnership" type="radio" id="owner" value="Владелец" ${typeOfOwnership.owner}>
+                      <label class='contract__btn' for="owner">Владелец</label>
+                    </div>
+                    <div class="contract__toggle-item item">
+                      <input name="typeOfOwnership" type="radio" id="proxy" value="Доверенное лицо" ${typeOfOwnership.proxy}>
+                      <label class='contract__btn' for="proxy">Доверенное лицо</label>
+                    </div>
                   </div>
                   <div class="contract__wrap"> 
                     <span class="contract__title">Тип права</span>
@@ -825,19 +859,19 @@ class File {
     this.source = source;
   }
   init(){
-    this.fileInputs.forEach((e, i) => {
+    this.fileInputs.forEach((e) => {
       e.addEventListener("dragenter", this.dragenter, false);
     });
 
-    this.fileInputs.forEach((e, i) => {
+    this.fileInputs.forEach((e) => {
       e.addEventListener("dragover", this.dragover, false);
     });
 
-    this.fileInputs.forEach((e, i) => {
+    this.fileInputs.forEach((e) => {
       e.addEventListener("dragleave", this.dragleave, false);
     });
 
-    this.fileInputs.forEach((e, i) => {
+    this.fileInputs.forEach((e) => {
       e.addEventListener("drop", this.drop, false);
     });
 
@@ -1332,11 +1366,7 @@ class Form {
         count++;
       }
     }
-    if (count === 16){
-      return true;
-    } else {
-      return false;
-    }
+    return count === 16;
   }
   validLegal(allInputs){
     const sortInputs = {
@@ -1400,11 +1430,7 @@ class Form {
         count++;
       }
     }
-    if (count === 6){
-      return true;
-    } else {
-      return false;
-    }
+    return count === 6;
   }
 
   setNewClient(allInputs, type){
@@ -1647,7 +1673,7 @@ class Handler{
     const allSelect = document.querySelectorAll(".select__gap");
     const errorContainer = document.querySelector('.save-change-error');
     const blockClient = document.querySelector('.clients__title-head');
-    if (app.copyOwner.agencyagreement.signatories.length === 0){
+    if (app.copyOwner.agencyagreement.signatories.length === 0 && document.querySelector(`INPUT[name='docType']`).checked){
       blockClient.classList.add('isValidText');
       errorContainer.innerHTML = '';
       errorContainer.insertAdjacentHTML('beforeend', `<p class="save-change-text">Отсутвуют клиенты</p>`);
@@ -1698,20 +1724,44 @@ class Handler{
     const saveChange = document.querySelector('.save-change');
     for (let item of allInputs){
       if (!item.classList.contains('mobile-toggle__input') && !item.classList.contains('file__input')){
-        item.addEventListener('change', event => {
+        item.addEventListener('change', () => {
+          if (item.name === 'docType'){
+            this.changeFormPromo(item);
+          }
           saveChange.classList.add('save-change_active');
         })
       }
     }
     const selectInput = document.querySelectorAll('.select__gap');
       for (let item of selectInput){
-        const observer = new MutationObserver(event => {
+        const observer = new MutationObserver(() => {
           saveChange.classList.add('save-change_active');
         })
         observer.observe(item, {childList: true});
       }
   }
-
+  changeFormPromo(item){
+    const carrierBtns = document.querySelectorAll('.carrier__btn');
+    const inputPaper = document.querySelector(`INPUT[id="paper"]`);
+    const inputSMS = document.querySelector(`INPUT[id="sms"]`);
+    if (item.checked && item.value === 'Рекламный'){
+      for (let label of carrierBtns){
+        label.classList.remove('disabled');
+      }
+      inputPaper.removeAttribute('disabled');
+      inputPaper.checked = false;
+      inputSMS.removeAttribute('disabled');
+      inputSMS.checked = true;
+    } else if (item.checked && item.value === 'Эксклюзив'){
+      for (let label of carrierBtns){
+        label.classList.add('disabled');
+      }
+      inputPaper.setAttribute('disabled','disabled');
+      inputPaper.checked = true;
+      inputSMS.setAttribute('disabled','disabled');
+      inputSMS.checked = false;
+    }
+  }
   validMainPage(allInputs, allSelect){
     const inputValid = {
       docType: false,
@@ -1728,6 +1778,7 @@ class Handler{
       percentageOfOwnership:'',
       expired: '',
       typeOfLaw: '',
+      isSms: [],
     }
     for (let input of allInputs){
       if (!input.classList.contains('mobile-toggle__input')){
@@ -1763,8 +1814,8 @@ class Handler{
       if (item1.checked){
         inputValid[item1.name] = true;
         inputValid[score.name] = true;
-        item1.classList.remove('isValid');
-        item2.classList.remove('isValid');
+        item1.nextElementSibling.classList.remove('isValid');
+        item2.nextElementSibling.classList.remove('isValid');
         score.classList.remove('isValid');
       } else if (item2.checked && score.value.length === 0){
         inputFalse.push(score)
@@ -1772,11 +1823,16 @@ class Handler{
       } else if (item2.checked && !regExp.test(score.value)) {
         inputFalse.push(score)
         score.classList.add('isValid');
+      } else if (!item1.checked && !item2.checked){
+        inputValid[item1.name] = false;
+        item1.nextElementSibling.classList.add('isValid');
+        item2.nextElementSibling.classList.add('isValid');
+        inputFalse.push(item1)
       } else {
         inputValid[item1.name] = true;
         inputValid[score.name] = true;
-        item1.classList.remove('isValid');
-        item2.classList.remove('isValid');
+        item1.nextElementSibling.classList.remove('isValid');
+        item2.nextElementSibling.classList.remove('isValid');
         score.classList.remove('isValid');
       }
     }
@@ -1874,7 +1930,7 @@ class Handler{
         return false;
       }
     } else {
-      if (app.copyOwner.chiefAccepted !== '0' || app.copyOwner.moderatorAccepted !== '0'){
+      if (app.copyOwner.agencyagreement.chiefAccepted !== '0' || app.copyOwner.agencyagreement.moderatorAccepted !== '0'){
         app.copyOwner.agencyagreement.chiefAccepted = '0';
         app.copyOwner.agencyagreement.moderatorAccepted = '0';
         progressItems[3].classList.remove('progress__number_active');
@@ -1888,16 +1944,17 @@ class Handler{
   }
 
   async updateAgencyAgreement() {
-    var request1Cnamed = new Object();
-    request1Cnamed.ID = 651651;
-    request1Cnamed.action = 'setAgreement';
-    request1Cnamed.object = app.copyOwner;
+    const request1Cnamed = {
+      ID: 651651,
+      action: 'setAgreement',
+      object: app.copyOwner,
+    };
     console.log(app.copyOwner)
 
-    var myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
-    var raw = JSON.stringify(request1Cnamed);
-    var requestOptions = {
+    const raw = JSON.stringify(request1Cnamed);
+    const requestOptions = {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -1933,14 +1990,14 @@ class Handler{
     })
   }
   async removeClient(find){
-    let request1Cnamed = new Object();
-    request1Cnamed.ID = 651651;
-    request1Cnamed.action = 'deletesignatories';
-    request1Cnamed.object = {
-      'UIDagreement' : find.relation.UID,
-      'UIDsignatories' : this.currentClientUID,
+    let request1Cnamed = {
+      ID: 651651,
+      action: 'deletesignatories',
+      object: {
+        'UIDagreement' : find.relation.UID,
+        'UIDsignatories' : this.currentClientUID,
+      }
     };
-
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
     let raw = JSON.stringify(request1Cnamed);
@@ -2190,7 +2247,7 @@ class Handler{
       residentialAddress.value = registrationAddress.value;
     }
 
-    form.addEventListener('reset', event =>{
+    form.addEventListener('reset', () =>{
       htmlDom.removeAttribute("style");
       module.remove();
     });
@@ -2597,7 +2654,7 @@ class EditClient{
       residentialAddress.value = registrationAddress.value;
     }
 
-    form.addEventListener('reset', event =>{
+    form.addEventListener('reset', () =>{
       htmlDom.removeAttribute("style");
       module.remove();
     });
@@ -2747,11 +2804,7 @@ class EditClient{
         count++;
       }
     }
-    if (count === 16){
-      return true;
-    } else {
-      return false;
-    }
+    return count === 16;
   }
   validLegal(allInputs){
     const sortInputs = {
@@ -2814,11 +2867,7 @@ class EditClient{
         count++;
       }
     }
-    if (count === 6){
-      return true;
-    } else {
-      return false;
-    }
+    return count === 6;
   }
   renderChange(){
     const currentElem = document.querySelector(`.${this.currentId}`);
