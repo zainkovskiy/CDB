@@ -589,6 +589,9 @@ class AddressHandler {
       document.querySelector('.btn-add').classList.add('visible');
       document.querySelector('.btn-basket').setAttribute('style', 'margin: 0;');
     }
+    if (dealClients === 'null'){
+      document.querySelector('.btn-add').classList.add('visible');
+    }
   }
   setReserveItem(){
     for (let card of basket.fullness){

@@ -1483,7 +1483,7 @@ class Handler{
         this.currentElem = document.querySelector('.add');
         this.checkCurrentElem();
       } else if (event.target.dataset.save === 'all'){
-        if (this.checkClients()){
+        if (document.querySelector(`INPUT[name='docType']`).checked || this.checkClients()){
           document.querySelector('.save-change-error').innerHTML = '';
           this.handlerSaveYes();
         } else {
