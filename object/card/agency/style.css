@@ -302,6 +302,13 @@
   background-position: center;
   background-size: contain;
   cursor: pointer;
+  transition: transform 0.3s;
+}
+.documents__btn:hover {
+  transform: scale(0.8);
+}
+.documents__btn:active {
+  transform: scale(1.3);
 }
 
 .title__header {

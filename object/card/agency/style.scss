@@ -289,6 +289,13 @@
     background-position: center;
     background-size: contain;
     cursor: pointer;
+    transition: transform .3s;
+    &:hover{
+      transform: scale(0.8);
+    }
+    &:active{
+      transform: scale(1.3);
+    }
   }
 }
 .title__header{

@@ -1541,6 +1541,13 @@ class Handler{
         this.clearDocs();
       } else if (event.target.dataset.expired === 'extend'){
         this.openExtended();
+      } else if (event.target.dataset.documents === "dou"){
+        this.getDocuments('https://crm.centralnoe.ru/dealincom/templates/sk.php', {
+          packUID: app.copyOwner.agencyagreement.UID,
+        }).then(data => {
+          location.href = `https://crm.centralnoe.ru${data.result.document.downloadUrl}`
+          console.log(data)
+        });
       } else {
         this.checkCurrentElem();
       }
@@ -2310,6 +2317,25 @@ class Handler{
         }
       }
     }
+  }
+
+  async getDocuments(API, request){
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: JSON.stringify(request)
+    };
+
+    let response = await fetch(API, requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
+    return await response.json();
   }
 }
 
