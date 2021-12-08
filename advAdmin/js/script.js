@@ -340,7 +340,6 @@ class App {
         document.querySelector('.messenger__send-btn').removeAttribute('data-id');
     }
   }
-  //todo сделать открывашку больше инфо для объекта pos.absol в div.card__info
   centerLayout(){
     const photo = this.getPhotoItem(this.currentItem.type.modType === 'first' ? this.docsFiles : this.photoFiles);
     const message = this.getMessages();
@@ -366,7 +365,10 @@ class App {
               <div class="card">
                 <div class="card__info"> 
                   <p class="card__info-text">Заявка: 
-                  <span data-open="card" data-req="${this.currentItem.ad}" class="card__info-text_link">${this.currentItem.ad}</span>
+                    <span data-info="more" data-req="${this.currentItem.ad}" class="card__info-text_link">
+                      от ${this.currentItem.created.split(" ")[0].split('-').reverse().join('.')}
+                      ${this.currentItem.created.split(" ")[1].split('.')[0]}
+                    </span>
                   </p>
                   <p class="card__info-text">Клиент:<span>${this.currentItem.clients[0] ? 
                     `${this.currentItem.clients[0].lastName ? this.currentItem.clients[0].lastName : ''}
@@ -383,9 +385,28 @@ class App {
                     : ''} </span></p>
                   <p class="card__info-text">Квартира:<span>${this.currentItem.objectRoom ? this.currentItem.objectRoom : ''} </span></p>
                   <p class="card__info-text">Доля объекта:<span>${this.currentItem.objectShare ? this.currentItem.objectShare : ''} </span></p>
+                  <div class='card__additionally inVisible'> 
+                    <div>
+                    <p class="card__info-text">Заявка:
+                      <span class="card__info-text_link" data-info="less">
+                        от ${this.currentItem.created.split(" ")[0].split('-').reverse().join('.')}
+                        ${this.currentItem.created.split(" ")[1].split('.')[0]}
+                      </span>
+                    </p>
+                    <p class="card__info-text">Площадь общая:<span>${this.currentItem.object.totalArea ? this.currentItem.object.totalArea : ''}</span></p>
+                    <p class="card__info-text">Площадь жилая:<span>${this.currentItem.object.livingArea ? this.currentItem.object.livingArea : ''}</span></p>
+                    <p class="card__info-text">Площадь кухни:<span>${this.currentItem.object.kitchenArea ? this.currentItem.object.kitchenArea : ''}</span></p>
+                    <p class="card__info-text">Площадь участка:<span>${this.currentItem.object.landArea ? this.currentItem.object.landArea : ''}</span></p>
+                    <p class="card__info-text">Этаж:<span>
+                    ${this.currentItem.object.reqFloor ? this.currentItem.object.reqFloor : '0'}${this.currentItem.object.reqFloors ? `/${this.currentItem.object.reqFloors}` : ''}
+                    </span></p>
+                    </div>
+                    <div class="card__buttons"> 
+                      <button data-open="card" data-req="${this.currentItem.ad}" class="button card__btn">открыть</button>
+                    </div>
+                  </div>
                 </div> 
                 <div class="card__comment"> 
-                <!-- todo сделать card__comment-title на ширину минус btn__status, поставить кнопку вернуть кометарий -->
                   <span class="card__comment-title">Комментарий</span>
                   <textarea class="card__comment-field input" cols="30" rows="5">${this.currentItem.comment ? this.currentItem.comment : ''}</textarea>
                   <span data-comment="toggle" data-ok="${+this.currentItem.commentOk === 1 ? 'yes' : 'no'}"
@@ -554,6 +575,10 @@ class App {
         } else{
           this.showAllSliderItems();
         }
+      } else if (event.target.dataset.info === 'more'){
+        document.querySelector('.card__additionally').classList.remove('inVisible');
+      } else if (event.target.dataset.info === 'less'){
+        document.querySelector('.card__additionally').classList.add('inVisible');
       }
     })
 

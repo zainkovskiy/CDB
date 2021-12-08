@@ -35,6 +35,9 @@
     text-align: center;
     grid-column-start: 2;
   }
+  &__info{
+    position: relative;
+  }
   &__info-text{
     padding: 8px 0 8px 0;
     border-bottom: 1px solid grey;
@@ -70,6 +73,7 @@
       font-family: "montserrat", sans-serif;
       font-style: normal;
       letter-spacing: 0.8px;
+      width: calc(100% - 50px);
     }
     &-field{
       width: 100%;
@@ -77,6 +81,26 @@
       margin: 10px 0 0 0;
       box-sizing: border-box;
     }
+  }
+  &__additionally{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  &__buttons{
+    display: flex;
+    margin: 5px 0 0 0;
+  }
+  &__btn{
+    padding: 5px;
+    font-size: 10px;
   }
 }
 .comment__status{
@@ -322,4 +346,8 @@
       background-image: url("../img/close.svg");
     }
   }
+}
+
+.inVisible{
+  display: none;
 }
