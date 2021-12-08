@@ -249,8 +249,8 @@ class Header {
     return `<div class="save-change">
                 <p class="save-change__text"></p>
                 <div class="save-change__group"> 
-                  <button data-save="all" class="ui-btn ui-btn-success">Сохранить</button>
-                  <button data-save="no" class="ui-btn ui-btn-link save-change__btn">Отменить</button>
+                  <button data-save="all" class="ui-btn ui-btn-success save-change__btn">Сохранить</button>
+                  <button data-save="no" class="ui-btn ui-btn-danger-dark save-change__btn">Отменить</button>
                 </div>
             </div>
             <div class="error">   
@@ -473,7 +473,9 @@ class Handler{
             } else if (data.result === 'error' && data.reason === 'has dublicate'){
               document.querySelector('.error__text').innerHTML = `Найден дубликат: <span class="error__dublicate" data-dublicate="openCard">${data.dublicate[0]}</span>`;
               document.querySelector('.error').classList.add('error_active');
-              this.openCard(data.dublicate[0]);
+              setTimeout(() => {
+                this.openCard(data.dublicate[0]);
+              }, 2000);
               document.querySelector('.error').addEventListener('click', event => {
                 if (event.target.dataset.dublicate === 'openCard'){
                   this.openCard(data.dublicate[0]);
@@ -517,7 +519,9 @@ class Handler{
             if (data.result === 'error' && data.reason === 'has dublicate'){
               document.querySelector('.error__text').innerHTML = `Найден дубликат: <span class="error__dublicate" data-dublicate="openCard">${data.dublicate[0]}</span>`;
               document.querySelector('.error').classList.add('error_active');
-              this.openCard(data.dublicate[0]);
+              setTimeout(() => {
+                this.openCard(data.dublicate[0]);
+              }, 2000);
               document.querySelector('.error').addEventListener('click', event => {
                 if (event.target.dataset.dublicate === 'openCard'){
                   this.openCard(data.dublicate[0]);
@@ -577,8 +581,9 @@ class Handler{
   }
   openCard(idReq) {
     const typeA = '1c';
+    const windowWidth = window.innerWidth * 0.9;
     let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source="+typeA+"&id="+idReq;
-    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: windowWidth, });
     return true;
   }
 
@@ -1077,10 +1082,10 @@ class Handler{
     const currentY = window.pageYOffset;
     const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
     document.body.insertAdjacentHTML('beforeend', loader);
-    document.body.setAttribute('style', 'overflow: hidden;');
+    document.html.setAttribute('style', 'overflow: hidden;');
   }
   removeLoader(){
-    document.body.removeAttribute('style');
+    document.html.removeAttribute('style');
     document.querySelector('.loader').remove();
   }
 }

@@ -1,0 +1,20 @@
+.right{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 80% 1fr;
+  grid-gap: 10px;
+}
+.object{
+  border-radius: 5px;
+  background: #C4C4C4;
+}
+.client{
+  border-radius: 5px;
+  background: #C4C4C4;
+}
+.info{
+  border-radius: 5px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  background: #C4C4C4;
+}

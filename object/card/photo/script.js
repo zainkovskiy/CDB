@@ -169,8 +169,8 @@ class Render{
     const table = this.getTable();
     return `<div class="save-change">
                 <div class="save-change__group"> 
-                  <button data-button="save" class="ui-btn ui-btn-success">Сохранить</button>
-                  <button data-button="cancel" class="ui-btn ui-btn-link save-change__btn">Отменить</button>
+                  <button data-button="save" class="ui-btn ui-btn-success save-change__btn">Сохранить</button>
+                  <button data-button="cancel" class="ui-btn ui-btn-danger-dark save-change__btn">Отменить</button>
                 </div>
             </div>
             <input class="mobile-toggle__input" id="menu__toggle" type="checkbox">

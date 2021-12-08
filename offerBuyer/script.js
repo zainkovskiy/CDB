@@ -148,7 +148,7 @@ class Render {
                 <p class="description__text text">${this.obj.comment ? this.obj.comment : '----'}</p>
             </div> 
             <div class="offer"> 
-              <span class="offer__title">Подтвердите размещение</span>
+              <span class="offer__title">Введите код из СМС</span>
               <span class="offer__code">Проверочный код</span>
               <div class="offer__wrap"> 
                 <input class="offer__input" type="text">

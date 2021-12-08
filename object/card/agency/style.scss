@@ -736,7 +736,7 @@ input{
     display: flex;
   }
   &__btn{
-    padding: 0 20px !important;
+    padding: 30px !important;
   }
   &-text{
     margin: 0;
@@ -750,13 +750,13 @@ input{
     visibility: hidden;
   }
   to {
-    height: 70px;
+    height: 150px;
     visibility: visible;
   }
 }
 @keyframes closeBar {
   from {
-    height: 70px;
+    height: 150px;
     visibility: visible;
   }
   to {

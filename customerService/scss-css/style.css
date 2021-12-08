@@ -2,10 +2,82 @@ body {
   margin: 0 auto;
 }
 
+@font-face {
+  font-family: "montserrat";
+  src: url("../fonts/Montserrat-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "montserrat";
+  src: url("../fonts/Montserrat-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+}
 .main {
   display: grid;
   grid-template-columns: 15% 1fr;
   grid-template-rows: 100vh;
+  grid-gap: 10px;
+}
+
+.inJob {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 10px 0;
+}
+.inJob__label {
+  text-align: center;
+  width: 100%;
+  border: 1px solid black;
+  padding: 15px;
+  border-radius: 50px;
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 16px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.inJob__checkbox {
+  appearance: none;
+  margin: 0;
+}
+.inJob__checkbox:checked ~ .inJob__label {
+  background-color: #42c327;
+  color: white;
+  border: 1px solid #3a8625;
+}
+
+.items {
+  background: #C4C4C4;
+  height: calc(100% - 61px);
+  border-radius: 5px;
+}
+
+.right {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 80% 1fr;
+  grid-gap: 10px;
+}
+
+.object {
+  border-radius: 5px;
+  background: #C4C4C4;
+}
+
+.client {
+  border-radius: 5px;
+  background: #C4C4C4;
+}
+
+.info {
+  border-radius: 5px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  background: #C4C4C4;
 }
 
 /*# sourceMappingURL=style.css.map */

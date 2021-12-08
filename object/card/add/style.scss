@@ -405,7 +405,7 @@ input:disabled{
     display: flex;
   }
   &__btn{
-    padding: 0 20px !important;
+    padding: 0 30px !important;
   }
 }
 @keyframes showBar {
@@ -414,13 +414,13 @@ input:disabled{
     visibility: hidden;
   }
   to {
-    height: 100px;
+    height: 150px;
     visibility: visible;
   }
 }
 @keyframes closeBar {
   from {
-    height: 100px;
+    height: 150px;
     visibility: visible;
   }
   to {

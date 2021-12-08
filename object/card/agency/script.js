@@ -571,8 +571,8 @@ class Render {
     return `<div class="save-change">
                 ${saveChangeText}
                 <div class="save-change__group"> 
-                  <button data-save="all" class="ui-btn ui-btn-success">Сохранить</button>
-                  <button data-save="no" class="ui-btn ui-btn-link save-change__btn">Отменить</button>
+                  <button data-save="all" class="ui-btn ui-btn-success save-change__btn">Сохранить</button>
+                  <button data-save="no" class="ui-btn ui-btn-danger-dark save-change__btn">Отменить</button>
                 </div>
                 <div class="save-change-error"> 
                 

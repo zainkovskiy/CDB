@@ -754,7 +754,7 @@ input {
   display: flex;
 }
 .save-change__btn {
-  padding: 0 20px !important;
+  padding: 30px !important;
 }
 .save-change-text {
   margin: 0;
@@ -768,13 +768,13 @@ input {
     visibility: hidden;
   }
   to {
-    height: 70px;
+    height: 150px;
     visibility: visible;
   }
 }
 @keyframes closeBar {
   from {
-    height: 70px;
+    height: 150px;
     visibility: visible;
   }
   to {
