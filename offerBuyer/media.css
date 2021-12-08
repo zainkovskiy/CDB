@@ -1,0 +1,111 @@
+@media (max-width: 480px) {
+  .main {
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+    grid-template-areas: "header" "carousel" "aside" "about" "info" "description" "map";
+  }
+
+  .container {
+    padding: 0;
+  }
+
+  .wrapper {
+    padding: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+  .header__logo {
+    width: 100%;
+    height: 60px;
+    background-position: center;
+    background-size: contain;
+  }
+  .header__client {
+    width: 100%;
+    height: auto;
+  }
+
+  .contacts {
+    width: 100%;
+    height: auto;
+  }
+  .contacts__title {
+    margin: 0;
+  }
+
+  .aside {
+    height: 50px;
+    flex-direction: row;
+  }
+
+  .btn_like, .btn_dislike {
+    background-size: 20%;
+  }
+
+  .about__head {
+    flex-direction: column;
+    align-items: center;
+  }
+  .about__title {
+    text-align: center;
+  }
+  .about__price {
+    flex-direction: row;
+  }
+  .about__row {
+    margin: 0 10px 0 0;
+  }
+  .about__area {
+    flex-direction: column;
+  }
+  .about__area-items {
+    flex-direction: row;
+    margin: 10px 0 0 0;
+  }
+
+  .description__text {
+    padding: 10px;
+  }
+
+  .slider__items {
+    counter-reset: slide;
+  }
+
+  .slider__item {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    counter-increment: slide;
+    height: 400px;
+    position: relative;
+  }
+
+  .slider__photo {
+    background-size: contain;
+  }
+
+  .mobile_visible {
+    display: none;
+  }
+
+  .module__offer {
+    width: 100%;
+  }
+
+  .module__close {
+    height: 30px;
+    width: 30px;
+    right: 10px;
+    top: 10px;
+  }
+
+  .offer__input {
+    width: 40%;
+    font-size: 18px;
+  }
+}
+
+/*# sourceMappingURL=media.css.map */
