@@ -3,14 +3,60 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 80% 1fr;
   grid-gap: 10px;
-}
-.object{
-  border-radius: 5px;
-  background: #C4C4C4;
+  &__title{
+    font-family: "montserrat", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 30px;
+    text-decoration-line: underline;
+  }
 }
 .client{
   border-radius: 5px;
   background: #C4C4C4;
+  padding: 10px;
+}
+.about{
+  padding: 20px;
+  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  &__item{
+    display: grid;
+    grid-template-columns: 20% 80%;
+    align-items: center;
+    width: 100%;
+  }
+}
+.object{
+  border-radius: 5px;
+  background: #C4C4C4;
+  padding: 10px;
+  overflow: auto;
+  &__header{
+    display: flex;
+    justify-content: space-between;
+  }
+  &__change{
+    display: flex;
+    justify-content: space-between;
+  }
+  &__feature{
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+  }
+  &__rooms{
+    display: flex;
+    gap: 10px;
+  }
+}
+.comment{
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .info{
   border-radius: 5px;

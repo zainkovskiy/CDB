@@ -269,7 +269,6 @@ class Render {
     const client = this.getClient();
     const regExp = new RegExp('зарезервировано', 'i');
     const phoneOwner = this.getPhoneOwner();
-
     this.initMap();
     const chartView = this.isChart();
     return `<input class="mobile-toggle__input" id="menu__toggle" type="checkbox">
@@ -440,12 +439,12 @@ class Handler {
   handlerImg(){
     const currentX = document.documentElement.clientWidth;
     if (currentX > 500){
-      this.carousel.addEventListener('click', event => {
-        if (event.target.classList.contains('slider__photo')){
-          this.currentImg = event.target;
-          this.openImg();
-        }
-      })
+        this.carousel.addEventListener('click', event => {
+          if (event.target.classList.contains('slider__photo')){
+            this.currentImg = event.target;
+            this.openImg();
+          }
+        })
     }
   }
   handlerBtn(){

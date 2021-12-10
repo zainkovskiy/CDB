@@ -87,16 +87,17 @@ class App {
   }
 
   async getJson() {
-    var request1Cnamed = new Object();
-    request1Cnamed.ID = UID;
-    request1Cnamed.action = 'getAgreement';
-    request1Cnamed.object = UID;
-    request1Cnamed.deal = deal;
+    const request1Cnamed = {
+      ID: UID,
+      action: 'getAgreement',
+      object: UID,
+      deal: deal
+    };
 
-    var myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
-    var raw = JSON.stringify(request1Cnamed);
-    var requestOptions = {
+    const raw = JSON.stringify(request1Cnamed);
+    const requestOptions = {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -107,19 +108,40 @@ class App {
 
     let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/agreementViewer.php", requestOptions);
     if (!response.ok) {
+      location="https://crm.centralnoe.ru/dealincom/404.php";
       throw new Error('Ответ сети был не ok.');
     }
 
     let jsonA = await response.json();
-
-    if (jsonA.result[0] === 200){
+    if (jsonA.result[1].result === 'has no active deal'){
+      this.setErrorDeal();
+    } else if (jsonA.result[0] === 200){
       this.owner = jsonA.result[1];
       this.copyOwner = JSON.parse(JSON.stringify(this.owner));
+      this.init();
       console.log(this.owner)
+      console.log('test2')
     } else {
       location="https://crm.centralnoe.ru/dealincom/404.php";
     }
-    this.init();
+  }
+  setErrorDeal(){
+    let src="https://crm.centralnoe.ru/dealincom/assets/no-deal.png"
+    this.container.insertAdjacentHTML('beforeend', `${this.errorDealLayout()}`)
+  }
+  errorDealLayout(){
+    return  `<input class="mobile-toggle__input" id="menu__toggle" type="checkbox">
+            <label class="mobile-toggle__label" for="menu__toggle"> 
+              <span class="mobile-toggle__span"></span>
+            </label>
+            <nav class="change-page">
+                <a class="ui-btn ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>
+                <a class="ui-btn ui-btn-secondary ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ДОУ</a>
+                <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>
+                <a class="ui-btn change-page__link" href="../promotion/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Реклама</a>
+                <a class="ui-btn ui-btn-icon-done change-page__link disable" href="../buySell/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ПДКП/ДКП</a>
+            </nav>
+            <div class="errorDeal"></div>`
   }
   setLoader(){
     const currentY = window.pageYOffset;
@@ -1509,12 +1531,12 @@ class Handler{
         this.currentElem = document.querySelector('.add');
         this.checkCurrentElem();
       } else if (event.target.dataset.save === 'all'){
-        if (document.querySelector(`INPUT[name='docType']`).checked || this.checkClients()){
-          document.querySelector('.save-change-error').innerHTML = '';
-          this.handlerSaveYes();
-        } else {
+        if (document.querySelector(`INPUT[id='exclusive']`).checked && !this.checkClients()){
           document.querySelector('.save-change-error').innerHTML = '';
           document.querySelector('.save-change-error').insertAdjacentHTML('beforeend', `<p class="save-change-text">Данные по клиенту не корректны</p>`)
+        } else {
+          document.querySelector('.save-change-error').innerHTML = '';
+          this.handlerSaveYes();
         }
       } else if (event.target.dataset.save === 'no'){
         this.reloadPage();
@@ -1637,11 +1659,13 @@ class Handler{
     const currentY = window.pageYOffset;
     const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
     document.body.insertAdjacentHTML('beforeend', loader);
-    document.body.setAttribute('style', 'overflow: hidden;');
+    const htmlDOM = document.querySelector('HTML');
+    htmlDOM.setAttribute('style', 'overflow: hidden;');
   }
   removeLoader(){
-    document.body.removeAttribute('style');
     document.querySelector('.loader').remove();
+    const htmlDOM = document.querySelector('HTML');
+    htmlDOM.removeAttribute('style');
   }
 
   removeFile(event){

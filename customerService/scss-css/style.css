@@ -21,17 +21,99 @@ body {
   grid-gap: 10px;
 }
 
-.inJob {
+.title {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  display: block;
+  width: 100%;
+  text-transform: uppercase;
+  border-bottom: 1px solid black;
+}
+
+.subtitle {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.input__text {
+  padding: 5px;
+  border-radius: 5px;
+  font-family: "montserrat", sans-serif;
+  outline: none;
+  border: 1px solid #000000;
+}
+.input__area {
+  font-family: "montserrat", sans-serif;
+  resize: none;
+  border-radius: 5px;
+  outline: none;
+  width: 100%;
+  padding: 5px;
+}
+
+.carousel {
+  margin: 10px 0;
+}
+
+.slider__item {
+  flex: 0 0 33.333%;
+  max-width: 33.333%;
+}
+
+.slider__photo {
+  height: 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border: 3px solid white;
+}
+
+.button-label {
+  text-transform: uppercase;
+  background-color: #fff;
+  padding: 10px;
+  color: #868d95;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #c4c4c4;
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 0 10px 0;
+  flex-grow: 1;
+  border-radius: 5px;
+}
+
+.button-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: none;
+  margin: 0;
+}
+.button-input:checked + .button-label {
+  background: #868d95;
+  color: #ffffff;
+}
+
+.inJob {
+  display: flex;
+  padding: 5px;
+  box-sizing: border-box;
+  height: 5%;
 }
 .inJob__label {
   text-align: center;
   width: 100%;
   border: 1px solid black;
-  padding: 15px;
+  padding: 10px;
   border-radius: 50px;
   font-family: "montserrat", sans-serif;
   font-weight: 700;
@@ -39,6 +121,9 @@ body {
   font-size: 16px;
   cursor: pointer;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .inJob__checkbox {
   appearance: none;
@@ -52,8 +137,44 @@ body {
 
 .items {
   background: #C4C4C4;
-  height: calc(100% - 61px);
+  height: 95%;
   border-radius: 5px;
+  overflow: auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.item {
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 10px 0;
+  cursor: pointer;
+}
+.item:hover {
+  background-color: #a7a7a7;
+}
+.item:active {
+  background-color: #ffffff;
+}
+.item:last-child {
+  margin: 0;
+}
+.item__text {
+  font-family: "montserrat", sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  display: block;
+  text-align: center;
+  user-select: none;
+  pointer-events: none;
+}
+.item__title {
+  font-weight: 700;
 }
 
 .right {
@@ -62,15 +183,63 @@ body {
   grid-template-rows: 80% 1fr;
   grid-gap: 10px;
 }
-
-.object {
-  border-radius: 5px;
-  background: #C4C4C4;
+.right__title {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 30px;
+  text-decoration-line: underline;
 }
 
 .client {
   border-radius: 5px;
   background: #C4C4C4;
+  padding: 10px;
+}
+
+.about {
+  padding: 20px;
+  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.about__item {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  align-items: center;
+  width: 100%;
+}
+
+.object {
+  border-radius: 5px;
+  background: #C4C4C4;
+  padding: 10px;
+  overflow: auto;
+}
+.object__header {
+  display: flex;
+  justify-content: space-between;
+}
+.object__change {
+  display: flex;
+  justify-content: space-between;
+}
+.object__feature {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+.object__rooms {
+  display: flex;
+  gap: 10px;
+}
+
+.comment {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .info {

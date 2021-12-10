@@ -1082,11 +1082,13 @@ class Handler{
     const currentY = window.pageYOffset;
     const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
     document.body.insertAdjacentHTML('beforeend', loader);
-    document.html.setAttribute('style', 'overflow: hidden;');
+    const htmlDOM = document.querySelector('HTML');
+    htmlDOM.setAttribute('style', 'overflow: hidden;');
   }
   removeLoader(){
-    document.html.removeAttribute('style');
     document.querySelector('.loader').remove();
+    const htmlDOM = document.querySelector('HTML');
+    htmlDOM.removeAttribute('style');
   }
 }
 
@@ -1567,7 +1569,7 @@ class Float{
               </div>
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" id="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autocomplete="new-password">
@@ -1797,7 +1799,7 @@ class Room{
               </div>
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
@@ -2054,7 +2056,7 @@ class House{
               </div>          
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
@@ -2165,7 +2167,7 @@ class Ground{
               </div>         
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
@@ -2283,7 +2285,7 @@ class Garage{
               </div>            
             </div> 
             <div class="price"> 
-              <span class="form__title">цена и форма собственности<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
                 <span class="form__subtitle">Цена, тыс руб.</span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">

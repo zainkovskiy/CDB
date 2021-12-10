@@ -314,11 +314,13 @@ class Handler{
     const currentY = window.pageYOffset;
     const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
     document.body.insertAdjacentHTML('beforeend', loader);
-    document.body.setAttribute('style', 'overflow: hidden;');
+    const htmlDOM = document.querySelector('HTML');
+    htmlDOM.setAttribute('style', 'overflow: hidden;');
   }
   removeLoader(){
-    document.body.removeAttribute('style');
     document.querySelector('.loader').remove();
+    const htmlDOM = document.querySelector('HTML');
+    htmlDOM.removeAttribute('style');
   }
   async sendToServer(){
     if (this.arrForSend.length !== 0){

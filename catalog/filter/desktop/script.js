@@ -596,8 +596,11 @@ class AddressHandler {
   setReserveItem(){
     for (let card of basket.fullness){
       const find = this.cards.find(item => item.reqNumber === card.reqNumber);
-      document.querySelector(`.btn${find.reqNumber}`).classList.remove('card__btn_select');
-      document.querySelector(`.btn${find.reqNumber}`).classList.add('card__btn_reserve');
+      const findFromDOM = document.querySelector(`.btn${find.reqNumber}`);
+      if (findFromDOM){
+        findFromDOM.classList.remove('card__btn_select');
+        findFromDOM.classList.add('card__btn_reserve');
+      }
     }
   }
 

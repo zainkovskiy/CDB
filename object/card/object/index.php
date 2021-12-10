@@ -1,5 +1,7 @@
 <?php
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
+$static_html_cache = \Bitrix\Main\Data\StaticHtmlCache::getInstance();
+$static_html_cache->deleteAll();
 require_once($_SERVER["DOCUMENT_ROOT"]."/dealincom/class/iHelper.php");
 
 CJSCore::Init();
@@ -35,7 +37,6 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
         BX24.resizeWindow(window.innerWidth,  h, () => {} );
         })
 </script>
-
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">

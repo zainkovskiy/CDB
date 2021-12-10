@@ -19,3 +19,80 @@ body{
   grid-template-rows: 100vh;
   grid-gap: 10px;
 }
+.title{
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  display: block;
+  width: 100%;
+  text-transform: uppercase;
+  border-bottom: 1px solid black;
+}
+.subtitle{
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+.input{
+  &__text{
+    padding: 5px;
+    border-radius: 5px;
+    font-family: "montserrat", sans-serif;
+    outline: none;
+    border: 1px solid #000000;
+  }
+  &__area{
+    font-family: "montserrat", sans-serif;
+    resize: none;
+    border-radius: 5px;
+    outline: none;
+    width: 100%;
+    padding: 5px;
+  }
+}
+.carousel{
+  margin: 10px 0;
+}
+.slider__item {
+  flex: 0 0 33.333%;
+  max-width: 33.333%;
+}
+.slider__photo{
+  height: 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border: 3px solid white;
+}
+
+.button-label{
+  text-transform: uppercase;
+  background-color: #fff;
+  padding: 10px;
+  color: #868d95;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #c4c4c4;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  border-radius: 5px;
+}
+.button-input{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: none;
+  margin: 0;
+  &:checked +.button-label{
+    background: #868d95;
+    color: #ffffff;
+  }
+}

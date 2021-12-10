@@ -930,7 +930,15 @@ input{
     font-size: 18px;
   }
 }
-
+.errorDeal{
+  width: 100%;
+  height: 100%;
+  background-image: url("https://crm.centralnoe.ru/dealincom/assets/no-deal.png");
+  background-position: top;
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin: 20px 0 0 0;
+}
 .disabled{
   opacity: .5;
 }
