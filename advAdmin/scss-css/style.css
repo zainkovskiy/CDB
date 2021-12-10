@@ -253,8 +253,9 @@ img {
 .module__img {
   height: 100%;
   margin: auto;
-  max-width: 100%;
+  width: 100%;
   object-fit: contain;
+  cursor: pointer;
 }
 .module__close {
   position: fixed;

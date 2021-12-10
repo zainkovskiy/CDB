@@ -143,7 +143,7 @@ class Render {
       }
   };
   isPhoto(){
-    if (this.obj.photo){
+    if (this.obj.photo && this.obj.photo.length > 0){
       let photoElem = '';
       for (let item of this.obj.photo){
         photoElem += `<div class="slider__item slider__photo" data-img=${item} style="background-image: url(${item})"></div>`;

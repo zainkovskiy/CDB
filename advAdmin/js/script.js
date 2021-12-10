@@ -27,6 +27,7 @@ class Api {
 let transformImage = {
   rotate: 0,
   height: 100,
+  width: 100,
 }
 const placeholderPDF = 'https://crm.centralnoe.ru/advertisement/img/default/pdf.png';
 
@@ -534,6 +535,7 @@ class App {
       } else if (event.target.dataset.open === 'photo'){
           transformImage.rotate = 0;
           transformImage.height = 100;
+          transformImage.width = 100;
           this.openPhotoFullScreen();
       } else if(event.target.dataset.control){
           this.switchActionSetStatus(event.target.dataset.action, event.target.dataset.control);
@@ -1026,12 +1028,6 @@ class App {
       } else if(event.target.dataset.rotate === 'right'){
         transformImage.rotate === 270 || transformImage.rotate === -270 ? transformImage.rotate = 0 : transformImage.rotate += 90;
         document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`)
-      } else if(event.target.dataset.scale === 'plus'){
-        transformImage.height += 5;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`);
-      } else if(event.target.dataset.scale === 'minus'){
-        transformImage.height -= 5;
-        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%`);
       } else if (event.target.dataset.name === 'apply'){
         this.deniedReason = [];
         const selectReason = module.querySelectorAll('INPUT:checked');
@@ -1045,6 +1041,55 @@ class App {
           this.sendItem('denied');
           this.closeModule(module);
         }
+      } else if(event.target.dataset.scale === 'plus'){
+        transformImage.height += 5;
+        transformImage.width += 5;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
+      } else if(event.target.dataset.scale === 'minus'){
+        transformImage.height -= 5;
+        transformImage.width -= 5;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
+      }
+    })
+    this.handlerMouse(module);
+  }
+  handlerMouse(module){
+    let down = 0;
+    let x = "";
+    let y = "";
+    module.addEventListener('mousedown', event => {
+      event.preventDefault();
+      down = 1;
+      x = event.clientX;
+      y = event.clientY;
+    })
+    module.addEventListener('mouseup', () => {
+      event.preventDefault();
+      down = 0;
+      x = "";
+      y = "";
+    })
+    module.addEventListener('mousemove', event => {
+      if (down === 1){
+        if (x && y){
+          module.scrollBy(x - event.clientX, y - event.clientY);
+        }
+        x = event.clientX;
+        y = event.clientY;
+      }
+    })
+    module.addEventListener('wheel', event => {
+      event.preventDefault();
+      if (event.deltaY === -100){
+      //up
+            transformImage.height += 5;
+            transformImage.width += 5;
+            document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
+      } else if (event.deltaY === 100){
+      //down
+            transformImage.height -= 5;
+            transformImage.width -= 5;
+            document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
       }
     })
   }

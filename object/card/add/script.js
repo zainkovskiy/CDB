@@ -38,30 +38,33 @@ class Add {
   }
   getAction(){
     if (action === 'new'){
-      const request1Cnamed = new Object();
-      request1Cnamed.action = 'new';
-      request1Cnamed.author = login;
+      const request1Cnamed = {
+        action: 'new',
+        author: login,
+      };
       this.getJson(request1Cnamed).then(data => {
         this.obj = data;
         console.log(this.obj)
         this.init();
       })
     } else if (action === 'old'){
-      const request1Cnamed = new Object();
-      request1Cnamed.action = 'old';
-      request1Cnamed.reqNumber = UID;
-      request1Cnamed.author = login;
+      const request1Cnamed = {
+        action: 'old',
+        reqNumber: UID,
+        author: login,
+      };
       this.getJson(request1Cnamed).then(data => {
         this.obj = data;
         console.log(this.obj)
         this.init();
       })
     } else if (action === 'frompars'){
-      const request1Cnamed = new Object();
-      request1Cnamed.action = 'frompars';
-      request1Cnamed.reqNumber = UID;
-      request1Cnamed.author = login;
-      request1Cnamed.phone = contact;
+      const request1Cnamed = {
+        action: 'frompars',
+        reqNumber: UID,
+        author: login,
+        phone: contact,
+      };
       this.getJson(request1Cnamed).then(data => {
         this.obj = data;
         console.log(this.obj)
@@ -452,9 +455,10 @@ class Handler{
           } else {
             add.obj.reqStatus = 'Активная';
           }
-          const request1Cnamed = new Object();
-          request1Cnamed.action = 'saveNew';
-          request1Cnamed.data = add.obj;
+          const request1Cnamed = {
+            action: 'saveNew',
+            data: add.obj,
+          };
           if (deal !== ''){
             request1Cnamed.deal = deal;
           }
@@ -503,9 +507,10 @@ class Handler{
           add.obj.onModeration = '0';
           add.obj.reqEditor = login;
           add.obj.clientTelNumber = contact;
-          const request1Cnamed = new Object();
-          request1Cnamed.action = 'saveNew';
-          request1Cnamed.data = add.obj;
+          const request1Cnamed = {
+            action: 'saveNew',
+            data: add.obj,
+          };
           this.setLoader();
           this.sendEditObject(request1Cnamed).then(data => {
             const blockSave = document.querySelector('.save-change');
@@ -534,8 +539,6 @@ class Handler{
         } else if (event.target.dataset.save === 'no'){
           window.location.reload();
         }
-      } else {
-        return
       }
     })
     document.querySelector('.methodical').addEventListener('click', event => {
@@ -549,7 +552,7 @@ class Handler{
     const price = document.querySelector(`INPUT[name='reqPrice']`);
     if (price){
       const overstatePrice = document.querySelector(`INPUT[name='reqOverstatePrice']`);
-      price.addEventListener('keyup', event => {
+      price.addEventListener('keyup', () => {
         overstatePrice.value = price.value;
       })
     }
@@ -572,8 +575,7 @@ class Handler{
       throw new Error('Ответ сети был не ok.');
     }
 
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
   }
   openInfo(){
     let readyString = `https://crm.centralnoe.ru/CDB/object/card/info/add/index.html`;
@@ -1097,6 +1099,7 @@ class Search{
   constructor() {
     this.searchInputAll = document.querySelectorAll(`INPUT[type='search']`);
     this.containerAll = document.querySelectorAll('.search__field');
+    this.region = document.querySelector(`INPUT[name='reqRegion']`);
     this.city = document.querySelector(`INPUT[name='reqCity']`);
     this.street = document.querySelector(`INPUT[name='reqStreet']`);
     this.houseNumber = document.querySelector(`INPUT[name='reqHouseNumber']`);
@@ -1182,7 +1185,7 @@ class Search{
           storySearch.push(event.target.dataset.value);
           event.target.parentElement.classList.add('isVisible');
           if (event.target.dataset.input === 'reqCity' || event.target.dataset.input === 'reqStreet'){
-            this.getCords(this.city.value, this.street.value, this.houseNumber.value).then(data => {
+            this.getCords(this.region.value, this.city.value, this.street.value, this.houseNumber.value).then(data => {
               if (data.length > 0){
                 add.obj.lat = data[0].lat;
                 add.obj.lng = data[0].lon;
@@ -1207,24 +1210,21 @@ class Search{
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
   }
   async getCity(value, number){
     let response = await fetch(`https://crm.centralnoe.ru/dealincom/factory/getCity.php?req=${value}&regionNumber=${number}`);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
   }
   async getStreet(value){
     let response = await fetch(`https://crm.centralnoe.ru/dealincom/factory/getaddress.php?req=${value}`);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
   }
   async getDeveloper(){
     const request1Cnamed = {
@@ -1246,8 +1246,7 @@ class Search{
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
     // console.log(jsonA)
     // for (let dev of jsonA){
     //   this.developers.push({name: dev.name, inn: dev.inn});
@@ -1257,7 +1256,7 @@ class Search{
   setInputMap(){
     // todo рендер: reqHouseNumber на blur reqCity и reqStreet по выбору из списка
     this.houseNumber.addEventListener('blur', () => {
-      this.getCords(this.city.value, this.street.value, this.houseNumber.value).then(data => {
+      this.getCords(this.region.value, this.city.value, this.street.value, this.houseNumber.value).then(data => {
         if (data.length > 0){
           add.obj.lat = data[0].lat;
           add.obj.lng = data[0].lon;
@@ -1270,8 +1269,8 @@ class Search{
     })
 
   }
-  async getCords(city, street, houseNumber){
-    const API = `https://nominatim.openstreetmap.org/?addressdetails=1&q=${city}+${street}+${houseNumber}&format=json&limit=1`
+  async getCords(region, city, street, houseNumber){
+    const API = `https://nominatim.openstreetmap.org/?addressdetails=1&q=${region}+${city}+${street}+${houseNumber}&format=json&limit=1`
     const webClient = {
       Headers: {
       "user-agent": "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0",
@@ -1283,8 +1282,7 @@ class Search{
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
-    let jsonA = await response.json();
-    return jsonA;
+    return await response.json();
   }
 
   checkRoomPart(){
@@ -2030,7 +2028,7 @@ class House{
               </div>
               <div class="form__item"> 
                 <span class="form__subtitle">Водопровод</span>               
-                <select id="reqWaterPipes" class="reqWaterPipes" name="reqWaterPipes"> 
+                <select id="reqWaterPipes" class="с" name="reqWaterPipes"> 
                   <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqWaterPipes === 'Не указано' ? 'selected' : ''}>Не указано</option>
                   <option ${add.obj.reqWaterPipes === 'Отсутствует' ? 'selected' : ''}>Отсутствует</option>
@@ -2086,7 +2084,7 @@ class Ground{
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item form_width">
+              <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
@@ -2196,7 +2194,7 @@ class Garage{
   render(){
     return `<div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item form_width">
+              <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
