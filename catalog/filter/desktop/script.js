@@ -418,9 +418,12 @@ class AddressHandler {
           this.checkCurrentElem();
           this.setLoader();
           this.sendCompilation(activeDeal).then(() => {
-            this.setReserveItem();
+            this.clearReserveItem();
             basket.fullness = [];
             basket.init();
+            document.querySelector('#map').innerHTML = '';
+            this.initMap(this.cards);
+            console.log(this.cards)
             document.querySelector('.loader__img').style.backgroundImage='url(https://crm.centralnoe.ru/dealincom/assets/statusOk.gif)'
             setTimeout(() => {
               this.removeLoader();
@@ -593,13 +596,13 @@ class AddressHandler {
       document.querySelector('.btn-add').classList.add('visible');
     }
   }
-  setReserveItem(){
+  clearReserveItem(){
     for (let card of basket.fullness){
       const find = this.cards.find(item => item.reqNumber === card.reqNumber);
       const findFromDOM = document.querySelector(`.btn${find.reqNumber}`);
+      find.basketAdd = 0;
       if (findFromDOM){
         findFromDOM.classList.remove('card__btn_select');
-        findFromDOM.classList.add('card__btn_reserve');
       }
     }
   }
@@ -819,7 +822,7 @@ class AddressHandler {
                 </div>
                 <div class="map-card__wrap map-card__wrap_between"> 
                   <img class="map-card__logo" src="${card.reqLogo}" alt="logo">
-                  <button class="card__btn ${card.basketAdd === 1 ? 'card__btn_select' : ''}" data-req="${card.reqNumber}" data-card="reserv"> 
+                  <button class="card__btn ${card.basketAdd === 1 ? 'card__btn_select' : ''} btn${card.reqNumber}" data-req="${card.reqNumber}" data-card="reserv"> 
                     <svg class="event-none" width="30" height="30" fill="#BEC1C0" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                     \t viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                     <g id="Layer_1_1_">
@@ -1185,7 +1188,10 @@ class AddressHandler {
         this.closeModule(module);
         this.setLoader();
         this.sendCompilation(event.target.dataset.id).then(() => {
-          this.setReserveItem();
+          this.clearReserveItem();
+          document.querySelector('#map').innerHTML = '';
+          this.initMap(this.cards);
+          console.log(this.cards)
           basket.fullness = [];
           basket.init();
           document.querySelector('.loader__img').style.backgroundImage='url(https://crm.centralnoe.ru/dealincom/assets/statusOk.gif)'

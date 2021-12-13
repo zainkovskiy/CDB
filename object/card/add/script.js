@@ -2028,7 +2028,7 @@ class House{
               </div>
               <div class="form__item"> 
                 <span class="form__subtitle">Водопровод</span>               
-                <select id="reqWaterPipes" class="с" name="reqWaterPipes"> 
+                <select id="reqWaterPipes" class="reqWaterPipes" name="reqWaterPipes"> 
                   <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqWaterPipes === 'Не указано' ? 'selected' : ''}>Не указано</option>
                   <option ${add.obj.reqWaterPipes === 'Отсутствует' ? 'selected' : ''}>Отсутствует</option>
