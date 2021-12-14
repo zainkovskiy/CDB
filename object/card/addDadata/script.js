@@ -329,91 +329,8 @@ class Handler{
             blockSave.classList.remove('error_close');
           }, 500)
         }
-        switch (event.target.id) {
-          case 'float':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Float().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-              `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
-            selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
-              `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
-            selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
-              `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
-            selectStyle('.reqBathroomType', 'reqBathroomType',
-              `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
-            selectStyle('.reqRepairStatus', 'reqRepairStatus',
-              `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберете'}`);
-            selectStyle('.reqMaterial', 'reqMaterial',
-              `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'room':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Room().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-              `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
-            selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
-              `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
-            selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
-              `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
-            selectStyle('.reqBathroomType', 'reqBathroomType',
-              `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
-            selectStyle('.reqMaterial', 'reqMaterial',
-              `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
-            selectStyle('.reqHouseType', 'reqHouseType',
-              `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'house':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new House().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqHouseType', 'reqHouseType',
-              `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
-            selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-              `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
-            selectStyle('.reqBathroomType', 'reqBathroomType',
-              `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
-            selectStyle('.reqHouseRoof', 'reqHouseRoof',
-              `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберете'}`);
-            selectStyle('.reqHouseHeating', 'reqHouseHeating',
-              `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберете'}`);
-            selectStyle('.reqWaterPipes', 'reqWaterPipes',
-              `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
-            selectStyle('.reqDrainage', 'reqDrainage',
-              `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'ground':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Ground().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqWaterPipes', 'reqWaterPipes',
-              `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
-            selectStyle('.reqDrainage', 'reqDrainage',
-              `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
-            selectStyle('.reqGroundCategory', 'reqGroundCategory',
-              `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'garage':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Garage().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqMaterial', 'reqMaterial',
-              `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
-            selectStyle('.reqGarageType', 'reqGarageType',
-              `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберете'}`);
-            this.handlerPrice();
-            break
-        }
+        add.dadata = true;
+        this.setLayout(event.target.id);
       })
     }
 
@@ -542,6 +459,119 @@ class Handler{
       }
     })
     this.handlerPrice();
+    this.checkHand();
+  }
+  checkHand(){
+    const checkHand = document.querySelector(`INPUT[name='hand']`);
+    if (checkHand){
+      checkHand.addEventListener('change', event => {
+        if (event.target.checked){
+          add.dadata = false;
+          this.setLayout(document.querySelector(`.change-obj__input:checked`).id);
+        } else {
+          add.dadata = true;
+          this.setLayout(document.querySelector(`.change-obj__input:checked`).id);
+          dadata();
+        }
+      })
+    }
+  }
+  setLayout(choice){
+    switch (choice) {
+      case 'float':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Float().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
+          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
+        selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
+          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
+        selectStyle('.reqBathroomType', 'reqBathroomType',
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        selectStyle('.reqRepairStatus', 'reqRepairStatus',
+          `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберете'}`);
+        selectStyle('.reqMaterial', 'reqMaterial',
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        this.handlerPrice();
+        this.checkHand();
+        add.dadata ? dadata() : '';
+        break
+      case 'room':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Room().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
+          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
+        selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
+          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
+        selectStyle('.reqBathroomType', 'reqBathroomType',
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        selectStyle('.reqMaterial', 'reqMaterial',
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        selectStyle('.reqHouseType', 'reqHouseType',
+          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+        this.handlerPrice();
+        this.checkHand();
+        add.dadata ? dadata() : '';
+        break
+      case 'house':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new House().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqHouseType', 'reqHouseType',
+          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+        selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        selectStyle('.reqBathroomType', 'reqBathroomType',
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        selectStyle('.reqHouseRoof', 'reqHouseRoof',
+          `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберете'}`);
+        selectStyle('.reqHouseHeating', 'reqHouseHeating',
+          `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберете'}`);
+        selectStyle('.reqWaterPipes', 'reqWaterPipes',
+          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+        selectStyle('.reqDrainage', 'reqDrainage',
+          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+        this.handlerPrice();
+        this.checkHand();
+        add.dadata ? dadata() : '';
+        break
+      case 'ground':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Ground().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqWaterPipes', 'reqWaterPipes',
+          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+        selectStyle('.reqDrainage', 'reqDrainage',
+          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+        selectStyle('.reqGroundCategory', 'reqGroundCategory',
+          `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберете'}`);
+        this.handlerPrice();
+        this.checkHand();
+        add.dadata ? dadata() : '';
+        break
+      case 'garage':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Garage().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqMaterial', 'reqMaterial',
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        selectStyle('.reqGarageType', 'reqGarageType',
+          `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберете'}`);
+        this.handlerPrice();
+        this.checkHand();
+        add.dadata ? dadata() : '';
+        break
+    }
   }
   handlerPrice(){
     const price = document.querySelector(`INPUT[name='reqPrice']`);
@@ -1050,7 +1080,7 @@ class Handler{
           add.obj.reqHouseDeveloper = add.developerId;
           add.obj.reqContractor = add.developerId;
         }
-      } else {
+      } else if (input.name !== 'address'){
         add.obj[input.name] = input.value;
       }
     }
@@ -1104,21 +1134,22 @@ class Search{
 
     for (let input of this.searchInputAll){
       input.addEventListener('keyup', () =>{
-        if (input.value === ''){
-          document.querySelector(`.${input.name}__items`).classList.add('isVisible');
-        } else if (this.request){
+        if (this.request){
           if (input.name === 'reqHouseDeveloper'){
-            this.getDeveloper().then(data => {
-              const regExp = new RegExp(input.value, 'i');
-              let filterArea = data.filter(area => regExp.test(area.name));
-              this.request = false;
-              this.renderStreet(filterArea, input, 'name');
-            });
+            if (input.value === ''){
+              document.querySelector(`.${input.name}__items`).classList.add('isVisible');
+            } else {
+              this.getDeveloper().then(data => {
+                const regExp = new RegExp(input.value, 'i');
+                let filterArea = data.filter(area => regExp.test(area.name));
+                this.request = false;
+                this.renderStreet(filterArea, input, 'name');
+              });
+            }
           }
         }
       })
     }
-
     for (let box of this.containerAll){
       box.addEventListener('click', event => {
         if (event.target.tagName === 'P'){
@@ -1132,7 +1163,6 @@ class Search{
       })
     }
     this.checkRoomPart();
-    this.checkHand();
     this.countRoomForSale();
   }
   async getRegion(value){
@@ -1184,20 +1214,23 @@ class Search{
   }
 
   setInputMap(){
-    // todo рендер: reqHouseNumber на blur reqCity и reqStreet по выбору из списка
-    this.houseNumber.addEventListener('blur', () => {
-      this.getCords(this.region.value, this.city.value, this.street.value, this.houseNumber.value).then(data => {
-        if (data.length > 0){
-          add.obj.lat = data[0].lat;
-          add.obj.lng = data[0].lon;
-          document.querySelector(`INPUT[name='lat']`) ? document.querySelector(`INPUT[name='lat']`).value = data[0].lat : '';
-          document.querySelector(`INPUT[name='lng']`) ? document.querySelector(`INPUT[name='lng']`).value = data[0].lon : '';
-          document.querySelector('#map').innerHTML = '';
-          add.initMap(data[0].lat, data[0].lon);
-        }
-      });
-    })
-
+    for (let input of this.searchInputAll){
+      if (input.name === 'reqStreet' || input.name === 'reqHouseNumber'){
+        input.addEventListener('blur', event => {
+          this.getCords(this.region.value, this.city.value, this.street.value, this.houseNumber.value).then(data => {
+            console.log(data)
+            if (data.length > 0){
+              add.obj.lat = data[0].lat;
+              add.obj.lng = data[0].lon;
+              document.querySelector(`INPUT[name='lat']`) ? document.querySelector(`INPUT[name='lat']`).value = data[0].lat : '';
+              document.querySelector(`INPUT[name='lng']`) ? document.querySelector(`INPUT[name='lng']`).value = data[0].lon : '';
+              document.querySelector('#map').innerHTML = '';
+              add.initMap(data[0].lat, data[0].lon);
+            }
+          })
+        })
+      }
+    }
   }
   async getCords(region, city, street, houseNumber){
     const API = `https://nominatim.openstreetmap.org/?addressdetails=1&q=${region}+${city}+${street}+${houseNumber}&format=json&limit=1`
@@ -1227,16 +1260,6 @@ class Search{
           document.querySelector('.reqShareForAll').setAttribute('disabled', 'disabled');
           document.querySelector('.reqShareForSale').value = '';
           document.querySelector('.reqShareForAll').value = '';
-        }
-      })
-    }
-  }
-  checkHand(){
-    const checkHand = document.querySelector(`INPUT[name='hand']`);
-    if (checkHand){
-      checkHand.addEventListener('change', event => {
-        if (event.target.checked){
-          console.log(document.querySelector(`.change-obj__input:checked`))
         }
       })
     }
@@ -1366,7 +1389,7 @@ class Float{
               </div>              
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
-                <input name="reqHouseNumber" id="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+                <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
@@ -1563,41 +1586,44 @@ class Room{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item">
-                <span class="form__subtitle">Адресс</span> 
+              <div class="form__title form__place">
+                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <div class="hand">
+                  <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
+                  <label class="hand__label room__label" for="hand">Заполнить вручную</label>
+                </div>
+              </div>
+              <div class="form__item form_width ${add.dadata ? '' : 'inVisible'}">
+                <span class="form__subtitle">Адрес</span> 
                 <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
-                <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
-                <div class="reqRegion__items search__field isVisible"></div>
+                <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Населенный пункт</span> 
-                <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
-                <div class="reqCity__items search__field isVisible"></div>
+                <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Улица</span> 
-                <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
-                <div class="reqStreet__items search__field isVisible"></div>
+                <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
-                <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
-              </div>                  
+                <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
-              </div>          
-              <div id="map"></div>  
-            </div>                 
+              </div>
+              <div id="map"></div>   
+            </div>                          
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. При заполнении ОБЯЗАТЕЛЬНО укажите площадь каждой комнаты на продажу, в соответствующих полях. В случае если комната не является объектом, укажите Долю на продажу и общую долю в помещении.</p></i></span>
               <div class="form__item">
@@ -1812,45 +1838,44 @@ class House{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
+              <div class="form__title form__place">
+                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <div class="hand">
+                  <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
+                  <label class="hand__label room__label" for="hand">Заполнить вручную</label>
+                </div>
+              </div>
+              <div class="form__item form_width ${add.dadata ? '' : 'inVisible'}">
+                <span class="form__subtitle">Адрес</span> 
+                <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
-                <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
-                <div class="reqRegion__items search__field isVisible"></div>
+                <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Населенный пункт</span> 
-                <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
-                <div class="reqCity__items search__field isVisible"></div>
+                <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Улица</span> 
-                <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
-                <div class="reqStreet__items search__field isVisible"></div>
+                <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
-                <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
-              </div>              
+                <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
-              <div class="form__item">
-                <span class="form__subtitle">Координаты X</span> 
-                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
-              </div>
-              <div class="form__item">
-                <span class="form__subtitle">Координаты Y</span> 
-                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
-              </div>
-              <div id="map"></div>
-            </div>           
+              <div id="map"></div>   
+            </div>            
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. Если на продажу выставляется часть дома, укажите долю на продажу и долю всего.</p></i></span>
               <div class="form__item">
@@ -2029,45 +2054,44 @@ class Ground{
   render(){
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
+              <div class="form__title form__place">
+                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <div class="hand">
+                  <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
+                  <label class="hand__label room__label" for="hand">Заполнить вручную</label>
+                </div>
+              </div>
+              <div class="form__item form_width ${add.dadata ? '' : 'inVisible'}">
+                <span class="form__subtitle">Адрес</span> 
+                <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
-                <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
-                <div class="reqRegion__items search__field isVisible"></div>
+                <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Населенный пункт</span> 
-                <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
-                <div class="reqCity__items search__field isVisible"></div>
+                <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Улица</span> 
-                <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
-                <div class="reqStreet__items search__field isVisible"></div>
+                <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
-                <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
-              </div>              
+                <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
-              <div class="form__item">
-                <span class="form__subtitle">Координаты X</span> 
-                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
-              </div>
-              <div class="form__item">
-                <span class="form__subtitle">Координаты Y</span> 
-                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
-              </div>
-              <div id="map"></div>
-            </div>                
+              <div id="map"></div>   
+            </div>                 
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. Если на продажу выставляется часть земли, укажите долю на продажу и долю всего.</p></i></span>
               <div class="form__item">
@@ -2139,45 +2163,44 @@ class Ground{
 class Garage{
   render(){
     return `<div class="place"> 
-              <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
+              <div class="form__title form__place">
+                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <div class="hand">
+                  <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
+                  <label class="hand__label room__label" for="hand">Заполнить вручную</label>
+                </div>
+              </div>
+              <div class="form__item form_width ${add.dadata ? '' : 'inVisible'}">
+                <span class="form__subtitle">Адрес</span> 
+                <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
-                <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
-                <div class="reqRegion__items search__field isVisible"></div>
+                <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Населенный пункт</span> 
-                <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
-                <div class="reqCity__items search__field isVisible"></div>
+                <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Улица</span> 
-                <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
-                <div class="reqStreet__items search__field isVisible"></div>
+                <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
                 <span class="form__subtitle">Номер дома</span> 
-                <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
-              </div>                         
+                <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
-              </div>   
-              <div class="form__item">
-                <span class="form__subtitle">Координаты X</span> 
-                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
               </div>
-              <div class="form__item">
-                <span class="form__subtitle">Координаты Y</span> 
-                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
-              </div>
-              <div id="map"></div>
-            </div>
+              <div id="map"></div>   
+            </div> 
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
               <div class="form__item">
@@ -2346,6 +2369,14 @@ function dadata(){
       $city.suggestions().setSuggestion(suggestion);
       $street.suggestions().setSuggestion(suggestion);
       $house.suggestions().setSuggestion(suggestion);
+      if (suggestion.data.geo_lat && suggestion.data.geo_lon){
+        add.obj.lat = suggestion.data.geo_lat;
+        add.obj.lng = suggestion.data.geo_lon;
+        document.querySelector(`INPUT[name='lat']`) ? document.querySelector(`INPUT[name='lat']`).value = data[0].lat : '';
+        document.querySelector(`INPUT[name='lng']`) ? document.querySelector(`INPUT[name='lng']`).value = data[0].lon : '';
+        document.querySelector('#map') ? document.querySelector('#map').innerHTML = '' : '';
+        add.initMap(suggestion.data.geo_lat, suggestion.data.geo_lon);
+      }
       console.log(suggestion)
     }
   });

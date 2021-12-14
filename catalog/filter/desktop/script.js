@@ -81,6 +81,7 @@ const kemerovo = 'Кемеровская область - Кузбасс';
 $("#address").suggestions({
   token: "408e6651c0b9bfc8e2f487383d45353973f3285c",
   type: "ADDRESS",
+  bounds: "city-house",
   /* Вызывается, когда пользователь выбирает одну из подсказок */
   onSelect: function(suggestion) {
     if(suggestion.data.region === novosibirsk || suggestion.data.region === kemerovo){
@@ -440,9 +441,7 @@ class AddressHandler {
           });
         }
       } else if (event.target.dataset.name === 'story'){
-        //todo разкомментить
-
-        // if (activeDeal){
+        if (activeDeal){
           let req = {
             action : 'historySearch',
             dealId : 1,
@@ -453,7 +452,7 @@ class AddressHandler {
             this.openModule('История поиска по сделке', this.historyLayout(data));
             this.removeLoader();
           })
-        // }
+        }
       } else if (event.target.dataset.open === 'openCard'){
         this.openCard(event.target.dataset.req, event.target.dataset.source);
       } else if (event.target.dataset.name === 'map'){
