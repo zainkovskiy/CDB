@@ -867,7 +867,7 @@ class Handler{
             item.classList.remove('isValid');
           }
         } else {
-          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark'){
+          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark' && item.name !== 'address'){
             if (item.value.length === 0){
               library[item.name] = false;
               item.classList.add('isValid');
@@ -1130,7 +1130,7 @@ class Search{
     this.request = true;
   }
   init(){
-    this.setInputMap();
+    // this.setInputMap();
 
     for (let input of this.searchInputAll){
       input.addEventListener('keyup', () =>{
@@ -1216,7 +1216,7 @@ class Search{
   setInputMap(){
     for (let input of this.searchInputAll){
       if (input.name === 'reqStreet' || input.name === 'reqHouseNumber'){
-        input.addEventListener('blur', event => {
+        input.addEventListener('blur', () => {
           this.getCords(this.region.value, this.city.value, this.street.value, this.houseNumber.value).then(data => {
             console.log(data)
             if (data.length > 0){
@@ -1226,6 +1226,12 @@ class Search{
               document.querySelector(`INPUT[name='lng']`) ? document.querySelector(`INPUT[name='lng']`).value = data[0].lon : '';
               document.querySelector('#map').innerHTML = '';
               add.initMap(data[0].lat, data[0].lon);
+              this.region.value = data[0].address.state  ? data[0].address.state : '';
+              this.city.value = data[0].address.city  ? data[0].address.city : '';
+              document.querySelector(`INPUT[name='reqArea']`).value = data[0].address.city_district ? data[0].address.city_district : '';
+              this.street.value = data[0].address.road  ? data[0].address.road : '';
+              this.houseNumber.value = data[0].address.house_number  ? data[0].address.house_number : '';
+              add.checkPrefix();
             }
           })
         })
@@ -1394,6 +1400,14 @@ class Float{
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X</span> 
+                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты Y</span> 
+                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
             </div>          
@@ -1621,6 +1635,14 @@ class Room{
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X</span> 
+                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты Y</span> 
+                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
             </div>                          
@@ -1873,6 +1895,14 @@ class House{
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X</span> 
+                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты Y</span> 
+                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
             </div>            
@@ -2089,6 +2119,14 @@ class Ground{
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X</span> 
+                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты Y</span> 
+                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
             </div>                 
@@ -2198,6 +2236,14 @@ class Garage{
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X</span> 
+                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты Y</span> 
+                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
             </div> 
@@ -2353,9 +2399,9 @@ function dadata(){
   const type = "ADDRESS";
   const $address = $('#address');
   const $region = $("#reqRegion");
-  const $city   = $("#reqCity");
+  const $city = $("#reqCity");
   const $street = $("#reqStreet");
-  const $house  = $("#reqHouseNumber");
+  const $house = $("#reqHouseNumber");
 
 // адрес одной строкой
   $address.suggestions({
@@ -2364,56 +2410,58 @@ function dadata(){
     hint: false,
     bounds: "city-house",
     onSelect: function (suggestion) {
-      $region.suggestions().setSuggestion(suggestion);
-      document.querySelector(`INPUT[name='reqArea']`).value = suggestion.data.city_district ? suggestion.data.city_district : '';
-      $city.suggestions().setSuggestion(suggestion);
-      $street.suggestions().setSuggestion(suggestion);
-      $house.suggestions().setSuggestion(suggestion);
-      if (suggestion.data.geo_lat && suggestion.data.geo_lon){
-        add.obj.lat = suggestion.data.geo_lat;
-        add.obj.lng = suggestion.data.geo_lon;
-        document.querySelector(`INPUT[name='lat']`) ? document.querySelector(`INPUT[name='lat']`).value = data[0].lat : '';
-        document.querySelector(`INPUT[name='lng']`) ? document.querySelector(`INPUT[name='lng']`).value = data[0].lon : '';
-        document.querySelector('#map') ? document.querySelector('#map').innerHTML = '' : '';
-        add.initMap(suggestion.data.geo_lat, suggestion.data.geo_lon);
-      }
-      console.log(suggestion)
+      console.log(suggestion.data);
+      setDadataValue(suggestion.data);
+      checkPrefix();
     }
   });
 
-// регион и район
-  $region.suggestions({
-    token: token,
-    type: type,
-    hint: false,
-    bounds: "region-area"
-  });
+}
+function setDadataValue(data){
+  document.querySelector(`INPUT[name='reqRegion']`).value = data.region_with_type ? data.region_with_type : '';
+  add.obj.reqRegion = data.region_with_type ? data.region_with_type : '';
 
-// город и населенный пункт
-  $city.suggestions({
-    token: token,
-    type: type,
-    hint: false,
-    bounds: "city-settlement",
-    constraints: $region
-  });
+  document.querySelector(`INPUT[name='reqCity']`).value = data.city ? data.city : '';
+  add.obj.reqCity = data.city ? data.city : '';
 
-// улица
-  $street.suggestions({
-    token: token,
-    type: type,
-    hint: false,
-    bounds: "street",
-    constraints: $city
-  });
+  document.querySelector(`INPUT[name='reqArea']`).value = data.city_district ? data.city_district : '';
+  add.obj.reqArea = data.city_district ? data.city_district : '';
 
+  document.querySelector(`INPUT[name='reqStreet']`).value = data.street ? data.street : '';
+  add.obj.reqStreet = data.street ? data.street : '';
 
-// дом
-  $house.suggestions({
-    token: token,
-    type: type,
-    hint: false,
-    bounds: "house",
-    constraints: $street
-  });
+  document.querySelector(`INPUT[name='reqHouseNumber']`).value = data.house ? data.house : '';
+  add.obj.reqHouseNumber = data.house ? data.house : '';
+
+  const snt = document.querySelector(`INPUT[name='reqMunicipality']`);
+  snt ? snt.value = data.settlement_with_type ? data.settlement_with_type : '' : '';
+  add.obj.reqMunicipality = data.settlement_with_type ? data.settlement_with_type : '';
+
+  if (data.geo_lat && data.geo_lon){
+    add.obj.lat = data.geo_lat;
+    add.obj.lng = data.geo_lon;
+    document.querySelector(`INPUT[name='lat']`) ? document.querySelector(`INPUT[name='lat']`).value = data.geo_lat : '';
+    document.querySelector(`INPUT[name='lng']`) ? document.querySelector(`INPUT[name='lng']`).value = data.geo_lon : '';
+    document.querySelector('#map') ? document.querySelector('#map').innerHTML = '' : '';
+    add.initMap(data.geo_lat, data.geo_lon);
+  }
+}
+
+function checkPrefix(){
+  const allInputsSearch = document.querySelectorAll(`INPUT[type='search']`);
+  const prefix = ['ул ', 'улица ', 'улица', 'дом ', 'д ', 'район', 'г ', 'обл$', '- Кузбасс'];
+  for (let input of allInputsSearch){
+    if (input.name !== 'reqHouseDeveloper'){
+      for (let pref of prefix){
+        const regExp = new RegExp(pref, 'i');
+        if (regExp.test(input.value)){
+          if (pref === 'обл$'){
+            input.value = input.value.replace(regExp, 'область');
+          } else {
+            input.value = input.value.replace(regExp, '');
+          }
+        }
+      }
+    }
+  }
 }

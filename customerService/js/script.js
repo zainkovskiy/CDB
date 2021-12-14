@@ -346,46 +346,46 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Регион</span>
-                  <input name="reqRegion" class="input__text" type="text">
+                  <input name="reqRegion" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Населенный пункт</span>
-                  <input name="reqCity" class="input__text" type="text">
+                  <input name="reqCity" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Район</span>
-                  <input name="reqArea" class="input__text" type="text">
+                  <input name="reqArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Улица</span>
-                  <input name="reqStreet" class="input__text" type="text">
+                  <input name="reqStreet" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Номер дома</span>
-                  <input name="reqHouseNumber" class="input__text" type="text">
+                  <input name="reqHouseNumber" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Дополнительный ориентир</span>
-                  <input name="reqAdditionalLandmark" class="input__text" type="text">
+                  <input name="reqAdditionalLandmark" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>
               <span class="title">объект недвижимости</span>
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Номер квартиры</span>
-                  <input name="reqFlat" class="input__text" type="text">
+                  <input name="reqFlat" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь общая</span>
-                  <input name="reqFlatTotalArea" class="input__text" type="text">
+                  <input name="reqFlatTotalArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь жилая</span>
-                  <input name="reqFlatLivingArea" class="input__text" type="text">
+                  <input name="reqFlatLivingArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь кухни</span>
-                  <input name="reqKitchenArea" class="input__text" type="text">
+                  <input name="reqKitchenArea" class="input__text" type="text" autocomplete="off">
                 </div>    
                 <div class="about__item">     
                   <span class="subtitle">Количество комнат</span>         
@@ -404,15 +404,15 @@ class Item{
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Этаж</span>
-                  <input name="reqFloor" class="input__text" type="text">
+                  <input name="reqFloor" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Этажность</span>
-                  <input name="reqFloorCount" class="input__text" type="text">
+                  <input name="reqFloorCount" class="input__text" type="text" autocomplete="off">
                 </div>                
                 <div class="about__item"> 
                   <span class="subtitle">Застройщик</span>
-                  <input name="reqHouseDeveloper" class="input__text" type="text">
+                  <input name="reqHouseDeveloper" class="input__text" type="text" autocomplete="off">
                 </div>               
                 <div class="about__item"> 
                   <span class="subtitle">Балкон/лоджия</span>
@@ -516,11 +516,11 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Цена</span>
-                  <input name="reqPrice" class="input__text" type="text">
+                  <input name="reqPrice" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text">
+                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>
               <span class="title">информация о доме</span>
@@ -596,46 +596,46 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Регион</span>
-                  <input name="reqRegion" class="input__text" type="text">
+                  <input name="reqRegion" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Населенный пункт</span>
-                  <input name="reqCity" class="input__text" type="text">
+                  <input name="reqCity" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Район</span>
-                  <input name="reqArea" class="input__text" type="text">
+                  <input name="reqArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Улица</span>
-                  <input name="reqStreet" class="input__text" type="text">
+                  <input name="reqStreet" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Номер дома</span>
-                  <input name="reqHouseNumber" class="input__text" type="text">
+                  <input name="reqHouseNumber" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Дополнительный ориентир</span>
-                  <input name="reqAdditionalLandmark" class="input__text" type="text">
+                  <input name="reqAdditionalLandmark" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>
               <span class="title">объект недвижимости</span>
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Номер квартиры</span>
-                  <input name="reqFlat" class="input__text" type="text">
+                  <input name="reqFlat" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь общая</span>
-                  <input name="reqFlatTotalArea" class="input__text" type="text">
+                  <input name="reqFlatTotalArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь жилая</span>
-                  <input name="reqFlatLivingArea" class="input__text" type="text">
+                  <input name="reqFlatLivingArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь кухни</span>
-                  <input name="reqKitchenArea" class="input__text" type="text">
+                  <input name="reqKitchenArea" class="input__text" type="text" autocomplete="off">
                 </div>    
                 <div class="about__item">     
                   <span class="subtitle">Количество комнат</span>         
@@ -654,11 +654,11 @@ class Item{
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Этаж</span>
-                  <input name="reqFloor" class="input__text" type="text">
+                  <input name="reqFloor" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Этажность</span>
-                  <input name="reqFloorCount" class="input__text" type="text">
+                  <input name="reqFloorCount" class="input__text" type="text" autocomplete="off">
                 </div>                             
                 <div class="about__item"> 
                   <span class="subtitle">Балкон/лоджия</span>
@@ -744,11 +744,11 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Цена</span>
-                  <input name="reqPrice" class="input__text" type="text">
+                  <input name="reqPrice" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text">
+                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>
               <span class="title">информация о доме</span>
@@ -842,46 +842,46 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Регион</span>
-                  <input name="reqRegion" class="input__text" type="text">
+                  <input name="reqRegion" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Населенный пункт</span>
-                  <input name="reqCity" class="input__text" type="text">
+                  <input name="reqCity" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Район</span>
-                  <input name="reqArea" class="input__text" type="text">
+                  <input name="reqArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Улица</span>
-                  <input name="reqStreet" class="input__text" type="text">
+                  <input name="reqStreet" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Номер дома</span>
-                  <input name="reqHouseNumber" class="input__text" type="text">
+                  <input name="reqHouseNumber" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Дополнительный ориентир</span>
-                  <input name="reqAdditionalLandmark" class="input__text" type="text">
+                  <input name="reqAdditionalLandmark" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>
               <span class="title">объект недвижимости</span>
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Площадь участка в (сотках)</span>
-                  <input name="reqLandArea" class="input__text" type="text">
+                  <input name="reqLandArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь дома</span>
-                  <input name="reqFlatTotalArea" class="input__text" type="text">
+                  <input name="reqFlatTotalArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь жилая</span>
-                  <input name="reqFlatLivingArea" class="input__text" type="text">
+                  <input name="reqFlatLivingArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Площадь кухни</span>
-                  <input name="reqKitchenArea" class="input__text" type="text">
+                  <input name="reqKitchenArea" class="input__text" type="text" autocomplete="off">
                 </div>    
                 <div class="about__item">     
                   <span class="subtitle">Количество комнат в доме</span>         
@@ -900,7 +900,7 @@ class Item{
                 </div>            
                 <div class="about__item"> 
                   <span class="subtitle">Этажность</span>
-                  <input name="reqFloorCount" class="input__text" type="text">
+                  <input name="reqFloorCount" class="input__text" type="text" autocomplete="off">
                 </div>                             
                 <div class="about__item"> 
                   <span class="subtitle">Балкон/лоджия</span>
@@ -1029,11 +1029,11 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Цена</span>
-                  <input name="reqPrice" class="input__text" type="text">
+                  <input name="reqPrice" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text">
+                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>`
   }
@@ -1083,38 +1083,38 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Регион</span>
-                  <input name="reqRegion" class="input__text" type="text">
+                  <input name="reqRegion" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Населенный пункт</span>
-                  <input name="reqCity" class="input__text" type="text">
+                  <input name="reqCity" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Район</span>
-                  <input name="reqArea" class="input__text" type="text">
+                  <input name="reqArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Улица</span>
-                  <input name="reqStreet" class="input__text" type="text">
+                  <input name="reqStreet" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Номер дома</span>
-                  <input name="reqHouseNumber" class="input__text" type="text">
+                  <input name="reqHouseNumber" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Дополнительный ориентир</span>
-                  <input name="reqAdditionalLandmark" class="input__text" type="text">
+                  <input name="reqAdditionalLandmark" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>
               <span class="title">объект недвижимости</span>
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Площадь участка в (сотках)</span>
-                  <input name="reqLandArea" class="input__text" type="text">
+                  <input name="reqLandArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Садовое общество</span>
-                  <input name="reqMunicipality" class="input__text" type="text">
+                  <input name="reqMunicipality" class="input__text" type="text" autocomplete="off">
                 </div>               
                 <div class="about__item"> 
                   <span class="subtitle">Водопровод</span>
@@ -1160,11 +1160,11 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Цена</span>
-                  <input name="reqPrice" class="input__text" type="text">
+                  <input name="reqPrice" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text">
+                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>`
   }
@@ -1214,46 +1214,46 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Регион</span>
-                  <input name="reqRegion" class="input__text" type="text">
+                  <input name="reqRegion" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Населенный пункт</span>
-                  <input name="reqCity" class="input__text" type="text">
+                  <input name="reqCity" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Район</span>
-                  <input name="reqArea" class="input__text" type="text">
+                  <input name="reqArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Улица</span>
-                  <input name="reqStreet" class="input__text" type="text">
+                  <input name="reqStreet" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Номер дома</span>
-                  <input name="reqHouseNumber" class="input__text" type="text">
+                  <input name="reqHouseNumber" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Дополнительный ориентир</span>
-                  <input name="reqAdditionalLandmark" class="input__text" type="text">
+                  <input name="reqAdditionalLandmark" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>
               <span class="title">объект недвижимости</span>
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Площадь общая</span>
-                  <input name="reqFlatTotalArea" class="input__text" type="text">
+                  <input name="reqFlatTotalArea" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Этаж</span>
-                  <input name="reqFloor" class="input__text" type="text">
+                  <input name="reqFloor" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Этажность</span>
-                  <input name="reqFloorCount" class="input__text" type="text">
+                  <input name="reqFloorCount" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Номер парковочного места</span>
-                  <input name="reqFlat" class="input__text" type="text">
+                  <input name="reqFlat" class="input__text" type="text" autocomplete="off">
                 </div>                 
                 <div class="about__item"> 
                   <span class="subtitle">Материал стен</span>
@@ -1287,8 +1287,6 @@ class Item{
                     </div>
                   </div>
                 </div>    
-          
-                               
                <div class="about__item"> 
                   <span class="subtitle">Год постройки</span>
                   <input class="input__text" type="date">
@@ -1298,11 +1296,11 @@ class Item{
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Цена</span>
-                  <input name="reqPrice" class="input__text" type="text">
+                  <input name="reqPrice" class="input__text" type="text" autocomplete="off">
                 </div>
                 <div class="about__item"> 
                   <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text">
+                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off">
                 </div>
               </div>`
   }
