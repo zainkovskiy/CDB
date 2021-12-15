@@ -164,6 +164,11 @@ i{
     align-items: center;
     justify-content: space-between;
   }
+  &__guid{
+    font-size: 18px;
+    padding: 20px 20px 0 20px;
+    margin: 0;
+  }
 }
 .room__field{
   border-radius: 5px;

@@ -89,12 +89,15 @@ class Add {
     if (!jsonA){
       this.container.insertAdjacentHTML('beforeend', `<p class="error">Объект не найден</p>`)
     } else {
+      if (jsonA.reqTypeofRealty === 'Новостройка (от застройщика)'){
+        jsonA.reqTypeofRealty = 'Переуступка ДДУ';
+      }
       return jsonA;
     }
   }
   setStartPage(){
     const form = document.querySelector('.form');
-    if (this.obj.reqTypeofRealty === 'Квартира' || this.obj.reqTypeofRealty === 'Переуступка ДДУ' || this.obj.reqTypeofRealty === 'Новостройка (от застройщика)') {
+    if (this.obj.reqTypeofRealty === 'Квартира' || this.obj.reqTypeofRealty === 'Переуступка ДДУ') {
       form.insertAdjacentHTML('beforeend', new Float().render());
       new Search().init();
       this.initMap(this.obj.lat, this.obj.lng);
@@ -266,7 +269,7 @@ class Header {
               </div>
               <div class="change-obj"> 
                 <input 
-                    ${this.type === 'Квартира' ||  this.type === 'Переуступка ДДУ'  || this.type === 'Новостройка (от застройщика)' ? 'checked' : ''} 
+                    ${this.type === 'Квартира' ||  this.type === 'Переуступка ДДУ' ? 'checked' : ''} 
                     class="change-obj__input" name="reqTypeofRealty" id="float" type="radio" value="Квартира">
                 <label for="float">Квартира</label>
                 <input ${this.type === 'Комната' ? 'checked' : ''} class="change-obj__input" 
@@ -308,7 +311,8 @@ class Header {
                 </select>
               </div>     
             </div>
-            <form class="form" autocomplete="new-password"></form>`
+            <form class="form" autocomplete="new-password"> 
+            </form>`
   }
 }
 class Handler{
@@ -810,6 +814,7 @@ class Handler{
       reqShareForAll: true,
       reqOverstatePrice: true,
       reqAdditionalLandmark: true,
+      reqObjectCadastralNumber: true,
     }
     const libraryRegExp = {
       reqRegion: /(.|\s)*\S(.|\s)*/,
@@ -829,9 +834,6 @@ class Handler{
       reqHouseBuildDate: /(.|\s)*\S(.|\s)*/,
       reqLandArea: /^\d*\.?\d*?$/,
       reqFlatArea: /^\d*\.?\d*?$/,
-      lat: /^\d{2}\.\d*$/,
-      lng: /^\d{2}\.\d*$/,
-      reqMunicipality: /\.*/,
       reqAreaForSell: /^\d*\.?\d*?$/,
       reqAreaForSell2: /^\d*\.?\d*?$/,
       reqAreaForSell3: /^\d*\.?\d*?$/,
@@ -867,7 +869,11 @@ class Handler{
             item.classList.remove('isValid');
           }
         } else {
-          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark' && item.name !== 'address'){
+          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' &&
+            item.name !== 'reqAdditionalLandmark' && item.name !== 'address' &&
+            item.name !== 'reqRegionArea' && item.name !== 'reqLandCadastralNumber'
+            && item.name !== 'reqObjectCadastralNumber' && item.name !== 'reqMunicipality'
+            && item.name !== 'lat' && item.name !== 'lng'){
             if (item.value.length === 0){
               library[item.name] = false;
               item.classList.add('isValid');
@@ -905,6 +911,9 @@ class Handler{
       const reqShareForAll = document.querySelector(`INPUT[name='reqShareForAll']`);
       const reqHouseNumber = document.querySelector(`INPUT[name='reqHouseNumber']`);
       const reqFlat = document.querySelector(`INPUT[name='reqFlat']`);
+      const reqObjectCadastralNumber = document.querySelector(`INPUT[name='reqObjectCadastralNumber']`);
+      const lat = document.querySelector(`INPUT[name='lat']`);
+      const lng = document.querySelector(`INPUT[name='lng']`);
 
       if (item.checked){
         if (item.value === 'Квартира'){
@@ -992,11 +1001,22 @@ class Handler{
             library.reqShareForAll = true;
             reqShareForAll.classList.remove('isValid');
           }
+          if (lat.value.length === 0){
+            library.lat = false;
+            lat.classList.add('isValid');
+          }
+          if (lng.value.length === 0){
+            library.lng = false;
+            lng.classList.add('isValid');
+          }
         } else if (item.value === 'Земельный участок'){
 
-          if(+reqHouseNumber.value === 0){
-            library.reqHouseNumber = false;
-            reqHouseNumber.classList.add('isValid');
+          if(reqObjectCadastralNumber.value.length === 0){
+            library.reqObjectCadastralNumber = false;
+            reqObjectCadastralNumber.classList.add('isValid');
+          } else {
+            library.reqObjectCadastralNumber = true;
+            reqObjectCadastralNumber.classList.remove('isValid');
           }
 
           if (!reqShareForSale.disabled && !reqShareForAll.disabled){
@@ -1009,6 +1029,14 @@ class Handler{
           } else {
             library.reqShareForAll = true;
             reqShareForAll.classList.remove('isValid');
+          }
+          if (lat.value.length === 0){
+            library.lat = false;
+            lat.classList.add('isValid');
+          }
+          if (lng.value.length === 0){
+            library.lng = false;
+            lng.classList.add('isValid');
           }
         } else if (item.value === 'Гараж'){
 
@@ -1023,6 +1051,9 @@ class Handler{
           } else {
             library.reqFloor = true;
           }
+
+          library.reqHouseNumber = true;
+          reqHouseNumber.classList.remove('isValid');
         }
       }
     }
@@ -1353,20 +1384,18 @@ function getPartOrFull(){
 
 class Float{
   render(){
-    return `<div class="buttons"> 
+    return `<span class="form__subtitle form__guid"><i class="i">*</i> - обязательное поле для заполнения</span>
+            <div class="buttons"> 
               <input ${add.obj.reqTypeofRealty === 'Квартира' ? 'checked' : ''} 
               class="buttons__input reqTypeofRealty" name="reqTypeofRealty" id="second" type="radio" value="Квартира">
               <label id="reqTypeofRealty" class="buttons__label buttons__label_margin second" for="second">вторичка</label>
-              <input ${add.obj.reqTypeofRealty === 'Новостройка (от застройщика)' ? 'checked' : ''} 
-              class="buttons__input buttons__input_margin reqTypeofRealty" name="reqTypeofRealty" id="new" type="radio" value="Новостройка (от застройщика)">
-              <label id="reqTypeofRealty" class="buttons__label buttons__label_margin new" for="new">новостройка</label>
               <input ${add.obj.reqTypeofRealty === 'Переуступка ДДУ' ? 'checked' : ''} 
               class="buttons__input reqTypeofRealty" name="reqTypeofRealty" id="part" type="radio" value="Переуступка ДДУ">
               <label id="reqTypeofRealty" class="buttons__label part" for="part">переуступка дду</label>
             </div> 
             <div class="place"> 
               <div class="form__title form__place">
-                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <span>местоположение</span>
                 <div class="hand">
                   <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
                   <label class="hand__label room__label" for="hand">Заполнить вручную</label>
@@ -1377,29 +1406,46 @@ class Float{
                 <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Регион</span> 
+                <span class="form__subtitle">Регион<i class="simbol">*</i></span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Населенный пункт</span> 
+                <span class="form__subtitle">Район области</span> 
+                <input name="reqRegionArea" id="reqRegionArea" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegionArea ? add.obj.reqRegionArea : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Населенный пункт<i class="simbol">*</i></span> 
                 <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Район</span> 
+                <span class="form__subtitle">Район города<i class="simbol">*</i></span> 
                 <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Улица</span> 
+                <span class="form__subtitle">Улица<i class="simbol">*</i></span> 
                 <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
-                <span class="form__subtitle">Номер дома</span> 
+                <span class="form__subtitle">Номер дома<i class="simbol">*</i></span> 
                 <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Номер квартиры<i class="simbol">*</i>
+                </span> 
+                <input name="reqFlat" id="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
@@ -1412,24 +1458,32 @@ class Float{
               <div id="map"></div>   
             </div>          
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">Обязательны к заполнению все поля, кроме Застройщика</p></i></span>
+              <span class="form__title">информация об объекте недвижимости</span>
               <div class="form__item">
-                <span class="form__subtitle">Номер квартиры</span> 
-                <input name="reqFlat" id="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}" autocomplete="new-password">
+                <span class="form__subtitle">Общая площадь m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span> 
+                <input name="reqFlatTotalArea" id="reqFlatTotalArea" class="form__input" type="text" placeholder="пример 11.1" 
+                  value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (общая/жилая/кухня) <i class="simbol">*</i> разделитель точка</span> 
-                <div class="form__item_wrap"> 
-                  <input name="reqFlatTotalArea" id="reqFlatTotalArea" class="form__input form__input_width" type="text" placeholder="пример 11.1" 
-                  value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" autocomplete="new-password">
-                  <input name="reqFlatLivingArea" id="reqFlatLivingArea" class="form__input form__input_width" type="text" placeholder="жилая" 
+                <span class="form__subtitle">Жилая площадь m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span>
+                <input name="reqFlatLivingArea" id="reqFlatLivingArea" class="form__input" type="text" placeholder="жилая" 
                   value="${add.obj.reqFlatLivingArea ? add.obj.reqFlatLivingArea : ''}" autocomplete="new-password">
-                  <input name="reqKitchenArea" id="reqKitchenArea" class="form__input form__input_width" type="text" placeholder="кухня" 
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Площадь кухни m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span> 
+                <input name="reqKitchenArea" id="reqKitchenArea" class="form__input" type="text" placeholder="кухня" 
                   value="${add.obj.reqKitchenArea ? add.obj.reqKitchenArea : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Этаж<i class="simbol">*</i></span> 
+                <div class="form__item_wrap"> 
+                  <input name="reqFloor" class="form__input form__input_40" type="text" value="${add.obj.reqFloor ? add.obj.reqFloor : ''}" autocomplete="new-password">
+                  <span class="form__from">из</span>
+                  <input name="reqFloorCount" class="form__input form__input_40" type="text" value="${add.obj.reqFloorCount ? add.obj.reqFloorCount : ''}" autocomplete="new-password">
                 </div>
               </div>
-              <div class="form__item">
-                <span class="form__subtitle">Количество комнат</span> 
+              <div class="form__item form_width">
+                <span class="form__subtitle">Количество комнат<i class="simbol">*</i></span> 
                 <div class="form__countRooms"> 
                   <input ${add.obj.reqRoomCount === '1' ? 'checked' : ''} 
                   class="buttons__input reqRoomCount" name="reqRoomCount" id="one" type="radio" value="1">
@@ -1449,20 +1503,12 @@ class Float{
                 </div>
               </div>              
               <div class="form__item">
-                <span class="form__subtitle">Этаж</span> 
-                <div class="form__item_wrap"> 
-                  <input name="reqFloor" class="form__input form__input_40" type="text" value="${add.obj.reqFloor ? add.obj.reqFloor : ''}" autocomplete="new-password">
-                  <span class="form__from">из</span>
-                  <input name="reqFloorCount" class="form__input form__input_40" type="text" value="${add.obj.reqFloorCount ? add.obj.reqFloorCount : ''}" autocomplete="new-password">
-                </div>
-              </div>
-              <div class="form__item">
                 <span class="form__subtitle">Застройщик</span> 
                 <input name="reqHouseDeveloper" class="form__input search__input reqHouseDeveloper" type="search" value="${add.obj.reqHouseDeveloper ? add.obj.reqHouseDeveloper : ''}" autocomplete="new-password">
                 <div class="reqHouseDeveloper__items search__field isVisible"></div>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Балкон/лоджия</span> 
+                <span class="form__subtitle">Балкон/лоджия<i class="simbol">*</i></span> 
                 <select class="reqGalleryAvailability" name="reqGalleryAvailability"> 
                   <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон' ? 'selected' : ''}>1 балкон</option>
@@ -1483,7 +1529,7 @@ class Float{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Тип квартиры</span> 
+                <span class="form__subtitle">Тип квартиры<i class="simbol">*</i></span> 
                 <select class="reqTypeofFlat" name="reqTypeofFlat"> 
                   <option value="empty" ${!add.obj.reqTypeofFlat ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqTypeofFlat === 'Прочее' ? 'selected' : ''}>Прочее</option>
@@ -1505,7 +1551,7 @@ class Float{
               </select>           
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Планировка</span>               
+                <span class="form__subtitle">Планировка<i class="simbol">*</i></span>               
                 <select class="reqTypeofLayout" name="reqTypeofLayout"> 
                   <option value="empty" ${!add.obj.reqTypeofLayout ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqTypeofLayout === 'Смежные' ? 'selected' : ''}>Смежные</option>
@@ -1515,7 +1561,7 @@ class Float{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Санузел</span>               
+                <span class="form__subtitle">Санузел<i class="simbol">*</i></span>               
                 <select class="reqBathroomType" name="reqBathroomType"> 
                   <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqBathroomType === 'Неизвестно' ? 'selected' : ''}>Неизвестно</option>
@@ -1530,7 +1576,7 @@ class Float{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Ремонт</span>               
+                <span class="form__subtitle">Ремонт<i class="simbol">*</i></span>               
                 <select class="reqRepairStatus" name="reqRepairStatus"> 
                   <option value="empty" ${!add.obj.repair ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqRepairStatus === 'Под ключ' ? 'selected' : ''}>Под ключ</option>
@@ -1546,27 +1592,27 @@ class Float{
               </div>
             </div> 
             <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена</span>
               <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
+                <span class="form__subtitle">Цена, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqPrice" id="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autocomplete="new-password">
               </div> 
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <span class="form__subtitle">Цена в рекламу, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
                 value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
               </div>
             </div>
             <div class="infoHouse"> 
-              <span class="form__title">информация о доме<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
+              <span class="form__title">информация о доме</span>
               <div class="form__item">
-                <span class="form__subtitle">Год постройки</span> 
+                <span class="form__subtitle">Год постройки<i class="simbol">*</i></span> 
                 <input name="reqHouseBuildDate" class="form__input" type="date" id="reqHouseBuildDate"
                 value="${add.obj.reqHouseBuildDate ? add.obj.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Материал дома</span>               
+                <span class="form__subtitle">Материал дома<i class="simbol">*</i></span>               
                 <select class="reqMaterial" name="reqMaterial"> 
                   <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqMaterial === 'Кирпич' ? 'selected' : ''}>Кирпич</option>
@@ -1599,9 +1645,10 @@ class Float{
 class Room{
   render(){
     const partOrFull = getPartOrFull();
-    return `<div class="place"> 
+    return `<spanv class="form__subtitle form__guid"><i class="i">*</i> - обязательное поле для заполнения</spanv>
+              <div class="place"> 
               <div class="form__title form__place">
-                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <span>местоположение</span>
                 <div class="hand">
                   <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
                   <label class="hand__label room__label" for="hand">Заполнить вручную</label>
@@ -1612,29 +1659,45 @@ class Room{
                 <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Регион</span> 
+                <span class="form__subtitle">Регион<i class="simbol">*</i></span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Населенный пункт</span> 
+                <span class="form__subtitle">Район области</span> 
+                <input name="reqRegionArea" id="reqRegionArea" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegionArea ? add.obj.reqRegionArea : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Населенный пункт<i class="simbol">*</i></span> 
                 <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Район</span> 
+                <span class="form__subtitle">Район города<i class="simbol">*</i></span> 
                 <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Улица</span> 
+                <span class="form__subtitle">Улица<i class="simbol">*</i></span> 
                 <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
-                <span class="form__subtitle">Номер дома</span> 
+                <span class="form__subtitle">Номер дома<i class="simbol">*</i></span> 
                 <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Номер квартиры<i class="simbol">*</i></span> 
+                <input name="reqFlat" id="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
@@ -1645,26 +1708,34 @@ class Room{
                 <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
-            </div>                          
+            </div>                               
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. При заполнении ОБЯЗАТЕЛЬНО укажите площадь каждой комнаты на продажу, в соответствующих полях. В случае если комната не является объектом, укажите Долю на продажу и общую долю в помещении.</p></i></span>
+              <span class="form__title">информация об объекте недвижимости</span>
               <div class="form__item">
-                <span class="form__subtitle">Номер квартиры</span> 
-                <input name="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}">
+                <span class="form__subtitle">Общая площадь m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span> 
+                <input name="reqFlatTotalArea" id="reqFlatTotalArea" class="form__input" type="text" placeholder="пример 11.1" 
+                  value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (общая/жилая/кухня) <i class="simbol">*</i> Разделитель точка</span> 
+                <span class="form__subtitle">Жилая площадь m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span>
+                <input name="reqFlatLivingArea" id="reqFlatLivingArea" class="form__input" type="text" placeholder="жилая" 
+                  value="${add.obj.reqFlatLivingArea ? add.obj.reqFlatLivingArea : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Площадь кухни m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span> 
+                <input name="reqKitchenArea" id="reqKitchenArea" class="form__input" type="text" placeholder="кухня" 
+                  value="${add.obj.reqKitchenArea ? add.obj.reqKitchenArea : ''}" autocomplete="new-password">
+              </div>             
+              <div class="form__item">
+                <span class="form__subtitle">Этаж<i class="simbol">*</i></span> 
                 <div class="form__item_wrap"> 
-                  <input name="reqFlatTotalArea" class="form__input form__input_width" type="text" placeholder="пример 11.1" 
-                  value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}">
-                  <input name="reqFlatLivingArea" class="form__input form__input_width" type="text" placeholder="жилая" 
-                  value="${add.obj.reqFlatLivingArea ? add.obj.reqFlatLivingArea : ''}">
-                  <input name="reqKitchenArea" class="form__input form__input_width" type="text" placeholder="кухня" 
-                  value="${add.obj.reqKitchenArea ? add.obj.reqKitchenArea : ''}">
+                  <input name="reqFloor" class="form__input form__input_40" type="text" value="${add.obj.reqFloor ? add.obj.reqFloor : ''}">
+                  <span class="form__from">из</span>
+                  <input name="reqFloorCount" class="form__input form__input_40" type="text" value="${add.obj.reqFloorCount ? add.obj.reqFloorCount : ''}">
                 </div>
               </div>
               <div class="form__item form_width">
-                <span class="form__subtitle">Количество комнат в квартире</span> 
+                <span class="form__subtitle">Количество комнат в квартире<i class="simbol">*</i></span> 
                 <div class="form__countRooms"> 
                   <input ${add.obj.reqRoomCount === '1' ? 'checked' : ''} 
                   class="buttons__input reqRoomCount" name="reqRoomCount" id="oneAll" type="radio" value="1">
@@ -1684,7 +1755,7 @@ class Room{
                 </div>
               </div>  
               <div class="form__item form_width">
-                <span class="form__subtitle">Количество комнат на продажу и их площадь <i class="simbol">*</i> Разделитель точка</span> 
+                <span class="form__subtitle">Количество комнат на продажу и их площадь (разделитель точка)<i class="simbol">*</i></span> 
                 <div class="form__countRooms"> 
                   <div class="form__countRooms-wrap">
                     <input ${add.obj.reqRoomsForSale === '1' ? 'checked' : ''} 
@@ -1713,16 +1784,8 @@ class Room{
                 </div>
               </div>   
               ${partOrFull}                
-              <div class="form__item">
-                <span class="form__subtitle">Этаж</span> 
-                <div class="form__item_wrap"> 
-                  <input name="reqFloor" class="form__input form__input_40" type="text" value="${add.obj.reqFloor ? add.obj.reqFloor : ''}">
-                  <span class="form__from">из</span>
-                  <input name="reqFloorCount" class="form__input form__input_40" type="text" value="${add.obj.reqFloorCount ? add.obj.reqFloorCount : ''}">
-                </div>
-              </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Тип квартиры</span> 
+                <span class="form__subtitle">Тип квартиры<i class="simbol">*</i></span> 
                 <select class="reqTypeofFlat" name="reqTypeofFlat"> 
                   <option value="empty" ${!add.obj.reqTypeofFlat ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqTypeofFlat === 'Прочее' ? 'selected' : ''}>Прочее</option>
@@ -1737,14 +1800,14 @@ class Room{
                   <option ${add.obj.reqTypeofFlat === 'Коридорного типа' ? 'selected' : ''}>Коридорного типа</option>
                   <option ${add.obj.reqTypeofFlat === 'Малосемейная' ? 'selected' : ''}>Малосемейная</option>
                   <option ${add.obj.reqTypeofFlat === 'Секционная' ? 'selected' : ''}>Секционная</option>
-                  <option ${add.obj.reqTypeofFlat === 'Двухуровневая' ? 'selected' : ''}></option>
+                  <option ${add.obj.reqTypeofFlat === 'Двухуровневая' ? 'selected' : ''}>Двухуровневая</option>
                   <option ${add.obj.reqTypeofFlat === 'Пентхаус' ? 'selected' : ''}>Пентхаус</option>
                   <option ${add.obj.reqTypeofFlat === 'Элитная' ? 'selected' : ''}>Элитная</option>
                   <option ${add.obj.reqTypeofFlat === 'Типовая' ? 'selected' : ''}>Типовая</option>
               </select>         
               </div>  
               <div class="form__item"> 
-                <span class="form__subtitle">Планировка</span>               
+                <span class="form__subtitle">Планировка<i class="simbol">*</i></span>               
                 <select class="reqTypeofLayout" name="reqTypeofLayout"> 
                   <option value="empty" ${!add.obj.reqTypeofLayout ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqTypeofLayout === 'Смежные' ? 'selected' : ''}>Смежные</option>
@@ -1754,7 +1817,7 @@ class Room{
                 </select>
               </div>            
               <div class="form__item"> 
-                <span class="form__subtitle">Балкон/лоджия</span> 
+                <span class="form__subtitle">Балкон/лоджия<i class="simbol">*</i></span> 
                 <select class="reqGalleryAvailability" name="reqGalleryAvailability"> 
                   <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон' ? 'selected' : ''}>1 балкон</option>
@@ -1775,7 +1838,7 @@ class Room{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Санузел</span>               
+                <span class="form__subtitle">Санузел<i class="simbol">*</i></span>               
                 <select class="reqBathroomType" name="reqBathroomType"> 
                   <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqBathroomType === 'Неизвестно' ? 'selected' : ''}>Неизвестно</option>
@@ -1791,22 +1854,22 @@ class Room{
               </div>
             </div> 
             <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена</span>
               <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
+                <span class="form__subtitle">Цена, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <span class="form__subtitle">Цена в рекламу, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
                 value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
               </div>
             </div>
             <div class="infoHouse"> 
-              <span class="form__title">информация о доме<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
+              <span class="form__title">информация о доме</span>
               <div class="form__item"> 
-                <span class="form__subtitle">Тип дома</span> 
+                <span class="form__subtitle">Тип дома<i class="simbol">*</i></span> 
                 <select class="reqHouseType" name="reqHouseType"> 
                   <option value="empty" ${!add.obj.reqHouseType ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqHouseType === 'Прочее' ? 'selected' : ''}>Дача</option>
@@ -1821,7 +1884,7 @@ class Room{
               </select>         
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Материал дома</span>               
+                <span class="form__subtitle">Материал дома<i class="simbol">*</i></span>               
                 <select class="reqMaterial" name="reqMaterial"> 
                   <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqMaterial === 'Кирпич' ? 'selected' : ''}>Кирпич</option>
@@ -1838,7 +1901,7 @@ class Room{
                 </select>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Год постройки</span> 
+                <span class="form__subtitle">Год постройки<i class="simbol">*</i></span> 
                 <input name="reqHouseBuildDate" class="form__input" type="date" 
                 value="${add.obj.reqHouseBuildDate ? add.obj.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
               </div>
@@ -1859,9 +1922,10 @@ class Room{
 class House{
   render(){
     const partOrFull = getPartOrFull();
-    return `<div class="place"> 
+    return `<span class="form__subtitle form__guid"><i class="i">*</i> - обязательное поле для заполнения</span>
+            <div class="place"> 
               <div class="form__title form__place">
-                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <span>местоположение</span>
                 <div class="hand">
                   <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
                   <label class="hand__label room__label" for="hand">Заполнить вручную</label>
@@ -1872,30 +1936,46 @@ class House{
                 <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Регион</span> 
+                <span class="form__subtitle">Регион<i class="simbol">*</i></span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Населенный пункт</span> 
+                <span class="form__subtitle">Район области</span> 
+                <input name="reqRegionArea" id="reqRegionArea" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegionArea ? add.obj.reqRegionArea : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Населенный пункт<i class="simbol">*</i></span> 
                 <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Район</span> 
+                <span class="form__subtitle">Район города<i class="simbol">*</i></span> 
                 <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Улица</span> 
+                <span class="form__subtitle">Улица<i class="simbol">*</i></span> 
                 <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
-                <span class="form__subtitle">Номер дома</span> 
+                <span class="form__subtitle">Номер дома<i class="simbol">*</i></span> 
                 <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
-              </div>
+              </div>              
+              <div class="form__item">
+                 <span class="form__subtitle">Садовое общество</span> 
+                <input name="reqMunicipality" class="form__input" type="text" value="${add.obj.reqMunicipality ? add.obj.reqMunicipality : ''}">
+              </div> 
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
                 <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
@@ -1905,15 +1985,15 @@ class House{
                 <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
-            </div>            
+            </div>                 
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. Если на продажу выставляется часть дома, укажите долю на продажу и долю всего.</p></i></span>
+              <span class="form__title">информация об объекте недвижимости</span>
               <div class="form__item">
-                 <span class="form__subtitle">Площадь участка (в сотках) <i class="simbol">*</i> Разделитель точка</span> 
+                 <span class="form__subtitle">Площадь участка (в сотках) (разделитель точка)<i class="simbol">*</i></span> 
                 <input name="reqLandArea" class="form__input" type="text" value="${add.obj.reqLandArea ? add.obj.reqLandArea : ''}">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Площадь дома m<sup>2</sup> &nbsp;<i class="simbol">*</i> Разделитель точка</span> 
+                <span class="form__subtitle">Площадь дома m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span> 
                 <input name="reqFlatTotalArea" class="form__input" type="text" value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" placeholder="пример 11.1">
               </div>     
               <div class="form__item">
@@ -1921,7 +2001,7 @@ class House{
                 <input name="reqFloorCount" class="form__input" type="text" value="${add.obj.reqFloorCount ? add.obj.reqFloorCount : ''}">
               </div>  
               <div class="form__item">
-                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (жилая/кухня) <i class="simbol">*</i> Разделитель точка</span> 
+                <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (жилая/кухня) (разделитель точка)<i class="simbol">*</i></span> 
                 <div class="form__item_wrap">
                   <input name="reqFlatLivingArea" class="form__input form__input_50" type="text" placeholder="жилая" 
                   value="${add.obj.reqFlatLivingArea ? add.obj.reqFlatLivingArea : ''}" autocomplete="new-password">
@@ -1930,7 +2010,7 @@ class House{
                 </div>
               </div> 
               <div class="form__item form_width">
-                <span class="form__subtitle">Количество комнат в доме</span> 
+                <span class="form__subtitle">Количество комнат в доме<i class="simbol">*</i></span> 
                 <div class="form__countRooms"> 
                   <input ${add.obj.reqRoomCount === '1' ? 'checked' : ''} 
                   class="buttons__input reqRoomCount" name="reqRoomCount" id="oneAll" type="radio" value="1">
@@ -1951,7 +2031,7 @@ class House{
               </div>               
               ${partOrFull}
               <div class="form__item"> 
-                <span class="form__subtitle">Тип дома</span> 
+                <span class="form__subtitle">Тип дома<i class="simbol">*</i></span> 
                 <select class="reqHouseType" name="reqHouseType"> 
                   <option value="empty" ${!add.obj.reqHouseType ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqHouseType === 'Прочее' ? 'selected' : ''}>Дача</option>
@@ -1966,7 +2046,7 @@ class House{
                   </select>         
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Балкон/лоджия</span> 
+                <span class="form__subtitle">Балкон/лоджия<i class="simbol">*</i></span> 
                 <select class="reqGalleryAvailability" name="reqGalleryAvailability"> 
                   <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон' ? 'selected' : ''}>1 балкон</option>
@@ -1987,7 +2067,7 @@ class House{
                 </select>
               </div>          
               <div class="form__item"> 
-                <span class="form__subtitle">Санузел</span>               
+                <span class="form__subtitle">Санузел<i class="simbol">*</i></span>               
                 <select class="reqBathroomType" name="reqBathroomType"> 
                   <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберете</option>
                   <option value="Неизвестно" ${add.obj.reqBathroomType === 'Неизвестно' ? 'selected' : ''}>Неизвестно</option>
@@ -2002,7 +2082,7 @@ class House{
                 </select>
               </div>               
               <div class="form__item"> 
-                <span class="form__subtitle">Кровля</span>               
+                <span class="form__subtitle">Кровля<i class="simbol">*</i></span>               
                 <select id="reqHouseRoof" class="reqHouseRoof" name="reqHouseRoof"> 
                   <option value="empty" ${!add.obj.reqHouseRoof ? 'selected' : ''}>Выберете</option>
                   <option value="Железо" ${add.obj.reqHouseRoof === 'Железо' ? 'selected' : ''}>Железо</option>
@@ -2015,7 +2095,7 @@ class House{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Отопление</span>               
+                <span class="form__subtitle">Отопление<i class="simbol">*</i></span>               
                 <select id="reqHouseHeating" class="reqHouseHeating" name="reqHouseHeating"> 
                   <option value="empty" ${!add.obj.reqHouseHeating ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqHouseHeating === 'Печное' ? 'selected' : ''}>Печное</option>
@@ -2028,7 +2108,7 @@ class House{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Водопровод</span>               
+                <span class="form__subtitle">Водопровод<i class="simbol">*</i></span>               
                 <select id="reqWaterPipes" class="reqWaterPipes" name="reqWaterPipes"> 
                   <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqWaterPipes === 'Не указано' ? 'selected' : ''}>Не указано</option>
@@ -2038,7 +2118,7 @@ class House{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Слив</span>               
+                <span class="form__subtitle">Слив<i class="simbol">*</i></span>               
                 <select id="reqDrainage" class="reqDrainage" name="reqDrainage"> 
                   <option value="empty" ${add.obj.reqDrainage ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqDrainage === 'Не указано' ? 'selected' : ''}>Не указано</option>
@@ -2049,19 +2129,19 @@ class House{
                 </select>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Год постройки</span> 
+                <span class="form__subtitle">Год постройки<i class="simbol">*</i></span> 
                 <input name="reqHouseBuildDate" class="form__input" type="date" 
                 value="${add.obj.reqHouseBuildDate ? add.obj.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
               </div>          
             </div> 
             <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена</span>
               <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
+                <span class="form__subtitle">Цена, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <span class="form__subtitle">Цена в рекламу, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
                 value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
@@ -2083,9 +2163,10 @@ class House{
 class Ground{
   render(){
     const partOrFull = getPartOrFull();
-    return `<div class="place"> 
+    return `<span class="form__subtitle form__guid"><i class="i">*</i> - обязательное поле для заполнения</span>
+            <div class="place"> 
               <div class="form__title form__place">
-                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <span>местоположение</span>
                 <div class="hand">
                   <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
                   <label class="hand__label room__label" for="hand">Заполнить вручную</label>
@@ -2096,53 +2177,65 @@ class Ground{
                 <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Регион</span> 
+                <span class="form__subtitle">Регион<i class="simbol">*</i></span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Населенный пункт</span> 
+                <span class="form__subtitle">Район области</span> 
+                <input name="reqRegionArea" id="reqRegionArea" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegionArea ? add.obj.reqRegionArea : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Населенный пункт<i class="simbol">*</i></span> 
                 <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Район</span> 
+                <span class="form__subtitle">Район города<i class="simbol">*</i></span> 
                 <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Улица</span> 
+                <span class="form__subtitle">Улица<i class="simbol">*</i></span> 
                 <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
-                <span class="form__subtitle">Номер дома</span> 
-                <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
-              </div>
+                <span class="form__subtitle">Номер участка<i class="simbol">*</i></span> 
+                <input name="reqFlat" id="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}" autocomplete="new-password">
+              </div>              
+              <div class="form__item">
+                 <span class="form__subtitle">Садовое общество</span> 
+                <input name="reqMunicipality" class="form__input" type="text" value="${add.obj.reqMunicipality ? add.obj.reqMunicipality : ''}">
+              </div> 
               <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>              
               <div class="form__item">
-                <span class="form__subtitle">Координаты X</span> 
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X<i class="simbol">*</i></span> 
                 <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Координаты Y</span> 
+                <span class="form__subtitle">Координаты Y<i class="simbol">*</i></span> 
                 <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
-            </div>                 
+            </div>                      
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. Если на продажу выставляется часть земли, укажите долю на продажу и долю всего.</p></i></span>
-              <div class="form__item">
-                 <span class="form__subtitle">Площадь участка (в сотках) <i class="simbol">*</i> Разделитель точка</span> 
-                <input name="reqLandArea" class="form__input" type="text" value="${add.obj.reqLandArea ? add.obj.reqLandArea : ''}">
-              </div>     
-              <div class="form__item">
-                 <span class="form__subtitle">Садовое общество</span> 
-                <input name="reqMunicipality" class="form__input" type="text" value="${add.obj.reqMunicipality ? add.obj.reqMunicipality : ''}">
-              </div> 
+              <span class="form__title">информация об объекте недвижимости</span>     
               ${partOrFull}     
+              <div class="form__item">
+                 <span class="form__subtitle">Площадь участка (в сотках) (разделитель точка)<i class="simbol">*</i></span> 
+                <input name="reqLandArea" class="form__input" type="text" value="${add.obj.reqLandArea ? add.obj.reqLandArea : ''}">
+              </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Водопровод</span>               
+                <span class="form__subtitle">Водопровод<i class="simbol">*</i></span>               
                 <select class="reqWaterPipes" name="reqWaterPipes"> 
                   <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqWaterPipes === 'Не указано' ? 'selected' : ''}>Не указано</option>
@@ -2152,7 +2245,7 @@ class Ground{
                 </select>
               </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Слив</span>               
+                <span class="form__subtitle">Слив<i class="simbol">*</i></span>               
                 <select class="reqDrainage" name="reqDrainage"> 
                   <option value="empty" ${add.obj.reqDrainage ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqDrainage === 'Не указано' ? 'selected' : ''}>Не указано</option>
@@ -2163,7 +2256,7 @@ class Ground{
                 </select>
               </div>      
               <div class="form__item"> 
-                <span class="form__subtitle">Категория земли</span>               
+                <span class="form__subtitle">Категория земли<i class="simbol">*</i></span>               
                 <select class="reqGroundCategory" name="reqGroundCategory"> 
                   <option value="empty" ${add.obj.reqGroundCategory ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqGroundCategory === 'Не указано' ? 'selected' : ''}>Индивидуального строительства</option>
@@ -2173,13 +2266,13 @@ class Ground{
               </div>         
             </div> 
             <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена</span>
               <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
+                <span class="form__subtitle">Цена, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>               
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <span class="form__subtitle">Цена в рекламу, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
                 value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
@@ -2200,9 +2293,10 @@ class Ground{
 }
 class Garage{
   render(){
-    return `<div class="place"> 
+    return `<span class="form__subtitle form__guid"><i class="i">*</i> - обязательное поле для заполнения</span>
+            <div class="place"> 
               <div class="form__title form__place">
-                <span>местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
+                <span>местоположение</span>
                 <div class="hand">
                   <input name="hand" class="room__radio" type="checkbox" id="hand" ${add.dadata ? '' : 'checked'}>
                   <label class="hand__label room__label" for="hand">Заполнить вручную</label>
@@ -2213,20 +2307,24 @@ class Garage{
                 <input name="address" id="address" class="form__input" type="text" autocomplete="new-password">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Регион</span> 
+                <span class="form__subtitle">Регион<i class="simbol">*</i></span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Населенный пункт</span> 
+                <span class="form__subtitle">Район области</span> 
+                <input name="reqRegionArea" id="reqRegionArea" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegionArea ? add.obj.reqRegionArea : 'Новосибирская область'}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Населенный пункт<i class="simbol">*</i></span> 
                 <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Район</span> 
+                <span class="form__subtitle">Район города<i class="simbol">*</i></span> 
                 <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Улица</span> 
+                <span class="form__subtitle">Улица<i class="simbol">*</i></span> 
                 <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>                
               </div>              
               <div class="form__item">
@@ -2234,9 +2332,21 @@ class Garage{
                 <input name="reqHouseNumber" id="reqHouseNumber" class="form__input search__input" type="search" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password" ${add.dadata ? 'disabled' : ''}>
               </div>
               <div class="form__item">
+                <span class="form__subtitle">Номер парковочного места<i class="simbol">*</i></span> 
+                <input name="reqFlat" id="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>              
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
                 <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
@@ -2246,15 +2356,15 @@ class Garage{
                 <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
               </div>
               <div id="map"></div>   
-            </div> 
+            </div>     
             <div class="info"> 
-              <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
+              <span class="form__title">информация об объекте недвижимости</span>
               <div class="form__item">
-                 <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp;<i class="simbol">*</i> Разделитель точка</span> 
+                 <span class="form__subtitle">Площадь m<sup>2</sup> &nbsp (разделитель точка)<i class="simbol">*</i></span> 
                 <input name="reqFlatTotalArea" class="form__input" type="text" value="${add.obj.reqFlatTotalArea ? add.obj.reqFlatTotalArea : ''}" placeholder="пример 11.1">
               </div>                   
               <div class="form__item"> 
-                <span class="form__subtitle">Материал стен</span>               
+                <span class="form__subtitle">Материал стен<i class="simbol">*</i></span>               
                 <select class="reqMaterial" name="reqMaterial"> 
                   <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqMaterial === 'Кирпич' ? 'selected' : ''}>Кирпич</option>
@@ -2271,19 +2381,15 @@ class Garage{
                 </select>
               </div>     
               <div class="form__item">
-                 <span class="form__subtitle">Этаж</span> 
+                 <span class="form__subtitle">Этаж<i class="simbol">*</i></span> 
                 <input name="reqFloor" class="form__input" type="text" value="${add.obj.reqFloor ? add.obj.reqFloor : ''}">
               </div>                 
               <div class="form__item">
-                 <span class="form__subtitle">Этажность</span> 
+                 <span class="form__subtitle">Этажность<i class="simbol">*</i></span> 
                 <input name="reqFloorCount" class="form__input" type="text" value="${add.obj.reqFloorCount ? add.obj.reqFloorCount : ''}">
               </div>
-              <div class="form__item">
-                <span class="form__subtitle">Номер парковочного места</span> 
-                <input name="reqFlat" class="form__input" type="text" value="${add.obj.reqFlat ? add.obj.reqFlat : ''}" autocomplete="new-password">
-              </div>
               <div class="form__item"> 
-                <span class="form__subtitle">Тип гаража</span>               
+                <span class="form__subtitle">Тип гаража<i class="simbol">*</i></span>               
                 <select class="reqGarageType" name="reqMaterial"> 
                   <option value="empty" ${!add.obj.reqGarageType ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqGarageType === 'Кирпич' ? 'selected' : ''}>Гараж</option>
@@ -2292,19 +2398,19 @@ class Garage{
                 </select>
               </div>   
               <div class="form__item">
-                <span class="form__subtitle">Год постройки</span> 
+                <span class="form__subtitle">Год постройки<i class="simbol">*</i></span> 
                 <input name="reqHouseBuildDate" class="form__input" type="date" 
                 value="${add.obj.reqHouseBuildDate ? add.obj.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
               </div>            
             </div> 
             <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+              <span class="form__title">цена</span>
               <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
+                <span class="form__subtitle">Цена, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>               
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <span class="form__subtitle">Цена в рекламу, тыс руб.<i class="simbol">*</i></span> 
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
                 value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
                 autocomplete="new-password">
@@ -2408,7 +2514,6 @@ function dadata(){
     token: token,
     type: type,
     hint: false,
-    bounds: "city-house",
     onSelect: function (suggestion) {
       console.log(suggestion.data);
       setDadataValue(suggestion.data);
@@ -2421,6 +2526,9 @@ function setDadataValue(data){
   document.querySelector(`INPUT[name='reqRegion']`).value = data.region_with_type ? data.region_with_type : '';
   add.obj.reqRegion = data.region_with_type ? data.region_with_type : '';
 
+  document.querySelector(`INPUT[name='reqRegionArea']`).value = data.area ? data.area : data.city;
+  add.obj.reqRegionArea = data.area ? data.area : data.city;
+
   document.querySelector(`INPUT[name='reqCity']`).value = data.city ? data.city : '';
   add.obj.reqCity = data.city ? data.city : '';
 
@@ -2430,8 +2538,11 @@ function setDadataValue(data){
   document.querySelector(`INPUT[name='reqStreet']`).value = data.street ? data.street : '';
   add.obj.reqStreet = data.street ? data.street : '';
 
-  document.querySelector(`INPUT[name='reqHouseNumber']`).value = data.house ? data.house : '';
-  add.obj.reqHouseNumber = data.house ? data.house : '';
+  document.querySelector(`INPUT[name='reqHouseNumber']`).value = data.house ? data.block ? `${data.house}${data.block_type}${data.block}` : data.house : '';
+  add.obj.reqHouseNumber = data.house ? data.block ? `${data.house}${data.block_type}${data.block}` : data.house : '';
+
+  document.querySelector(`INPUT[name='reqFlat']`).value = data.flat ? data.flat : '';
+  add.obj.reqFlat = data.flat ? data.flat : '';
 
   const snt = document.querySelector(`INPUT[name='reqMunicipality']`);
   snt ? snt.value = data.settlement_with_type ? data.settlement_with_type : '' : '';
@@ -2440,11 +2551,19 @@ function setDadataValue(data){
   if (data.geo_lat && data.geo_lon){
     add.obj.lat = data.geo_lat;
     add.obj.lng = data.geo_lon;
-    document.querySelector(`INPUT[name='lat']`) ? document.querySelector(`INPUT[name='lat']`).value = data.geo_lat : '';
-    document.querySelector(`INPUT[name='lng']`) ? document.querySelector(`INPUT[name='lng']`).value = data.geo_lon : '';
+    document.querySelector(`INPUT[name='lat']`).value = data.geo_lat;
+    document.querySelector(`INPUT[name='lng']`).value = data.geo_lon;
     document.querySelector('#map') ? document.querySelector('#map').innerHTML = '' : '';
     add.initMap(data.geo_lat, data.geo_lon);
+    if (data.geo_lat === "55.028141" && data.geo_lon === "82.921117"){
+      document.querySelector('.error__text').innerHTML = 'Укажите объект на карте вручную';
+      document.querySelector('.error').classList.add('error_active');
+    }
+  } else{
+    document.querySelector('.error__text').innerHTML = 'Укажите объект на карте вручную';
+    document.querySelector('.error').classList.add('error_active');
   }
+
 }
 
 function checkPrefix(){
