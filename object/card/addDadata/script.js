@@ -245,9 +245,13 @@ class Header {
   constructor(type) {
     this.type = type;
   }
-
+  //todo удалить герлянду id="garland" id="nums_1" и img christmas-stick
   render(){
-    return `<div class="save-change">
+        return `
+              <div id="garland" class="garland_4">
+              <div id="nums_1">1</div>
+              </div>
+              <div class="save-change">
                 <p class="save-change__text"></p>
                 <div class="save-change__group"> 
                   <button data-save="all" class="ui-btn ui-btn-success save-change__btn">Сохранить</button>
@@ -258,6 +262,7 @@ class Header {
                 <p class="error__text"></p>
             </div>
             <div class="methodical"> 
+            <img class="christmas-stick" width="100px" class="img" src="img/imgr4.png">
               <span>Как работать с объектом?</span>
               <button data-info="add" class="ui-btn ui-btn-primary-dark">инфо</button>
             </div>
@@ -322,6 +327,7 @@ class Handler{
     this.form = document.querySelector('.form');
   }
   init(){
+    this.garlandStart();
     for (let radio of this.radioSelect){
       radio.addEventListener('change', event => {
         const blockSave = document.querySelector('.error');
@@ -465,6 +471,36 @@ class Handler{
     this.handlerPrice();
     this.checkHand();
   }
+
+  /**
+   * garland, garlandStart
+   * герлянда
+   */
+  garland(){
+    const nums = document.getElementById('nums_1').innerHTML;
+    if (+nums === 1) {
+      document.getElementById('garland').className = 'garland_1';
+      document.getElementById('nums_1').innerHTML = '2'
+    }
+    if (+nums === 2) {
+      document.getElementById('garland').className = 'garland_2';
+      document.getElementById('nums_1').innerHTML = '3'
+    }
+    if (+nums === 3) {
+      document.getElementById('garland').className = 'garland_3';
+      document.getElementById('nums_1').innerHTML = '4'
+    }
+    if (+nums === 4) {
+      document.getElementById('garland').className = 'garland_4';
+      document.getElementById('nums_1').innerHTML = '1'
+    }
+  }
+  garlandStart(){
+    setInterval(() => {
+      this.garland();
+    }, 600);
+  }
+
   checkHand(){
     const checkHand = document.querySelector(`INPUT[name='hand']`);
     if (checkHand){
@@ -2584,3 +2620,23 @@ function checkPrefix(){
     }
   }
 }
+
+function garland() {
+  const nums = document.getElementById('nums_1').innerHTML
+  if (nums === 1) {
+    document.getElementById('garland').className = 'garland_1';
+    document.getElementById('nums_1').innerHTML = '2'
+  }
+  if (nums === 2) {
+    document.getElementById('garland').className = 'garland_2';
+    document.getElementById('nums_1').innerHTML = '3'
+  }
+  if (nums === 3) {
+    document.getElementById('garland').className = 'garland_3';
+    document.getElementById('nums_1').innerHTML = '4'
+  }
+  if (nums === 4) {
+    document.getElementById('garland').className = 'garland_4';
+    document.getElementById('nums_1').innerHTML = '1'
+  }
+};

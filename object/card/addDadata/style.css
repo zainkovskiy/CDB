@@ -567,6 +567,7 @@ input:disabled {
   align-items: center;
   justify-content: space-between;
   border-radius: 5px;
+  position: relative;
 }
 .methodical span {
   color: #399fc2;
@@ -635,6 +636,44 @@ input:disabled {
   margin: 10px 0 0 0 !important;
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2) !important;
   border: none !important;
+}
+
+#garland {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url("img/christmas.png");
+  height: 36px;
+  width: 100%;
+  overflow: hidden;
+  z-index: 99;
+}
+
+#nums_1 {
+  padding: 100px;
+}
+
+.garland_1 {
+  background-position: 0 0;
+}
+
+.garland_2 {
+  background-position: 0 -36px;
+}
+
+.garland_3 {
+  background-position: 0 -72px;
+}
+
+.garland_4 {
+  background-position: 0 -108px;
+}
+
+.christmas-stick {
+  position: absolute;
+  z-index: 1;
+  top: -13px;
+  left: -12px;
 }
 
 /*# sourceMappingURL=style.css.map */
