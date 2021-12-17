@@ -153,6 +153,7 @@ ul {
   color: #8F9091;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .alert {
@@ -1290,6 +1291,9 @@ ul {
 }
 .history__table td {
   padding: 10px;
+}
+.history__table td:first-child {
+  white-space: nowrap;
 }
 .history_last {
   display: flex;

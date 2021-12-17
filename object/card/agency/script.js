@@ -2421,7 +2421,7 @@ class EditClient{
       part: '',
       count: 'disabled'
     }
-    if (this.currentCLient.relation.scopeOfOwnership === 'Полная собственность'){
+    if (this.currentCLient.relation.scopeOfOwnership === 'Собственность'){
       scopeOfOwnership.full = 'checked';
     } else if (this.currentCLient.relation.scopeOfOwnership === 'Доля'){
       scopeOfOwnership.part = 'checked';
@@ -2641,7 +2641,7 @@ class EditClient{
                                     <div class="form__toggle"> 
                                       <span class="contract__title">Объем владения</span>
                                       <div class="form__toggle-item">
-                                          <input name="scopeOfOwnership" type="radio" id="formFull" ${scopeOfOwnership.full} value="Полная собственность">
+                                          <input name="scopeOfOwnership" type="radio" id="formFull" ${scopeOfOwnership.full} value="Собственность">
                                           <label onclick="addAttr('contract__number')" class='form__toggle-btn' for="formFull">Cобственность</label>
                                       </div>
                                       <div class="form__toggle-item">
@@ -2753,6 +2753,7 @@ class EditClient{
     document.querySelector('.costForClient').innerHTML = '';
     document.querySelector('.costForClient').insertAdjacentHTML('beforeend', `${new Render(app.copyOwner.agencyagreement).getAllPrice()} ₽`);
   }
+  //todo если пустая собственность не валидирует
   validForm(allInputs, type){
     if (type === 'private'){
       if (this.validPrivate(allInputs)){

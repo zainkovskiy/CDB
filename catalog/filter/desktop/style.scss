@@ -143,6 +143,7 @@ ul {
     color: #8F9091;
     display: flex;
     align-items: center;
+    white-space: nowrap;
   }
 }
 .alert{
@@ -1255,6 +1256,9 @@ ul {
     width: 100%;
     & td {
       padding: 10px;
+      &:first-child{
+        white-space: nowrap;
+      }
     }
   }
   &_last{

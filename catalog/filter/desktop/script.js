@@ -1001,7 +1001,7 @@ class AddressHandler {
     this.objectFilter.area = this.districtArray.length === 0 ? null : this.districtArray;
     this.objectFilter.metro = this.metroArray.length === 0 ? null : this.metroArray;
     this.objectFilter.reqRoomCount = [];
-    this.objectFilter.street = this.addressObject ? this.addressObject.data.street_type_full === 'улица' ? this.addressObject.data.street ? this.addressObject.data.street : null : null : null;
+    this.objectFilter.street = this.addressObject ? this.addressObject.data.street ? this.addressObject.data.street : null : null;
     this.objectFilter.dadataMetro = this.addressObject ? this.addressObject.data.street_type_full === 'метро' ? this.addressObject.data.street : null : null;
     this.objectFilter.dadataArea = this.addressObject ? this.addressObject.data.city_district ? this.addressObject.data.city_district : null : null;
     this.objectFilter.city = this.addressObject ? this.addressObject.data.city ? this.addressObject.data.city : null : null;
