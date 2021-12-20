@@ -59,14 +59,17 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js?s=<?=rand(0, 1000000)?>"></script>
     <link href="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.6.0/dist/css/suggestions.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.6.0/dist/js/jquery.suggestions.min.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=9b339b12-4d97-4522-b2e5-da5a5da1c7f6&lang=ru_RU" type="text/javascript"></script>
+    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <title>searchObject</title>
 </head>
 <body>
+<div id="garland" class="garland_4">
+    <div id="nums_1">1</div>
+</div>
 <div class="container">
     <div class="methodical">
         <div>
