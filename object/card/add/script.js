@@ -502,9 +502,7 @@ class Handler{
     this.saveChange.addEventListener('click', event => {
       if (event.target.tagName === 'BUTTON'){
         if (event.target.dataset.save === 'all'){
-          add.obj.preAd = '0';
-          add.obj.approvedEx = '0';
-          add.obj.onModeration = '0';
+          add.obj.onModeration = '1';
           add.obj.reqEditor = login;
           add.obj.clientTelNumber = contact;
           const request1Cnamed = {
