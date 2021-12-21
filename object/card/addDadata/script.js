@@ -424,7 +424,9 @@ class Handler{
     this.saveChange.addEventListener('click', event => {
       if (event.target.tagName === 'BUTTON'){
         if (event.target.dataset.save === 'all'){
-          add.obj.onModeration = '1';
+          if (add.obj.preEx === '1' && add.obj.validatedEx === '1' || add.obj.preAd === '1'){
+            add.obj.onModeration = '1';
+          }
           add.obj.reqEditor = login;
           add.obj.clientTelNumber = contact;
           const request1Cnamed = {

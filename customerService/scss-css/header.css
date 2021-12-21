@@ -1,0 +1,8 @@
+.header {
+  border-radius: 5px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  background: #C4C4C4;
+}
+
+/*# sourceMappingURL=header.css.map */

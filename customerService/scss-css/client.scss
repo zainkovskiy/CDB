@@ -1,0 +1,20 @@
+.client{
+  border-radius: 5px;
+  background: #C4C4C4;
+  padding: 10px;
+  &__comment{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin: 20px 0 0 0;
+  }
+  &__area{
+    resize: none;
+    width: 100%;
+    outline: none;
+  }
+  &__btn{
+    align-self: flex-start;
+  }
+}

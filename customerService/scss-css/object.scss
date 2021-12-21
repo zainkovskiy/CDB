@@ -1,8 +1,8 @@
-.right{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 80% 1fr;
-  grid-gap: 10px;
+.object{
+  border-radius: 5px;
+  background: #C4C4C4;
+  padding: 10px;
+  overflow: auto;
   &__title{
     font-family: "montserrat", sans-serif;
     font-style: normal;
@@ -10,15 +10,26 @@
     font-size: 25px;
     line-height: 30px;
     text-decoration-line: underline;
+    cursor: pointer;
+  }
+  &__change{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 10px 0;
+  }
+  &__feature{
+    display: flex;
+    gap: 10px;
+    margin: 0 0 10px 0;
+  }
+  &__rooms{
+    display: flex;
+    gap: 10px;
   }
 }
-.control{
-  border-radius: 5px;
-  background: #C4C4C4;
-  padding: 10px;
-}
+
 .about{
-  padding: 20px;
+  padding: 20px 0 20px 0;
   gap: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -81,40 +92,4 @@
       transform: translate(0, -50%);
     }
   }
-}
-.object{
-  border-radius: 5px;
-  background: #C4C4C4;
-  padding: 10px;
-  overflow: auto;
-  &__header{
-    display: flex;
-    justify-content: space-between;
-  }
-  &__change{
-    display: flex;
-    justify-content: space-between;
-    margin: 0 0 10px 0;
-  }
-  &__feature{
-    display: flex;
-    gap: 10px;
-    margin: 0 0 10px 0;
-  }
-  &__rooms{
-    display: flex;
-    gap: 10px;
-  }
-}
-.comment{
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.info{
-  border-radius: 5px;
-  grid-column-start: 1;
-  grid-column-end: 3;
-  background: #C4C4C4;
 }

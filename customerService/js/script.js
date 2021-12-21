@@ -6,7 +6,7 @@ class API{
       getClient: 'https://crm.centralnoe.ru/dealincom/factory/Clients.php',
     };
   }
-  async requestToServer(action, requestNamed){
+  async requestToServer(api, requestNamed){
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
     const raw = JSON.stringify(requestNamed);
@@ -19,7 +19,7 @@ class API{
       body: raw
     };
 
-    let response = await fetch(this.apiURL[action], requestOptions);
+    let response = await fetch(this.apiURL[api], requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
@@ -30,110 +30,84 @@ class API{
 class App{
   constructor() {
     this.checkWork = document.querySelector('.inJob__checkbox');
+    this.containerMain = document.querySelector('.main');
     this.sessionNumber = '';
-    this.item = '';
+    this.object = '';
+    this.client = '';
+    this.clientUID = '';
+    this.currentSelect = '';
+    this.currentOptions = '';
   }
   init(){
-    this.checkWork.addEventListener('change', event => {
+    this.checkWork.addEventListener('change', () => {
       if (this.checkWork.checked){
-        api.requestToServer('getInfo', {
-          operatorId: 2921,
-          action: 'onWorking'
-        }).then(startWork => {
-          console.log(startWork)
-          if (startWork.result){
-            this.sessionNumber = startWork.UID;
-            api.requestToServer('getInfo', {
-              operatorId: 2921,
-              action: 'getList'
-            }).then(itemsList => {
-              console.log(itemsList)
-              if (itemsList.result){
-                if (itemsList && itemsList.items.length > 0){
-                  new ListItems(itemsList.items).init();
-                  api.requestToServer('getInfo', {
-                    operatorId: 2921,
-                    action: 'getItem',
-                    entityId: itemsList.items[0].UID,
-                  }).then(item => {
-                    console.log(item)
-                    if (item.result){
-                      this.item = item;
-                      api.requestToServer('getObject', {
-                        action: 'old',
-                        reqNumber: item.request.UID,
-                        author: 'zainkovskiyaa',
-                      }).then(object => {
-                        console.log(object)
-                        new Item(object, this.item.client.UID).init();
-                      })
-                    }
-                  })
-                }
-              }
-            })
-          }
-        })
+        this.checkWork.disabled = true;
+        this.startJobs();
       } else {
           api.requestToServer('getInfo',{
-            operatorId: 2921,
+            operatorId: loginID,
             action: 'stopWorking',
             UID: this.sessionNumber,
           }).then(() => {
-            new EmptyField().render();
+            this.clearDom();
           })
       }
+      // this.renderClient();
     });
+    this.handler();
   }
-}
+  startJobs(){
+    api.requestToServer('getInfo', {
+      operatorId: loginID,
+      action: 'onWorking'
+    }).then(startWork => {
+      console.log(startWork)
+      if (startWork.result){
+        this.sessionNumber = startWork.UID;
+        api.requestToServer('getInfo', {
+          operatorId: loginID,
+          action: 'getItem',
+        }).then(info => {
+          console.log(info)
+          if (info.result){
+            this.sessionNumber = info.UID;
+            this.clientUID = info.client.UID;
+            this.renderClientValue();
+            api.requestToServer('getObject', {
+              action: 'old',
+              reqNumber: info.request.UID,
+              author: login,
+            }).then(object => {
+              console.log(object)
+              this.object = object;
+              this.renderObject(this.object.reqTypeofRealty);
+            })
+          }
+        })
 
-class Item {
-  constructor(item, clientUID) {
-    this.item = item;
-    this.clientUID = clientUID;
-    this.client = '';
-    this.containerItem = document.querySelector('.right');
-    this.containerHandler = document.querySelector('.main');
-    this.currentSelect = '';
-    this.currentOptions = ''
-  }
-  init(){
-    api.requestToServer('getClient',{
-      id: this.clientUID,
-    }).then(client => {
-      console.log(client)
-      this.client = client;
-      this.renderItem(this.item.reqTypeofRealty);
-      this.handler();
-      document.querySelector('.item').classList.add('item__active');
+      }
     })
   }
-  renderItem(reqTypeofRealty){
-    this.containerItem.innerHTML = '';
-    this.containerItem.insertAdjacentHTML('beforeend', new ItemLayout(this.item, reqTypeofRealty, this.client).render());
-    this.checkSlider();
-    this.handlerInput();
-  }
-  checkSlider(){
-    const elms = document.querySelectorAll('.slider');
-    for (let i = 0, len = elms.length; i < len; i++) {
-      // инициализация elms[i] в качестве слайдера
-      new ChiefSlider(elms[i], {
-        loop: false,
-      });
-    }
+  clearDom(){
+    document.querySelector('.client').innerHTML = '';
+    document.querySelector('.object').innerHTML = '';
   }
   handler(){
-    this.containerHandler.addEventListener('click', event => {
-      if (event.target.tagName === 'INPUT' && event.target.type === 'text'){
-        if (this.currentSelect && this.currentSelect === event.target){
+    this.containerMain.addEventListener('click', event => {
+      const e = event.target;
+      const dataset = event.target.dataset;
+      if (e.tagName === 'INPUT' && e.type === 'text'){
+        if (this.currentSelect && this.currentSelect === e){
           this.checkOption();
         } else {
-          this.openSelectBlock(event.target);
+          this.openSelectBlock(e);
         }
-      } else if (event.target.dataset.select === 'option'){
-        this.currentSelect.value = event.target.innerHTML;
+      } else if (dataset.select === 'option'){
+        this.object[this.currentSelect.name] = e.innerHTML;
+        this.currentSelect.value = e.innerHTML;
         this.checkOption();
+      } else if (dataset.open){
+        this.openCard(dataset.open, dataset.number);
       }
     })
     document.body.addEventListener('click', event => {
@@ -143,17 +117,26 @@ class Item {
     })
   }
   handlerInput(){
-    const allInputs = document.querySelectorAll('INPUT');
+    const allInputs = document.querySelectorAll('INPUT:not(.inJob__checkbox)');
     for (let input of allInputs){
       input.addEventListener('change', event => {
-        if (event.target.name === 'reqTypeofRealty'){
-          this.renderItem(event.target.value);
+        if (event.target.name === 'reqHouseBuildDate'){
+          this.object[event.target.name] = event.target.value.split('-').reverse().join('.');
+        } else if (event.target.classList.contains('reqTypeofRealty')){
+            this.object[event.target.name] = event.target.value;
+            this.renderObject(event.target.value);
+        } else {
+            this.object[event.target.name] = event.target.value;
         }
-        console.log(event.target)
-
       })
     }
   }
+
+  /**
+   * Принимайт input по событию, открывает блок выбора новых параметров
+   * Работает как select-option
+   * @param input
+   */
   openSelectBlock(input){
     const findBlock = document.querySelector(`.${input.name}`);
     if (findBlock){
@@ -163,6 +146,9 @@ class Item {
       this.currentSelect = input;
     }
   }
+  /**
+   * Закрывает блок выбора новых параметров открытых с openSelectBlock
+   */
   checkOption(){
     if (this.currentOptions){
       this.currentOptions.classList.add('inVisible');
@@ -170,54 +156,63 @@ class Item {
       this.currentSelect = '';
     }
   }
-}
 
-class EmptyField{
-  constructor() {
-    this.container = document.querySelector('.right');
+  /**
+   * Открывает слайдер BX
+   * @param action указывает что открвыть (объект, клиента, сделку)
+   * @param number номер объекта, клиента, сделки
+   * @returns {boolean}
+   */
+  openCard(action, number){
+    // const typeA = '1c';
+    const windowWidth = window.innerWidth * 0.9;
+    const readyString = {
+      client: `https://crm.centralnoe.ru/crm/contact/details/${number}/`,
+      card: `https://crm.centralnoe.ru/CDB/object/card/cardObject.php?login=yes&source=1c&id=${number}`,
+    }
+    BX.SidePanel.Instance.open(readyString[action], {animationDuration: 300,  width: windowWidth, events: {
+        onclose: () => {
+          console.log(action);
+          if (action === 'client'){
+            this.renderClientValue();
+          }
+        }}});
+    return true;
   }
-  render(){
-    document.querySelector('.items').innerHTML = '';
-    this.container.innerHTML = '';
-    this.container.insertAdjacentHTML('beforeend', this.emptyLayout())
-  }
-  emptyLayout(){
-    return `<div class="control">
-                <div class="buttons">
-                  <button>button1</button>
-                  <button>button2</button>
-                  <button>button3</button>
-                  <button>button4</button>
-                </div>
-                <div class="client"></div>
-              </div>
-              <div class="object"></div>
-              <div class="info"></div>`
-  }
-}
 
-class ListItems{
-  constructor(items) {
-    this.items = items;
-    this.container = document.querySelector('.items');
-  }
-  init(){
-    for (let item of this.items){
-      this.container.insertAdjacentHTML('beforeend', this.render(item));
+  checkSlider(){
+    const elms = document.querySelectorAll('.slider');
+    for (let i = 0, len = elms.length; i < len; i++) {
+      // инициализация elms[i] в качестве слайдера
+      new ChiefSlider(elms[i], {
+        loop: false,
+      });
     }
   }
-  render(item) {
-    return `<div data-item="${item.UID}" class="item"> 
-                <span class="item__text item__title">${item.UID}</span>
-                <span class="item__text">${item.sheetType}</span>
-            </div>`
+  renderObject(reqTypeofRealty){
+    const containerObject = document.querySelector('.object');
+    containerObject.innerHTML = '';
+    containerObject.insertAdjacentHTML('beforeend', new ObjectLayout(this.object, reqTypeofRealty).render())
+    this.checkSlider();
+    this.handlerInput();
+    this.checkWork.disabled = false;
+  }
+  renderClientValue(){
+    api.requestToServer('getClient',{
+      id: this.clientUID,
+    }).then(client => {
+      this.client = client;
+      const clientContainer = document.querySelector('.client');
+      console.log(this.client)
+      clientContainer.innerHTML = '';
+      clientContainer.insertAdjacentHTML('beforeend', new Clientlayout(this.client).render())
+    })
   }
 }
 
-class ItemLayout {
-  constructor(item, reqTypeofRealty, client) {
+class ObjectLayout {
+  constructor(item, reqTypeofRealty) {
     this.item = item;
-    this.client = client;
     this.reqType = reqTypeofRealty;
     this.type = {
       'Квартира': this.flat(),
@@ -244,10 +239,7 @@ class ItemLayout {
   }
   flat(){
     const photo = this.getPhoto();
-    return `<div class="object__header"> 
-                <span class="right__title">Объект</span>  
-                <span class="right__title">Сделка</span>  
-              </div>
+    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -264,30 +256,30 @@ class ItemLayout {
               </div>
               <div class="object__change"> 
                 <div> 
-                  <input checked name="reqTypeofRealty" id="float" type="radio" value="Квартира">
+                  <input checked name="reqTypeofRealty" id="float" type="radio" value="Квартира" class="reqTypeofRealty">
                   <label class="subtitle" for="float">Квартира</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната">
+                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната" class="reqTypeofRealty">
                   <label class="subtitle" for="room">Комната</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом">
+                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом" class="reqTypeofRealty">
                   <label class="subtitle" for="house">Дом, коттедж, дача</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок">
+                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок" class="reqTypeofRealty">
                   <label class="subtitle" for="ground">Земля</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж">
+                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж" class="reqTypeofRealty">
                   <label class="subtitle" for="garage">Гараж</label>
                 </div>
               </div>
               <div class="object__feature"> 
-                <input class="button-input" name="feature" id="second" type="radio" value="Квартира" ${this.item.reqTypeofRealty === "Квартира" ? 'checked' : ''}>
+                <input class="button-input" name="reqTypeofRealty" id="second" type="radio" value="Квартира" ${this.item.reqTypeofRealty !== "Переуступка ДДУ" ? 'checked' : ''}>
                 <label class="button-label" for="second">вторичка</label>
-                <input class="button-input" name="feature" id="part" type="radio" value="Переуступка ДДУ" ${this.item.reqTypeofRealty === "Переуступка ДДУ" ? 'checked' : ''}>
+                <input class="button-input" name="reqTypeofRealty" id="part" type="radio" value="Переуступка ДДУ" ${this.item.reqTypeofRealty === "Переуступка ДДУ" ? 'checked' : ''}>
                 <label class="button-label" for="part">переуступка дду</label>
               </div>
               <span class="title">местоположение</span>
@@ -475,7 +467,7 @@ class ItemLayout {
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Год постройки</span>
-                  <input class="input__text" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
+                  <input class="input__text" name="reqHouseBuildDate" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
                 </div> 
                 <div class="about__item"> 
                   <span class="subtitle">Материал дома</span>
@@ -500,10 +492,7 @@ class ItemLayout {
   }
   room(){
     const photo = this.getPhoto();
-    return `<div class="object__header"> 
-                <span class="right__title">Объект</span>  
-                <span class="right__title">Сделка</span>  
-              </div>
+    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -520,23 +509,23 @@ class ItemLayout {
               </div>
               <div class="object__change"> 
                 <div> 
-                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира">
+                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира" class="reqTypeofRealty">
                   <label class="subtitle" for="float">Квартира</label>
                 </div>
                 <div> 
-                  <input checked name="reqTypeofRealty" id="room" type="radio" value="Комната">
+                  <input checked name="reqTypeofRealty" id="room" type="radio" value="Комната" class="reqTypeofRealty">
                   <label class="subtitle" for="room">Комната</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом">
+                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом" class="reqTypeofRealty">
                   <label class="subtitle" for="house">Дом, коттедж, дача</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок">
+                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок" class="reqTypeofRealty">
                   <label class="subtitle" for="ground">Земля</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж">
+                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж" class="reqTypeofRealty">
                   <label class="subtitle" for="garage">Гараж</label>
                 </div>
               </div>
@@ -703,7 +692,7 @@ class ItemLayout {
               <div class="about"> 
                 <div class="about__item"> 
                   <span class="subtitle">Год постройки</span>
-                  <input class="input__text" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
+                  <input class="input__text" name="reqHouseBuildDate" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
                 </div> 
                 <div class="about__item"> 
                   <span class="subtitle">Материал дома</span>
@@ -746,10 +735,7 @@ class ItemLayout {
   }
   house(){
     const photo = this.getPhoto();
-    return `<div class="object__header"> 
-                <span class="right__title">Объект</span>  
-                <span class="right__title">Сделка</span>  
-              </div>
+    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -766,23 +752,23 @@ class ItemLayout {
               </div>
               <div class="object__change"> 
                 <div> 
-                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира">
+                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира" class="reqTypeofRealty">
                   <label class="subtitle" for="float">Квартира</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната">
+                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната" class="reqTypeofRealty">
                   <label class="subtitle" for="room">Комната</label>
                 </div>
                 <div> 
-                  <input checked name="reqTypeofRealty" id="house" type="radio" value="Дом">
+                  <input checked name="reqTypeofRealty" id="house" type="radio" value="Дом" class="reqTypeofRealty">
                   <label class="subtitle" for="house">Дом, коттедж, дача</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок">
+                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок" class="reqTypeofRealty">
                   <label class="subtitle" for="ground">Земля</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж">
+                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж" class="reqTypeofRealty">
                   <label class="subtitle" for="garage">Гараж</label>
                 </div>
               </div>
@@ -970,7 +956,7 @@ class ItemLayout {
                 </div>                    
                 <div class="about__item"> 
                   <span class="subtitle">Год постройки</span>
-                  <input class="input__text" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
+                  <input class="input__text" name="reqHouseBuildDate" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
                 </div>                 
               </div>
               <span class="title">цена, тыс. руб.</span>
@@ -987,10 +973,7 @@ class ItemLayout {
   }
   ground(){
     const photo = this.getPhoto();
-    return `<div class="object__header"> 
-                <span class="right__title">Объект</span>  
-                <span class="right__title">Сделка</span>  
-              </div>
+    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -1007,23 +990,23 @@ class ItemLayout {
               </div>
               <div class="object__change"> 
                 <div> 
-                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира">
+                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира" class="reqTypeofRealty">
                   <label class="subtitle" for="float">Квартира</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната">
+                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната" class="reqTypeofRealty">
                   <label class="subtitle" for="room">Комната</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом">
+                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом" class="reqTypeofRealty">
                   <label class="subtitle" for="house">Дом, коттедж, дача</label>
                 </div>
                 <div> 
-                  <input checked name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок">
+                  <input checked name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок" class="reqTypeofRealty">
                   <label class="subtitle" for="ground">Земля</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж">
+                  <input name="reqTypeofRealty" id="garage" type="radio" value="Гараж" class="reqTypeofRealty">
                   <label class="subtitle" for="garage">Гараж</label>
                 </div>
               </div>
@@ -1118,10 +1101,7 @@ class ItemLayout {
   }
   garage(){
     const photo = this.getPhoto();
-    return `<div class="object__header"> 
-                <span class="right__title">Объект</span>  
-                <span class="right__title">Сделка</span>  
-              </div>
+    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -1138,23 +1118,23 @@ class ItemLayout {
               </div>
               <div class="object__change"> 
                 <div> 
-                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира">
+                  <input name="reqTypeofRealty" id="float" type="radio" value="Квартира" class="reqTypeofRealty">
                   <label class="subtitle" for="float">Квартира</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната">
+                  <input name="reqTypeofRealty" id="room" type="radio" value="Комната" class="reqTypeofRealty">
                   <label class="subtitle" for="room">Комната</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом">
+                  <input name="reqTypeofRealty" id="house" type="radio" value="Дом" class="reqTypeofRealty">
                   <label class="subtitle" for="house">Дом, коттедж, дача</label>
                 </div>
                 <div> 
-                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок">
+                  <input name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок" class="reqTypeofRealty">
                   <label class="subtitle" for="ground">Земля</label>
                 </div>
                 <div> 
-                  <input checked name="reqTypeofRealty" id="garage" type="radio" value="Гараж">
+                  <input checked name="reqTypeofRealty" id="garage" type="radio" value="Гараж" class="reqTypeofRealty">
                   <label class="subtitle" for="garage">Гараж</label>
                 </div>
               </div>
@@ -1237,7 +1217,7 @@ class ItemLayout {
                 </div>    
                <div class="about__item"> 
                   <span class="subtitle">Год постройки</span>
-                  <input class="input__text" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
+                  <input class="input__text" name="reqHouseBuildDate" type="date" value="${this.item.reqHouseBuildDate ? this.item.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
                 </div> 
               </div>
               <span class="title">цена, тыс. руб.</span>
@@ -1254,44 +1234,49 @@ class ItemLayout {
   }
 
   render(){
-    console.log(this.client)
-    return `<div class="control">
-              <div class="buttons">
-                  <button>button1</button>
-                  <button>button2</button>
-                  <button>button3</button>
-                  <button>button4</button>
-              </div>
-              <div class="client"> 
-                <span class="right__title">Клиент</span>
-                <div class="about"> 
-                  <div class="about__item"> 
-                    <span class="subtitle">Фамилия</span>
-                    <input class="input__text" type="text" name="LAST_NAME" value="${this.client.LAST_NAME ? this.client.LAST_NAME : ''}">
-                  </div>
-                  <div class="about__item"> 
-                    <span class="subtitle">Имя</span>
-                    <input class="input__text" type="text" value="${this.client.NAME ? this.client.NAME : ''}" name="NAME">
-                  </div>
-                  <div class="about__item"> 
-                    <span class="subtitle">Отчество</span>
-                    <input class="input__text" type="text" value="${this.client.SECOND_NAME ? this.client.SECOND_NAME : ''}" name="SECOND_NAME">
-                  </div>
-                  <div class="about__item"> 
-                    <span class="subtitle">Телефон</span>
-                    <input class="input__text" type="text" value="${this.client.PHONE ? this.client.PHONE[0].VALUE : ''}" name="PHONE">
-                  </div>
+    return `${this.type[this.reqType]}`
+  }
+}
+
+class Clientlayout{
+  constructor(client) {
+    this.client = client
+  }
+  getPhone(){
+    if (this.client.HAS_PHONE === "Y"){
+      let phones = '';
+      for (let phone of this.client.PHONE){
+        phones += `<div class="about__item">
+                      <span class="subtitle">Телефон</span>
+                      <span class="subtitle">${phone.VALUE}</span>
+                    </div>`
+      }
+      return phones;
+    }
+  }
+  render(){
+    const phone = this.getPhone();
+    return `<span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
+              <div class="about client__info">
+                <div class="about__item">
+                  <span class="subtitle">Фамилия</span>
+                  <span class="subtitle">${this.client.LAST_NAME ? this.client.LAST_NAME : ''}</span>
                 </div>
-                <div class="comment"> 
-                  <span class="subtitle">Комментарий</span>
-                  <textarea class="input__area" rows="10">${this.item.comment ? this.item.comment : ''}</textarea>
+                <div class="about__item">
+                  <span class="subtitle">Имя</span>
+                  <span class="subtitle">${this.client.NAME ? this.client.NAME : ''}</span>
                 </div>
-              </div>
-            </div>
-              <div class="object"> 
-                ${this.type[this.reqType]}
-            </div>
-            <div class="info"></div>`
+                <div class="about__item">
+                  <span class="subtitle">Отчество</span>
+                  <span class="subtitle">${this.client.SECOND_NAME ? this.client.SECOND_NAME : ''}</span>
+                </div>
+                ${phone}
+                <div class="client__comment">
+                  <span class="subtitle">Комментарии</span>
+                  <textarea class="client__area" rows="10"></textarea>
+                  <button class="client__btn">Сохранить комментарии</button>
+                </div>
+              </div>`
   }
 }
 

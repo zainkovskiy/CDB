@@ -15,9 +15,10 @@ body{
 }
 .main{
   display: grid;
-  grid-template-columns: 15% 1fr;
-  grid-template-rows: 100vh;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 90%;
   grid-gap: 10px;
+  height: 100vh;
 }
 .title{
   font-family: "montserrat", sans-serif;
