@@ -140,6 +140,10 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
             </div>
         </div>
         <div class="buttons">
+              <div class='btn__wrap-extra'>
+                  <button title="Еще фильтры" class="ui-btn btn-search bx-btn__craft" data-name="extra">Доп. фильтры</button>
+                  <span class='count count-extra visible'></span>
+                </div>
                   <div class="source__wrap">
                     <input checked class="source__input" name="1c" id="centr" type="checkbox">
                     <label class="source__label source__label-centr" for="centr"></label>
@@ -148,11 +152,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                     <input class="source__input" name="pars" id="all" type="checkbox">
                     <label class="source__label source__label-all" for="all"></label>
                   </div>
-              <div class='btn__wrap-extra'>
-              <button title="Еще фильтры" class="btn btn-setting" data-name="extra"></button>
-              <span class='count count-extra visible'></span>
-            </div>
-            <button title="Поиск" class="ui-btn btn-search" data-name="search">найти</button>
+            <button title="Поиск" class="ui-btn btn-search bx-btn__craft" data-name="search">найти</button>
         </div>
     </div>
     <div class='setting'>

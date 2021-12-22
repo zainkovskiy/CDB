@@ -1728,7 +1728,7 @@ class AddressHandler {
                 <div class="row__text row__text_bold">Площадь м<sup>2</sup></div>
                 <div class="row__items"> 
                   <div class="row__item"> 
-                    <div class="row__text">Общая<i class="i">*</i></div>
+                    <div class="row__text">Общая<i class="i"></i></div>
                     <div class="row__inputs">
                       <input name="reqFlatTotalArea" class="row__input row__input_left" type="text" 
                       placeholder="от" autocomplete="off" 
@@ -1849,7 +1849,7 @@ class AddressHandler {
                 </div>
               </div>
               <div class="row"> 
-                <div class="row__text row__text_bold">Этаж<i class="i">*</i></div>
+                <div class="row__text row__text_bold">Этаж<i class="i"></i></div>
                 <div class="row__items"> 
                   <div class="row__item"> 
                     <input name="reqFloor" class="row__input row__input_left" type="text" placeholder="от" autocomplete="off" 
@@ -1881,7 +1881,7 @@ class AddressHandler {
                 </div>                 
                 </div>
               <div class="row"> 
-                <div class="row__text row__text_bold">Тип объекта<i class="i">*</i></div>
+                <div class="row__text row__text_bold">Тип объекта<i class="i"></i></div>
                 <div class="row__items"> 
                   <div class="row__toggle"> 
                     <input class="row__radio" id="nothingObject" name="typeObject" type="radio" value="nothing" 
@@ -1906,7 +1906,7 @@ class AddressHandler {
                   <div class="row__item"> 
                     <input name="isShowAgent" class="row__checkbox" type="checkbox" id="isAgent"
                     ${this.objectFilter.isShowAgent ? 'checked' : ''}>
-                    <label class="row__label-check" for="isAgent">Не выводить агенства<i class="i">*</i></label>
+                    <label class="row__label-check" for="isAgent">Не выводить агенства<i class="i"></i></label>
                   </div>
                   <div class="row__item"> 
                     <input name="isReserve" class="row__checkbox" type="checkbox" id="isReserve"
@@ -1916,7 +1916,7 @@ class AddressHandler {
                 </div>
               </div>
             </div>
-            <p class="extra__about">При поиске по внешней базе недвижимости (по рекламным площадкам) будут учитываться только фильтры отмеченные звездочкой <i class="i">*</i></p>
+            <p class="extra__about">При поиске по внешней базе недвижимости (по рекламным площадкам) будут учитываться только фильтры отмеченные восклицательным занком <i class="i"></i></p>
             <div class="metro__footer module__footer"> 
               <button data-extra="save" class="module__save" type="button">Сохранить</button>
               <button data-extra="clear" class="module__reset row__input_right"><span>Очистить</span></button>
@@ -2324,7 +2324,11 @@ class Cards {
                         </span>
                         </div>
                         <div class="card__info">
-                            ${this.cards[i].reqFlatTotalArea ? `<span class="card__title">${this.cards[i].reqFlatTotalArea} кв<sup>2</sup></span>` : ''}
+                            ${this.cards[i].reqFlatTotalArea ? `<span class="card__title">
+                            ${this.cards[i].reqFlatTotalArea ? `${this.cards[i].reqFlatTotalArea}` : ''}
+                            ${this.cards[i].reqFlatLivingArea ? `/${this.cards[i].reqFlatLivingArea}` : ''}
+                            ${this.cards[i].reqKitchenArea ? `/${this.cards[i].reqKitchenArea}` : ''}
+                            </span>` : ''}
                             ${this.cards[i].reqFloor && this.cards[i].reqFloors ? `<span class="card__text">${this.cards[i].reqFloor}/${this.cards[i].reqFloors} эт. </span>` : ''}
                             ${this.cards[i].reqTypeofRealty === "Дом" || this.cards[i].reqTypeofRealty === "Земля" || this.cards[i].reqTypeofRealty === "Земельный участок" && this.cards[i].reqLandArea ?
                             `<span class="${this.cards[i].reqFlatTotalArea || this.cards[i].reqFloor ? 'card__text' : 'card__title'}"> 

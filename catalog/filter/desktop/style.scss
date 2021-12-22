@@ -18,8 +18,14 @@ input[type='checkbox']{
   box-sizing: border-box;
 }
 .i{
-  color: red;
-  font-size: 18px;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-image: url("img/attention.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 0 0 0 5px;
 }
 ul {
   padding: 0;
@@ -133,7 +139,7 @@ ul {
   padding: 20px;
   background-color: white;
   display: grid;
-  grid-template-columns: 1fr 45% 1fr 1fr 1fr;
+  grid-template-columns: 1fr 45% 1fr 1fr min-content;
   grid-template-rows: repeat(2, auto);
   grid-gap: 10px;
   margin: 0 0 10px 0;
@@ -857,6 +863,7 @@ ul {
   }
   &__wrap-extra{
     position: relative;
+    margin: 0 10px 0 0;
   }
 }
 .btn-add{
@@ -1503,4 +1510,7 @@ ul {
 
 .garland_4 {
   background-position: 0 -108px
+}
+.bx-btn__craft{
+  border-radius: 5px !important;
 }
