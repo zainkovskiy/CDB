@@ -37,6 +37,18 @@ body{
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
+  &_open{
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  &__btn{
+    border-bottom: 1px dashed black;
+    cursor: pointer;
+    opacity: .7;
+    &:hover{
+      opacity: 1;
+    }
+  }
 }
 .input{
   &__text{
@@ -103,7 +115,64 @@ body{
     color: #ffffff;
   }
 }
-
+.module{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #373737d9;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  &__wrap{
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 60%;
+  }
+  &__title{
+    font-size: 24px;
+    font-family: "montserrat", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    color: grey;
+    margin: 0 0 20px 0;
+  }
+  &__close{
+    position: fixed;
+    z-index: 5;
+    background-image: url("../img/close.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: block;
+    width: 30px;
+    height: 30px;
+    opacity: .5;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    transition:
+            opacity .3s,
+            transform .3s;
+    &:hover{
+      opacity: 1;
+    }
+    &:active{
+      transform: scale(1.3);
+    }
+  }
+  &__buttons{
+    margin: 20px 0 0 0;
+  }
+  &__container{
+    position: relative;
+  }
+  &__task{
+    margin: 0 0 20px 0;
+  }
+}
 .inVisible{
   display: none;
 }

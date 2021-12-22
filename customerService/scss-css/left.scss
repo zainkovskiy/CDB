@@ -1,3 +1,9 @@
+.left{
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 10px;
+}
+
 .client{
   border-radius: 5px;
   background: #C4C4C4;
@@ -22,5 +28,14 @@
   }
   &__btn{
     align-self: flex-start;
+  }
+}
+
+.control{
+  border-radius: 5px;
+  background: #C4C4C4;
+  padding: 10px;
+  &__wrap{
+    margin: 0 0 10px 0;
   }
 }

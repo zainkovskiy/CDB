@@ -15,7 +15,7 @@
     width: 100%;
     border: 1px solid black;
     padding: 10px;
-    border-radius: 50px;
+    border-radius: 10px 0 0 10px;
     font-family: "montserrat", sans-serif;
     font-weight: 700;
     font-style: normal;
@@ -26,6 +26,37 @@
     align-items: center;
     justify-content: center;
     user-select: none;
+  }
+  &__next{
+    border: 1px solid black;
+    border-radius: 0 10px 10px 0;
+    border-left: none;
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+    box-sizing: border-box;
+    position: relative;
+    &_timer{
+      animation: gradient 5s linear;
+      animation-fill-mode: forwards;
+    }
+  }
+  &__text{
+    font-family: "montserrat", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+    position: relative;
+    z-index: 5;
+  }
+  &__load{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    border-radius: 0 10px 10px 0;
+    background-color: greenyellow;
   }
   &__checkbox{
     appearance: none;
@@ -38,5 +69,13 @@
     &:disabled ~.inJob__label{
       opacity: .5;
     }
+  }
+}
+@keyframes gradient {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
   }
 }

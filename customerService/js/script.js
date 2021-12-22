@@ -4,6 +4,8 @@ class API{
       getInfo: 'https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Call/Server.php',
       getObject: 'https://crm.centralnoe.ru/dealincom/object/reqMaker.php',
       getClient: 'https://crm.centralnoe.ru/dealincom/factory/Clients.php',
+      getDeal: 'https://crm.centralnoe.ru/dealincom/factory/Deals.php',
+      getRealtor: 'https://crm.centralnoe.ru/dealincom/factory/Users.php',
     };
   }
   async requestToServer(api, requestNamed){
@@ -29,10 +31,12 @@ class API{
 
 class App{
   constructor() {
+    this.isWork = false;
     this.checkWork = document.querySelector('.inJob__checkbox');
     this.containerMain = document.querySelector('.main');
     this.sessionNumber = '';
     this.object = '';
+    this.deal = '';
     this.client = '';
     this.clientUID = '';
     this.currentSelect = '';
@@ -41,9 +45,15 @@ class App{
   init(){
     this.checkWork.addEventListener('change', () => {
       if (this.checkWork.checked){
+        this.isWork = true;
+        document.querySelector('.inJob__load').classList.add('inJob__next_timer');
+        setTimeout(() => {
+          document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
+        }, 5000)
         this.checkWork.disabled = true;
         this.startJobs();
       } else {
+        this.isWork = false;
           api.requestToServer('getInfo',{
             operatorId: loginID,
             action: 'stopWorking',
@@ -52,7 +62,6 @@ class App{
             this.clearDom();
           })
       }
-      // this.renderClient();
     });
     this.handler();
   }
@@ -73,15 +82,19 @@ class App{
             this.sessionNumber = info.UID;
             this.clientUID = info.client.UID;
             this.renderClientValue();
-            api.requestToServer('getObject', {
-              action: 'old',
-              reqNumber: info.request.UID,
-              author: login,
-            }).then(object => {
-              console.log(object)
-              this.object = object;
-              this.renderObject(this.object.reqTypeofRealty);
-            })
+            if (info.request){
+              api.requestToServer('getObject', {
+                action: 'old',
+                reqNumber: info.request.UID,
+                author: login,
+              }).then(object => {
+                console.log(object)
+                this.object = object;
+                this.renderObject(this.object.reqTypeofRealty);
+              })
+            } else if (info.deal){
+              this.renderDeal(info.deal.UID);
+            }
           }
         })
 
@@ -103,16 +116,26 @@ class App{
           this.openSelectBlock(e);
         }
       } else if (dataset.select === 'option'){
-        this.object[this.currentSelect.name] = e.innerHTML;
-        this.currentSelect.value = e.innerHTML;
-        this.checkOption();
+          this.object[this.currentSelect.name] = e.innerHTML;
+          this.currentSelect.value = e.innerHTML;
+          this.checkOption();
       } else if (dataset.open){
-        this.openCard(dataset.open, dataset.number);
+          this.openCard(dataset.open, dataset.number);
+      } else if (dataset.add && this.isWork){
+          this.openModule(dataset.add);
       }
     })
     document.body.addEventListener('click', event => {
       if (event.target.dataset.check !== 'elem'){
         this.checkOption();
+      }
+    })
+    document.body.addEventListener('keyup', event => {
+      if(event.key === "Escape"){
+        const module = document.querySelector('.module');
+        if (module){
+          this.closeModule(module);
+        }
       }
     })
   }
@@ -132,6 +155,62 @@ class App{
     }
   }
 
+  openModule(layout){
+    const moduleLayout = {
+      task: this.getTaskLayout(),
+    }
+    document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
+    const currentY = window.pageYOffset;
+    document.body.insertAdjacentHTML('beforebegin',
+      `<div style="top: ${currentY}" class="module"> 
+              <span data-name="close" class="module__close"></span>
+              <div class="module__wrap"> 
+                ${moduleLayout[layout]}
+              </div>
+            </div>`);
+    this.handlerModule();
+  }
+  closeModule(module){
+    document.querySelector('HTML').removeAttribute("style");
+    module.remove();
+  }
+  handlerModule(){
+    const module = document.querySelector('.module');
+    module.addEventListener('click', event => {
+      const e = event.target;
+      const dataset = event.target.dataset;
+      if (dataset.name === 'close'){
+        this.closeModule(module);
+      } else if (dataset.input === 'task'){
+          document.querySelector(`.${dataset.input}__select`).classList.remove('inVisible');
+      } else if (dataset.option === 'task'){
+          document.querySelector(`.${dataset.option}__input`).value = e.innerHTML;
+          document.querySelector(`.${dataset.option}__select`).classList.add('inVisible');
+      }
+    })
+  }
+  getTaskLayout(){
+    return `<p class="module__title">Комментарий риелтору</p>
+            <div class="module__task"> 
+              <span class="subtitle">Задача</span>
+                <div class="module__container"> 
+                  <input data-input="task" class="input__text input__select task__input" type="text" readonly value="Выбрать">
+                  <div class="about__select task__select inVisible"> 
+                    <span data-option="task" class="about__option">Выбрать</span>
+                    <span data-option="task" class="about__option">задача 1</span>
+                    <span data-option="task" class="about__option">задача 2</span>
+                  </div>
+                </div>
+            </div>
+            <div> 
+              <span class="subtitle">Комментарий</span>
+              <textarea class="client__area" rows="10"></textarea>
+            </div> 
+            <div class="module__buttons"> 
+              <button class="ui-btn ui-btn-success">сохранить</button>
+              <button data-name="close" class="ui-btn ui-btn-danger">отменить</button>
+            </div>`
+  }
   /**
    * Принимайт input по событию, открывает блок выбора новых параметров
    * Работает как select-option
@@ -169,12 +248,16 @@ class App{
     const readyString = {
       client: `https://crm.centralnoe.ru/crm/contact/details/${number}/`,
       card: `https://crm.centralnoe.ru/CDB/object/card/cardObject.php?login=yes&source=1c&id=${number}`,
+      deal: `https://crm.centralnoe.ru/crm/deal/details/${number}/`,
+      user: `https://crm.centralnoe.ru/company/personal/user/${number}/`,
     }
     BX.SidePanel.Instance.open(readyString[action], {animationDuration: 300,  width: windowWidth, events: {
         onclose: () => {
           console.log(action);
           if (action === 'client'){
             this.renderClientValue();
+          } else if (action === 'deal'){
+            this.renderDeal(this.deal.ID)
           }
         }}});
     return true;
@@ -189,10 +272,11 @@ class App{
       });
     }
   }
+
   renderObject(reqTypeofRealty){
     const containerObject = document.querySelector('.object');
     containerObject.innerHTML = '';
-    containerObject.insertAdjacentHTML('beforeend', new ObjectLayout(this.object, reqTypeofRealty).render())
+    containerObject.insertAdjacentHTML('beforeend', new ObjectLayout(this.object, reqTypeofRealty).render());
     this.checkSlider();
     this.handlerInput();
     this.checkWork.disabled = false;
@@ -206,6 +290,23 @@ class App{
       console.log(this.client)
       clientContainer.innerHTML = '';
       clientContainer.insertAdjacentHTML('beforeend', new Clientlayout(this.client).render())
+    })
+  }
+  renderDeal(dealUID){
+    api.requestToServer('getDeal', {
+      id: dealUID,
+    }).then(deal => {
+      console.log(deal);
+      this.deal = deal;
+      api.requestToServer('getRealtor', {
+        id: this.deal.ASSIGNED_BY_ID,
+      }).then(realtor => {
+        console.log(realtor)
+        const containerObject = document.querySelector('.object');
+        containerObject.innerHTML = '';
+        containerObject.insertAdjacentHTML('beforeend', new DealLayout(this.deal, realtor).render());
+        this.checkWork.disabled = false;
+      })
     })
   }
 }
@@ -1238,6 +1339,63 @@ class ObjectLayout {
   }
 }
 
+class DealLayout{
+  constructor(deal, realtor) {
+    this.deal = deal;
+    this.realtor = realtor;
+  }
+  getStages(){
+    const stages = {
+      'C6:1': 'Выход на задаток',
+      'C6:2': 'Отложена',
+      'C6:3': 'Упаковка объекта',
+      'C6:4': 'Активные продажи',
+      'C6:5': 'Выход на сделку',
+      'C6:6': 'Работает с другим риэлтором',
+      'C6:7': 'Другой город',
+      'C6:NEW': 'Перспективная сделка (продавец)',
+      'C6:FINAL_INVOICE': 'Подписание договора',
+      'C6:WON': 'ЦАН получил комиссию продавца/ДКП',
+      'C6:LOSE': 'Сделка не состоялась',
+    }
+    return stages[this.deal.STAGE_ID];
+  }
+  render(){
+    const stages = this.getStages();
+    return `<span data-open="deal" data-number="${this.deal.ID}" class="object__title">Сделка</span> 
+              <div class="about">
+                <div class="about__item about__item_background">
+                  <span class="subtitle">Стадия</span>
+                  <span class="subtitle">${stages}</span>
+                </div>
+                <div class="about__item about__item_background">
+                  <span class="subtitle">Сумма комиссии</span>
+                  <span class="subtitle">${this.deal.OPPORTUNITY ? `${this.deal.OPPORTUNITY} руб.` : ''}</span>
+                </div>
+                <div class="about__item about__item_background">
+                  <span class="subtitle">Риелтор</span>
+                  <span data-open="user" data-number="${this.realtor.ID}" class="subtitle subtitle_open">
+                    ${this.realtor.LAST_NAME ? this.realtor.LAST_NAME : ''}
+                    ${this.realtor.NAME ? this.realtor.NAME : ''}
+                    ${this.realtor.SECOND_NAME ? this.realtor.SECOND_NAME : ''}
+                  </span>
+                </div>                
+                <div class="about__item about__item_background">
+                  <span class="subtitle">Сделка отложенна</span>
+                  <span class="subtitle">${this.deal.UF_CRM_1601895403 === '1' ? 'Да' : 'Нет'}</span>
+                </div>                
+                <div class="about__item about__item_background">
+                  <span class="subtitle">Сделка отложена до:</span>
+                  <span class="subtitle">${this.deal.UF_CRM_1601913003 ? this.deal.UF_CRM_1601913003.split('T')[0].split('-').reverse().join('.') : ''}</span>
+                </div>
+                <div class="about__item about__item_background">
+                  <span class="subtitle">Комментарий к отложенной сделки</span>
+                  <span class="subtitle">${this.deal.UF_CRM_1601915480 ? this.deal.UF_CRM_1601915480 : ''}</span>
+                </div>
+              </div>`
+  }
+}
+
 class Clientlayout{
   constructor(client) {
     this.client = client
@@ -1246,7 +1404,7 @@ class Clientlayout{
     if (this.client.HAS_PHONE === "Y"){
       let phones = '';
       for (let phone of this.client.PHONE){
-        phones += `<div class="about__item">
+        phones += `<div class="about__item about__item_background">
                       <span class="subtitle">Телефон</span>
                       <span class="subtitle">${phone.VALUE}</span>
                     </div>`
@@ -1258,15 +1416,15 @@ class Clientlayout{
     const phone = this.getPhone();
     return `<span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
               <div class="about client__info">
-                <div class="about__item">
+                <div class="about__item about__item_background">
                   <span class="subtitle">Фамилия</span>
                   <span class="subtitle">${this.client.LAST_NAME ? this.client.LAST_NAME : ''}</span>
                 </div>
-                <div class="about__item">
+                <div class="about__item about__item_background">
                   <span class="subtitle">Имя</span>
                   <span class="subtitle">${this.client.NAME ? this.client.NAME : ''}</span>
                 </div>
-                <div class="about__item">
+                <div class="about__item about__item_background">
                   <span class="subtitle">Отчество</span>
                   <span class="subtitle">${this.client.SECOND_NAME ? this.client.SECOND_NAME : ''}</span>
                 </div>
@@ -1274,7 +1432,6 @@ class Clientlayout{
                 <div class="client__comment">
                   <span class="subtitle">Комментарии</span>
                   <textarea class="client__area" rows="10"></textarea>
-                  <button class="client__btn">Сохранить комментарии</button>
                 </div>
               </div>`
   }

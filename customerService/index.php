@@ -44,9 +44,20 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
         <div class="inJob">
             <input class="inJob__checkbox" id="inJob" name="inJob" type="checkbox">
             <label class="inJob__label" for="inJob">Работаю</label>
+            <div class="inJob__next">
+                <span class="inJob__text">Следующий</span>
+                <div class="inJob__load"></div>
+            </div>
         </div>
     </div>
-    <div class="client"></div>
+    <div class="left">
+        <div class="client"></div>
+        <div class="control">
+            <div class="control__wrap">
+                <span data-add="task" class="subtitle subtitle__btn">Добавить задачу/заметку для Риелтора</span>
+            </div>
+        </div>
+    </div>
     <div class="object"></div>
 </div>
 <script src="js/script.js"></script>

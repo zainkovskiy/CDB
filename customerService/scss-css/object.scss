@@ -40,6 +40,12 @@
     width: 100%;
     grid-gap: 10px;
     position: relative;
+    &_background{
+      padding: 5px;
+      background-color: white;
+      border-radius: 5px;
+      grid-template-columns: 40% 1fr;
+    }
   }
   &__select{
     background-color: white;
