@@ -52,11 +52,7 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     </div>
     <div class="left">
         <div class="client"></div>
-        <div class="control">
-            <div class="control__wrap">
-                <span data-add="task" class="subtitle subtitle__btn">Добавить задачу/заметку для Риелтора</span>
-            </div>
-        </div>
+        <div class="control"></div>
     </div>
     <div class="object"></div>
 </div>

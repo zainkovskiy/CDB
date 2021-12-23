@@ -43,15 +43,16 @@ body {
 }
 .subtitle_open {
   cursor: pointer;
-  text-decoration: underline;
-}
-.subtitle__btn {
   border-bottom: 1px dashed black;
-  cursor: pointer;
-  opacity: 0.7;
+  opacity: 0.6;
+  width: fit-content;
 }
-.subtitle__btn:hover {
+.subtitle_open:hover {
   opacity: 1;
+}
+.subtitle_center {
+  display: flex;
+  align-items: center;
 }
 
 .input__text {
@@ -122,6 +123,24 @@ body {
   color: #ffffff;
 }
 
+.can-btn {
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  padding: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #767676;
+}
+.can-btn:hover {
+  background-color: #adadad;
+}
+.can-btn:active {
+  background-color: #ffffff;
+}
+
 .module {
   position: absolute;
   width: 100%;
@@ -183,6 +202,11 @@ body {
   display: none;
 }
 
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .header {
   border-radius: 5px;
   grid-column-start: 1;
@@ -190,11 +214,11 @@ body {
   background: #C4C4C4;
   display: flex;
   align-items: center;
+  padding: 10px;
 }
 
 .inJob {
   display: flex;
-  padding: 5px;
   box-sizing: border-box;
 }
 .inJob__label {
@@ -277,12 +301,46 @@ body {
   background: #C4C4C4;
   padding: 10px;
 }
-.client__comment {
+.client__phone_cancel {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+  background-color: #ff5d5d;
+  background-image: url("../img/phone.svg");
+  background-repeat: no-repeat;
+  background-size: 60%;
+  background-position: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.client__phone_cancel:hover {
+  background-color: #b55151;
+}
+.client__phone_cancel:active {
+  background-color: #ff8282;
+}
+.client__title-wrap {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+.client__field-text {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+.client__comment {
+  display: grid;
   width: 100%;
   margin: 20px 0 0 0;
+  grid-template-rows: min-content 1fr;
+  grid-gap: 10px;
+}
+.client__comment-sms {
+  display: flex;
+  flex-direction: column;
 }
 .client__area {
   resize: none;
@@ -294,9 +352,23 @@ body {
   font-size: 12px;
   padding: 10px;
   box-sizing: border-box;
+  border-radius: 5px;
 }
-.client__btn {
-  align-self: flex-start;
+.client__area-sms {
+  border-radius: 5px 5px 0 0;
+}
+.client__btn-sms {
+  border-radius: 0 0 5px 5px;
+  border-top: none;
+}
+.client__btn-deal {
+  background-color: #90bdff;
+}
+.client__btn-deal:hover {
+  background-color: #6c8cb8;
+}
+.client__btn-deal:active {
+  background-color: #bed8ff;
 }
 
 .control {
@@ -320,8 +392,12 @@ body {
   font-weight: 400;
   font-size: 25px;
   line-height: 30px;
-  text-decoration-line: underline;
+  border-bottom: 1px dashed;
   cursor: pointer;
+  opacity: 0.6;
+}
+.object__title:hover {
+  opacity: 1;
 }
 .object__change {
   display: flex;
@@ -351,6 +427,9 @@ body {
   width: 100%;
   grid-gap: 10px;
   position: relative;
+}
+.about__item-phone {
+  grid-template-columns: 40% 1fr;
 }
 .about__item_background {
   padding: 5px;

@@ -477,6 +477,7 @@ input[type=radio] {
   border: 1px dashed #8F9091;
   border-bottom: none;
   padding: 0 5px;
+  pointer-events: auto;
 }
 .contract__title-btn:hover {
   color: grey;

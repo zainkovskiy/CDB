@@ -463,6 +463,7 @@ input[type=radio]{
       border: 1px dashed #8F9091;
       border-bottom: none;
       padding: 0 5px;
+      pointer-events: auto;
       &:hover{
         color: grey;
         border: 1px solid #8F9091;

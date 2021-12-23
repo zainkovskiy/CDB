@@ -31,10 +31,10 @@ class API{
 
 class App{
   constructor() {
-    this.isWork = false;
     this.checkWork = document.querySelector('.inJob__checkbox');
     this.containerMain = document.querySelector('.main');
     this.sessionNumber = '';
+    this.currentItemUID = '';
     this.object = '';
     this.deal = '';
     this.client = '';
@@ -45,7 +45,6 @@ class App{
   init(){
     this.checkWork.addEventListener('change', () => {
       if (this.checkWork.checked){
-        this.isWork = true;
         document.querySelector('.inJob__load').classList.add('inJob__next_timer');
         setTimeout(() => {
           document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
@@ -53,7 +52,6 @@ class App{
         this.checkWork.disabled = true;
         this.startJobs();
       } else {
-        this.isWork = false;
           api.requestToServer('getInfo',{
             operatorId: loginID,
             action: 'stopWorking',
@@ -79,7 +77,7 @@ class App{
         }).then(info => {
           console.log(info)
           if (info.result){
-            this.sessionNumber = info.UID;
+            this.currentItemUID = info.UID;
             this.clientUID = info.client.UID;
             this.renderClientValue();
             if (info.request){
@@ -91,9 +89,11 @@ class App{
                 console.log(object)
                 this.object = object;
                 this.renderObject(this.object.reqTypeofRealty);
+                this.renderControl();
               })
             } else if (info.deal){
               this.renderDeal(info.deal.UID);
+              this.renderControl();
             }
           }
         })
@@ -104,6 +104,7 @@ class App{
   clearDom(){
     document.querySelector('.client').innerHTML = '';
     document.querySelector('.object').innerHTML = '';
+    document.querySelector('.control').innerHTML = '';
   }
   handler(){
     this.containerMain.addEventListener('click', event => {
@@ -116,13 +117,20 @@ class App{
           this.openSelectBlock(e);
         }
       } else if (dataset.select === 'option'){
-          this.object[this.currentSelect.name] = e.innerHTML;
+          if (dataset.phone !== 'number'){
+            this.object[this.currentSelect.name] = e.innerHTML;
+          }
           this.currentSelect.value = e.innerHTML;
           this.checkOption();
       } else if (dataset.open){
           this.openCard(dataset.open, dataset.number);
-      } else if (dataset.add && this.isWork){
+      } else if (dataset.add){
           this.openModule(dataset.add);
+      } else if (dataset.call === "hangup"){
+        e.classList.add('disabled');
+        this.finishCall(e);
+      } else if (dataset.send === 'sms'){
+        this.sendSms();
       }
     })
     document.body.addEventListener('click', event => {
@@ -153,6 +161,32 @@ class App{
         }
       })
     }
+  }
+
+  finishCall(){
+    api.requestToServer('getInfo', {
+      action: 'hangup',
+      entityId: this.currentItemUID,
+    }).then(data => {
+      if (data.result){
+        alert('вызов завершен');
+      }
+    })
+  }
+  sendSms(){
+    const textField = document.querySelector('.client__area-sms');
+    const numberPhone = document.querySelector(`INPUT[name='numberPhone']`).value.replace(/[^0-9]/g, ' ');
+    api.requestToServer('getInfo', {
+      action: 'sendSMS',
+      message: textField.value,
+      phone: numberPhone,
+      entityId: this.currentItemUID,
+    }).then(data => {
+      if (data.status === 'ok'){
+        alert('сообщение отправлено');
+        textField.value = '';
+      }
+    })
   }
 
   openModule(layout){
@@ -286,10 +320,16 @@ class App{
       id: this.clientUID,
     }).then(client => {
       this.client = client;
-      const clientContainer = document.querySelector('.client');
-      console.log(this.client)
-      clientContainer.innerHTML = '';
-      clientContainer.insertAdjacentHTML('beforeend', new Clientlayout(this.client).render())
+      if (this.client.ASSIGNED_BY_ID){
+        api.requestToServer('getRealtor', {
+          id: this.client.ASSIGNED_BY_ID,
+        }).then(realtor => {
+          const clientContainer = document.querySelector('.client');
+          console.log(this.client)
+          clientContainer.innerHTML = '';
+          clientContainer.insertAdjacentHTML('beforeend', new Clientlayout(this.client, realtor).render())
+        })
+      }
     })
   }
   renderDeal(dealUID){
@@ -308,6 +348,11 @@ class App{
         this.checkWork.disabled = false;
       })
     })
+  }
+  renderControl(){
+    const controlContainer = document.querySelector('.control');
+    controlContainer.innerHTML = '';
+    controlContainer.insertAdjacentHTML('beforeend', new Controllayout().render())
   }
 }
 
@@ -1374,14 +1419,14 @@ class DealLayout{
                 </div>
                 <div class="about__item about__item_background">
                   <span class="subtitle">Риелтор</span>
-                  <span data-open="user" data-number="${this.realtor.ID}" class="subtitle subtitle_open">
+                  <span data-open="user" data-number="${this.realtor.ID  ? this.realtor.ID : ''}" class="subtitle subtitle_open">
                     ${this.realtor.LAST_NAME ? this.realtor.LAST_NAME : ''}
                     ${this.realtor.NAME ? this.realtor.NAME : ''}
                     ${this.realtor.SECOND_NAME ? this.realtor.SECOND_NAME : ''}
                   </span>
                 </div>                
                 <div class="about__item about__item_background">
-                  <span class="subtitle">Сделка отложенна</span>
+                  <span class="subtitle">Сделка отложена</span>
                   <span class="subtitle">${this.deal.UF_CRM_1601895403 === '1' ? 'Да' : 'Нет'}</span>
                 </div>                
                 <div class="about__item about__item_background">
@@ -1397,8 +1442,9 @@ class DealLayout{
 }
 
 class Clientlayout{
-  constructor(client) {
-    this.client = client
+  constructor(client, realtor) {
+    this.client = client;
+    this.realtor = realtor;
   }
   getPhone(){
     if (this.client.HAS_PHONE === "Y"){
@@ -1412,10 +1458,31 @@ class Clientlayout{
       return phones;
     }
   }
+  getPhoneSelect(){
+    if (this.client.HAS_PHONE === "Y"){
+      let option = '';
+      for (let phone of this.client.PHONE){
+        option += `<span data-check="elem" data-select="option" data-phone="number" class="about__option">${phone.VALUE}</span>`
+      }
+      return option;
+    }
+  }
   render(){
     const phone = this.getPhone();
-    return `<span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
-              <div class="about client__info">
+    const phoneSelect = this.getPhoneSelect();
+    return `<div class="client__title-wrap"> 
+                <span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
+                <span data-call="hangup" class="client__phone_cancel"></span>
+            </div>
+              <div class="about client__info">                
+              <div class="about__item about__item_background">
+                  <span class="subtitle">Ответственный</span>
+                  <span data-open="user" data-number="${this.realtor.ID ? this.realtor.ID : ''}" class="subtitle subtitle_open">
+                    ${this.realtor.LAST_NAME ? this.realtor.LAST_NAME : ''}
+                    ${this.realtor.NAME ? this.realtor.NAME : ''}
+                    ${this.realtor.SECOND_NAME ? this.realtor.SECOND_NAME : ''}
+                  </span>
+                </div>
                 <div class="about__item about__item_background">
                   <span class="subtitle">Фамилия</span>
                   <span class="subtitle">${this.client.LAST_NAME ? this.client.LAST_NAME : ''}</span>
@@ -1429,11 +1496,36 @@ class Clientlayout{
                   <span class="subtitle">${this.client.SECOND_NAME ? this.client.SECOND_NAME : ''}</span>
                 </div>
                 ${phone}
-                <div class="client__comment">
-                  <span class="subtitle">Комментарии</span>
-                  <textarea class="client__area" rows="10"></textarea>
+                <div class="client__field-text"> 
+                    <span class="subtitle subtitle_center">Комментарии</span>
+                    <div class="about__item about__item-phone"> 
+                      <span class="subtitle">Отправить СМС</span>
+                      <div data-check="elem" class="about__container"> 
+                        <input data-check="elem" name="numberPhone" class="input__text input__select" type="text" readonly 
+                        value="${this.client.HAS_PHONE === "Y" ? this.client.PHONE[0].VALUE : ''}">
+                        <div data-check="elem" class="about__select numberPhone inVisible"> 
+                          ${phoneSelect}
+                        </div>
+                      </div>
+                    </div>
+                    <textarea class="client__area"></textarea>
+                    <div class="client__comment-sms"> 
+                      <textarea class="client__area client__area-sms"></textarea>
+                      <button data-send="sms" class="can-btn client__btn-sms">Отправить</button>
+                    </div>
                 </div>
+                <button class="can-btn client__btn-deal">Создать сделку</button>
               </div>`
+  }
+}
+
+class Controllayout{
+  constructor() {
+  }
+  render(){
+    return `<div class="control__wrap">
+                <span data-add="task" class="subtitle subtitle_open">Добавить задачу/заметку для Риелтора</span>
+            </div>`
   }
 }
 

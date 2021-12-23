@@ -39,15 +39,16 @@ body{
   line-height: 17px;
   &_open{
     cursor: pointer;
-    text-decoration: underline;
-  }
-  &__btn{
     border-bottom: 1px dashed black;
-    cursor: pointer;
-    opacity: .7;
+    opacity: .6;
+    width: fit-content;
     &:hover{
       opacity: 1;
     }
+  }
+  &_center{
+    display: flex;
+    align-items: center;
   }
 }
 .input{
@@ -115,6 +116,23 @@ body{
     color: #ffffff;
   }
 }
+.can-btn{
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  padding: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #767676;
+  &:hover{
+    background-color: #adadad;
+  }
+  &:active{
+    background-color: #ffffff;
+  }
+}
 .module{
   position: absolute;
   width: 100%;
@@ -175,4 +193,9 @@ body{
 }
 .inVisible{
   display: none;
+}
+
+.disabled{
+  opacity: .5;
+  pointer-events: none;
 }

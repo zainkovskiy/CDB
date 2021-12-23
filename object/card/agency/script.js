@@ -575,12 +575,19 @@ class Render {
     }
     return promo;
   }
+  getExpired(){
+    if (this.obj.isExtended === '1'){
+      return this.obj.expiredEx ? this.obj.expiredEx.split(" ")[0] : '';
+    } else {
+      return this.obj.expired ? this.obj.expired.split(" ")[0] : '';
+    }
+  }
 
   render(){
     const owner = this.isOwner();
     const scopeOfOwnership = this.scopeOfOwnership();
     const placeLayout = this.placeLayout();
-    const expired = this.obj.expired ? this.obj.expired.split(" ")[0] : '';
+    const expired = this.getExpired();
     const progressBar = new ProgressBar(this.obj).render();
     const docType = this.setDocType();
     const promo = this.setPromo();
@@ -709,8 +716,7 @@ class Render {
                     <div class="contract__title-wrap"> 
                         <span class="contract__title">Срок дейcтвия</span>
                         <span data-expired='extend' class="contract__title contract__title-btn 
-                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'}"
-                        ${this.obj.moderatorAccepted === '1' ? 'disabled' : ''}>Продлить</span>
+                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'}">Продлить</span>
                     </div>
                     <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''}" type="date" value="${expired}">
                   </div> 
@@ -866,10 +872,10 @@ class ProgressBar{
                     class="${progressBar.signed ? 'progress__number_active' : 'signed'} progress__number">3</span>
                 <span class="progress__line"></span>
                 <span data-bs-toggle="tooltip" data-bs-placement="bottom" 
-                title="Подтвержденно клиентом" 
+                title="Подтвержден модератором" 
                     class="${progressBar.chiefAccepted ? 'progress__number_active' : 'chiefAccepted'} progress__number">4</span>
                 <span class="progress__line"></span>
-                <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="Подтвержден модератором" 
+                <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="Подтвержденно клиентом" 
                     class="${progressBar.moderatorAccepted ? 'progress__number_active' : 'moderatorAccepted'} progress__number">5</span>`
   }
 }
@@ -932,11 +938,12 @@ class File {
     }
   }
   drop(e) {
+    console.log(this)
     e.stopPropagation();
     e.preventDefault();
     let files = e.dataTransfer.files;
-    new SendFile(files, e.target.dataset.container, this.source).init().then(() => {
-      if (this.source !== 'extended'){
+    new SendFile(files, e.target.dataset.container, e.target.dataset.container).init().then(() => {
+      if (e.target.dataset.container !== 'extended'){
         document.querySelector('.save-change').classList.add('save-change_active');
       }
     });
@@ -1011,12 +1018,12 @@ class SendFile{
           documentName: key,
           UID: 'F' + Math.floor(Math.random()*1000)
         }
-        this.renderFiles(fileObj);
         if (this.source === 'extended'){
           app.extendedFiles.push(fileObj);
         } else {
           app.copyOwner.agencyagreement.documents.push(fileObj);
         }
+        this.renderFiles(fileObj);
       }
     }
   }
@@ -2099,6 +2106,7 @@ class Handler{
       date: module.querySelector(`INPUT[type='date']`).value,
       URI: app.extendedFiles,
     }
+    console.log(request1Cnamed)
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
     const raw = JSON.stringify(request1Cnamed);
@@ -2237,6 +2245,7 @@ class Handler{
         this.closeModule(module);
       } else if (event.target.dataset.extended === 'yes'){
         if (this.isValidExtended(module)){
+          console.log(app.extendedFiles)
           this.sendExtended(module).then(() => {
             this.closeModule(module);
             location.reload();

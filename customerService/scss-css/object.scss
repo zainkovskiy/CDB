@@ -9,8 +9,12 @@
     font-weight: 400;
     font-size: 25px;
     line-height: 30px;
-    text-decoration-line: underline;
+    border-bottom: 1px dashed;
     cursor: pointer;
+    opacity: .6;
+    &:hover{
+      opacity: 1;
+    }
   }
   &__change{
     display: flex;
@@ -40,6 +44,9 @@
     width: 100%;
     grid-gap: 10px;
     position: relative;
+    &-phone{
+      grid-template-columns: 40% 1fr;
+    }
     &_background{
       padding: 5px;
       background-color: white;
