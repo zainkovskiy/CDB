@@ -1506,6 +1506,7 @@ class AddressHandler {
             countFilter++;
             this.objectFilter[input.name] = true;
           } else if (input.value === "false") {
+            countFilter++;
             this.objectFilter[input.name] = false;
           } else {
             this.objectFilter[input.name] = input.value;
