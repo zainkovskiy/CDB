@@ -428,6 +428,7 @@ class Handler{
       const allRadio = document.querySelectorAll(`INPUT[type='radio']`);
       const allSelect = this.form.querySelectorAll('SELECT');
       const textArea = this.form.querySelector('TEXTAREA');
+      console.log(textArea.value.replace(/\n/g, ``))
       if (this.isValid(allRadio, allInput, allSelect)){
         const blockSave = document.querySelector('.error');
         if (blockSave.classList.contains('error_active')){
@@ -439,7 +440,7 @@ class Handler{
           }, 500)
         }
         this.setChange(allInput, allSelect, allRadio);
-        add.obj[textArea.name] = textArea.value;
+        add.obj[textArea.name] = textArea.value.replace(/\n/g, ``);
         if (action === 'old'){
           document.querySelector('.save-change__text').innerHTML = 'Объект подлежит повторной модерации';
           document.querySelector('.save-change').classList.add('save-change_active');

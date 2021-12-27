@@ -361,7 +361,7 @@ class Handler{
           }, 500)
         }
         this.setChange(allInput, allSelect, allRadio);
-        add.obj[textArea.name] = textArea.value;
+        add.obj[textArea.name] = textArea.value.replace(/\n/g, ``);
         if (action === 'old'){
           document.querySelector('.save-change__text').innerHTML = 'Объект подлежит повторной модерации';
           document.querySelector('.save-change').classList.add('save-change_active');
