@@ -1776,6 +1776,11 @@ class AddressHandler {
                     ${this.objectFilter.reqTypeofLayout === 'Изолированная' ? 'checked' : ''}>
                     <label class="row__label" for="Isolated">Изолированная</label>
                   </div>
+                  <div class="row__toggle"> 
+                    <input class="row__radio" id="Free" name="reqTypeofLayout" type="radio" value="Свободная" 
+                    ${this.objectFilter.reqTypeofLayout === 'Свободная' ? 'checked' : ''}>
+                    <label class="row__label" for="Free">Свободная</label>
+                  </div>
                 </div>
               </div>
               <div class="row"> 

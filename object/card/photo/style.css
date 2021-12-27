@@ -92,11 +92,13 @@
   background-color: white;
   padding: 20px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 .photo .type {
   width: 100%;
   position: relative;
-  margin: 0 0 20px 0;
 }
 .photo .type__text {
   display: block;
@@ -113,7 +115,6 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin: 0 0 20px 0;
 }
 .photo__upload-label {
   background-image: url("../img/cloud-computing.svg");
@@ -133,6 +134,9 @@
   color: #484848;
   pointer-events: none;
   text-align: center;
+}
+.photo__upload-photo {
+  color: grey;
 }
 
 .slider {

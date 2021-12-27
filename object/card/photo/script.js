@@ -213,6 +213,7 @@ class Render{
                     <input class="photo__upload-input" style="display: none;" id="file" type="file" multiple>
                     <label class="photo__upload-label" for="file"></label>
                     <sapn class="photo__upload-test">Загрузите фото (.jpg/.jpeg)</sapn>
+                    <span class="photo__upload-photo photo__upload-test"></span>
                   </div>
                   <div class="type"> 
                     <span class="type__text">Тип фото:</span>

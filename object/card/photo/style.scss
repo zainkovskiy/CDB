@@ -92,11 +92,13 @@
     background-color: white;
     padding: 20px;
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
   }
   .type{
     width: 100%;
     position: relative;
-    margin: 0 0 20px 0;
     &__text{
       display: block;
       width: 100%;
@@ -114,7 +116,6 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    margin: 0 0 20px 0;
     &-label{
       background-image: url('../img/cloud-computing.svg');
       background-repeat: no-repeat;
@@ -133,6 +134,9 @@
       color: #484848;
       pointer-events: none;
       text-align: center;
+    }
+    &-photo{
+      color: grey;
     }
   }
 }
