@@ -1,0 +1,29 @@
+@media (max-width: 480px) {
+  .photo {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .photo__container {
+    grid-row-start: 2;
+    height: 330px;
+  }
+  .photo__info {
+    grid-row-start: 1;
+  }
+
+  .slider__items {
+    counter-reset: slide;
+  }
+
+  .slider__item {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+    counter-increment: slide;
+    height: 150px;
+    position: relative;
+  }
+}
+
+/*# sourceMappingURL=media.css.map */
