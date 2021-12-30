@@ -680,20 +680,42 @@ class SendFile{
 class EditPhoto{
   constructor(files) {
     this.files = files;
+    this.quantityFiles = 0;
+    this.computationCut = {
+      originalHeight: '',
+      originalWidth: '',
+      canvasImgHeight: '',
+      canvasImgWidth: '',
+      canvasImgOffsetTop: '',
+      canvasImgOffsetLeft: '',
+      rectangleHeight: '',
+      rectangleWidth: '',
+      rectangleOffsetTop: '',
+      rectangleOffsetLeft: '',
+      isRectangle: false,
+    }
   }
-  getPhoto(){
+  getValidPhoto(file){
+    return file.height > 800 || file.width > 800
+  }
+  getPhoto(files){
     let photos = '';
-    for (let i = 0; i < this.files.length; i++){
-      photos += `<div class="module-photo photo${i}"> 
-                    <img id="id${i}" class="module-photo__img" src=${this.files[i].URL} alt="photo">
+    for (let i = 0; i < files.length; i++){
+      const isValidPhoto = this.getValidPhoto(files[i]);
+      photos += `<div class="module-photo photo${this.quantityFiles}"> 
+                    <img id="id${this.quantityFiles}" class="module-photo__img" src=${files[i].URL} alt="photo">
                     <div class="module-photo__buttons"> 
-                      <span data-number="${i}" title="пометить как Веб" data-btn="web" class="module-photo__btn module-photo__btn_web"></span>
-                      <span data-number="${i}" title="повернуть влево" data-btn="left" class="module-photo__btn module-photo__btn_left"></span>
-                      <span data-number="${i}" title="повернуть вправо" data-btn="right" class="module-photo__btn module-photo__btn_right"></span>
-                      <span data-number="${i}" title="обрезать фото" data-btn="cut" class="module-photo__btn module-photo__btn_cut"></span>
-                      <span data-number="${i}" title="удалить фото" data-btn="delete" class="module-photo__btn module-photo__btn_delete"></span>
+                      <span data-number="${this.quantityFiles}" title="пометить как Веб" data-btn="web" class="module-photo__btn module-photo__btn_web"></span>
+                      <span data-number="${this.quantityFiles}" title="повернуть влево" data-btn="left" class="module-photo__btn module-photo__btn_left"></span>
+                      <span data-number="${this.quantityFiles}" title="повернуть вправо" data-btn="right" class="module-photo__btn module-photo__btn_right"></span>
+                      <span data-number="${this.quantityFiles}" title="обрезать фото" data-btn="cut" class="module-photo__btn module-photo__btn_cut"></span>
+                      <span data-number="${this.quantityFiles}" title="удалить фото" data-btn="delete" class="module-photo__btn module-photo__btn_delete"></span>
+                    </div>
+                    <div class="module-photo_inValid ${isValidPhoto ? 'inVisible' : ''}"> 
+                      <span class="module-photo-text">недопустимый размер фото</span>
                     </div>
                 </div>`
+      this.quantityFiles++;
     }
     return photos;
   }
@@ -702,26 +724,26 @@ class EditPhoto{
     htmlDom.setAttribute("style", "overflow-y:hidden;");
 
     const currentY = window.pageYOffset;
-    const photo = this.getPhoto();
+    const photo = this.getPhoto(this.files);
     document.body.insertAdjacentHTML('afterbegin',
               `<div style="top: ${currentY}px;" class="module">
                           <div class="module__container"> 
                             ${photo}
                             <div class="module-photo module-upload">  
                               <div class="photo__upload module-upload_wrap"> 
-                                <input class="photo__upload-input" style="display: none;" id="file" type="file" multiple="">
+                                <input class="photo__upload-input module__upload-input" style="display: none;" id="file" type="file" multiple="">
                                 <label class="photo__upload-label" for="file"></label>
                                 <sapn class="photo__upload-test">Добавить еще (.jpg/.jpeg)</sapn>
                               </div>
                             </div>
-                            <div class="module__footer"> 
-                              <span>Не допускасется к размещению фото с водяными знаками и чужих объектов. Формат .jpg/.jpeg</span>
-                              <div> 
-                                <button data-module="save" class="ui-btn ui-btn-success">Сохранить</button>
-                                <button data-module="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>
-                              </div>
+                          </div>    
+                          <div class="module__footer"> 
+                            <span>Не допускается к размещению фото с водяными знаками и чужих объектов. Формат .jpg/.jpeg</span>
+                            <div> 
+                              <button data-module="save" class="ui-btn ui-btn-success">Сохранить</button>
+                              <button data-module="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>
                             </div>
-                          </div>                          
+                          </div>                      
                     </div>`);
     this.handlerEditWindow();
   }
@@ -731,6 +753,8 @@ class EditPhoto{
       const dataset = event.target.dataset;
       if (dataset.module === 'close'){
         this.closeEditWindow(module);
+      } else if (dataset.module === 'save'){
+
       } else if (dataset.btn === 'web'){
           event.target.classList.toggle('module-photo__btn_active');
           if (+this.files[dataset.number].web === 0){
@@ -741,47 +765,85 @@ class EditPhoto{
       } else if (dataset.btn === 'left'){
           this.setChanges({
             URL: this.files[dataset.number].URL,
-            Turn: 270,
+            Turn: 90,
+            reqNumber: UID,
           }, link => {
-            this.files[dataset.number].URL = link;
-            document.querySelector(`#id${dataset.number}`).src = link + '?' +  (Math.random() * 100);;
+            this.files[dataset.number].URL = link[0];
+            document.querySelector(`#id${dataset.number}`).src = link[0];
           });
       } else if (dataset.btn === 'right'){
           this.setChanges({
             URL: this.files[dataset.number].URL,
-            Turn: 90,
+            Turn: 270,
+            reqNumber: UID,
           }, link => {
-            this.files[dataset.number].URL = link;
-            document.querySelector(`#id${dataset.number}`).src = link + '?' +  (Math.random() * 100);
+            this.files[dataset.number].URL = link[0];
+            document.querySelector(`#id${dataset.number}`).src = link[0];
           });
       } else if (dataset.btn === 'delete'){
           document.querySelector(`.photo${dataset.number}`).remove();
           delete this.files[dataset.number];
       } else if (dataset.btn === 'cut'){
+          const currentY = module.scrollTop;
+          module.setAttribute("style", "overflow-y:hidden;");
+
           module.insertAdjacentHTML('beforeend',
-          `<div class="canvas__back">
+          `<div style="top: ${currentY}px;" class="canvas__back">
+                  <span class="canvas__error inVisibility">anytext</span>
                   <div id="canvas"> 
                     <img class="canvas__img" src="${this.files[dataset.number].URL}" alt="photo">
                   </div>    
                     <div> 
-                      <button data-canvas="save" class="ui-btn ui-btn-success">Принять</button>
+                      <button data-number="${dataset.number}" data-canvas="save" class="ui-btn ui-btn-success">Принять</button>
                       <button data-canvas="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>
                     </div>
                 </div>`);
-          this.initDraw(this.files[dataset.number].URL);
+          this.initDraw();
+        this.computationCut.originalWidth = this.files[dataset.number].width;
+        this.computationCut.originalHeight = this.files[dataset.number].height;
       } else if (dataset.canvas === 'close'){
-          document.querySelector('.canvas__back').remove();
+          this.closeCanvas();
+          module.removeAttribute("style");
       } else if (dataset.canvas === 'save'){
-          console.log(document.querySelector('.canvas__img').offsetTop)
-          console.log(document.querySelector('.canvas__img').offsetLeft)
+          if (this.computationCut.isRectangle){
+            this.calcCut(dataset.number);
+            this.closeCanvas();
+            module.removeAttribute("style");
+          } else {
+            this.closeCanvas();
+            module.removeAttribute("style");
+          }
       }
-    })
-  }
+    });
 
+    document.querySelector('.module__upload-input').addEventListener('change', event => {
+      new SendFile(event.target.files).init(data => {
+        document.querySelector('.module-upload').insertAdjacentHTML('beforebegin', this.getPhoto(data));
+        this.files.push(...data);
+        console.log(this.files)
+      });
+    });
+  }
   closeEditWindow(module){
     const htmlDom = document.querySelector('HTML');
     htmlDom.removeAttribute("style");
     module.remove();
+  }
+  closeCanvas(){
+    document.querySelector('.canvas__back').remove();
+    this.computationCut = {
+      originalHeight: '',
+      originalWidth: '',
+      canvasImgHeight: '',
+      canvasImgWidth: '',
+      canvasImgOffsetTop: '',
+      canvasImgOffsetLeft: '',
+      rectangleHeight: '',
+      rectangleWidth: '',
+      rectangleOffsetTop: '',
+      rectangleOffsetLeft: '',
+      isRectangle: false,
+    }
   }
 
   setChanges(changes, callback){
@@ -795,15 +857,16 @@ class EditPhoto{
     };
   }
 
-  initDraw(url) {
-    let img = new Image();
-    img.onload = function() {
-      let width = this.width;
-      let hight = this.height;
-      console.log('Размеры картинки Ширина ' + width + ' Высота' + hight);
-    }
-    img.src = url;
+  initDraw() {
     const canvas = document.querySelector('#canvas');
+    const canvasIMG = document.querySelector('.canvas__img');
+
+    this.computationCut.canvasImgWidth = canvasIMG.offsetWidth;
+    this.computationCut.canvasImgHeight = canvasIMG.offsetHeight;
+
+    this.computationCut.canvasImgOffsetTop = canvasIMG.offsetTop;
+    this.computationCut.canvasImgOffsetLeft = canvasIMG.offsetLeft;
+    console.log(this.computationCut)
 
     function setMousePosition(e) {
       const ev = e || window.event; //Moz || IE
@@ -816,15 +879,15 @@ class EditPhoto{
       }
     }
 
-    var mouse = {
+    let mouse = {
       x: 0,
       y: 0,
       startX: 0,
       startY: 0
     };
-    var element = null;
+    let element = null;
 
-    canvas.onmousemove = function (e) {
+    canvas.onmousemove = e => {
       setMousePosition(e);
       if (element !== null) {
         element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
@@ -834,20 +897,23 @@ class EditPhoto{
       }
     }
 
-    canvas.onclick = function (e) {
-      if (element !== null) {
+    canvas.onclick = () => {
+        if (element !== null) {
         element = null;
         canvas.style.cursor = "default";
-        console.log("offset " +  document.getElementById('rectangle').offsetLeft + ' сверху ' + document.getElementById('rectangle').offsetTop);
-        console.log("width " +  document.getElementById('rectangle').style.width + ' height ' + document.getElementById('rectangle').style.height);
-      } else {
+        const rectangle = document.querySelector('.rectangle');
 
+        this.computationCut.rectangleHeight = rectangle.offsetHeight;
+        this.computationCut.rectangleWidth = rectangle.offsetWidth;
+
+        this.computationCut.rectangleOffsetTop = rectangle.offsetTop;
+        this.computationCut.rectangleOffsetLeft = rectangle.offsetLeft;
+        this.computationCut.isRectangle = true;
+      } else {
         while (document.querySelector("#rectangle")) {
           document.querySelector("#rectangle").remove();
+          this.computationCut.isRectangle = false;
         }
-
-        console.log("begun.");
-
         mouse.startX = mouse.x;
         mouse.startY = mouse.y;
         element = document.createElement('div');
@@ -859,6 +925,35 @@ class EditPhoto{
         canvas.style.cursor = "crosshair";
       }
     }
+  }
+
+  calcCut(number){
+    console.log(this.computationCut)
+    let arrNewSize = [];
+    const dotX = this.computationCut.rectangleOffsetLeft - this.computationCut.canvasImgOffsetLeft;
+    const dotY = this.computationCut.rectangleOffsetTop - this.computationCut.canvasImgOffsetTop;
+    arrNewSize.push(+(this.computationCut.originalWidth * dotX / this.computationCut.canvasImgWidth).toFixed(0));
+    arrNewSize.push(+(this.computationCut.originalHeight * dotY / this.computationCut.canvasImgHeight).toFixed(0));
+    arrNewSize.push(+(this.computationCut.originalWidth * this.computationCut.rectangleWidth / this.computationCut.canvasImgWidth).toFixed(0));
+    arrNewSize.push(+(this.computationCut.originalHeight * this.computationCut.rectangleHeight / this.computationCut.canvasImgHeight).toFixed(0));
+    // const cutWidth = this.computationCut.originalWidth * this.computationCut.rectangleWidth / this.computationCut.canvasImgWidth;
+    // const cutHeight = this.computationCut.originalHeight * this.computationCut.rectangleHeight / this.computationCut.canvasImgHeight;
+    // const cutDotX = this.computationCut.originalWidth * dotX / this.computationCut.canvasImgWidth;
+    // const cutDotY = this.computationCut.originalHeight * dotY / this.computationCut.canvasImgHeight;
+    console.log(arrNewSize);
+    this.setChanges({
+      URL: this.files[number].URL,
+      Crop: arrNewSize,
+
+    }, link => {
+      if (link.height < 800 || link.width < 800){
+        //todo доделать перед закрытием написать что не те размеры и доделать сохранение всех объектов на сервер
+        return
+      } else {
+        this.files[number].URL = link.URL;
+        document.querySelector(`#id${number}`).src = link.URL;
+      }
+    })
   }
 }
 

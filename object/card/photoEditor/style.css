@@ -425,8 +425,12 @@
   background-color: black;
   z-index: 10;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .module__container {
+  width: 100%;
   max-width: 905px;
   display: grid;
   grid-template-columns: repeat(4, 20%);
@@ -439,6 +443,7 @@
   padding: 10px;
   background-color: #fff;
   border-radius: 5px;
+  position: relative;
 }
 .module-photo__img {
   width: 100%;
@@ -486,8 +491,28 @@
 .module-photo__btn_active {
   background-color: #a4fb18;
 }
+.module-photo_inValid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #000000cc;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+.module-photo-text {
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  user-select: none;
+}
 .module__footer {
-  position: fixed;
+  position: sticky;
   bottom: 0;
   left: 0;
   background-color: #fff;
@@ -546,9 +571,17 @@
 }
 
 .rectangle {
-  border: 3px solid #FF0000;
+  border: 3px dashed #FF0000;
   border-radius: 5px;
   position: absolute;
+}
+
+.inVisible {
+  display: none;
+}
+
+.inVisibility {
+  visibility: hidden;
 }
 
 /*# sourceMappingURL=style.css.map */

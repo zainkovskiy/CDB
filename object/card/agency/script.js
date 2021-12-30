@@ -628,7 +628,7 @@ class Render {
                   <p class="summary__text">Тип: <span class="summary__text-span">${this.obj.params.typeOfRealty ? this.obj.params.typeOfRealty : ''}</span></p>
                   <p class="summary__text">Стоимость объекта: <span class="summary__text-span">${this.obj.params.price ? this.obj.params.price : '0'} тыс ₽</span></p>
                   <p class="summary__text">Стоимость услуги: <span class="summary__text-span costForClient">${priceAll} ₽</span></p>
-                  <p class="summary__text ${this.obj.isExtended === '1' ? '' : 'isVisible'} isValidText">ДОУ на рассмотрении модератора</p>
+                  <p class="summary__text isValidText">${this.obj.isExtended === '1' || this.obj.eXMod ? 'ДОУ на рассмотрении модератора' : ''}</p>
                 </div>
               <div class="title__header"> 
                 <span class="title__header-text clients__title-head">Клиенты</span>
