@@ -532,6 +532,11 @@
   border: none;
   padding: 0;
 }
+.module__alert {
+  margin: auto;
+  color: #fff;
+  font-size: 24px;
+}
 
 .blackout {
   animation: blackout 0.3s linear;
@@ -560,14 +565,23 @@
   flex-direction: column;
   gap: 10px;
 }
-
-#canvas {
-  height: 600px;
-}
-
 .canvas__img {
   height: 600px;
   pointer-events: none;
+}
+.canvas__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.canvas__error {
+  color: red;
+}
+
+#canvas {
+  height: 600px;
 }
 
 .rectangle {

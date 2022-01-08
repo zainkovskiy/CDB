@@ -680,6 +680,7 @@ class SendFile{
 class EditPhoto{
   constructor(files) {
     this.files = files;
+    this.rightFiles = [];
     this.quantityFiles = 0;
     this.computationCut = {
       originalHeight: '',
@@ -754,7 +755,17 @@ class EditPhoto{
       if (dataset.module === 'close'){
         this.closeEditWindow(module);
       } else if (dataset.module === 'save'){
-
+        this.checkRightPhoto();
+        this.setChanges({
+          reqNumber: UID,
+          Finish: this.rightFiles,
+        }, answer => {
+          //todo е приходит ответ с сервера
+          module.innerHTML = '<p class="module__alert">Ваши фото успешно отправленны на сервер</p>>';
+          setTimeout(() => {
+            this.closeEditWindow(module);
+          }, 3000);
+        })
       } else if (dataset.btn === 'web'){
           event.target.classList.toggle('module-photo__btn_active');
           if (+this.files[dataset.number].web === 0){
@@ -792,11 +803,14 @@ class EditPhoto{
                   <span class="canvas__error inVisibility">anytext</span>
                   <div id="canvas"> 
                     <img class="canvas__img" src="${this.files[dataset.number].URL}" alt="photo">
-                  </div>    
-                    <div> 
-                      <button data-number="${dataset.number}" data-canvas="save" class="ui-btn ui-btn-success">Принять</button>
-                      <button data-canvas="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>
-                    </div>
+                  </div>
+                    <div class="canvas__bottom"> 
+                      <span>Размер обрезанного изображения не должен быть меньше 800 пикселей</span>
+                      <div>
+                        <button data-number="${dataset.number}" data-canvas="save" class="ui-btn ui-btn-success">Принять</button>
+                        <button data-canvas="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>
+                      </div>
+                    </div>    
                 </div>`);
           this.initDraw();
         this.computationCut.originalWidth = this.files[dataset.number].width;
@@ -807,8 +821,6 @@ class EditPhoto{
       } else if (dataset.canvas === 'save'){
           if (this.computationCut.isRectangle){
             this.calcCut(dataset.number);
-            this.closeCanvas();
-            module.removeAttribute("style");
           } else {
             this.closeCanvas();
             module.removeAttribute("style");
@@ -846,6 +858,13 @@ class EditPhoto{
     }
   }
 
+  checkRightPhoto(){
+    for (let photo of this.files){
+      if (photo.height > 800 && photo.width > 800){
+        this.rightFiles.push(photo);
+      }
+    }
+  }
   setChanges(changes, callback){
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "https://hs-01.centralnoe.ru/Project-Selket-Main//Servers/MediaExchange/PhotoWorker.php", true);
@@ -944,14 +963,16 @@ class EditPhoto{
     this.setChanges({
       URL: this.files[number].URL,
       Crop: arrNewSize,
-
     }, link => {
       if (link.height < 800 || link.width < 800){
-        //todo доделать перед закрытием написать что не те размеры и доделать сохранение всех объектов на сервер
-        return
+        const errorText = document.querySelector('.canvas__error');
+        errorText.innerHTML = `Не допустимый размер изображения. Высота: ${link.height}, ширина ${link.width}`;
+        errorText.classList.remove('inVisibility');
       } else {
         this.files[number].URL = link.URL;
         document.querySelector(`#id${number}`).src = link.URL;
+          this.closeCanvas();
+          document.querySelector('.module').removeAttribute("style");
       }
     })
   }
@@ -1026,3 +1047,5 @@ function selectStyle(select, firstWord){
 
   });
 }
+
+//todo возможно убрать бек при добавлении файлов с блока загрузки
