@@ -758,6 +758,7 @@ class EditPhoto{
         this.checkRightPhoto();
         this.setChanges({
           reqNumber: UID,
+          author: login,
           Finish: this.rightFiles,
         }, answer => {
           //todo е приходит ответ с сервера
