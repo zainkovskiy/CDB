@@ -13,6 +13,7 @@ mb_internal_encoding("UTF-8");
 $source = $_GET['source'];
 $id = $_GET['id'];
 $ActiveUser = CUser::GetLogin();
+$userId = CUser::GetID();
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 \Bitrix\Main\UI\Extension::load("ui.notification");
 \Bitrix\Main\UI\Extension::load("ui.buttons.icons");
@@ -25,6 +26,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     let source ='<? echo($source); ?>';
     let objectUID ='<? echo($id); ?>';
     let login ='<? echo($ActiveUser); ?>';
+    let loginID = '<? echo($userId); ?>';
     let deal = '<? echo($_GET['IDDEAL']); ?>';
 </script>
 <script src="//api.bitrix24.com/api/v1/"></script>

@@ -758,7 +758,8 @@ class EditPhoto{
         this.checkRightPhoto();
         this.setChanges({
           reqNumber: UID,
-          author: login,
+          //todo поменять на динамичный id
+          author: loginID,
           Finish: this.rightFiles,
         }, answer => {
           //todo е приходит ответ с сервера
@@ -867,6 +868,7 @@ class EditPhoto{
     }
   }
   setChanges(changes, callback){
+    console.log(changes)
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "https://hs-01.centralnoe.ru/Project-Selket-Main//Servers/MediaExchange/PhotoWorker.php", true);
     xhr.responseType = 'json';
