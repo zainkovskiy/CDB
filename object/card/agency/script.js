@@ -457,11 +457,11 @@ class Render {
     for (let file of this.obj.documents){
       if (file.documentType === 'egrn'){
         fileLayout.egrn +=  `<div class="file__item uid${file.UID}">
-                                <p class="file__files"><span>${file.documentName}</span></p>
+                                <p class="file__files"><span>${file.documentName.length > 0 ? file.documentName : 'untitled'}</span></p>
                                 <div class="file__icon">
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
-                                     download="${file.documentName}"></a>
+                                     download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
                                   <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
@@ -473,11 +473,11 @@ class Render {
                               </div>`;
       } else if (file.documentType === 'contract'){
         fileLayout.contract +=  `<div class="file__item uid${file.UID}">
-                                <p class="file__files"><span>${file.documentName}</span></p>
+                                <p class="file__files"><span>${file.documentName.length > 0 ? file.documentName : 'untitled'}</span></p>
                                 <div class="file__icon">
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
-                                     download="${file.documentName}"></a>
+                                     download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
                                   <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
@@ -489,11 +489,11 @@ class Render {
                               </div>`;
       } else if (file.documentType === 'grp'){
         fileLayout.grp +=  `<div class="file__item uid${file.UID}">
-                                <p class="file__files"><span>${file.documentName}</span></p>
+                                <p class="file__files"><span>${file.documentName.length > 0 ? file.documentName : 'untitled'}</span></p>
                                 <div class="file__icon">
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
-                                     download="${file.documentName}"></a>
+                                     download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
                                   <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
@@ -505,11 +505,11 @@ class Render {
                               </div>`;
       } else if (file.documentType === 'other'){
         fileLayout.other +=  `<div class="file__item uid${file.UID}">
-                                <p class="file__files"><span>${file.documentName}</span></p>
+                                <p class="file__files"><span>${file.documentName.length > 0 ? file.documentName : 'untitled'}</span></p>
                                 <div class="file__icon">
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
-                                     download="${file.documentName}"></a>
+                                     download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
                                   <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
@@ -742,8 +742,6 @@ class Render {
                         <span data-documents="ds" class="documents__btn"></span>
                       </div>
                       <div class="documents__wrap"> 
-                        <span class="file__text">Соглашение о цене</span>                      
-                        <span data-documents="price" class="documents__btn"></span>
                       </div>
                   </div>
                   <div class="upload"> 
@@ -2237,7 +2235,7 @@ class Handler{
             typeFile = 'other';
             break;
         }
-        findInDoc[input.name] = input.value;
+        findInDoc[input.name] = input.value.length > 0 ? input.value : 'untitled';
         findInDoc[select.name] = typeFile;
         this.removeFile(event);
         app.copyOwner.agencyagreement.documents.push(findInDoc);

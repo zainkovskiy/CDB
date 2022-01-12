@@ -98,6 +98,7 @@ body{
   background-color: #9c9c9c73;
   display: flex;
   align-items: center;
+  z-index: 99;
   &__img{
     width: 70px;
     background-image: url("../img/loader.gif");

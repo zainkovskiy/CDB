@@ -195,6 +195,8 @@ class Handler{
                 BX.SidePanel.Instance.close();
               }
             })
+          } else {
+            this.closeModule(module);
           }
       }
     })
