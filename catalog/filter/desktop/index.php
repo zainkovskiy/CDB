@@ -67,9 +67,6 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <title>searchObject</title>
 </head>
 <body>
-<div id="garland" class="garland_4">
-    <div id="nums_1">1</div>
-</div>
 <div class="container">
     <div class="methodical">
         <div>
