@@ -13,6 +13,7 @@ $source = $_GET['source'];
 $id = $_GET['id'];
 $deal = $_GET['IDDEAL'];
 $ActiveUser = CUser::GetLogin();
+$ActiveUserID = CUser::GetID();
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 \Bitrix\Main\UI\Extension::load("ui.notification");
 \Bitrix\Main\UI\Extension::load("ui.buttons.icons");
@@ -27,6 +28,7 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     let source ='<? echo($source); ?>';
     let UID ='<? echo($id); ?>';
     let login ='<? echo($ActiveUser); ?>';
+    let loginID ='<? echo($ActiveUserID); ?>';
     let deal = '<? echo($deal); ?>';
 </script>
 <script src="//api.bitrix24.com/api/v1/"></script>
