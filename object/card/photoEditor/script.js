@@ -638,7 +638,7 @@ class File {
   }
 
   handleInput(e){
-    e.path[1].style.background = "#E5E5E5";
+    // e.path[1].style.background = "#E5E5E5";
     const files = this.files;
     new SendFile(files).init(data => {
       document.body.classList.add('blackout');
