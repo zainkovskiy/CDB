@@ -596,6 +596,7 @@ class AddressHandler {
       this.objectFilter.filterSale = 1;
       document.querySelector('.count-extra').innerHTML = this.objectFilter.extraFilter;
       document.querySelector('.count-extra').classList.remove('visible');
+      document.querySelector('button[data-name="search"]').click();
     }
   }
   hideButtonStart(){
