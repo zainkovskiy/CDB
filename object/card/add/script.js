@@ -236,8 +236,8 @@ class Add {
             }
             let jsonA = await response.json();
             console.log(jsonA)
-            }
-      }
+          }
+        }
       });
     }
   }
@@ -269,23 +269,30 @@ class Header {
                 <a href="../object/?source=1c&id=${UID}&IDDEAL=${deal}" class="header__back ${action === 'new' && !contact ? 'inVisible' : ''}">Вернуться к объекту</a>
                 <span onclick="BX.SidePanel.Instance.close([immediately=false])" class="header__back">Закрыть вкладку</span>
               </div>
-              <div class="change-obj"> 
-                <input 
-                    ${this.type === 'Квартира' ||  this.type === 'Переуступка ДДУ'  || this.type === 'Новостройка (от застройщика)' ? 'checked' : ''} 
-                    class="change-obj__input" name="reqTypeofRealty" id="float" type="radio" value="Квартира">
-                <label for="float">Квартира</label>
-                <input ${this.type === 'Комната' ? 'checked' : ''} class="change-obj__input" 
-                name="reqTypeofRealty" id="room" type="radio" value="Комната">
-                <label for="room">Комната</label>
-                <input ${this.type === 'Дом' ? 'checked' : ''} class="change-obj__input" 
-                name="reqTypeofRealty" id="house" type="radio" value="Дом">
-                <label for="house">Дом, коттедж, дача</label>
-                <input ${this.type === 'Земельный участок' ? 'checked' : ''} class="change-obj__input" 
-                name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок">
-                <label for="ground">Земля</label>
-                <input ${this.type === 'Гараж' ? 'checked' : ''} class="change-obj__input" 
-                name="reqTypeofRealty" id="garage" type="radio" value="Гараж">
-                <label for="garage">Гараж</label>
+              <div class="header__bottom"> 
+                <div class="change-obj"> 
+                  <input 
+                      ${this.type === 'Квартира' ||  this.type === 'Переуступка ДДУ'  || this.type === 'Новостройка (от застройщика)' ? 'checked' : ''} 
+                      class="change-obj__input" name="reqTypeofRealty" id="float" type="radio" value="Квартира">
+                  <label for="float">Квартира</label>
+                  <input ${this.type === 'Комната' ? 'checked' : ''} class="change-obj__input" 
+                  name="reqTypeofRealty" id="room" type="radio" value="Комната">
+                  <label for="room">Комната</label>
+                  <input ${this.type === 'Дом' ? 'checked' : ''} class="change-obj__input" 
+                  name="reqTypeofRealty" id="house" type="radio" value="Дом">
+                  <label for="house">Дом, коттедж, дача</label>
+                  <input ${this.type === 'Земельный участок' ? 'checked' : ''} class="change-obj__input" 
+                  name="reqTypeofRealty" id="ground" type="radio" value="Земельный участок">
+                  <label for="ground">Земля</label>
+                  <input ${this.type === 'Гараж' ? 'checked' : ''} class="change-obj__input" 
+                  name="reqTypeofRealty" id="garage" type="radio" value="Гараж">
+                  <label for="garage">Гараж</label>
+                </div>
+                <div class="redemption"> 
+                  <input class="redemption__checkbox" type="checkbox" name="reqRedemption" id="reqRedemption" disabled  
+                  ${add.obj.reqRedemption === '1' ? 'checked' : ''}>
+                  <label for="reqRedemption">Выкуп</label>
+                </div>
               </div>
             </div> 
             <div class="status ${action === 'new' || action === 'frompars' ? 'isVisible' : ''}"> 
@@ -319,108 +326,22 @@ class Header {
 class Handler{
   constructor() {
     this.radioSelect = document.querySelectorAll('.change-obj__input');
+    this.header = document.querySelector('.header');
     this.saveChange = document.querySelector('.save-change');
     this.form = document.querySelector('.form');
   }
   init(){
-    for (let radio of this.radioSelect){
-      radio.addEventListener('change', event => {
-        const blockSave = document.querySelector('.error');
-        if (blockSave.classList.contains('error_active')){
-          document.querySelector('.save-change__text').innerHTML = '';
-          blockSave.classList.add('error_close');
-          setTimeout(() => {
-            blockSave.classList.remove('error_active');
-            blockSave.classList.remove('error_close');
-          }, 500)
+    this.header.addEventListener('change', event => {
+      if (event.target.type === 'radio'){
+        this.switchPlace(event);
+      } else if (event.target.type === 'checkbox'){
+        if (event.target.checked){
+          add.obj[event.target.name] = '1';
+        } else {
+          add.obj[event.target.name] = '0';
         }
-        switch (event.target.id) {
-          case 'float':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Float().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-              `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
-            selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
-              `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
-            selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
-              `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
-            selectStyle('.reqBathroomType', 'reqBathroomType',
-              `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
-            selectStyle('.reqRepairStatus', 'reqRepairStatus',
-              `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберете'}`);
-            selectStyle('.reqMaterial', 'reqMaterial',
-              `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'room':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Room().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-              `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
-            selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
-              `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
-            selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
-              `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
-            selectStyle('.reqBathroomType', 'reqBathroomType',
-              `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
-            selectStyle('.reqMaterial', 'reqMaterial',
-              `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
-            selectStyle('.reqHouseType', 'reqHouseType',
-              `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'house':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new House().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqHouseType', 'reqHouseType',
-              `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
-            selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-              `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
-            selectStyle('.reqBathroomType', 'reqBathroomType',
-              `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
-            selectStyle('.reqHouseRoof', 'reqHouseRoof',
-              `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберете'}`);
-            selectStyle('.reqHouseHeating', 'reqHouseHeating',
-              `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберете'}`);
-            selectStyle('.reqWaterPipes', 'reqWaterPipes',
-              `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
-            selectStyle('.reqDrainage', 'reqDrainage',
-              `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'ground':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Ground().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqWaterPipes', 'reqWaterPipes',
-              `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
-            selectStyle('.reqDrainage', 'reqDrainage',
-              `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
-            selectStyle('.reqGroundCategory', 'reqGroundCategory',
-              `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберете'}`);
-            this.handlerPrice();
-            break
-          case 'garage':
-            this.form.innerHTML = '';
-            this.form.insertAdjacentHTML('beforeend', new Garage().render());
-            new Search().init();
-            add.initMap(add.obj.lat, add.obj.lng);
-            selectStyle('.reqMaterial', 'reqMaterial',
-              `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
-            selectStyle('.reqGarageType', 'reqGarageType',
-              `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберете'}`);
-            this.handlerPrice();
-            break
-        }
-      })
-    }
+      }
+    })
 
     this.form.addEventListener('submit', event => {
       event.preventDefault();
@@ -428,8 +349,7 @@ class Handler{
       const allRadio = document.querySelectorAll(`INPUT[type='radio']`);
       const allSelect = this.form.querySelectorAll('SELECT');
       const textArea = this.form.querySelector('TEXTAREA');
-      console.log(textArea.value.replace(/\n/g, ``))
-      if (this.isValid(allRadio, allInput, allSelect)){
+      if (this.isValid(allRadio, allInput, allSelect,textArea)){
         const blockSave = document.querySelector('.error');
         if (blockSave.classList.contains('error_active')){
           document.querySelector('.error__text').innerHTML = '';
@@ -547,7 +467,106 @@ class Handler{
         this.openInfo();
       }
     })
+
+
     this.handlerPrice();
+  }
+  switchPlace(event){
+    const blockSave = document.querySelector('.error');
+    if (blockSave.classList.contains('error_active')){
+      document.querySelector('.save-change__text').innerHTML = '';
+      blockSave.classList.add('error_close');
+      setTimeout(() => {
+        blockSave.classList.remove('error_active');
+        blockSave.classList.remove('error_close');
+      }, 500)
+    }
+
+    switch (event.target.id) {
+      case 'float':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Float().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
+          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
+        selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
+          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
+        selectStyle('.reqBathroomType', 'reqBathroomType',
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        selectStyle('.reqRepairStatus', 'reqRepairStatus',
+          `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберете'}`);
+        selectStyle('.reqMaterial', 'reqMaterial',
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        this.handlerPrice();
+        break
+      case 'room':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Room().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
+          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
+        selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
+          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
+        selectStyle('.reqBathroomType', 'reqBathroomType',
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        selectStyle('.reqMaterial', 'reqMaterial',
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        selectStyle('.reqHouseType', 'reqHouseType',
+          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+        this.handlerPrice();
+        break
+      case 'house':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new House().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqHouseType', 'reqHouseType',
+          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+        selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        selectStyle('.reqBathroomType', 'reqBathroomType',
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        selectStyle('.reqHouseRoof', 'reqHouseRoof',
+          `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберете'}`);
+        selectStyle('.reqHouseHeating', 'reqHouseHeating',
+          `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберете'}`);
+        selectStyle('.reqWaterPipes', 'reqWaterPipes',
+          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+        selectStyle('.reqDrainage', 'reqDrainage',
+          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+        this.handlerPrice();
+        break
+      case 'ground':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Ground().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqWaterPipes', 'reqWaterPipes',
+          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+        selectStyle('.reqDrainage', 'reqDrainage',
+          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+        selectStyle('.reqGroundCategory', 'reqGroundCategory',
+          `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберете'}`);
+        this.handlerPrice();
+        break
+      case 'garage':
+        this.form.innerHTML = '';
+        this.form.insertAdjacentHTML('beforeend', new Garage().render());
+        new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
+        selectStyle('.reqMaterial', 'reqMaterial',
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        selectStyle('.reqGarageType', 'reqGarageType',
+          `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберете'}`);
+        this.handlerPrice();
+        break
+    }
   }
   handlerPrice(){
     const price = document.querySelector(`INPUT[name='reqPrice']`);
@@ -622,15 +641,18 @@ class Handler{
     module.remove();
   }
 
-  isValid(allRadio, allInput, allSelect){
+  isValid(allRadio, allInput, allSelect, textArea){
     const library = {
       radio: true,
       input: true,
       select: true,
+      textArea: true,
     }
     library.radio = this.isValidRadio(allRadio);
     library.input = this.isValidInput(allInput);
     library.select = this.isValidSelect(allSelect);
+    library.textArea = this.isValidTextArea(textArea);
+
     let countTrue = 0;
     for (let key in library){
       if (library[key] === true){
@@ -679,31 +701,31 @@ class Handler{
     }
 
     if (objectTypeChecked === 'Квартира'){
-        let countCheckType = 0;
-        let countCheckRoom = 0;
-        for (let item of reqTypeofRealty){
-          if (item.checked){
-            countCheckType++;
-          }
+      let countCheckType = 0;
+      let countCheckRoom = 0;
+      for (let item of reqTypeofRealty){
+        if (item.checked){
+          countCheckType++;
         }
-        library.reqTypeofRealty = countCheckType > 0;
-        if (library.reqTypeofRealty){
-          setValidCheckbox(reqTypeofRealty, 'remove');
-        } else {
-          setValidCheckbox(reqTypeofRealty, 'add');
-        }
+      }
+      library.reqTypeofRealty = countCheckType > 0;
+      if (library.reqTypeofRealty){
+        setValidCheckbox(reqTypeofRealty, 'remove');
+      } else {
+        setValidCheckbox(reqTypeofRealty, 'add');
+      }
 
-        for (let item of reqRoomCount){
-          if (item.checked){
-            countCheckRoom++;
-          }
+      for (let item of reqRoomCount){
+        if (item.checked){
+          countCheckRoom++;
         }
-        library.reqRoomCount = countCheckRoom > 0;
-        if (library.reqRoomCount){
-          setValidCheckbox(reqRoomCount, 'remove');
-        } else {
-          setValidCheckbox(reqRoomCount, 'add');
-        }
+      }
+      library.reqRoomCount = countCheckRoom > 0;
+      if (library.reqRoomCount){
+        setValidCheckbox(reqRoomCount, 'remove');
+      } else {
+        setValidCheckbox(reqRoomCount, 'add');
+      }
 
     } else if (objectTypeChecked === 'Комната'){
       let countCheckRoom = 0;
@@ -759,7 +781,18 @@ class Handler{
     }
     return countTrue === Object.keys(library).length;
   }
-
+  isValidTextArea(textArea){
+    const regexp = new RegExp('задаток', 'i');
+    const regexp1 = new RegExp('задатке', 'i');
+    const regexp2 = new RegExp('задатки', 'i');
+    if (regexp.test(textArea.value) || regexp1.test(textArea.value) || regexp2.test(textArea.value)){
+      textArea.setAttribute('style', 'color: red;');
+      return false;
+    } else {
+      textArea.removeAttribute('style');
+      return true;
+    }
+  }
   isValidInput(allInput){
     const library = {
       reqRegion: true,
@@ -843,7 +876,7 @@ class Handler{
             item.classList.remove('isValid');
           }
         } else {
-          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark'){
+          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark' && item.name !== 'reqOverstatePrice_checkbox'){
             if (item.value.length === 0){
               library[item.name] = false;
               item.classList.add('isValid');
@@ -856,6 +889,19 @@ class Handler{
                 item.classList.add('isValid');
               }
             }
+          }
+        }
+      } else if (item.name === 'reqOverstatePrice'){
+        if (item.value.length === 0){
+          library[item.name] = false;
+          item.classList.add('isValid');
+        } else {
+          if (libraryRegExp[item.name].test(item.value)){
+            library[item.name] = true;
+            item.classList.remove('isValid');
+          } else {
+            library[item.name] = false;
+            item.classList.add('isValid');
           }
         }
       }
@@ -1056,6 +1102,19 @@ class Handler{
           add.obj.reqHouseDeveloper = add.developerId;
           add.obj.reqContractor = add.developerId;
         }
+      } else if (input.name === 'reqOverstatePrice_checkbox') {
+        if (input.checked){
+          add.obj.reqOverstate = '1';
+        } else {
+          add.obj.reqOverstate = '0';
+        }
+      } else if (input.name === 'reqArea'){
+        const city = document.querySelector('.reqCity');
+        if (city.value === 'Новосибирск' || city.value === 'Кемерово'){
+          add.obj[input.name] = input.value;
+        } else {
+          add.obj.reqRayonObl = input.value;
+        }
       } else {
         add.obj[input.name] = input.value;
       }
@@ -1161,6 +1220,11 @@ class Search{
               let filterArea = areaKemerovo.filter(area => regExp.test(area.areaName));
               this.request = false;
               this.renderStreet(filterArea, input, 'areaName');
+            } else {
+              this.getArea(input.value).then(data => {
+                this.request = false;
+                this.renderStreet(data, input, 'areaName')
+              });
             }
           } else if (input.name === 'reqStreet'){
             this.getStreet(input.value).then(data => {
@@ -1168,12 +1232,12 @@ class Search{
               this.renderStreet(data, input, 'streetName');
             });
           }  else if (input.name === 'reqHouseDeveloper'){
-              this.getDeveloper().then(data => {
-                const regExp = new RegExp(input.value, 'i');
-                let filterArea = data.filter(area => regExp.test(area.name));
-                this.request = false;
-                this.renderStreet(filterArea, input, 'name');
-              });
+            this.getDeveloper().then(data => {
+              const regExp = new RegExp(input.value, 'i');
+              let filterArea = data.filter(area => regExp.test(area.name));
+              this.request = false;
+              this.renderStreet(filterArea, input, 'name');
+            });
           }
         }
       })
@@ -1220,6 +1284,13 @@ class Search{
     }
     return await response.json();
   }
+  async getArea(value){
+    let response = await fetch(`https://crm.centralnoe.ru/dealincom/factory/getArea.php?req=${value}`);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
+    return await response.json();
+  }
   async getStreet(value){
     let response = await fetch(`https://crm.centralnoe.ru/dealincom/factory/getaddress.php?req=${value}`);
     if (!response.ok) {
@@ -1243,15 +1314,11 @@ class Search{
       headers: myHeaders,
       body: raw
     };
-    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/newbfactory.php", requestOptions);
+    let response = await fetch("https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Object/Developers.php", requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
     return await response.json();
-    // console.log(jsonA)
-    // for (let dev of jsonA){
-    //   this.developers.push({name: dev.name, inn: dev.inn});
-    // }
   }
 
   setInputMap(){
@@ -1274,8 +1341,8 @@ class Search{
     const API = `https://nominatim.openstreetmap.org/?addressdetails=1&q=${region}+${city}+${street}+${houseNumber}&format=json&limit=1`
     const webClient = {
       Headers: {
-      "user-agent": "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0",
-      "Referer": "crm.centralnoe.ru"
+        "user-agent": "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0",
+        "Referer": "crm.centralnoe.ru"
       }
     };
 
@@ -1287,17 +1354,25 @@ class Search{
   }
 
   checkRoomPart(){
-    const checkBoxRoom = document.querySelector(`INPUT[type='checkbox']`);
-    if (checkBoxRoom){
-      checkBoxRoom.addEventListener('change', event => {
-        if (event.target.checked){
-          document.querySelector('.reqShareForSale').removeAttribute('disabled');
-          document.querySelector('.reqShareForAll').removeAttribute('disabled');
+    const checkBoxes = document.querySelectorAll(`INPUT[type='checkbox']`);
+    for (let check of checkBoxes){
+      check.addEventListener('change', event => {
+        if (check.name === 'reqOverstatePrice_checkbox'){
+          if (event.target.checked){
+            document.querySelector(`INPUT[name='reqOverstatePrice']`).removeAttribute('disabled');
+          } else {
+            document.querySelector(`INPUT[name='reqOverstatePrice']`).setAttribute('disabled', 'disabled');
+          }
         } else {
-          document.querySelector('.reqShareForSale').setAttribute('disabled', 'disabled');
-          document.querySelector('.reqShareForAll').setAttribute('disabled', 'disabled');
-          document.querySelector('.reqShareForSale').value = '';
-          document.querySelector('.reqShareForAll').value = '';
+          if (event.target.checked){
+            document.querySelector('.reqShareForSale').removeAttribute('disabled');
+            document.querySelector('.reqShareForAll').removeAttribute('disabled');
+          } else {
+            document.querySelector('.reqShareForSale').setAttribute('disabled', 'disabled');
+            document.querySelector('.reqShareForAll').setAttribute('disabled', 'disabled');
+            document.querySelector('.reqShareForSale').value = '';
+            document.querySelector('.reqShareForAll').value = '';
+          }
         }
       })
     }
@@ -1345,16 +1420,16 @@ class Search{
 }
 document.body.addEventListener('click', event => {
   if (!event.target.classList.contains('search__input') && !event.target.classList.contains('search__field')){
-      const containerAll = document.querySelectorAll('.search__field');
-      const searchInputAll = document.querySelectorAll('.search__input');
-      for (let box of containerAll){
-        box.classList.add('isVisible');
+    const containerAll = document.querySelectorAll('.search__field');
+    const searchInputAll = document.querySelectorAll('.search__input');
+    for (let box of containerAll){
+      box.classList.add('isVisible');
+    }
+    for (let input of searchInputAll){
+      if (!storySearch.includes(input.value)){
+        input.value = '';
       }
-      for (let input of searchInputAll){
-        if (!storySearch.includes(input.value)){
-          input.value = '';
-        }
-      }
+    }
   }
 })
 
@@ -1394,9 +1469,6 @@ class Float{
               <input ${add.obj.reqTypeofRealty === 'Квартира' ? 'checked' : ''} 
               class="buttons__input reqTypeofRealty" name="reqTypeofRealty" id="second" type="radio" value="Квартира">
               <label id="reqTypeofRealty" class="buttons__label buttons__label_margin second" for="second">вторичка</label>
-              <input ${add.obj.reqTypeofRealty === 'Новостройка (от застройщика)' ? 'checked' : ''} 
-              class="buttons__input buttons__input_margin reqTypeofRealty" name="reqTypeofRealty" id="new" type="radio" value="Новостройка (от застройщика)">
-              <label id="reqTypeofRealty" class="buttons__label buttons__label_margin new" for="new">новостройка</label>
               <input ${add.obj.reqTypeofRealty === 'Переуступка ДДУ' ? 'checked' : ''} 
               class="buttons__input reqTypeofRealty" name="reqTypeofRealty" id="part" type="radio" value="Переуступка ДДУ">
               <label id="reqTypeofRealty" class="buttons__label part" for="part">переуступка дду</label>
@@ -1415,7 +1487,8 @@ class Float{
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" 
+                value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}" autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
@@ -1574,9 +1647,13 @@ class Float{
                 <input name="reqPrice" id="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autocomplete="new-password">
               </div> 
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <div class="form__item-subitle"> 
+                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                </div>
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
+                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : add.obj.reqPrice}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
                 autocomplete="new-password">
               </div>
             </div>
@@ -1606,7 +1683,7 @@ class Float{
               </div>
             </div> 
             <div class="comment"> 
-              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>
             <div class="buttons-footer"> 
@@ -1635,7 +1712,9 @@ class Room{
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" class="form__input search__input reqArea" type="search" 
+                value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
+                autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
@@ -1804,9 +1883,13 @@ class Room{
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <div class="form__item-subitle"> 
+                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                </div>
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
+                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : add.obj.reqPrice}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
                 autocomplete="new-password">
               </div>
             </div>
@@ -1851,7 +1934,7 @@ class Room{
               </div>
             </div>     
             <div class="comment"> 
-              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>       
             <div class="buttons-footer"> 
@@ -1880,7 +1963,9 @@ class House{
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" class="form__input search__input reqArea" type="search" 
+                value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
+                autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
@@ -2061,14 +2146,18 @@ class House{
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <div class="form__item-subitle"> 
+                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                </div>
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
+                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : add.obj.reqPrice}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
                 autocomplete="new-password">
               </div>
             </div>                
             <div class="comment"> 
-              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>        
             <div class="buttons-footer"> 
@@ -2097,7 +2186,9 @@ class Ground{
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" class="form__input search__input reqArea" type="search" 
+                value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
+                autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
@@ -2172,14 +2263,18 @@ class Ground{
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>               
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <div class="form__item-subitle"> 
+                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                </div>
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
+                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : add.obj.reqPrice}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
                 autocomplete="new-password">
               </div>
             </div>                        
             <div class="comment"> 
-              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>
             <div class="buttons-footer"> 
@@ -2207,7 +2302,9 @@ class Garage{
               </div>
               <div class="form__item">
                 <span class="form__subtitle">Район</span> 
-                <input name="reqArea" class="form__input search__input reqArea" type="search" value="${add.obj.reqArea ? add.obj.reqArea : ''}" autocomplete="new-password">
+                <input name="reqArea" class="form__input search__input reqArea" type="search" 
+                value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
+                autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
               <div class="form__item">
@@ -2290,14 +2387,18 @@ class Garage{
                 <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
               </div>               
               <div class="form__item">
-                <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <div class="form__item-subitle"> 
+                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                </div>
                 <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstatePrice ? add.obj.reqOverstatePrice : ''}" 
+                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : add.obj.reqPrice}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
                 autocomplete="new-password">
               </div>
             </div>                        
             <div class="comment"> 
-              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK.</p></i></span>
+              <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
             </div>
             <div class="buttons-footer"> 

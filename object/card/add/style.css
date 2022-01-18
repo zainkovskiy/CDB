@@ -43,6 +43,11 @@ i:hover .guid {
   display: flex;
   align-items: center;
 }
+.header__bottom {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0 0 0;
+}
 .header__back {
   font-size: 12px;
   white-space: nowrap;
@@ -63,11 +68,18 @@ i:hover .guid {
   color: #484848;
 }
 
-.change-obj {
-  margin: 20px 0 0 0;
-}
 .change-obj__input {
   appearance: auto;
+}
+
+.redemption {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.redemption__checkbox {
+  appearance: auto;
+  margin: 0;
 }
 
 .status {
@@ -120,6 +132,11 @@ i:hover .guid {
   justify-content: space-between;
   align-items: center;
 }
+.form__item-subitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .form__subtitle {
   display: block;
   width: 100%;
@@ -164,6 +181,10 @@ i:hover .guid {
 }
 .form__countRooms-wrap {
   display: flex;
+}
+.form__reqOverstatePrice_checkbox {
+  appearance: auto;
+  margin: 0;
 }
 
 .room__field {
