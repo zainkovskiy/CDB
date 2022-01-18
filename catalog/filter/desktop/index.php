@@ -47,6 +47,13 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       let dealClients = '<? echo($arrClients);?>';
 ccc
     </SCRIPT>
+    <script>
+        BX24.ready(async () => {
+        console.log('Heght' + document.scrollHeight);
+            const h = window.screen.availHeight;
+            BX24.resizeWindow(window.innerWidth,  h, () => {} );
+            })
+    </script>
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

@@ -589,28 +589,32 @@ class Handler {
         type: event.target.dataset.action,
         subtype: '',
         extype: '',
-        reason: document.querySelector('.form-alert__area').value,
+        reason: ''
       }
-      const subtype = document.querySelector('.select__subtype ');
-      if (subtype.innerHTML !== 'Выбрать'){
-        if (subtype.innerHTML === 'Ошибка в информации по объекту' || subtype.innerHTML === 'Что-то другое...'){
-          const extype = document.querySelector('.select__extype');
-          if (extype.innerHTML !== 'Выбрать'){
+      const reason = document.querySelector('.form-alert__area');
+      if (reason.value.length > 0){
+        requestAlert.reason = document.querySelector('.form-alert__area').value;
+        const subtype = document.querySelector('.select__subtype ');
+        if (subtype.innerHTML !== 'Выбрать'){
+          if (subtype.innerHTML === 'Ошибка в информации по объекту' || subtype.innerHTML === 'Что-то другое...'){
+            const extype = document.querySelector('.select__extype');
+            if (extype.innerHTML !== 'Выбрать'){
+              requestAlert.subtype = subtype.innerHTML;
+              requestAlert.extype = extype.innerHTML;
+              this.setLoader();
+              this.sendAlert(requestAlert).then(() => {
+                this.removeLoader();
+                this.closeModule(module);
+              })
+            }
+          } else {
             requestAlert.subtype = subtype.innerHTML;
-            requestAlert.extype = extype.innerHTML;
             this.setLoader();
             this.sendAlert(requestAlert).then(() => {
               this.removeLoader();
               this.closeModule(module);
             })
           }
-        } else {
-          requestAlert.subtype = subtype.innerHTML;
-          this.setLoader();
-          this.sendAlert(requestAlert).then(() => {
-            this.removeLoader();
-            this.closeModule(module);
-          })
         }
       }
     } else if (event.target.dataset.action === 'реклама'){
@@ -623,33 +627,36 @@ class Handler {
         extype: '',
         reason: '',
       }
-      const subtype = document.querySelector('.select__subtype ');
-      if (subtype.innerHTML !== 'Выбрать'){
-        if (subtype.innerHTML === 'Нет в рекламе'){
-          const extypePromo = document.querySelector('.select__extype-promo');
-          if (extypePromo.innerHTML !== 'Выбрать'){
-            requestAlert.subtype = subtype.innerHTML;
-            requestAlert.extype = extypePromo.innerHTML;
-            requestAlert.reason = document.querySelector('.form-alert__area').value;
-            this.setLoader();
-            this.sendAlert(requestAlert).then(() => {
-              this.removeLoader();
-              this.closeModule(module);
-            })
-          }
-        } else if (subtype.innerHTML === 'Не верная информация в рекламе'){
-          const extypeInfo = document.querySelector('.select__extype-info');
-          if (extypeInfo.innerHTML !== 'Выбрать'){
-            const reason = document.querySelector('.select__reason');
-            if (reason.innerHTML !== 'Выбрать'){
+      const reason = document.querySelector('.form-alert__area');
+      if (reason.value.length > 0){
+        const subtype = document.querySelector('.select__subtype ');
+        if (subtype.innerHTML !== 'Выбрать'){
+          if (subtype.innerHTML === 'Нет в рекламе'){
+            const extypePromo = document.querySelector('.select__extype-promo');
+            if (extypePromo.innerHTML !== 'Выбрать'){
               requestAlert.subtype = subtype.innerHTML;
-              requestAlert.extype = extypeInfo.innerHTML;
-              requestAlert.reason = reason.innerHTML + ' ' + document.querySelector('.form-alert__area').value;
+              requestAlert.extype = extypePromo.innerHTML;
+              requestAlert.reason = reason.value;
               this.setLoader();
               this.sendAlert(requestAlert).then(() => {
                 this.removeLoader();
                 this.closeModule(module);
               })
+            }
+          } else if (subtype.innerHTML === 'Не верная информация в рекламе'){
+            const extypeInfo = document.querySelector('.select__extype-info');
+            if (extypeInfo.innerHTML !== 'Выбрать'){
+              const reason = document.querySelector('.select__reason');
+              if (reason.innerHTML !== 'Выбрать'){
+                requestAlert.subtype = subtype.innerHTML;
+                requestAlert.extype = extypeInfo.innerHTML;
+                requestAlert.reason = reason.innerHTML + ' ' + reason.value;
+                this.setLoader();
+                this.sendAlert(requestAlert).then(() => {
+                  this.removeLoader();
+                  this.closeModule(module);
+                })
+              }
             }
           }
         }
