@@ -202,7 +202,7 @@ class Render {
                                     <div class="file__icon">
                                       <a class="file__svg file__svg-download" href="${file.URI}"
                                          download="${file.documentName}"></a>
-                                      <span class="file__svg file__svg-delete ${accessRights}" data-uid="${file.UID}"
+                                      <span class="file__svg file__svg-delete" data-uid="${file.UID}"
                                             data-container="${file.documentType}" data-action="file-delete"></span>
                                     </div>
                                   </div>`;
@@ -212,7 +212,7 @@ class Render {
                                 <div class="file__icon">
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                      download="${file.documentName}"></a>
-                                  <span class="file__svg file__svg-delete ${accessRights}" data-uid="${file.UID}"
+                                  <span class="file__svg file__svg-delete" data-uid="${file.UID}"
                                         data-container="${file.documentType}" data-action="file-delete"></span>
                                 </div>
                               </div>`;
@@ -233,10 +233,10 @@ class Render {
                       <h4 class="clients__name">${item.lastName ? item.lastName : ''} ${item.name ? item.name : ''} ${item.secondName ? item.secondName: ''}</h4>
                       <div class="clients__group"> 
                            <span data-id="id${id}" data-uid="${item.UID}" data-client="edit"
-                                  class="clients__edit clients__btn ${accessRights}"></span>
+                                  class="clients__edit clients__btn"></span>
                            <span data-id="id${id}" data-uid="${item.UID}" data-client="delete" 
                                   data-name="${item.lastName}_${item.name}_${item.secondName}"
-                                  class="clients__delete clients__btn ${accessRights}"></span>
+                                  class="clients__delete clients__btn"></span>
                       </div>    
                     </div>   
                     <p class="clients__commission">Комиссия клиента <span>${item.relation.costForClient ? item.relation.costForClient : ''} ₽</span></p>           
@@ -266,7 +266,7 @@ class Render {
                                 </div>
                             </div>
                             <span class="clients__border"></span>
-                            <div data-container="passport-${item.UID}" class="file ${accessRights}"> 
+                            <div data-container="passport-${item.UID}" class="file"> 
                               <input name="passport-${item.UID}" class="file__input" id="file_passport-${item.UID}" type="file" multiple>
                               <label class="file__label" for="file_passport-${item.UID}"></label>
                               <span class="file__text">Загрузите паспорт</span>
@@ -300,14 +300,14 @@ class Render {
                         <div id="doc_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#doc_client-${id}">
                             <div class="clients__wrap clients__grid"> 
                               <p class="clients__text">Тип права<span>${item.relation.typeOfOwnership ? item.relation.typeOfOwnership : ''}</span></p>
-                              <p class="clients__text">Номер доверенности${item.relation.typeOfOwnership === 'Доверенность' 
-                                ? `<span>${item.relation.attorneyValue}</span>` : ``}</p>
+                              <p class="clients__text">Номер доверенности${item.relation.typeOfOwnership === 'Доверенность'
+      ? `<span>${item.relation.attorneyValue}</span>` : ``}</p>
                               <p class="clients__text">Объем владения<span>${item.relation.scopeOfOwnership ? item.relation.scopeOfOwnership : ''}</span></p>
                               <p class="clients__text">Размер доли${item.relation.scopeOfOwnership === 'Доля'
-                                ? `<span>${item.relation.percentageOfOwnership}</span>` : ``}</p>
+      ? `<span>${item.relation.percentageOfOwnership}</span>` : ``}</p>
                             </div>
                             <span class="clients__border"></span>
-                            <div data-container="doc-${item.UID}" class="file ${accessRights}"> 
+                            <div data-container="doc-${item.UID}" class="file"> 
                               <input name="doc-${item.UID}" class="file__input" id="file_doc-${item.UID}" type="file" multiple>
                               <label class="file__label" for="file_doc-${item.UID}"></label>
                               <span class="file__text">Загрузите доверенность</span>
@@ -326,10 +326,10 @@ class Render {
                     <h4 class="clients__name">${item.name ? item.name : ''}</h4>
                     <div class="clients__group"> 
                          <span data-id="id${id}" data-uid="${item.UID}" data-client="edit"
-                                class="clients__edit clients__btn ${accessRights}"></span>
+                                class="clients__edit clients__btn"></span>
                          <span data-id="id${id}" data-uid="${item.UID}" data-client="delete" 
                                 data-name="${item.name ? item.name : ''}"
-                                class="clients__delete clients__btn ${accessRights}"></span>
+                                class="clients__delete clients__btn"></span>
                     </div>                  
                   </div>
                     <div class="accordion accordion-flush container-section" id="passport_client-${id}">
@@ -348,7 +348,7 @@ class Render {
 <!--                                </div>-->
                             </div>
                             <span class="clients__border"></span>
-                            <div data-container="passport-${item.UID}" class="file ${accessRights}"> 
+                            <div data-container="passport-${item.UID}" class="file"> 
                               <input name="passport-${item.UID}" class="file__input" id="file_passport-${item.UID}" type="file" multiple>
                               <label class="file__label" for="file_passport-${item.UID}"></label>
                               <span class="file__text">Загрузите реквизиты</span>
@@ -382,14 +382,14 @@ class Render {
                         <div id="doc_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#doc_client-${id}">
                             <div class="clients__wrap clients__grid"> 
                               <p class="clients__text">Тип права<span>${item.relation.typeOfOwnership ? item.relation.typeOfOwnership : ''}</span></p>
-                              <p class="clients__text">Номер доверенности${item.relation.typeOfOwnership === 'Доверенность' 
-                                ? `<span>${item.relation.attorneyValue}</span>` : ``}</p>
+                              <p class="clients__text">Номер доверенности${item.relation.typeOfOwnership === 'Доверенность'
+      ? `<span>${item.relation.attorneyValue}</span>` : ``}</p>
                               <p class="clients__text">Объем владения<span>${item.relation.scopeOfOwnership ? item.relation.scopeOfOwnership : ''}</span></p>
                               <p class="clients__text">Размер доли${item.relation.scopeOfOwnership === 'Доля'
-                                ? `<span>${item.relation.percentageOfOwnership}</span>` : ``}</p>
+      ? `<span>${item.relation.percentageOfOwnership}</span>` : ``}</p>
                             </div>
                             <span class="clients__border"></span>
-                            <div data-container="doc-${item.UID}" class="file ${accessRights}"> 
+                            <div data-container="doc-${item.UID}" class="file"> 
                               <input name="doc-${item.UID}" class="file__input" id="file_doc-${item.UID}" type="file" multiple>
                               <label class="file__label" for="file_doc-${item.UID}"></label>
                               <span class="file__text">Загрузите доверенность</span>
@@ -414,7 +414,7 @@ class Render {
       scopeOfOwnership.value = `value = ${this.obj.percentageOfOwnership}`;
     }
     return scopeOfOwnership;
-}
+  }
   placeLayout(){
     const params = this.obj.params;
     const street = `, ул. ${params.street}`;
@@ -462,7 +462,7 @@ class Render {
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
                                      download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
-                                  <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
+                                  <span class="file__burger" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
                                         <button data-uid="${file.UID}" data-action="edit" class="burger__btn">Редактировать</button>
@@ -478,7 +478,7 @@ class Render {
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
                                      download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
-                                  <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
+                                  <span class="file__burger" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
                                         <button data-uid="${file.UID}" data-action="edit" class="burger__btn">Редактировать</button>
@@ -494,7 +494,7 @@ class Render {
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
                                      download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
-                                  <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
+                                  <span class="file__burger" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
                                         <button data-uid="${file.UID}" data-action="edit" class="burger__btn">Редактировать</button>
@@ -510,7 +510,7 @@ class Render {
                                   <a class="file__svg file__svg-download" href="${file.URI}"
                                   target="_blank"
                                      download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
-                                  <span class="file__burger ${accessRights}" data-uid="${file.UID}" data-burger="burger"></span>
+                                  <span class="file__burger" data-uid="${file.UID}" data-burger="burger"></span>
                                   <div class="burger-hide isVisible id${file.UID}"> 
                                     <div class="burger__btn-group">
                                         <button data-uid="${file.UID}" data-action="edit" class="burger__btn">Редактировать</button>
@@ -633,7 +633,7 @@ class Render {
               <div class="title__header"> 
                 <span class="title__header-text clients__title-head">Клиенты</span>
                 <div class="add__change">
-                  <button class="ui-btn ui-btn-primary-dark ui-btn-icon-add ${accessRights}" data-btn="clients_add">Добавить</button>
+                  <button class="ui-btn ui-btn-primary-dark ui-btn-icon-add" data-btn="clients_add">Добавить</button>
                   <div class="add isVisible">
                     <button data-choice="private" class="add__button">Частное лицо</button>
                     <button data-choice="legal" class="add__button">Юр. лицо</button>
@@ -646,12 +646,12 @@ class Render {
               <div class="title__header"> 
                 <span class="title__header-text">Договор</span>
                 <div> 
-                  <button class="ui-btn ${accessRights}">История</button>
-                  <button data-clear="all" class="btn_edit ui-btn ui-btn-danger-light ${accessRights}">Очистить</button>
+                  <button class="ui-btn">История</button>
+                  <button data-clear="all" class="btn_edit ui-btn ui-btn-danger-light">Очистить</button>
                 </div>
               </div>
               <div class="contract"> 
-                <div class="contract__change ${accessRights}"> 
+                <div class="contract__change"> 
                   <div class="contract__wrap"> 
                     <span class="contract__title">Тип договора</span>
                     <div class="contract__toggle-item item">
@@ -712,7 +712,7 @@ class Render {
                       </select>
                     </div>
                   </div> 
-                  <div class="contract__wrap"> 
+                  <div class="contract__wrap ${accessRights}"> 
                     <div class="contract__title-wrap"> 
                         <span class="contract__title">Срок дейcтвия</span>
                         <span data-expired='extend' class="contract__title contract__title-btn 
@@ -724,7 +724,7 @@ class Render {
                 <div class="title__header"> 
                   <span class="title__header-text">Документы</span>
                   <div> 
-                    <button data-clear="docs" class="btn_edit ui-btn ui-btn-danger-light ${accessRights}">Очистить</button>
+                    <button data-clear="docs" class="btn_edit ui-btn ui-btn-danger-light">Очистить</button>
                   </div>
                 </div>
                 <div class="docs"> 
@@ -746,7 +746,7 @@ class Render {
                   </div>
                   <div class="upload"> 
                     <div class="upload__wrap">                   
-                      <div data-container="egrn" class="file upload_width ${accessRights}"> 
+                      <div data-container="egrn" class="file upload_width"> 
                         <input name="egrn" class="file__input" id="file_egrn" type="file" multiple>
                         <label class="file__label" for="file_egrn"></label>
                         <span class="file__text">Загрузите ЕГРН</span>                      
@@ -754,7 +754,7 @@ class Render {
                       <div class="file__container container__egrn">${file.egrn}</div>                                   
                     </div>  
                     <div class="upload__wrap">                    
-                      <div data-container="contract" class="file upload_width ${accessRights}"> 
+                      <div data-container="contract" class="file upload_width"> 
                         <input name="contract" class="file__input" id="file_contract" type="file" multiple>
                         <label class="file__label" for="file_contract"></label>
                         <span class="file__text">Загрузите ДОУ</span>
@@ -762,7 +762,7 @@ class Render {
                       <div class="file__container container__contract">${file.contract}</div>                          
                     </div>                    
                     <div class="upload__wrap"> 
-                      <div data-container="grp" class="file upload_width ${accessRights}"> 
+                      <div data-container="grp" class="file upload_width"> 
                       <input name="grp" class="file__input" id="file_grp" type="file" multiple>
                       <label class="file__label" for="file_grp"></label>
                       <span class="file__text">Загрузите ГРП</span>
@@ -770,7 +770,7 @@ class Render {
                       <div class="file__container container__grp">${file.grp}</div>   
                     </div>   
                     <div class="upload__wrap"> 
-                      <div data-container="other" class="file upload_width ${accessRights}"> 
+                      <div data-container="other" class="file upload_width"> 
                       <input name="other" class="file__input" id="file_other" type="file" multiple>
                       <label class="file__label" for="file_other"></label>
                       <span class="file__text">Загрузите прочие документы</span>
@@ -1365,18 +1365,18 @@ class Form {
             input.classList.remove('isValid');
           }
         } else {
-            if (!libraryRegExp[input.name].test(input.value)){
-              validInputs[input.name] = false;
-              input.classList.add('isValid');
-              isValidPills[input.id].push(input);
-            } else {
-              validInputs[input.name] = true;
-              input.classList.remove('isValid');
-            }
+          if (!libraryRegExp[input.name].test(input.value)){
+            validInputs[input.name] = false;
+            input.classList.add('isValid');
+            isValidPills[input.id].push(input);
+          } else {
+            validInputs[input.name] = true;
+            input.classList.remove('isValid');
+          }
         }
       } else if (input.hasAttribute('disabled')){
-          input.classList.remove('isValid');
-          validInputs[input.name] = true;
+        input.classList.remove('isValid');
+        validInputs[input.name] = true;
       }
     }
 
@@ -1474,9 +1474,9 @@ class Form {
           }
         }
       } else if(item.name === 'attorneyValue' || item.name === 'percentageOfOwnership' || item.name === 'costForClient'){
-          newClient.relation[item.name] = item.value;
+        newClient.relation[item.name] = item.value;
       } else {
-          newClient[item.name] = item.value;
+        newClient[item.name] = item.value;
       }
     }
     newClient.b24ID = '';
@@ -1769,12 +1769,12 @@ class Handler{
       }
     }
     const selectInput = document.querySelectorAll('.select__gap');
-      for (let item of selectInput){
-        const observer = new MutationObserver(() => {
-          saveChange.classList.add('save-change_active');
-        })
-        observer.observe(item, {childList: true});
-      }
+    for (let item of selectInput){
+      const observer = new MutationObserver(() => {
+        saveChange.classList.add('save-change_active');
+      })
+      observer.observe(item, {childList: true});
+    }
   }
   changeFormPromo(item){
     const carrierBtns = document.querySelectorAll('.carrier__btn');
@@ -2974,9 +2974,9 @@ function selectStyle(select, firstWord){
     var selectGap = $this.next('.select__gap'),
       caret = selectGap.find('.caret');
     // Add ul list
-      $('<ul>',{
-        class: 'select__list'
-      }).insertAfter(selectGap);
+    $('<ul>',{
+      class: 'select__list'
+    }).insertAfter(selectGap);
 
     var selectList = selectGap.next('.select__list');
     // Add li - option items
