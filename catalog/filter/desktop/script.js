@@ -486,6 +486,8 @@ class AddressHandler {
         sound.play();
       } else if (event.target.dataset.name === 'add'){
         this.openNewObject();
+      } else if (event.target.dataset.filter === 'sale'){
+          this.setFilterSale();
       }
     });
 
@@ -584,6 +586,17 @@ class AddressHandler {
     })
 
     this.handlerPriceFilter();
+  }
+  setFilterSale(){
+    if (!this.objectFilter.filterSale || this.objectFilter.filterSale === 0){
+      document.querySelector(`INPUT[id='centr']`).checked = false;
+      document.querySelector(`INPUT[id='all']`).checked = true;
+      this.objectFilter.isShowAgent = true;
+      this.objectFilter.extraFilter ? this.objectFilter.extraFilter += 1 : this.objectFilter.extraFilter = 1;
+      this.objectFilter.filterSale = 1;
+      document.querySelector('.count-extra').innerHTML = this.objectFilter.extraFilter;
+      document.querySelector('.count-extra').classList.remove('visible');
+    }
   }
   hideButtonStart(){
     if (activeDeal.length === 0){
@@ -1453,6 +1466,8 @@ class AddressHandler {
         }
       }
     }
+    this.objectFilter.filterSale = 0;
+    this.objectFilter.extraFilter = 0;
   }
   districtFilter(value){
     const regexp = new RegExp(value, 'i');
@@ -1919,6 +1934,16 @@ class AddressHandler {
                     ${this.objectFilter.isReserve ? 'checked' : ''}>
                     <label class="row__label-check" for="isReserve">Не выводить зарезервированные</label>
                   </div>    
+                </div>
+              </div>
+              <div class="row"> 
+                <div class="row__text row__text_bold"></div>
+                <div class="row__items"> 
+                  <div class="row__item"> 
+                    <input name="onlyCancel" class="row__checkbox" type="checkbox" id="onlyCancel"
+                    ${this.objectFilter.onlyCancel ? 'checked' : ''}>
+                    <label class="row__label-check" for="onlyCancel">Выводить только отмененные</label>
+                  </div> 
                 </div>
               </div>
             </div>

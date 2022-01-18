@@ -56,6 +56,7 @@ ccc
     <link href="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.6.0/dist/css/suggestions.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.6.0/dist/js/jquery.suggestions.min.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=9b339b12-4d97-4522-b2e5-da5a5da1c7f6&lang=ru_RU" type="text/javascript"></script>
+    <link rel="stylesheet" href="../style.css?s=<?=rand(0, 1000000)?>">
     <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <title>searchObject</title>
 </head>
@@ -63,8 +64,8 @@ ccc
     <div class="container">
         <div class="methodical">
             <div>
-                <span>Как работать с каталогом?</span>
-                <button data-info="catalog" class="ui-btn ui-btn-primary-dark">инфо</button>
+                <button data-clear="filter" class="ui-btn ui-btn-primary-dark bx-btn__craft">Сбросить фильтры</button>
+                <button data-filter="sale" class="ui-btn ui-btn-primary-dark bx-btn__craft">продавцы</button>
             </div>
             <span class='alert' title="сообщить об ошибке" data-alert="open"></span>
         </div>
@@ -190,6 +191,6 @@ ccc
         </div>
         <div class='pagination last-elem visible'></div>
     </div>
-<script src="script.js?s=<?=rand(0, 1000000)?>"></script>
+<script src="../script.js?s=<?=rand(0, 1000000)?>"></script>
 </body>
 </html>

@@ -359,7 +359,7 @@ class Render {
               <div class="about__logo">${logo}</div>
               <div class="about__logo-doc"> 
                 <span class="text about__logo-status">${this.obj.reqStatus ? this.obj.reqStatus : ''}</span>
-                <span class="text">${docType}</span>
+                <span class="text text_align">${docType}</span>
               </div>
             </div>
             <div class="contacts wrapper">

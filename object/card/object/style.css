@@ -144,6 +144,9 @@
   line-height: 16px;
   color: #484848;
 }
+.text_align {
+  text-align: right;
+}
 .text_right {
   text-align: right;
 }

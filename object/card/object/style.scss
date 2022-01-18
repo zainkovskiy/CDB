@@ -148,6 +148,9 @@
   font-size: 12px;
   line-height: 16px;
   color: #484848;
+  &_align{
+    text-align: right;
+  }
   &_right{
     text-align: right;
   }
