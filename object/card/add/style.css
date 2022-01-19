@@ -104,6 +104,9 @@ i:hover .guid {
 .status_center {
   align-items: center;
 }
+.status_right {
+  align-items: flex-end;
+}
 
 .form {
   margin: 20px 0 0 0;

@@ -101,6 +101,9 @@ i{
   &_center{
     align-items: center;
   }
+  &_right{
+    align-items: flex-end;
+  }
 }
 .form{
   margin: 20px 0 0 0;
