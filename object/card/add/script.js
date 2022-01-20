@@ -1682,6 +1682,7 @@ class Float{
             </div>`
   }
 }
+//todo написать условие если не где нет цены reqOverstatePrice
 class Room{
   render(){
     const partOrFull = getPartOrFull();
