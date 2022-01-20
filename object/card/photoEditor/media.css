@@ -5,7 +5,6 @@
   }
   .photo__container {
     grid-row-start: 2;
-    height: 330px;
   }
   .photo__info {
     grid-row-start: 1;
@@ -23,6 +22,10 @@
     counter-increment: slide;
     height: 150px;
     position: relative;
+  }
+
+  .photo__img {
+    height: 200px;
   }
 }
 

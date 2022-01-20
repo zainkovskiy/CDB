@@ -280,7 +280,7 @@ class Render {
               <a class="ui-btn ui-btn-icon-page change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
       ? this.obj.privileges.card : 'isVisible'}" href="../agency/?source=${source}&id=${btoa(UID)}">ДОУ</a>
               <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
-      ? this.obj.privileges.card : 'isVisible'}" href="../photo/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Фото</a>
+      ? this.obj.privileges.card : 'isVisible'}" href="../photoEditor/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Фото</a>
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link 
               ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' || login === 'denishevalf' ? '' : 'isVisible'}" 
               href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a> -->

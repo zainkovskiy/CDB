@@ -66,7 +66,7 @@ class RenderTop{
             <nav class="change-page">
               <a class="ui-btn ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
               <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${objectUID}">ДОУ</a>
-              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>
+              <a class="ui-btn change-page__link" href="../photoEditor/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>
                             
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link
               ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' ? '' : 'isVisible'}" 

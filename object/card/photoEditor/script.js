@@ -93,6 +93,15 @@ class Render{
   constructor(photos) {
     this.photos = photos;
   }
+  getInfoLayout(){
+    if (this.photos.length > 0 && this.photos[0].reqPhotoDown === '1'){
+      return `<span>Мы заботимся о Вашем времени! Фотографии в процессе загрузки. Обычно это занимает не более 3-х минут. Можно закрыть страницу,  по факту окончания Вам придет уведомление</span>
+              <span class="info__gif"></span>`
+    } else {
+      return `<span>Как работать с фотографиями?</span>
+              <button data-info="photo" class="ui-btn ui-btn-primary-dark">инфо</button>`
+    }
+  }
   getModerationStatusCount(){
     let accepted = 0;
     for (let photo of this.photos){
@@ -163,6 +172,7 @@ class Render{
     return table;
   }
   render(){
+    const infoLayout = this.getInfoLayout();
     const moderationStatusCount = this.getModerationStatusCount();
     const moderationStatus = this.getModerationStatus();
     const web = this.getWeb();
@@ -185,14 +195,13 @@ class Render{
               <a class="ui-btn ui-btn-icon-page change-page__link" 
               href="../agency/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ДОУ</a>
               
-              <a class="ui-btn ui-btn-secondary change-page__link" href="../photo/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>              
+              <a class="ui-btn ui-btn-secondary change-page__link" href="../photoEditor/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>              
               <a class="ui-btn change-page__link" href="../promotion/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Реклама</a>
               <a class="ui-btn ui-btn-icon-done change-page__link disable" href="../buySell/?source=${source}&id=${objectUID}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav>
             <div class="info"> 
-              <span>Как работать с фотографиями?</span>
-              <button data-info="photo" class="ui-btn ui-btn-primary-dark">инфо</button>
-            </div>
+                ${infoLayout}
+            </div> 
             <div class="photo"> 
               <div class="photo__container photo__wrap"> 
                 <span class="photo__reason">${this.photos.length !== 0 ? this.photos[0].reason ?  `Причина: ${this.photos[0].reason}` : 'Причина:' : ''}</span>
@@ -202,18 +211,17 @@ class Render{
                   <span class="photo__moderator ${moderationStatus}"></span>
                 </div>               
               </div>
-
                 <div class="photo__info photo__wrap"> 
                   <p class="photo__info-text">Всего фото: <span>${this.photos.length}</span></p>
                   <p class="photo__info-text">К выгрузке: <span>${web}</span></p>
                   <p class="photo__info-text">Одобренно: <span>${moderationStatusCount}</span></p>
                 </div>
-                <div class="photo__btn"> 
-                  <div class="photo__upload"> 
-                    <input class="photo__upload-input" style="display: none;" id="file" type="file" multiple>
-                    <label class="photo__upload-label" for="file"></label>
-                    <sapn class="photo__upload-test">Загрузите фото (.jpg/.jpeg)</sapn>
-                  </div>
+                <div class="photo__btn">
+                  <div class="photo__upload">
+                    <input class="photo__upload-input" id="upload" type="file" multiple> 
+                    <label class="photo__upload-label" for="upload"></label>
+                    <sapn class="photo__upload-test">Загрузите фото</sapn>
+                  </div> 
                   <div class="type"> 
                     <span class="type__text">Тип фото:</span>
                     <select class="type__select">    
@@ -231,7 +239,7 @@ class Render{
                     </select>
                   </div>
                 </div>
-            </div>          
+            </div>        
             <div class="table__wrap"> 
               <table class="table">${table}</table>
             </div>`
@@ -268,9 +276,9 @@ class Handler{
             document.querySelector('.save-change').classList.add('save-change_close');
             setTimeout(() => {
               this.setFiles();
-              this.setLoader();
+              setLoader();
               this.sendToServer().then(() => {
-                this.removeLoader();
+                removeLoader();
               });
             }, 500)
           } else if (event.target.dataset.button === 'cancel'){
@@ -310,18 +318,6 @@ class Handler{
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
   }
 
-  setLoader(){
-    const currentY = window.pageYOffset;
-    const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
-    document.body.insertAdjacentHTML('beforeend', loader);
-    const htmlDOM = document.querySelector('HTML');
-    htmlDOM.setAttribute('style', 'overflow: hidden;');
-  }
-  removeLoader(){
-    document.querySelector('.loader').remove();
-    const htmlDOM = document.querySelector('HTML');
-    htmlDOM.removeAttribute('style');
-  }
   async sendToServer(){
     if (this.arrForSend.length !== 0){
       for (let item of this.arrForSend){
@@ -627,7 +623,10 @@ class File {
     e.stopPropagation();
     e.preventDefault();
     let files = e.dataTransfer.files;
+    setLoader();
+    e.target.style.background = "";
     new SendFile(files).init(data => {
+      removeLoader();
       document.body.classList.add('blackout');
       setTimeout(() => {
         new EditPhoto(data).openEditWindow();
@@ -640,12 +639,14 @@ class File {
   handleInput(e){
     // e.path[1].style.background = "#E5E5E5";
     const files = this.files;
+    setLoader();
     new SendFile(files).init(data => {
+      removeLoader();
       document.body.classList.add('blackout');
       setTimeout(() => {
+        console.log(data);
         new EditPhoto(data).openEditWindow();
         document.body.classList.remove('blackout');
-        console.log(data);
       }, 300);
     });
   }
@@ -660,9 +661,7 @@ class SendFile{
     let data = new FormData();
 
     for (let item of this.files){
-      if(item.type === 'image/jpeg'){
-        data.append('photo[]', item)
-      }
+      data.append('photo[]', item)
     }
     data.append('reqNumber', UID)
 
@@ -697,14 +696,32 @@ class EditPhoto{
     }
   }
   getValidPhoto(file){
-    return file.height > 800 || file.width > 800
+    if (!file.allowFormat){
+      return {
+        class: '',
+        text: 'недопустимый формат',
+        reason: 'format',
+      }
+    } else if (file.height < 800 || file.width < 800){
+      return {
+        class: '',
+        text: 'недопустимый размер фото',
+        reason: 'size',
+      }
+    } else {
+      return {
+        class: 'inVisible',
+        text: '',
+        reason: '',
+      }
+    }
   }
   getPhoto(files){
     let photos = '';
     for (let i = 0; i < files.length; i++){
       const isValidPhoto = this.getValidPhoto(files[i]);
       photos += `<div class="module-photo photo${this.quantityFiles}"> 
-                    <img id="id${this.quantityFiles}" class="module-photo__img" src=${files[i].URL} alt="photo">
+                    <img id="id${this.quantityFiles}" class="module-photo__img" src=${isValidPhoto.reason === 'format' ? 'img/stop.jpg' : files[i].URL} alt="photo">
                     <div class="module-photo__buttons"> 
                       <span data-number="${this.quantityFiles}" title="пометить как Веб" data-btn="web" class="module-photo__btn module-photo__btn_web"></span>
                       <span data-number="${this.quantityFiles}" title="повернуть влево" data-btn="left" class="module-photo__btn module-photo__btn_left"></span>
@@ -712,8 +729,8 @@ class EditPhoto{
                       <span data-number="${this.quantityFiles}" title="обрезать фото" data-btn="cut" class="module-photo__btn module-photo__btn_cut"></span>
                       <span data-number="${this.quantityFiles}" title="удалить фото" data-btn="delete" class="module-photo__btn module-photo__btn_delete"></span>
                     </div>
-                    <div class="module-photo_inValid ${isValidPhoto ? 'inVisible' : ''}"> 
-                      <span class="module-photo-text">недопустимый размер фото</span>
+                    <div class="module-photo_inValid ${isValidPhoto.class}"> 
+                      <span class="module-photo-text">${isValidPhoto.text}</span>
                     </div>
                 </div>`
       this.quantityFiles++;
@@ -734,12 +751,12 @@ class EditPhoto{
                               <div class="photo__upload module-upload_wrap"> 
                                 <input class="photo__upload-input module__upload-input" style="display: none;" id="file" type="file" multiple="">
                                 <label class="photo__upload-label" for="file"></label>
-                                <sapn class="photo__upload-test">Добавить еще (.jpg/.jpeg)</sapn>
+                                <sapn class="photo__upload-test">Добавить еще</sapn>
                               </div>
                             </div>
                           </div>    
                           <div class="module__footer"> 
-                            <span>Не допускается к размещению фото с водяными знаками и чужих объектов. Формат .jpg/.jpeg</span>
+                            <span>Не допускается к размещению фото с водяными знаками и чужих объектов.</span>
                             <div> 
                               <button data-module="save" class="ui-btn ui-btn-success">Сохранить</button>
                               <button data-module="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>
@@ -755,19 +772,31 @@ class EditPhoto{
       if (dataset.module === 'close'){
         this.closeEditWindow(module);
       } else if (dataset.module === 'save'){
-        this.checkRightPhoto();
-        this.setChanges({
-          reqNumber: UID,
-          //todo поменять на динамичный id
-          author: loginID,
-          Finish: this.rightFiles,
-        }, answer => {
-          //todo е приходит ответ с сервера
-          module.innerHTML = '<p class="module__alert">Ваши фото успешно отправленны на сервер</p>>';
+        if (this.checkRightPhoto()) {
+          this.setChanges({
+            reqNumber: UID,
+            author: loginID,
+            Finish: this.rightFiles,
+          }, answer => {
+            if (answer.result === "onWork"){
+              module.innerHTML = `<p class="module__alert">${this.rightFiles.length} фотографий из ${this.files.length} будут отправлены на сервер. По окончанию загрузки придет оповещение</p>`;
+              setTimeout(() => {
+                this.showStatusDownload();
+                this.closeEditWindow(module);
+              }, 3000);
+            } else {
+              module.innerHTML = '<p class="module__alert">Ошибка при выполнении запроса. Обратитесь в тех поддержку</p>';
+              setTimeout(() => {
+                this.closeEditWindow(module);
+              }, 3000);
+            }
+          })
+        } else {
+          module.innerHTML = '<p class="module__alert">Нет файлов для загрузки</p>';
           setTimeout(() => {
             this.closeEditWindow(module);
           }, 3000);
-        })
+        }
       } else if (dataset.btn === 'web'){
           event.target.classList.toggle('module-photo__btn_active');
           if (+this.files[dataset.number].web === 0){
@@ -838,6 +867,10 @@ class EditPhoto{
       });
     });
   }
+  showStatusDownload(){
+    document.querySelector('.info').innerHTML = `<span>Мы заботимся о Вашем времени! Фотографии в процессе загрузки. Обычно это занимает не более 3-х минут. Можно закрыть страницу,  по факту окончания Вам придет уведомление</span>
+            <span class="info__gif"></span>`
+  }
   closeEditWindow(module){
     const htmlDom = document.querySelector('HTML');
     htmlDom.removeAttribute("style");
@@ -862,10 +895,11 @@ class EditPhoto{
 
   checkRightPhoto(){
     for (let photo of this.files){
-      if (photo.height > 800 && photo.width > 800){
+      if (photo.height > 800 && photo.width > 800 && photo.allowFormat){
         this.rightFiles.push(photo);
       }
     }
+    return this.rightFiles.length > 0
   }
   setChanges(changes, callback){
     console.log(changes)
@@ -986,6 +1020,19 @@ photo.getJson().catch(() => {
   photo.init();
 });
 
+
+function setLoader(){
+  const currentY = window.pageYOffset;
+  const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
+  document.body.insertAdjacentHTML('beforeend', loader);
+  const htmlDOM = document.querySelector('HTML');
+  htmlDOM.setAttribute('style', 'overflow: hidden;');
+}
+function removeLoader(){
+  document.querySelector('.loader').remove();
+  const htmlDOM = document.querySelector('HTML');
+  htmlDOM.removeAttribute('style');
+}
 function selectStyle(select, firstWord){
   $(select).each(function(){
     // Variables

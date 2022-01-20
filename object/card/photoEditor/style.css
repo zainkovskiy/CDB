@@ -11,6 +11,15 @@
   color: #399fc2;
   font-size: 16px;
 }
+.info__gif {
+  display: block;
+  width: 50px;
+  height: 50px;
+  background-image: url("img/Spinner.gif");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 
 .photo {
   display: grid;
@@ -95,6 +104,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  gap: 10px;
 }
 .photo .type {
   width: 100%;
@@ -137,6 +147,9 @@
 }
 .photo__upload-photo {
   color: grey;
+}
+.photo__upload-input {
+  display: none;
 }
 
 .slider {

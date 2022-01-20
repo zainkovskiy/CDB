@@ -4,7 +4,6 @@
     grid-template-rows: auto auto auto;
     &__container{
       grid-row-start: 2;
-      height: 330px;
     }
     &__info{
       grid-row-start: 1;
@@ -22,5 +21,8 @@
     counter-increment: slide;
     height: 150px;
     position: relative;
+  }
+  .photo__img {
+    height: 200px;
   }
 }
