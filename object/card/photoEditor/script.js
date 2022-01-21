@@ -1,4 +1,27 @@
 const UID = atob(objectUID);
+let interval = '';
+function handlerDownload(){
+  interval = setInterval(()=> {
+    getAnswer({checkState: 'checkState', reqNumber: UID}, answer => {
+      console.log(answer)
+      if (+answer.onProgress === 0){
+        clearInterval(interval);
+        document.querySelector('.info').innerHTML = `<span>Как работать с фотографиями?</span>
+              <button data-info="photo" class="ui-btn ui-btn-primary-dark">инфо</button>`;
+      }
+    })
+  }, 15000);
+}
+function getAnswer(changes, callback){
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://hs-01.centralnoe.ru/Project-Selket-Main//Servers/MediaExchange/PhotoWorker.php", true);
+  xhr.responseType = 'json';
+  xhr.send(JSON.stringify(changes));
+
+  xhr.onload = () => {
+    callback(xhr.response);
+  };
+}
 
 class Photo{
   constructor() {
@@ -95,8 +118,9 @@ class Render{
   }
   getInfoLayout(){
     if (this.photos.length > 0 && this.photos[0].reqPhotoDown === '1'){
+      handlerDownload();
       return `<span>Мы заботимся о Вашем времени! Фотографии в процессе загрузки. Обычно это занимает не более 3-х минут. Можно закрыть страницу,  по факту окончания Вам придет уведомление</span>
-              <span class="info__gif"></span>`
+              <span class="info__gif"></span>`;
     } else {
       return `<span>Как работать с фотографиями?</span>
               <button data-info="photo" class="ui-btn ui-btn-primary-dark">инфо</button>`
@@ -870,6 +894,7 @@ class EditPhoto{
   showStatusDownload(){
     document.querySelector('.info').innerHTML = `<span>Мы заботимся о Вашем времени! Фотографии в процессе загрузки. Обычно это занимает не более 3-х минут. Можно закрыть страницу,  по факту окончания Вам придет уведомление</span>
             <span class="info__gif"></span>`
+    handlerDownload();
   }
   closeEditWindow(module){
     const htmlDom = document.querySelector('HTML');
