@@ -444,7 +444,7 @@ class AddressHandler {
         if (activeDeal){
           let req = {
             action : 'historySearch',
-            dealId : 1,
+            dealId : activeDeal,
           }
           this.setLoader();
           this.getDealOrHistory(req).then(data => {

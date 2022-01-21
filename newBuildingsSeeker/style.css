@@ -1,0 +1,77 @@
+body {
+  margin: 0 auto;
+}
+
+@font-face {
+  font-family: "montserrat";
+  src: url("fonts/Montserrat-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "montserrat";
+  src: url("fonts/Montserrat-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+}
+.table__input, .table {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.table thead {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1170px;
+  margin: 0 auto;
+}
+
+.table {
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #979797;
+  width: 100%;
+}
+.table__td-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #cbbdbd;
+}
+.table__row_wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.table__input {
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: grey;
+  border: 1px solid grey;
+}
+.table__checkbox {
+  display: none;
+}
+.table__checkbox:checked ~ .table__label {
+  background-color: #01b601;
+}
+.table__label {
+  display: block;
+  border: 1px solid black;
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  margin: 0 5px 0 0;
+}
+
+/*# sourceMappingURL=style.css.map */

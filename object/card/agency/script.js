@@ -734,6 +734,8 @@ class Render {
                         <span data-documents="dou" class="documents__btn"></span>
                       </div>
                       <div class="documents__wrap"> 
+                        <span class="file__text">Соглашение о продление ДОУ</span>
+                        <span data-documents="extension" class="documents__btn"></span>
                       </div>
                       <div class="documents__wrap"> 
                       </div>
@@ -1328,9 +1330,9 @@ class Form {
       secondName: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
       nationality: /^[А-ЯЁа-яё]*\.?( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
       bornLocality: /.*/,
-      passRange: /^\d{4}$/,
-      passNumber: /^\d{6}$/,
-      passCode: /^\d{3}-\d{3}$/,
+      passRange: /.*/,
+      passNumber: /.*/,
+      passCode: /.*/,
       passGranted: /.*/,
       registrationAddress: /.*/,
       residentialAddress: /.*/,
@@ -1344,7 +1346,7 @@ class Form {
       address_form: [],
     }
     for (let input of allInputs){
-      if (input.value.length === 0 && !input.hasAttribute('disabled')){
+      if (input.value.length === 0 && !input.hasAttribute('disabled') && input.name !== 'passCode'){
         validInputs[input.name] = false;
         input.classList.add('isValid');
         isValidPills[input.id].push(input);
@@ -1567,6 +1569,14 @@ class Handler{
       } else if (event.target.dataset.documents === "dou"){
         this.getDocuments('https://crm.centralnoe.ru/dealincom/templates/sk.php', {
           packUID: app.copyOwner.agencyagreement.UID,
+        }).then(data => {
+          location.href = `https://crm.centralnoe.ru${data.result.document.downloadUrl}`
+          console.log(data)
+        });
+      } else if (event.target.dataset.documents === "extension"){
+        this.getDocuments('https://crm.centralnoe.ru/dealincom/templates/sk.php', {
+          packUID: app.copyOwner.agencyagreement.UID,
+          Ext: 1
         }).then(data => {
           location.href = `https://crm.centralnoe.ru${data.result.document.downloadUrl}`
           console.log(data)
@@ -2798,9 +2808,9 @@ class EditClient{
       secondName: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
       nationality: /^[А-ЯЁа-яё]*\.?( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
       bornLocality: /.*/,
-      passRange: /^\d{4}$/,
-      passNumber: /^\d{6}$/,
-      passCode: /^\d{3}-\d{3}$/,
+      passRange: /.*/,
+      passNumber: /.*/,
+      passCode: /.*/,
       passGranted: /.*/,
       registrationAddress: /.*/,
       residentialAddress: /.*/,
@@ -2814,7 +2824,7 @@ class EditClient{
       address_form: [],
     }
     for (let input of allInputs){
-      if (input.value.length === 0 && !input.hasAttribute('disabled')){
+      if (input.value.length === 0 && !input.hasAttribute('disabled') && input.name !== 'passCode'){
         validInputs[input.name] = false;
         input.classList.add('isValid');
         isValidPills[input.id].push(input);

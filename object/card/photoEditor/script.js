@@ -702,7 +702,7 @@ class EditPhoto{
         text: 'недопустимый формат',
         reason: 'format',
       }
-    } else if (file.height < 800 || file.width < 800){
+    } else if (file.height < 800 && file.width < 800){
       return {
         class: '',
         text: 'недопустимый размер фото',
@@ -895,7 +895,7 @@ class EditPhoto{
 
   checkRightPhoto(){
     for (let photo of this.files){
-      if (photo.height > 800 && photo.width > 800 && photo.allowFormat){
+      if (photo.height > 800 || photo.width > 800 && photo.allowFormat){
         this.rightFiles.push(photo);
       }
     }
@@ -1001,7 +1001,7 @@ class EditPhoto{
       URL: this.files[number].URL,
       Crop: arrNewSize,
     }, link => {
-      if (link.height < 800 || link.width < 800){
+      if (link.height < 800 && link.width < 800){
         const errorText = document.querySelector('.canvas__error');
         errorText.innerHTML = `Не допустимый размер изображения. Высота: ${link.height}, ширина ${link.width}`;
         errorText.classList.remove('inVisibility');
