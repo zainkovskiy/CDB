@@ -1,0 +1,95 @@
+body {
+  margin: 0 auto;
+}
+
+@font-face {
+  font-family: "montserrat";
+  src: url("fonts/Montserrat-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "montserrat";
+  src: url("fonts/Montserrat-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+}
+.table, .search__btn, .search__input, .search__title {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.table thead {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.search {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+.search__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.search__title {
+  font-size: 12px;
+}
+.search__input {
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: grey;
+  border: 1px solid grey;
+}
+.search__btn {
+  padding: 5px 10px;
+  align-self: flex-end;
+  border-radius: 5px;
+  border: 1px solid black;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.search__btn:hover {
+  background-color: #aaaaaa;
+}
+.search__btn:active {
+  background-color: #ffffff;
+}
+
+.table {
+  border-collapse: collapse;
+  color: #484f5c;
+  font-size: 14px;
+  width: 100%;
+}
+.table__row:hover {
+  background: #ebf0f5;
+}
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #cbbdbd;
+}
+.table-field {
+  margin: 20px 0 0 0;
+}
+.table__link {
+  border-bottom: 1px dashed #5ea7db;
+  cursor: pointer;
+  color: #5ea7db;
+}
+.table__link:hover {
+  color: #484f5c;
+  border-bottom: 1px dashed #484f5c;
+}
+
+/*# sourceMappingURL=style.css.map */

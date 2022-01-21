@@ -1,0 +1,99 @@
+body{
+  margin: 0 auto;
+}
+@font-face {
+  font-family: 'montserrat';
+  src: url("fonts/Montserrat-Regular.ttf");
+  font-weight: 400;
+  font-style: normal
+}
+@font-face {
+  font-family: 'montserrat';
+  src: url("fonts/Montserrat-Bold.ttf");
+  font-weight: 700;
+  font-style: normal
+}
+
+%font-regular{
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+
+%font-bold{
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.container{
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 10px;
+}
+.search{
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  &__wrap{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  &__title{
+    @extend %font-regular;
+    font-size: 12px;
+  }
+  &__input{
+    @extend %font-regular;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: grey;
+    border: 1px solid grey;
+  }
+  &__btn{
+    @extend %font-regular;
+    padding: 5px 10px;
+    align-self: flex-end;
+    border-radius: 5px;
+    border: 1px solid black;
+    text-transform: uppercase;
+    cursor: pointer;
+    &:hover{
+      background-color: #aaaaaa;
+    }
+    &:active{
+      background-color: #ffffff;
+    }
+  }
+}
+.table{
+  border-collapse: collapse;
+  color: #484f5c;
+  font-size: 14px;
+  width: 100%;
+  @extend %font-regular;
+  thead{
+    @extend %font-bold;
+  }
+  &__row:hover{
+    background: #ebf0f5;
+  }
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #cbbdbd;
+  }
+  &-field{
+    margin: 20px 0 0 0;
+  }
+  &__link{
+    border-bottom: 1px dashed #5ea7db;
+    cursor: pointer;
+    color: #5ea7db;
+    &:hover{
+      color: #484f5c;
+      border-bottom: 1px dashed #484f5c;
+    }
+  }
+}
