@@ -34,6 +34,7 @@ class App{
     this.checkWork = document.querySelector('.inJob__checkbox');
     this.containerMain = document.querySelector('.main');
     this.sessionNumber = '';
+    this.isNotItem = true;
     this.currentItemUID = '';
     this.object = '';
     this.deal = '';
@@ -44,21 +45,15 @@ class App{
   }
   init(){
     this.checkWork.addEventListener('change', () => {
-      if (this.checkWork.checked){
-        document.querySelector('.inJob__load').classList.add('inJob__next_timer');
-        setTimeout(() => {
-          document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
-        }, 5000)
-        this.checkWork.disabled = true;
-        this.startJobs();
+      if (this.checkWork.checked && this.isNotItem){
+          this.startJobs();
       } else {
-          api.requestToServer('getInfo',{
-            operatorId: loginID,
-            action: 'stopWorking',
-            UID: this.sessionNumber,
-          }).then(() => {
-            this.clearDom();
-          })
+        if (this.isNotItem){
+          document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
+          this.finishSession();
+        } else {
+          this.checkWork.disabled = true;
+        }
       }
     });
     this.handler();
@@ -71,33 +66,47 @@ class App{
       console.log(startWork)
       if (startWork.result){
         this.sessionNumber = startWork.UID;
-        api.requestToServer('getInfo', {
-          operatorId: loginID,
-          action: 'getItem',
-        }).then(info => {
-          console.log(info)
-          if (info.result){
-            this.currentItemUID = info.UID;
-            this.clientUID = info.client.UID;
-            this.renderClientValue();
-            if (info.request){
-              api.requestToServer('getObject', {
-                action: 'old',
-                reqNumber: info.request.UID,
-                author: login,
-              }).then(object => {
-                console.log(object)
-                this.object = object;
-                this.renderObject(this.object.reqTypeofRealty);
-                this.renderControl();
-              })
-            } else if (info.deal){
-              this.renderDeal(info.deal.UID);
-              this.renderControl();
-            }
-          }
-        })
-
+        this.getItem();
+      }
+    })
+  }
+  finishSession(){
+    api.requestToServer('getInfo',{
+      operatorId: loginID,
+      action: 'stopWorking',
+      UID: this.sessionNumber,
+    }).then(() => {
+      this.clearDom();
+      this.clearThis();
+    })
+  }
+  getItem(){
+    api.requestToServer('getInfo', {
+      operatorId: loginID,
+      action: 'getItem',
+    }).then(info => {
+      this.isNotItem = false;
+      console.log(info)
+      if (info.result){
+        this.currentItemUID = info.UID;
+        this.clientUID = info.client.UID;
+        this.renderClientValue();
+        if (info.request){
+          api.requestToServer('getObject', {
+            action: info.request.type,
+            reqNumber: info.request.UID,
+            phone: info.request.phone,
+            author: login,
+          }).then(object => {
+            console.log(object)
+            this.object = object;
+            this.renderObject(this.object.reqTypeofRealty);
+            this.renderControl();
+          })
+        } else if (info.deal){
+          this.renderDeal(info.deal.UID);
+          this.renderControl();
+        }
       }
     })
   }
@@ -106,6 +115,26 @@ class App{
     document.querySelector('.object').innerHTML = '';
     document.querySelector('.control').innerHTML = '';
   }
+  clearThis(){
+    this.client = '';
+    this.clientUID = '';
+    this.currentItemUID = '';
+    this.deal = '';
+    this.object = '';
+    this.isNotItem = true;
+  }
+  counterTime(){
+    document.querySelector('.inJob__load').classList.add('inJob__next_timer');
+    document.querySelector('.inJob__next').classList.remove('disabled');
+    setTimeout(() => {
+      document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
+      document.querySelector('.inJob__next').classList.add('disabled');
+      if (this.checkWork.checked === true){
+        this.getItem();
+      }
+    }, 5000)
+  }
+
   handler(){
     this.containerMain.addEventListener('click', event => {
       const e = event.target;
@@ -131,6 +160,31 @@ class App{
         this.finishCall(e);
       } else if (dataset.send === 'sms'){
         this.sendSms();
+      } else if (dataset.answer){
+          this.switchAnswer(dataset.answer);
+      } else if (dataset.direction){
+        api.requestToServer('getInfo', {
+          action: 'finishItem',
+          item: this.currentItemUID,
+          result: 1,
+          data: this.object,
+          direction: dataset.direction,
+        }).then(() => {
+          if (this.checkWork.disabled){
+            this.finishSession();
+            this.checkWork.disabled = false;
+          } else {
+            this.clearDom();
+            this.clearThis();
+            this.counterTime();
+          }
+        });
+      } else if (dataset.next === 'item'){
+        if (this.checkWork.checked && this.isNotItem){
+          document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
+          document.querySelector('.inJob__next').classList.add('disabled');
+          this.getItem();
+        }
       }
     })
     document.body.addEventListener('click', event => {
@@ -189,9 +243,72 @@ class App{
     })
   }
 
+  switchAnswer(answer){
+    switch (answer){
+      case 'agree':
+        this.showDirectionButton();
+        break;
+      case 'fail':
+        this.openModule(answer);
+        break;
+      case 'denial':
+        this.openModule(answer);
+        break;
+    }
+  }
+  showDirectionButton(){
+    document.querySelector('.object').insertAdjacentHTML('beforeend',
+      `<div class="object__direction">
+              <button data-direction="left" class="can-btn can-btn_width50">левый</button>
+              <button data-direction="right" class="can-btn can-btn_width50">правый</button>
+            </div>`);
+    document.querySelector('.control').insertAdjacentHTML('beforeend',
+      `<div>
+              <span class="control__notification">Заполните объект и выберете берег на котором расположен объект</span>
+            </div>`);
+  }
+  getFailLayout(){
+    return `<p class="module__title">Причина отказа</p>
+            <div class="module__task"> 
+              <span class="subtitle">Причина</span>
+                <div class="module__container"> 
+                  <input data-input="pick" class="input__text input__select pick__input" type="text" readonly value="Выбрать">
+                  <div class="about__select pick__select inVisible"> 
+                    <span data-option="pick" class="about__option">Выбрать</span>
+                    <span data-option="pick" class="about__option">задача 1</span>
+                    <span data-option="pick" class="about__option">задача 2</span>
+                  </div>
+                </div>
+            </div>
+            <div class="module__buttons"> 
+              <button data-save="reason" data-reason="fail" class="ui-btn ui-btn-success">сохранить</button>
+              <button data-name="close" class="ui-btn ui-btn-danger">отменить</button>
+            </div>`
+  }
+  getDenialLayout(){
+    return `<p class="module__title">Причина завершение звонка</p>
+            <div class="module__task">
+              <span class="subtitle">Причина</span>
+                <div class="module__container"> 
+                  <input data-input="pick" class="input__text input__select pick__input" type="text" readonly value="Выбрать">
+                  <div class="about__select pick__select inVisible"> 
+                    <span data-option="pick" class="about__option">Выбрать</span>
+                    <span data-option="pick" class="about__option">задача 1</span>
+                    <span data-option="pick" class="about__option">задача 2</span>
+                  </div>
+                </div>
+            </div>
+            <div class="module__buttons"> 
+              <button data-save="reason" data-reason="denia" class="ui-btn ui-btn-success">сохранить</button>
+              <button data-name="close" class="ui-btn ui-btn-danger">отменить</button>
+            </div>`
+  }
+
   openModule(layout){
     const moduleLayout = {
       task: this.getTaskLayout(),
+      denial: this.getDenialLayout(),
+      fail: this.getFailLayout(),
     }
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
     const currentY = window.pageYOffset;
@@ -215,24 +332,52 @@ class App{
       const dataset = event.target.dataset;
       if (dataset.name === 'close'){
         this.closeModule(module);
-      } else if (dataset.input === 'task'){
+      } else if (dataset.input === 'pick'){
           document.querySelector(`.${dataset.input}__select`).classList.remove('inVisible');
-      } else if (dataset.option === 'task'){
+      } else if (dataset.option === 'pick'){
           document.querySelector(`.${dataset.option}__input`).value = e.innerHTML;
           document.querySelector(`.${dataset.option}__select`).classList.add('inVisible');
+      } else if (dataset.save === 'reason'){
+        const inputReason = module.querySelector(`INPUT[type='text']`);
+        if (inputReason.value === 'Выбрать'){
+          return
+        } else {
+          api.requestToServer('getInfo', this.setReasonObject(dataset.reason, inputReason.value)).then(() => {
+            this.closeModule(module);
+            if (this.checkWork.disabled){
+              this.finishSession();
+              this.checkWork.disabled = false;
+            } else {
+              this.clearDom();
+              this.clearThis();
+              this.counterTime();
+            }
+          });
+        }
       }
     })
   }
+
+  setReasonObject(reasonSource, reasonText){
+    return {
+      action: 'finishItem',
+      result: 0,
+      reason: reasonText,
+      reasonType: reasonSource,
+      item: this.currentItemUID,
+    }
+  }
+
   getTaskLayout(){
     return `<p class="module__title">Комментарий риелтору</p>
             <div class="module__task"> 
               <span class="subtitle">Задача</span>
                 <div class="module__container"> 
-                  <input data-input="task" class="input__text input__select task__input" type="text" readonly value="Выбрать">
-                  <div class="about__select task__select inVisible"> 
-                    <span data-option="task" class="about__option">Выбрать</span>
-                    <span data-option="task" class="about__option">задача 1</span>
-                    <span data-option="task" class="about__option">задача 2</span>
+                  <input data-input="pick" class="input__text input__select pick__input" type="text" readonly value="Выбрать">
+                  <div class="about__select pick__select inVisible"> 
+                    <span data-option="pick" class="about__option">Выбрать</span>
+                    <span data-option="pick" class="about__option">задача 1</span>
+                    <span data-option="pick" class="about__option">задача 2</span>
                   </div>
                 </div>
             </div>
@@ -313,7 +458,6 @@ class App{
     containerObject.insertAdjacentHTML('beforeend', new ObjectLayout(this.object, reqTypeofRealty).render());
     this.checkSlider();
     this.handlerInput();
-    this.checkWork.disabled = false;
   }
   renderClientValue(){
     api.requestToServer('getClient',{
@@ -327,7 +471,7 @@ class App{
           const clientContainer = document.querySelector('.client');
           console.log(this.client)
           clientContainer.innerHTML = '';
-          clientContainer.insertAdjacentHTML('beforeend', new Clientlayout(this.client, realtor).render())
+          clientContainer.insertAdjacentHTML('beforeend', new ClientLayout(this.client, realtor).render())
         })
       }
     })
@@ -345,14 +489,13 @@ class App{
         const containerObject = document.querySelector('.object');
         containerObject.innerHTML = '';
         containerObject.insertAdjacentHTML('beforeend', new DealLayout(this.deal, realtor).render());
-        this.checkWork.disabled = false;
       })
     })
   }
   renderControl(){
     const controlContainer = document.querySelector('.control');
     controlContainer.innerHTML = '';
-    controlContainer.insertAdjacentHTML('beforeend', new Controllayout().render())
+    controlContainer.insertAdjacentHTML('beforeend', new ControlLayout().render())
   }
 }
 
@@ -1441,7 +1584,7 @@ class DealLayout{
   }
 }
 
-class Clientlayout{
+class ClientLayout{
   constructor(client, realtor) {
     this.client = client;
     this.realtor = realtor;
@@ -1514,12 +1657,16 @@ class Clientlayout{
                       <button data-send="sms" class="can-btn client__btn-sms">Отправить</button>
                     </div>
                 </div>
-                <button class="can-btn client__btn-deal">Создать сделку</button>
+                <div class="client__buttons"> 
+                    <button data-answer="denial" class="can-btn can-btn_width33 client__btn-fail">отказ</button>
+                    <button data-answer="agree" class="can-btn can-btn_width33 client__btn-agree">согласен</button>
+                    <button data-answer="fail" class="can-btn can-btn_width33 client__btn-fail">не ответил</button>
+                </div>
               </div>`
   }
 }
 
-class Controllayout{
+class ControlLayout{
   constructor() {
   }
   render(){

@@ -730,7 +730,7 @@ class Render {
                 <div class="docs"> 
                   <div class="documents"> 
                       <div class="documents__wrap"> 
-                        <span class="file__text">Скачать договор об оказании услуг</span>
+                        <span class="file__text">ДОУ + соглашение о цене</span>
                         <span data-documents="dou" class="documents__btn"></span>
                       </div>
                       <div class="documents__wrap"> 
@@ -2131,7 +2131,7 @@ class Handler{
   openQuestion(name){
     const dataName = name.split('_').join(' ');
     const layoutQuestions = `<div> 
-                                <p>Вы уверены что котите удалить клиента ${dataName}</p>
+                                <p>Вы уверены что хотите удалить клиента ${dataName}</p>
                                 <button data-answer="yes" class="ui-btn ui-btn-danger-light">Да</button>                           
                                 <button data-answer="no"  class="ui-btn ui-btn-primary-dark">Нет</button>                           
                             </div>`

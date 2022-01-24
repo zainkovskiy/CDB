@@ -916,6 +916,7 @@ class Handler{
       const reqShareForSale = document.querySelector(`INPUT[name='reqShareForSale']`);
       const reqShareForAll = document.querySelector(`INPUT[name='reqShareForAll']`);
       const reqHouseNumber = document.querySelector(`INPUT[name='reqHouseNumber']`);
+      const reqMunicipality = document.querySelector(`INPUT[name='reqMunicipality']`);
       const reqFlat = document.querySelector(`INPUT[name='reqFlat']`);
 
       if (item.checked){
@@ -1021,6 +1022,11 @@ class Handler{
           } else {
             library.reqShareForAll = true;
             reqShareForAll.classList.remove('isValid');
+          }
+
+          if (reqMunicipality.value.length === 0){
+            library.reqMunicipality = true;
+            reqMunicipality.classList.remove('isValid');
           }
         } else if (item.value === 'Гараж'){
 
@@ -1386,17 +1392,21 @@ class Search{
       container.classList.add('isVisible');
       this.request = true;
     } else {
-      if (data.length > 10){
-        for (let i = 0; i < 10; i++){
-          container.insertAdjacentHTML('beforeend',
-            `<p data-id1c="${data[i].Id1C ? data[i].Id1C : ''}" data-value="${data[i][valueName]}" data-input="${input.name}" class="search__item">${data[i][valueName]}</p>`)
-        }
-      } else if (data.length <= 10 && data.length !== 0){
         for (let item of data){
           container.insertAdjacentHTML('beforeend',
             `<p data-id1c="${item.Id1C ? item.Id1C : ''}" data-value="${item[valueName]}" data-input="${input.name}" class="search__item">${item[valueName]}</p>`)
         }
-      }
+      // if (data.length > 10){
+      //   for (let i = 0; i < 10; i++){
+      //     container.insertAdjacentHTML('beforeend',
+      //       `<p data-id1c="${data[i].Id1C ? data[i].Id1C : ''}" data-value="${data[i][valueName]}" data-input="${input.name}" class="search__item">${data[i][valueName]}</p>`)
+      //   }
+      // } else if (data.length <= 10 && data.length !== 0){
+      //   for (let item of data){
+      //     container.insertAdjacentHTML('beforeend',
+      //       `<p data-id1c="${item.Id1C ? item.Id1C : ''}" data-value="${item[valueName]}" data-input="${input.name}" class="search__item">${item[valueName]}</p>`)
+      //   }
+      // }
       container.classList.remove('isVisible');
       this.request = true;
     }

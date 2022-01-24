@@ -13,6 +13,19 @@ body{
   font-weight: 700;
   font-style: normal
 }
+
+%font-regular{
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+%font-bold{
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+}
+
 .main{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -21,9 +34,7 @@ body{
   height: 100vh;
 }
 .title{
-  font-family: "montserrat", sans-serif;
-  font-style: normal;
-  font-weight: 400;
+  @extend %font-regular;
   font-size: 15px;
   line-height: 18px;
   display: block;
@@ -32,9 +43,7 @@ body{
   border-bottom: 1px solid black;
 }
 .subtitle{
-  font-family: "montserrat", sans-serif;
-  font-style: normal;
-  font-weight: 400;
+  @extend %font-regular;
   font-size: 14px;
   line-height: 17px;
   &_open{
@@ -117,9 +126,7 @@ body{
   }
 }
 .can-btn{
-  font-family: "montserrat", sans-serif;
-  font-weight: 700;
-  font-style: normal;
+  @extend %font-bold;
   padding: 5px;
   text-transform: uppercase;
   cursor: pointer;
@@ -131,6 +138,12 @@ body{
   }
   &:active{
     background-color: #ffffff;
+  }
+  &_width33{
+    width: 33%;
+  }
+  &_width50{
+    width: 50%;
   }
 }
 .module{
@@ -151,9 +164,7 @@ body{
   }
   &__title{
     font-size: 24px;
-    font-family: "montserrat", sans-serif;
-    font-weight: 700;
-    font-style: normal;
+    @extend %font-bold;
     color: grey;
     margin: 0 0 20px 0;
   }

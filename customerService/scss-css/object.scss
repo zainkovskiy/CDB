@@ -30,6 +30,10 @@
     display: flex;
     gap: 10px;
   }
+  &__direction{
+    display: flex;
+    gap: 10px;
+  }
 }
 
 .about{
@@ -105,4 +109,7 @@
       transform: translate(0, -50%);
     }
   }
+}
+.client__info{
+  padding: 10px 0 0 0;
 }

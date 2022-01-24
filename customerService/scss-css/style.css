@@ -14,6 +14,18 @@ body {
   font-weight: 700;
   font-style: normal;
 }
+.control__notification, .subtitle, .title {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.module__title, .can-btn {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+}
+
 .main {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -23,9 +35,6 @@ body {
 }
 
 .title {
-  font-family: "montserrat", sans-serif;
-  font-style: normal;
-  font-weight: 400;
   font-size: 15px;
   line-height: 18px;
   display: block;
@@ -35,9 +44,6 @@ body {
 }
 
 .subtitle {
-  font-family: "montserrat", sans-serif;
-  font-style: normal;
-  font-weight: 400;
   font-size: 14px;
   line-height: 17px;
 }
@@ -124,9 +130,6 @@ body {
 }
 
 .can-btn {
-  font-family: "montserrat", sans-serif;
-  font-weight: 700;
-  font-style: normal;
   padding: 5px;
   text-transform: uppercase;
   cursor: pointer;
@@ -139,6 +142,12 @@ body {
 }
 .can-btn:active {
   background-color: #ffffff;
+}
+.can-btn_width33 {
+  width: 33%;
+}
+.can-btn_width50 {
+  width: 50%;
 }
 
 .module {
@@ -160,9 +169,6 @@ body {
 }
 .module__title {
   font-size: 24px;
-  font-family: "montserrat", sans-serif;
-  font-weight: 700;
-  font-style: normal;
   color: grey;
   margin: 0 0 20px 0;
 }
@@ -237,6 +243,7 @@ body {
   align-items: center;
   justify-content: center;
   user-select: none;
+  background-color: white;
 }
 .inJob__next {
   border: 1px solid black;
@@ -247,6 +254,7 @@ body {
   cursor: pointer;
   box-sizing: border-box;
   position: relative;
+  background-color: white;
 }
 .inJob__next_timer {
   animation: gradient 5s linear;
@@ -259,6 +267,7 @@ body {
   font-size: 16px;
   position: relative;
   z-index: 5;
+  user-select: none;
 }
 .inJob__load {
   position: absolute;
@@ -361,14 +370,29 @@ body {
   border-radius: 0 0 5px 5px;
   border-top: none;
 }
-.client__btn-deal {
+.client__btn-agree {
   background-color: #90bdff;
 }
-.client__btn-deal:hover {
+.client__btn-agree:hover {
   background-color: #6c8cb8;
 }
-.client__btn-deal:active {
+.client__btn-agree:active {
   background-color: #bed8ff;
+}
+.client__btn-fail {
+  background-color: #ff7979;
+}
+.client__btn-fail:hover {
+  background-color: #ff4c4c;
+}
+.client__btn-fail:active {
+  background-color: #efa6a6;
+}
+.client__buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
 }
 
 .control {
@@ -378,6 +402,10 @@ body {
 }
 .control__wrap {
   margin: 0 0 10px 0;
+}
+.control__notification {
+  font-size: 24px;
+  color: red;
 }
 
 .object {
@@ -410,6 +438,10 @@ body {
   margin: 0 0 10px 0;
 }
 .object__rooms {
+  display: flex;
+  gap: 10px;
+}
+.object__direction {
   display: flex;
   gap: 10px;
 }
@@ -487,6 +519,10 @@ body {
   top: 50%;
   right: 5px;
   transform: translate(0, -50%);
+}
+
+.client__info {
+  padding: 10px 0 0 0;
 }
 
 /*# sourceMappingURL=style.css.map */

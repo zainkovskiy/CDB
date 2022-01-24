@@ -4,6 +4,7 @@
   grid-gap: 10px;
 }
 $any-color: #ff5d5d;
+
 .client{
   border-radius: 5px;
   background: #C4C4C4;
@@ -68,7 +69,7 @@ $any-color: #ff5d5d;
     border-radius: 0 0 5px 5px;
     border-top: none;
   }
-  &__btn-deal{
+  &__btn-agree{
     background-color: #90bdff;
      &:hover{
        background-color: #6c8cb8;
@@ -76,6 +77,21 @@ $any-color: #ff5d5d;
     &:active{
       background-color: #bed8ff;
     }
+  }
+  &__btn-fail{
+    background-color: #ff7979;
+    &:hover{
+      background-color: #ff4c4c;
+    }
+    &:active{
+      background-color: #efa6a6;
+    }
+  }
+  &__buttons{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
   }
 }
 
@@ -85,5 +101,10 @@ $any-color: #ff5d5d;
   padding: 10px;
   &__wrap{
     margin: 0 0 10px 0;
+  }
+  &__notification{
+    @extend %font-regular;
+    font-size: 24px;
+    color: red;
   }
 }

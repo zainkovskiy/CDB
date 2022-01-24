@@ -287,8 +287,8 @@ class Render {
 
               <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
       ? this.obj.privileges.card : 'isVisible'}" href="../promotion/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Реклама</a>
-              <a class="ui-btn ui-btn-icon-done change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
-      ? this.obj.privileges.card : 'isVisible'}" href="../buySell/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">ПДКП/ДКП</a>
+              <a class="ui-btn ui-btn-icon-done change-page__link ${this.obj.privileges.card === 'ADB'
+      ? '' : 'disable'}" href="../buySell/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav>
             <div class="carousel"> 
                 <div class="slider">

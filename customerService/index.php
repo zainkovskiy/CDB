@@ -44,9 +44,9 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
         <div class="inJob">
             <input class="inJob__checkbox" id="inJob" name="inJob" type="checkbox">
             <label class="inJob__label" for="inJob">Работаю</label>
-            <div class="inJob__next">
-                <span class="inJob__text">Следующий</span>
-                <div class="inJob__load"></div>
+            <div data-next="item" class="inJob__next disabled">
+                <span data-next="item" class="inJob__text">Следующий</span>
+                <div data-next="item" class="inJob__load"></div>
             </div>
         </div>
     </div>

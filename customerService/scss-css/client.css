@@ -1,3 +1,34 @@
-
+.client {
+  border-radius: 5px;
+  background: #C4C4C4;
+  padding: 10px;
+}
+.client__comment {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin: 20px 0 0 0;
+}
+.client__area {
+  resize: none;
+  width: 100%;
+  outline: none;
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 12px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.client__btn {
+  align-self: flex-start;
+}
+.client__buttons {
+  margin: 10px 0 0 0;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
 
 /*# sourceMappingURL=client.css.map */
