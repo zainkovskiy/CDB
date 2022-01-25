@@ -809,6 +809,7 @@ class Handler{
       reqShareForAll: true,
       reqOverstatePrice: true,
       reqAdditionalLandmark: true,
+      reqObjectCadastralNumber: true,
     }
     const libraryRegExp = {
       reqRegion: /(.|\s)*\S(.|\s)*/,
@@ -866,7 +867,9 @@ class Handler{
             item.classList.remove('isValid');
           }
         } else {
-          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark' && item.name !== 'reqOverstatePrice_checkbox'){
+          if (item.name !== 'reqArea' && item.name !== 'reqHouseDeveloper' && item.name !== 'reqAdditionalLandmark'
+            && item.name !== 'reqOverstatePrice_checkbox' && item.name !== 'reqLandCadastralNumber'
+            && item.name !== 'reqObjectCadastralNumber'){
             if (item.value.length === 0){
               library[item.name] = false;
               item.classList.add('isValid');
@@ -918,6 +921,7 @@ class Handler{
       const reqHouseNumber = document.querySelector(`INPUT[name='reqHouseNumber']`);
       const reqMunicipality = document.querySelector(`INPUT[name='reqMunicipality']`);
       const reqFlat = document.querySelector(`INPUT[name='reqFlat']`);
+      const reqObjectCadastralNumber = document.querySelector(`INPUT[name='reqObjectCadastralNumber']`);
 
       if (item.checked){
         if (item.value === 'Квартира'){
@@ -1006,6 +1010,14 @@ class Handler{
             reqShareForAll.classList.remove('isValid');
           }
         } else if (item.value === 'Земельный участок'){
+
+          if(reqObjectCadastralNumber.value.length === 0){
+            library.reqObjectCadastralNumber = false;
+            reqObjectCadastralNumber.classList.add('isValid');
+          } else {
+            library.reqObjectCadastralNumber = true;
+            reqObjectCadastralNumber.classList.remove('isValid');
+          }
 
           if(+reqHouseNumber.value === 0){
             library.reqHouseNumber = false;
@@ -1498,6 +1510,14 @@ class Float{
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>
             </div>          
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">Обязательны к заполнению все поля, кроме Застройщика</p></i></span>
@@ -1721,7 +1741,15 @@ class Room{
               <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' ? 'select_disabled' : ''}">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
-              </div>          
+              </div>                    
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>    
             </div>                 
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. При заполнении ОБЯЗАТЕЛЬНО укажите площадь каждой комнаты на продажу, в соответствующих полях. В случае если комната не является объектом, укажите Долю на продажу и общую долю в помещении.</p></i></span>
@@ -1972,6 +2000,14 @@ class House{
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
                 <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
               </div>
@@ -2194,6 +2230,14 @@ class Ground{
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
               <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
                 <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
               </div>
@@ -2307,7 +2351,15 @@ class Garage{
               <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' ? 'select_disabled' : ''}">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
-              </div>   
+              </div>                 
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер участка</span> 
+                <input name="reqLandCadastralNumber" class="form__input" type="text" value="${add.obj.reqLandCadastralNumber ? add.obj.reqLandCadastralNumber : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Кадастровый номер объекта</span> 
+                <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
+              </div>
               <div class="form__item">
                 <span class="form__subtitle">Координаты X</span> 
                 <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
@@ -2355,7 +2407,7 @@ class Garage{
               </div>
               <div class="form__item"> 
                 <span class="form__subtitle">Тип гаража</span>               
-                <select class="reqGarageType" name="reqMaterial"> 
+                <select class="reqGarageType" name="reqGarageType"> 
                   <option value="empty" ${!add.obj.reqGarageType ? 'selected' : ''}>Выберете</option>
                   <option ${add.obj.reqGarageType === 'Кирпич' ? 'selected' : ''}>Гараж</option>
                   <option ${add.obj.reqGarageType === 'Панель' ? 'selected' : ''}>Машиноместо</option>

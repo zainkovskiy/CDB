@@ -13,10 +13,12 @@
         <thead>
             <td><div class="table__td-header">Застройщик <input class="table__input" type="text" autocomplete="off" name="developer"></div></td>
             <td><div class="table__td-header">ЖК</div></td>
+            <td><div class="table__td-header">ФИО</div></td>
+            <td><div class="table__td-header">Телефон</div></td>
             <td><div class="table__td-header">Риелтор</div></td>
             <td><div class="table__td-header">Тип</div></td>
             <td><div class="table__td-header">Дата создания <input class="table__input" type="date" autocomplete="off" name="dataCreate"></div></td>
-            <td><div class="table__td-header">Дата отправки</div></td>
+            <td><div class="table__td-header">Дата отправки <input class="table__checkbox" type="checkbox" id="showAllCheck"><label class="table__label" for="showAllCheck"></label></div></td>
         </thead>
         <tbody></tbody>
     </table>

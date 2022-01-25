@@ -730,7 +730,7 @@ class Render {
                 <div class="docs"> 
                   <div class="documents"> 
                       <div class="documents__wrap"> 
-                        <span class="file__text">ДОУ + соглашение о цене</span>
+                        <span class="file__text">Скачать ДОУ (+ соглашение если СК)</span>
                         <span data-documents="dou" class="documents__btn"></span>
                       </div>
                       <div class="documents__wrap"> 
@@ -738,8 +738,8 @@ class Render {
                         <span data-documents="extension" class="documents__btn"></span>
                       </div>
                       <div class="documents__wrap"> 
-                      </div>
-                      <div class="documents__wrap"> 
+                        <span class="file__text">Скачать Акт показа</span>
+                        <span class="documents__btn"></span>
                       </div>
                   </div>
                   <div class="upload"> 
@@ -747,7 +747,7 @@ class Render {
                       <div data-container="egrn" class="file upload_width"> 
                         <input name="egrn" class="file__input" id="file_egrn" type="file" multiple>
                         <label class="file__label" for="file_egrn"></label>
-                        <span class="file__text">Загрузите ЕГРН</span>                      
+                        <span class="file__text">Загрузить ДОУ (+ соглашение если СК)</span>                      
                       </div>    
                       <div class="file__container container__egrn">${file.egrn}</div>                                   
                     </div>  
@@ -755,7 +755,7 @@ class Render {
                       <div data-container="contract" class="file upload_width"> 
                         <input name="contract" class="file__input" id="file_contract" type="file" multiple>
                         <label class="file__label" for="file_contract"></label>
-                        <span class="file__text">Загрузите ДОУ</span>
+                        <span class="file__text">Загрузите соглашение о продлении ДОУ</span>
                       </div>
                       <div class="file__container container__contract">${file.contract}</div>                          
                     </div>                    
@@ -763,7 +763,7 @@ class Render {
                       <div data-container="grp" class="file upload_width"> 
                       <input name="grp" class="file__input" id="file_grp" type="file" multiple>
                       <label class="file__label" for="file_grp"></label>
-                      <span class="file__text">Загрузите ГРП</span>
+                      <span class="file__text">Загрузите Акт показа</span>
                       </div>
                       <div class="file__container container__grp">${file.grp}</div>   
                     </div>   
@@ -771,7 +771,7 @@ class Render {
                       <div data-container="other" class="file upload_width"> 
                       <input name="other" class="file__input" id="file_other" type="file" multiple>
                       <label class="file__label" for="file_other"></label>
-                      <span class="file__text">Загрузите прочие документы</span>
+                      <span class="file__text">Загрузите ЕГРН</span>
                       </div>
                       <div class="file__container container__other">${file.other}</div>   
                     </div>                

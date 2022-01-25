@@ -2,6 +2,7 @@ class newBuildingsSeeker {
   constructor(data) {
     this.list = data;
     this.filtered = [];
+    this.showSend = false;
     this.table = document.querySelector('.table');
     this.inputDev = document.querySelector(`INPUT[name='developer']`);
     this.inputDate = document.querySelector(`INPUT[name='dataCreate']`);
@@ -13,8 +14,16 @@ class newBuildingsSeeker {
   showTable(list){
     if (list.length > 0){
       this.table.querySelector('tbody').innerHTML = '';
-      for (let item of list){
-        this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item).render());
+      if (this.showSend){
+        for (let item of list){
+          this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item).render());
+        }
+      } else {
+        for (let item of list){
+          if (!item.check){
+            this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item).render());
+          }
+        }
       }
     } else {
       this.table.querySelector('tbody').innerHTML = '';
@@ -22,8 +31,15 @@ class newBuildingsSeeker {
   }
   handler(){
     this.table.addEventListener('click', event => {
-      if (event.target.type === 'checkbox'){
+      if (event.target.type === 'checkbox' && event.target.dataset.req){
         this.setNewValue(event.target.checked, event.target.dataset.req);
+      } else if (event.target.type === 'checkbox' && event.target.id === 'showAllCheck'){
+        this.showSend = event.target.checked;
+        if (this.filtered.length > 0){
+          this.showTable(this.filtered);
+        } else {
+          this.showTable(this.list);
+        }
       }
     })
     this.inputDate.addEventListener('change', () => {
@@ -70,12 +86,15 @@ class Render{
     return `<tr> 
               <td class="table__row"><div class="table__row_wrap">${this.row.developer}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.complex}</div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.row.name}</div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.row.phone}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.realtor}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.type}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.dataCreate}</td>
               <td class="table__row">
                 <div class="table__row_wrap">
-                  <input data-req="${this.row.reqNumber}" class="table__checkbox" type="checkbox" id="${this.row.reqNumber}">
+                  <input data-req="${this.row.reqNumber}" class="table__checkbox" type="checkbox" id="${this.row.reqNumber}"
+                  ${this.row.check ? 'checked' : ''}>
                   <label class="table__label" for="${this.row.reqNumber}"></label>
                   ${this.row.dataSend}
                 </div>
@@ -93,37 +112,49 @@ class Server {
         developer: 'dev1',
         complex: 'complex',
         realtor: 'realtor',
+        name: 'name',
+        phone: '89997779977',
         type: 'type',
         dataCreate: '2022-01-01',
-        dataSend: '12-01-2022',
-        reqNumber: 1
+        dataSend: '2022-01-01',
+        reqNumber: 1,
+        check: true,
       },
       {
         developer: 'dev2',
         complex: 'complex',
         realtor: 'realtor',
+        name: 'name',
+        phone: '89997779977',
         type: 'type',
         dataCreate: '2020-04-22',
-        dataSend: '12-01-2022',
-        reqNumber: 2
+        dataSend: '2020-04-22',
+        reqNumber: 2,
+        check: false,
       },
       {
         developer: 'dev3',
         complex: 'complex',
         realtor: 'realtor',
+        name: 'name',
+        phone: '89997779977',
         type: 'type',
         dataCreate: '2008-08-04',
-        dataSend: '12-01-2022',
-        reqNumber: 3
+        dataSend: '2008-08-04',
+        reqNumber: 3,
+        check: false,
       },
       {
         developer: 'dev3',
         complex: 'complex',
+        name: 'name',
+        phone: '89997779977',
         realtor: 'realtor',
         type: 'type',
         dataCreate: '2006-10-10',
-        dataSend: '12-01-2022',
-        reqNumber: 4
+        dataSend: '2006-10-10',
+        reqNumber: 4,
+        check: true,
       },
     ]
   }
