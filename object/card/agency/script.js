@@ -224,7 +224,8 @@ class Render {
 
   ownerLayout(item, id){
     const born = this.getDate(item.born);
-    const passDate = this.getDate(item.passDate);
+    // const passDate = this.getDate(item.passDate);
+    const passDate = '0';
     const fileClients = this.getFileClients(item.documents);
     const accessRights = this.getAccessRights();
     return `<div class="clients__card id${id}">
@@ -433,7 +434,7 @@ class Render {
       docType.exclusive = 'checked';
     }
     return docType;
-  }
+  }ё
   setTypeOfOwnership(){
     const typeOfOwnership = {
       owner: '',
@@ -585,13 +586,13 @@ class Render {
 
   render(){
     const owner = this.isOwner();
-    const scopeOfOwnership = this.scopeOfOwnership();
+    // const scopeOfOwnership = this.scopeOfOwnership();
     const placeLayout = this.placeLayout();
     const expired = this.getExpired();
     const progressBar = new ProgressBar(this.obj).render();
     const docType = this.setDocType();
     const promo = this.setPromo();
-    const typeOfOwnership = this.setTypeOfOwnership();
+    // const typeOfOwnership = this.setTypeOfOwnership();
     const file = this.getFile();
     const saveChangeText = this.getSaveChangeText();
     const priceAll = this.getAllPrice();
@@ -633,7 +634,7 @@ class Render {
               <div class="title__header"> 
                 <span class="title__header-text clients__title-head">Клиенты</span>
                 <div class="add__change">
-                  <button class="ui-btn ui-btn-primary-dark ui-btn-icon-add" data-btn="clients_add">Добавить</button>
+                  <button class="ui-btn ui-btn-primary-dark" data-btn="clients_add" data-choice="private">Добавить</button>
                   <div class="add isVisible">
                     <button data-choice="private" class="add__button">Частное лицо</button>
                     <button data-choice="legal" class="add__button">Юр. лицо</button>
@@ -645,10 +646,12 @@ class Render {
               </div>
               <div class="title__header"> 
                 <span class="title__header-text">Договор</span>
+                <!--
                 <div> 
                   <button class="ui-btn">История</button>
                   <button data-clear="all" class="btn_edit ui-btn ui-btn-danger-light">Очистить</button>
                 </div>
+                -->
               </div>
               <div class="contract"> 
                 <div class="contract__change"> 
@@ -674,29 +677,30 @@ class Render {
                       <label class='contract__btn carrier__btn ${promo.smsOpacity}' for="sms">СМС</label>
                     </div>
                   </div>
+                  <!--
                   <div class="contract__wrap"> 
                   <span class="contract__title">Объем владения</span>
                   <div class="contract__toggle-item item">
-                      <input name="scopeOfOwnership" type="radio" id="full" value="Полная" ${scopeOfOwnership.full}>
+                      <input name="scopeOfOwnership" type="radio" id="full" value="Полная">
                       <label onclick="addAttr('contract__number')" class='contract__btn' for="full">Полная</label>
                   </div>
                   <div class="contract__toggle-item item">
-                    <input name="scopeOfOwnership" type="radio" id="part" value="Доля" ${scopeOfOwnership.part}>
+                    <input name="scopeOfOwnership" type="radio" id="part" value="Доля">
                     <label onclick="removeAttr('contract__number')" class='contract__btn' for="part">Доля</label>
                   </div>
                   </div> 
                   <div class="contract__wrap"> 
                     <span class="contract__title">Укажите количество</span>
-                    <input name="percentageOfOwnership" class="contract__number" type="text" placeholder="Пример 1/4" ${scopeOfOwnership.value}>
+                    <input name="percentageOfOwnership" class="contract__number" type="text" placeholder="Пример 1/4">
                   </div>
                   <div class="contract__wrap"> 
                     <span class="contract__title">На кого?</span>
                     <div class="contract__toggle-item item">
-                      <input name="typeOfOwnership" type="radio" id="owner" value="Владелец" ${typeOfOwnership.owner}>
+                      <input name="typeOfOwnership" type="radio" id="owner" value="Владелец">
                       <label class='contract__btn' for="owner">Владелец</label>
                     </div>
                     <div class="contract__toggle-item item">
-                      <input name="typeOfOwnership" type="radio" id="proxy" value="Доверенное лицо" ${typeOfOwnership.proxy}>
+                      <input name="typeOfOwnership" type="radio" id="proxy" value="Доверенное лицо">
                       <label class='contract__btn' for="proxy">Доверенное лицо</label>
                     </div>
                   </div>
@@ -712,6 +716,7 @@ class Render {
                       </select>
                     </div>
                   </div> 
+                  -->
                   <div class="contract__wrap ${accessRights}"> 
                     <div class="contract__title-wrap"> 
                         <span class="contract__title">Срок дейcтвия</span>
@@ -723,9 +728,11 @@ class Render {
                 </div>                 
                 <div class="title__header"> 
                   <span class="title__header-text">Документы</span>
+                  <!--
                   <div> 
                     <button data-clear="docs" class="btn_edit ui-btn ui-btn-danger-light">Очистить</button>
                   </div>
+                  -->
                 </div>
                 <div class="docs"> 
                   <div class="documents"> 
@@ -744,28 +751,28 @@ class Render {
                   </div>
                   <div class="upload"> 
                     <div class="upload__wrap">                   
-                      <div data-container="egrn" class="file upload_width"> 
-                        <input name="egrn" class="file__input" id="file_egrn" type="file" multiple>
-                        <label class="file__label" for="file_egrn"></label>
-                        <span class="file__text">Загрузить ДОУ (+ соглашение если СК)</span>                      
-                      </div>    
-                      <div class="file__container container__egrn">${file.egrn}</div>                                   
-                    </div>  
-                    <div class="upload__wrap">                    
                       <div data-container="contract" class="file upload_width"> 
                         <input name="contract" class="file__input" id="file_contract" type="file" multiple>
                         <label class="file__label" for="file_contract"></label>
+                        <span class="file__text">Загрузить ДОУ (+ соглашение если СК)</span>                      
+                      </div>    
+                      <div class="file__container container__contract">${file.contract}</div>                                   
+                    </div>  
+                    <div class="upload__wrap">                    
+                      <div data-container="grp" class="file upload_width"> 
+                        <input name="grp" class="file__input" id="file_grp" type="file" multiple>
+                        <label class="file__label" for="file_grp"></label>
                         <span class="file__text">Загрузите соглашение о продлении ДОУ</span>
                       </div>
-                      <div class="file__container container__contract">${file.contract}</div>                          
+                      <div class="file__container container__grp">${file.grp}</div>                          
                     </div>                    
                     <div class="upload__wrap"> 
-                      <div data-container="grp" class="file upload_width"> 
-                      <input name="grp" class="file__input" id="file_grp" type="file" multiple>
-                      <label class="file__label" for="file_grp"></label>
+                      <div data-container="egrn" class="file upload_width"> 
+                      <input name="egrn" class="file__input" id="file_egrn" type="file" multiple>
+                      <label class="file__label" for="file_egrn"></label>
                       <span class="file__text">Загрузите Акт показа</span>
                       </div>
-                      <div class="file__container container__grp">${file.grp}</div>   
+                      <div class="file__container container__egrn">${file.egrn}</div>   
                     </div>   
                     <div class="upload__wrap"> 
                       <div data-container="other" class="file upload_width"> 
@@ -1052,6 +1059,159 @@ class SendFile{
 class Form {
   constructor() {
   }
+
+  /**
+   * первый рендер со всеми известными полями
+   */
+  // render(){
+  //   const htmlDom = document.querySelector('HTML');
+  //   htmlDom.setAttribute("style", "overflow-y:hidden;");
+  //
+  //   const currentY = window.pageYOffset;
+  //   const layoutForm = `<div style="top: ${currentY}px;" class="module-form">
+  //                         <form data-face="private" class="form">
+  //                           <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  //                           <li class="nav-item" role="presentation">
+  //                             <button class="nav-link active fio_form-pills" id="pills-fio-tab" data-bs-toggle="pill" data-bs-target="#pills-fio" type="button" role="tab" aria-controls="pills-fio" aria-selected="true">ФИО</button>
+  //                           </li>
+  //                           <li class="nav-item" role="presentation">
+  //                             <button class="nav-link passport_form-pills" id="pills-passport-tab" data-bs-toggle="pill" data-bs-target="#pills-passport" type="button" role="tab" aria-controls="pills-passport" aria-selected="false">Паспорт</button>
+  //                           </li>
+  //                           <li class="nav-item" role="presentation">
+  //                             <button class="nav-link address_form-pills" id="pills-address-tab" data-bs-toggle="pill" data-bs-target="#pills-address" type="button" role="tab" aria-controls="pills-address" aria-selected="false">Адрес,тип права</button>
+  //                           </li>
+  //                         </ul>
+  //                           <div class="tab-content" id="pills-tabContent">
+  //                             <div class="tab-pane fade show active" id="pills-fio" role="tabpanel" aria-labelledby="pills-fio-tab">
+  //                               <div class="form__fio">
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Фамилия</span>
+  //                                   <input id="fio_form" type="text" name="lastName" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Дата рождения</span>
+  //                                   <input id="fio_form" type="date" name="born" value="">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Имя</span>
+  //                                   <input id="fio_form" type="text" name="name" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Гражданство</span>
+  //                                   <input id="fio_form" type="text" name="nationality" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Отчество</span>
+  //                                   <input id="fio_form" type="text" name="secondName" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Место рождения</span>
+  //                                   <input id="fio_form" type="text" name="bornLocality" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__toggle">
+  //                                   <span class="contract__title">Пол</span>
+  //                                   <div class="form__toggle-item">
+  //                                     <input checked type="radio" value="Мужской" id="man" name="gender">
+  //                                     <label class="form__toggle-btn" for="man">Мужской</label>
+  //                                   </div>
+  //                                   <div class="form__toggle-item">
+  //                                     <input type="radio" id="women" value="Женский" name="gender">
+  //                                     <label class="form__toggle-btn" for="women">Женский</label>
+  //                                   </div>
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Комиссия</span>
+  //                                   <input id="fio_form" type="text" name="costForClient" autocomplete="off">
+  //                                 </div>
+  //                             </div>
+  //                             </div>
+  //                             <div class="tab-pane fade" id="pills-passport" role="tabpanel" aria-labelledby="pills-passport-tab">
+  //                               <div class="form__passport">
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Серия</span>
+  //                                   <input id="passport_form" type="text" name="passRange" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Номер</span>
+  //                                   <input id="passport_form" type="text" name="passNumber" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Дата выдачи</span>
+  //                                   <input id="passport_form" type="date" name="passDate" value="">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Код подразделения</span>
+  //                                   <input id="passport_form" type="text" name="passCode" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item form__passport-getPassport">
+  //                                   <span class="contract__title">Кем выдан</span>
+  //                                   <input id="passport_form" type="text" name="passGranted" value="" autocomplete="off">
+  //                                 </div>
+  //                             </div>
+  //                             </div>
+  //                             <div class="tab-pane fade" id="pills-address" role="tabpanel" aria-labelledby="pills-address-tab">
+  //                               <div class="form__address">
+  //                                 <div class="form__item form__address_first">
+  //                                     <span class="contract__title">Адрес постоянной регистрации</span>
+  //                                     <input id="address_form" type="text" name="registrationAddress" value="" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item form__address_second">
+  //                                   <div class="form__title_wrap">
+  //                                   <span class="contract__title">Адрес проживания</span>
+  //                                   <div class="match">
+  //                                     <input class="match__input" id="match" type="checkbox">
+  //                                     <label class="contract__title" for="match">Совпадает</label>
+  //                                   </div>
+  //                                 </div>
+  //                                     <input id="address_form" type="text" name="residentialAddress" value="" autocomplete="off">
+  //                                 </div>
+  //                                   <div class="form__toggle">
+  //                                     <span class="contract__title">Объем владения</span>
+  //                                     <div class="form__toggle-item">
+  //                                         <input name="scopeOfOwnership" type="radio" id="formFull" checked value="Собственность">
+  //                                         <label onclick="addAttr('contract__number')" class='form__toggle-btn' for="formFull">Собственность</label>
+  //                                     </div>
+  //                                     <div class="form__toggle-item">
+  //                                       <input name="scopeOfOwnership" type="radio" id="formPart" value="Доля">
+  //                                       <label onclick="removeAttr('contract__number')" class='form__toggle-btn' for="formPart">Доля</label>
+  //                                     </div>
+  //                                   </div>
+  //                                   <div class="contract__wrap">
+  //                                     <span class="contract__title">Укажите количество</span>
+  //                                     <input id="address_form" name="percentageOfOwnership" class="contract__number" type="text" placeholder="Пример 1/4" disabled autocomplete="off">
+  //                                   </div>
+  //                                   <div class="form__toggle">
+  //                                     <span class="contract__title">Типа права</span>
+  //                                     <div class="form__toggle-item">
+  //                                       <input name="typeOfOwnership" value="Владелец" type="radio" id="formOwner" checked>
+  //                                       <label onclick="addAttr('contract__number-proxy')" class='form__toggle-btn' for="formOwner">Владелец</label>
+  //                                     </div>
+  //                                     <div class="form__toggle-item">
+  //                                       <input name="typeOfOwnership" value="Доверенность" type="radio" id="formProxy">
+  //                                       <label onclick="removeAttr('contract__number-proxy')" class='form__toggle-btn' for="formProxy">Доверенность</label>
+  //                                     </div>
+  //                                   </div>
+  //                                   <div class="contract__wrap">
+  //                                     <span class="contract__title">Номер доверености</span>
+  //                                     <input id="address_form" name="attorneyValue" class="contract__number-proxy" type="text" disabled autocomplete="off">
+  //                                   </div>
+  //                               </div>
+  //                             </div>
+  //                           </div>
+  //                           <div class="footer">
+  //                             <div>
+  //                               <button class="form__btn" type="submit">Сохранить</button>
+  //                               <button class="form__btn" type="reset">Закрыть</button>
+  //                             </div>
+  //                             <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
+  //                           </div>
+  //                         </form>
+  //                       </div>`
+  //   document.body.insertAdjacentHTML('afterbegin', layoutForm);
+  // }
+  /**
+   * второй рендер без адреса, оюязательные только фио и дата рождения
+   */
   render(){
     const htmlDom = document.querySelector('HTML');
     htmlDom.setAttribute("style", "overflow-y:hidden;");
@@ -1059,132 +1219,26 @@ class Form {
     const currentY = window.pageYOffset;
     const layoutForm = `<div style="top: ${currentY}px;" class="module-form">
                           <form data-face="private" class="form">
-                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link active fio_form-pills" id="pills-fio-tab" data-bs-toggle="pill" data-bs-target="#pills-fio" type="button" role="tab" aria-controls="pills-fio" aria-selected="true">ФИО</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link passport_form-pills" id="pills-passport-tab" data-bs-toggle="pill" data-bs-target="#pills-passport" type="button" role="tab" aria-controls="pills-passport" aria-selected="false">Паспорт</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link address_form-pills" id="pills-address-tab" data-bs-toggle="pill" data-bs-target="#pills-address" type="button" role="tab" aria-controls="pills-address" aria-selected="false">Адрес,тип права</button>
-                            </li>
-                          </ul>
-                            <div class="tab-content" id="pills-tabContent">
-                              <div class="tab-pane fade show active" id="pills-fio" role="tabpanel" aria-labelledby="pills-fio-tab">
-                                <div class="form__fio">
-                                  <div class="form__item">
-                                    <span class="contract__title">Фамилия</span>
-                                    <input id="fio_form" type="text" name="lastName" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Дата рождения</span>
-                                    <input id="fio_form" type="date" name="born" value="">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Имя</span>
-                                    <input id="fio_form" type="text" name="name" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Гражданство</span>
-                                    <input id="fio_form" type="text" name="nationality" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Отчество</span>
-                                    <input id="fio_form" type="text" name="secondName" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Место рождения</span>
-                                    <input id="fio_form" type="text" name="bornLocality" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__toggle">
-                                    <span class="contract__title">Пол</span>
-                                    <div class="form__toggle-item">
-                                      <input checked type="radio" value="Мужской" id="man" name="gender">
-                                      <label class="form__toggle-btn" for="man">Мужской</label>
-                                    </div>
-                                    <div class="form__toggle-item">
-                                      <input type="radio" id="women" value="Женский" name="gender">
-                                      <label class="form__toggle-btn" for="women">Женский</label>
-                                    </div>
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Комиссия</span>
-                                    <input id="fio_form" type="text" name="costForClient" autocomplete="off">
-                                  </div>
+                            <div class="form__fio">
+                              <div class="form__item">
+                                <span class="contract__title">Фамилия<i>*</i></span>
+                                <input data-required="yes" id="fio_form" type="text" name="lastName" value="" autocomplete="off">
                               </div>
+                              <div class="form__item">
+                                <span class="contract__title">Дата рождения<i>*</i></span>
+                                <input data-required="yes" id="fio_form" type="date" name="born" value="">
                               </div>
-                              <div class="tab-pane fade" id="pills-passport" role="tabpanel" aria-labelledby="pills-passport-tab">
-                                <div class="form__passport">
-                                  <div class="form__item">
-                                    <span class="contract__title">Серия</span>
-                                    <input id="passport_form" type="text" name="passRange" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Номер</span>
-                                    <input id="passport_form" type="text" name="passNumber" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Дата выдачи</span>
-                                    <input id="passport_form" type="date" name="passDate" value="">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Код подразделения</span>
-                                    <input id="passport_form" type="text" name="passCode" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item form__passport-getPassport">
-                                    <span class="contract__title">Кем выдан</span>
-                                    <input id="passport_form" type="text" name="passGranted" value="" autocomplete="off">
-                                  </div>
+                              <div class="form__item">
+                                <span class="contract__title">Имя<i>*</i></span>
+                                <input data-required="yes" id="fio_form" type="text" name="name" value="" autocomplete="off">
                               </div>
+                              <div class="form__item">
+                                <span class="contract__title">Отчество<i>*</i></span>
+                                <input data-required="yes" id="fio_form" type="text" name="secondName" value="" autocomplete="off">
                               </div>
-                              <div class="tab-pane fade" id="pills-address" role="tabpanel" aria-labelledby="pills-address-tab">
-                                <div class="form__address">
-                                  <div class="form__item form__address_first">
-                                      <span class="contract__title">Адрес постоянной регистрации</span>
-                                      <input id="address_form" type="text" name="registrationAddress" value="" autocomplete="off">
-                                  </div>
-                                  <div class="form__item form__address_second">                                
-                                    <div class="form__title_wrap">
-                                    <span class="contract__title">Адрес проживания</span>
-                                    <div class="match"> 
-                                      <input class="match__input" id="match" type="checkbox">
-                                      <label class="contract__title" for="match">Совпадает</label>
-                                    </div>
-                                  </div>
-                                      <input id="address_form" type="text" name="residentialAddress" value="" autocomplete="off">
-                                  </div>
-                                    <div class="form__toggle"> 
-                                      <span class="contract__title">Объем владения</span>
-                                      <div class="form__toggle-item">
-                                          <input name="scopeOfOwnership" type="radio" id="formFull" checked value="Собственность">
-                                          <label onclick="addAttr('contract__number')" class='form__toggle-btn' for="formFull">Собственность</label>
-                                      </div>
-                                      <div class="form__toggle-item">
-                                        <input name="scopeOfOwnership" type="radio" id="formPart" value="Доля">
-                                        <label onclick="removeAttr('contract__number')" class='form__toggle-btn' for="formPart">Доля</label>
-                                      </div>
-                                    </div> 
-                                    <div class="contract__wrap"> 
-                                      <span class="contract__title">Укажите количество</span>
-                                      <input id="address_form" name="percentageOfOwnership" class="contract__number" type="text" placeholder="Пример 1/4" disabled autocomplete="off">
-                                    </div>                            
-                                    <div class="form__toggle">
-                                      <span class="contract__title">Типа права</span>
-                                      <div class="form__toggle-item">
-                                        <input name="typeOfOwnership" value="Владелец" type="radio" id="formOwner" checked>
-                                        <label onclick="addAttr('contract__number-proxy')" class='form__toggle-btn' for="formOwner">Владелец</label>
-                                      </div>
-                                      <div class="form__toggle-item">
-                                        <input name="typeOfOwnership" value="Доверенность" type="radio" id="formProxy">
-                                        <label onclick="removeAttr('contract__number-proxy')" class='form__toggle-btn' for="formProxy">Доверенность</label>
-                                      </div>
-                                    </div>
-                                    <div class="contract__wrap"> 
-                                      <span class="contract__title">Номер доверености</span>
-                                      <input id="address_form" name="attorneyValue" class="contract__number-proxy" type="text" disabled autocomplete="off">
-                                    </div>   
-                                </div>  
+                              <div class="form__item">
+                                <span class="contract__title">Комиссия<i>*</i></span>
+                                <input data-required="yes" id="fio_form" type="text" name="costForClient" autocomplete="off">
                               </div>
                             </div>
                             <div class="footer"> 
@@ -1192,11 +1246,12 @@ class Form {
                                 <button class="form__btn" type="submit">Сохранить</button>
                                 <button class="form__btn" type="reset">Закрыть</button>
                               </div>
-                              <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
+                              <span class="guid"><i>*</i>поля обязательны для заполнения</span>
                             </div>
                           </form>
                         </div>`
     document.body.insertAdjacentHTML('afterbegin', layoutForm);
+    this.handlerForm();
   }
   renderLegal(){
     const htmlDom = document.querySelector('HTML');
@@ -1285,14 +1340,61 @@ class Form {
                           </form>
                         </div>`
     document.body.insertAdjacentHTML('afterbegin', layoutForm);
+    this.handlerForm();
+
+  }
+
+  handlerForm(){
+    const module = document.querySelector('.module-form');
+    const form = document.querySelector('.form');
+    const htmlDom = document.querySelector('HTML');
+    // const registrationAddress = form.querySelector(`INPUT[name='registrationAddress']`);
+    // const residentialAddress = form.querySelector(`INPUT[name='residentialAddress']`);
+
+    // form.querySelector('#match').addEventListener('change', event => {
+    //   if (event.target.checked){
+    //     residentialAddress.value = registrationAddress.value;
+    //     residentialAddress.setAttribute('disabled', 'disabled');
+    //     registrationAddress.addEventListener('keyup', setAddressValue);
+    //   } else {
+    //     registrationAddress.removeEventListener('keyup', setAddressValue)
+    //     residentialAddress.removeAttribute('disabled');
+    //   }
+    // })
+
+    // function setAddressValue(){
+    //   residentialAddress.value = registrationAddress.value;
+    // }
+
+    form.addEventListener('reset', e =>{
+      e.preventDefault();
+      htmlDom.removeAttribute("style");
+      module.remove();
+    });
+
+    form.addEventListener('submit', event =>{
+      event.preventDefault();
+      const allInputs = event.target.querySelectorAll(`INPUT`);
+      // allInputs.splice(allInputs.indexOf(allInputs.find(item => item.type === 'checkbox')), 1);
+
+      if (this.validForm(allInputs, event.target.dataset.face)){
+        htmlDom.removeAttribute("style");
+        module.remove();
+        document.querySelector('.save-change').classList.add('save-change_active');
+      }
+    });
   }
 
   validForm(allInputs, type){
     if (type === 'private'){
-      if (this.validPrivate(allInputs)){
+      if (this.validPrivateNEWSimple(allInputs)){
         this.setNewClient(allInputs, type);
         return true;
       }
+      // if (this.validPrivate(allInputs)){
+      //   this.setNewClient(allInputs, type);
+      //   return true;
+      // }
     } else if (type === 'legal'){
       if (this.validLegal(allInputs)){
         this.setNewClient(allInputs, type);
@@ -1300,6 +1402,58 @@ class Form {
       }
     }
   }
+
+  /**
+   * новая валидация формы только с ФИО и датой
+   * @param allInputs
+   * @returns {boolean}
+   */
+  validPrivateNEWSimple(allInputs){
+    const validInputs = {
+      lastName: false,
+      name: false,
+      secondName: false,
+      born: false,
+      costForClient: false,
+    }
+    const libraryRegExp = {
+      lastName: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
+      name: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
+      secondName: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
+      costForClient: /^\d*$/,
+    }
+    for(let input of allInputs){
+      if (input.name !== 'born' && input.dataset.required === 'yes'){
+        if (input.value.length === 0){
+          validInputs[input.name] = false;
+          input.classList.add('isValid');
+        } else if (!libraryRegExp[input.name].test(input.value)) {
+          validInputs[input.name] = false;
+          input.classList.add('isValid');
+        } else {
+          validInputs[input.name] = true;
+          input.classList.remove('isValid');
+        }
+      } else if (input.name === 'born'){
+        if (new Date() < new Date(input.value) || input.value.length === 0){
+          validInputs[input.name] = false;
+          input.classList.add('isValid');
+        } else {
+          validInputs[input.name] = true;
+          input.classList.remove('isValid');
+        }
+      }
+    }
+    let count = 0;
+    for (let [key, value] of Object.entries(validInputs)){
+      if (value === true){
+        count++;
+      }
+    }
+    console.log(count === 5)
+    return count === 5;
+  }
+
   validPrivate(allInputs){
     const sortInputs = {
       gender: [],
@@ -1463,15 +1617,18 @@ class Form {
       relation: {},
     };
     for (let item of allInputs){
-      if (item.type === 'radio'){
-        if (item.checked){
-          if(item.name === 'typeOfOwnership' || item.name === 'scopeOfOwnership'){
-            newClient.relation[item.name] = item.value;
-          } else {
-            newClient[item.name] = item.value;
-          }
-        }
-      } else if(item.name === 'attorneyValue' || item.name === 'percentageOfOwnership' || item.name === 'costForClient'){
+      // if (item.type === 'radio') {
+      //   if (item.checked) {
+      //     // if(item.name === 'typeOfOwnership' || item.name === 'scopeOfOwnership'){
+      //     //   newClient.relation[item.name] = item.value;
+      //     // } else {
+      //     //   newClient[item.name] = item.value;
+      //     // }
+      //     newClient[item.name] = item.value;
+      //   }
+      //   // } else if(item.name === 'attorneyValue' || item.name === 'percentageOfOwnership' || item.name === 'costForClient'){
+      // } else
+      if (item.name === 'costForClient'){
         newClient.relation[item.name] = item.value;
       } else {
         newClient[item.name] = item.value;
@@ -1482,6 +1639,8 @@ class Form {
     newClient.UID = 'A' + Math.floor(Math.random()*1000);
     newClient.documents = [];
     newClient.type = type;
+    newClient.gender = 'Мужской';
+    newClient.scopeOfOwnership = 'formFull';
 
     const clientsContainer = document.querySelector('.clients');
     const id = app.owner.agencyagreement.signatories.length;
@@ -1531,8 +1690,9 @@ class Handler{
       } else if (event.target.dataset.action === 'delete'){
         this.removeFile(event)
       } else if (event.target.dataset.btn === 'clients_add'){
-        this.currentElem = document.querySelector('.add');
-        this.checkCurrentElem();
+        // this.currentElem = document.querySelector('.add');
+        // this.checkCurrentElem();
+        this.addClients();
       } else if (event.target.dataset.save === 'all'){
         if (document.querySelector(`INPUT[id='exclusive']`).checked && !this.checkClients()){
           document.querySelector('.save-change-error').innerHTML = '';
@@ -1728,6 +1888,10 @@ class Handler{
         blockClient.classList.remove('isValidText');
         errorContainer.innerHTML = '';
         app.copyOwner.agencyagreement.editor = login;
+        app.copyOwner.scopeOfOwnership = 'Полная';
+        app.copyOwner.typeOfOwnership = 'owner';
+        app.copyOwner.percentageOfOwnership = '';
+        app.copyOwner.typeOfLaw = '';
         this.setAllInput(allInputs);
         this.setAllSelect(allSelect);
         if (Object.keys(app.newClient).length !== 0){
@@ -1807,11 +1971,11 @@ class Handler{
   validMainPage(allInputs, allSelect){
     const inputValid = {
       docType: false,
-      typeOfOwnership: false,
-      scopeOfOwnership: false,
-      percentageOfOwnership: false,
+      typeOfOwnership: true,
+      scopeOfOwnership: true,
+      percentageOfOwnership: true,
       expired: false,
-      typeOfLaw : false,
+      typeOfLaw : true,
     }
     const inputObj = {
       docType: [],
@@ -1831,14 +1995,14 @@ class Handler{
         }
       }
     }
-    for (let select of allSelect){
-      if (select.previousElementSibling.name === 'typeOfLaw'){
-        inputObj.typeOfLaw = select;
-      }
-    }
+    // for (let select of allSelect){
+    //   if (select.previousElementSibling.name === 'typeOfLaw'){
+    //     inputObj.typeOfLaw = select;
+    //   }
+    // }
     const inputFalse = [];
     checkRadio(inputObj.docType[0], inputObj.docType[1]);
-    checkRadio(inputObj.typeOfOwnership[0], inputObj.typeOfOwnership[1]);
+    // checkRadio(inputObj.typeOfOwnership[0], inputObj.typeOfOwnership[1]);
     function checkRadio(item1, item2){
       if (item1.checked || item2.checked){
         inputValid[item1.name] = true;
@@ -1850,34 +2014,34 @@ class Handler{
         item2.classList.add('isValid');
       }
     }
-    checkRadiosScope(inputObj.scopeOfOwnership[0], inputObj.scopeOfOwnership[1], inputObj.percentageOfOwnership)
-    function checkRadiosScope(item1, item2, score){
-      const regExp = /[0-9]\/[0-9]/;
-      if (item1.checked){
-        inputValid[item1.name] = true;
-        inputValid[score.name] = true;
-        item1.nextElementSibling.classList.remove('isValid');
-        item2.nextElementSibling.classList.remove('isValid');
-        score.classList.remove('isValid');
-      } else if (item2.checked && score.value.length === 0){
-        inputFalse.push(score)
-        score.classList.add('isValid');
-      } else if (item2.checked && !regExp.test(score.value)) {
-        inputFalse.push(score)
-        score.classList.add('isValid');
-      } else if (!item1.checked && !item2.checked){
-        inputValid[item1.name] = false;
-        item1.nextElementSibling.classList.add('isValid');
-        item2.nextElementSibling.classList.add('isValid');
-        inputFalse.push(item1)
-      } else {
-        inputValid[item1.name] = true;
-        inputValid[score.name] = true;
-        item1.nextElementSibling.classList.remove('isValid');
-        item2.nextElementSibling.classList.remove('isValid');
-        score.classList.remove('isValid');
-      }
-    }
+    // checkRadiosScope(inputObj.scopeOfOwnership[0], inputObj.scopeOfOwnership[1], inputObj.percentageOfOwnership)
+    // function checkRadiosScope(item1, item2, score){
+    //   const regExp = /[0-9]\/[0-9]/;
+    //   if (item1.checked){
+    //     inputValid[item1.name] = true;
+    //     inputValid[score.name] = true;
+    //     item1.nextElementSibling.classList.remove('isValid');
+    //     item2.nextElementSibling.classList.remove('isValid');
+    //     score.classList.remove('isValid');
+    //   } else if (item2.checked && score.value.length === 0){
+    //     inputFalse.push(score)
+    //     score.classList.add('isValid');
+    //   } else if (item2.checked && !regExp.test(score.value)) {
+    //     inputFalse.push(score)
+    //     score.classList.add('isValid');
+    //   } else if (!item1.checked && !item2.checked){
+    //     inputValid[item1.name] = false;
+    //     item1.nextElementSibling.classList.add('isValid');
+    //     item2.nextElementSibling.classList.add('isValid');
+    //     inputFalse.push(item1)
+    //   } else {
+    //     inputValid[item1.name] = true;
+    //     inputValid[score.name] = true;
+    //     item1.nextElementSibling.classList.remove('isValid');
+    //     item2.nextElementSibling.classList.remove('isValid');
+    //     score.classList.remove('isValid');
+    //   }
+    // }
     checkExpired(inputObj.expired)
     function checkExpired(item){
       if (new Date() < new Date(item.value)){
@@ -1888,16 +2052,16 @@ class Handler{
         item.classList.add('isValid');
       }
     }
-    checkTypeOfLaw(inputObj.typeOfLaw);
-    function checkTypeOfLaw(item){
-      if (item.innerHTML.length === 0 || item.innerHTML === 'Выбрать'){
-        inputFalse.push(item);
-        item.classList.add('isValid');
-      } else {
-        item.classList.remove('isValid');
-        inputValid.typeOfLaw = true;
-      }
-    }
+    // checkTypeOfLaw(inputObj.typeOfLaw);
+    // function checkTypeOfLaw(item){
+    //   if (item.innerHTML.length === 0 || item.innerHTML === 'Выбрать'){
+    //     inputFalse.push(item);
+    //     item.classList.add('isValid');
+    //   } else {
+    //     item.classList.remove('isValid');
+    //     inputValid.typeOfLaw = true;
+    //   }
+    // }
     let count = 0;
     for (let [key, value] of Object.entries(inputValid)){
       if (value === true){
@@ -1975,8 +2139,8 @@ class Handler{
       if (app.copyOwner.agencyagreement.chiefAccepted !== '0' || app.copyOwner.agencyagreement.moderatorAccepted !== '0'){
         app.copyOwner.agencyagreement.chiefAccepted = '0';
         app.copyOwner.agencyagreement.moderatorAccepted = '0';
-        progressItems[3].classList.remove('progress__number_active');
-        progressItems[4].classList.remove('progress__number_active');
+        progressItems[3] ? progressItems[3].classList.remove('progress__number_active') : '';
+        progressItems[4] ? progressItems[3].classList.remove('progress__number_active') : '';
         if (changeText){changeText.remove()}
         return true;
       } else {
@@ -2012,11 +2176,9 @@ class Handler{
   }
   addLegal(){
     new Form().renderLegal();
-    this.handlerForm();
   };
   addClients(){
     new Form().render();
-    this.handlerForm();
   }
   removeClientFromDom(){
     document.querySelector(`.${this.currentClient}`).remove();
@@ -2269,45 +2431,6 @@ class Handler{
     this.closeModule(module);
     this.openSelectResponsible(this.filtered);
   }
-  handlerForm(){
-    const module = document.querySelector('.module-form');
-    const form = document.querySelector('.form');
-    const htmlDom = document.querySelector('HTML');
-    const registrationAddress = form.querySelector(`INPUT[name='registrationAddress']`);
-    const residentialAddress = form.querySelector(`INPUT[name='residentialAddress']`);
-
-    form.querySelector('#match').addEventListener('change', event => {
-      if (event.target.checked){
-        residentialAddress.value = registrationAddress.value;
-        residentialAddress.setAttribute('disabled', 'disabled');
-        registrationAddress.addEventListener('keyup', setAddressValue);
-      } else {
-        registrationAddress.removeEventListener('keyup', setAddressValue)
-        residentialAddress.removeAttribute('disabled');
-      }
-    })
-
-    function setAddressValue(){
-      residentialAddress.value = registrationAddress.value;
-    }
-
-    form.addEventListener('reset', () =>{
-      htmlDom.removeAttribute("style");
-      module.remove();
-    });
-
-    form.addEventListener('submit', event =>{
-      event.preventDefault();
-      const allInputs = Array.from(event.target.querySelectorAll(`INPUT`));
-      allInputs.splice(allInputs.indexOf(allInputs.find(item => item.type === 'checkbox')), 1);
-
-      if (new Form().validForm(allInputs, event.target.dataset.face)){
-        htmlDom.removeAttribute("style");
-        module.remove();
-        document.querySelector('.save-change').classList.add('save-change_active');
-      }
-    });
-  }
 
   clearDocs(){
     document.querySelector('.container__egrn').innerHTML = '';
@@ -2459,12 +2582,163 @@ class EditClient{
     return typeOfOwnership;
 
   }
+
+  /**
+   * старая форма
+   */
+  // openForm(){
+  //   const born = this.getDate(`${this.currentCLient.born}`);
+  //   const passDate = this.getDate(`${this.currentCLient.passDate}`);
+  //   const gender = this.setGender();
+  //   const typeOfOwnership = this.typeOfOwnership();
+  //   const scopeOfOwnership = this.scopeOfOwnership();
+  //
+  //   const htmlDom = document.querySelector('HTML');
+  //   htmlDom.setAttribute("style", "overflow-y:hidden;");
+  //
+  //   const currentY = window.pageYOffset;
+  //   const layoutForm = `<div style="top: ${currentY}px;" class="module-form">
+  //                         <form data-face="private" class="form">
+  //                           <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  //                           <li class="nav-item" role="presentation">
+  //                             <button class="nav-link active fio_form-pills" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">ФИО</button>
+  //                           </li>
+  //                           <li class="nav-item" role="presentation">
+  //                             <button class="nav-link passport_form-pills" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Паспорт</button>
+  //                           </li>
+  //                           <li class="nav-item" role="presentation">
+  //                             <button class="nav-link address_form-pills" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Адрес,тип права</button>
+  //                           </li>
+  //                         </ul>
+  //                           <div class="tab-content" id="pills-tabContent">
+  //                             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+  //                               <div class="form__fio">
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Фамилия</span>
+  //                                   <input id="fio_form" type="text" name="lastName" value="${this.currentCLient.lastName ? this.currentCLient.lastName : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Дата рождения</span>
+  //                                   <input id="fio_form" required type="date" name="born" value="${born}">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Имя</span>
+  //                                   <input id="fio_form" type="text" name="name" value="${this.currentCLient.name ? this.currentCLient.name : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Гражданство</span>
+  //                                   <input id="fio_form" type="text" name="nationality" value="${this.currentCLient.nationality ? this.currentCLient.nationality : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Отчество</span>
+  //                                   <input id="fio_form" type="text" name="secondName" value="${this.currentCLient.secondName ? this.currentCLient.secondName : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Место рождения</span>
+  //                                   <input id="fio_form" type="text" name="bornLocality" value="${this.currentCLient.bornLocality ? this.currentCLient.bornLocality : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__toggle">
+  //                                   <span class="contract__title">Пол</span>
+  //                                   ${gender}
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Комиссия</span>
+  //                                   <input id="fio_form" type="text" name="costForClient" value="${this.currentCLient.relation.costForClient ? this.currentCLient.relation.costForClient : ''}" autocomplete="off">
+  //                                 </div>
+  //                             </div>
+  //                             </div>
+  //                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+  //                               <div class="form__passport">
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Серия</span>
+  //                                   <input id="passport_form" type="text" name="passRange" value="${this.currentCLient.passRange ? this.currentCLient.passRange : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Номер</span>
+  //                                   <input id="passport_form" type="text" name="passNumber" value="${this.currentCLient.passNumber ? this.currentCLient.passNumber : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Дата выдачи</span>
+  //                                   <input id="passport_form" required type="date" name="passDate" value="${passDate}">
+  //                                 </div>
+  //                                 <div class="form__item">
+  //                                   <span class="contract__title">Код подразделения</span>
+  //                                   <input id="passport_form" type="text" name="passCode" value="${this.currentCLient.passCode ? this.currentCLient.passCode : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item form__passport-getPassport">
+  //                                   <span class="contract__title">Кем выдан</span>
+  //                                   <input id="passport_form" type="text" name="passGranted" value="${this.currentCLient.passGranted ? this.currentCLient.passGranted : ''}" autocomplete="off">
+  //                                 </div>
+  //                             </div>
+  //                             </div>
+  //                             <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+  //                               <div class="form__address">
+  //                                 <div class="form__item form__address_first">
+  //                                     <span class="contract__title">Адрес постоянной регистрации</span>
+  //                                     <input id="address_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress ? this.currentCLient.registrationAddress : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__item form__address_second">
+  //                                   <div class="form__title_wrap">
+  //                                     <span class="contract__title">Адрес проживания</span>
+  //                                     <div class="match">
+  //                                       <input class="match__input" id="match" type="checkbox">
+  //                                       <label class="contract__title" for="match">Совпадает</label>
+  //                                     </div>
+  //                                   </div>
+  //                                   <input id="address_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress ? this.currentCLient.residentialAddress : ''}" autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__toggle">
+  //                                   <span class="contract__title">Объем владения</span>
+  //                                   <div class="form__toggle-item">
+  //                                       <input name="scopeOfOwnership" type="radio" id="formFull" ${scopeOfOwnership.full} value="Собственность">
+  //                                       <label onclick="addAttr('contract__number')" class='form__toggle-btn' for="formFull">Cобственность</label>
+  //                                   </div>
+  //                                   <div class="form__toggle-item">
+  //                                     <input name="scopeOfOwnership" type="radio" id="formPart" ${scopeOfOwnership.part} value="Доля">
+  //                                     <label onclick="removeAttr('contract__number')" class='form__toggle-btn' for="formPart">Доля</label>
+  //                                   </div>
+  //                                 </div>
+  //                                 <div class="contract__wrap">
+  //                                   <span class="contract__title">Укажите количество</span>
+  //                                   <input id="address_form" name="percentageOfOwnership" class="contract__number" type="text" placeholder="1/4" ${scopeOfOwnership.count} autocomplete="off">
+  //                                 </div>
+  //                                 <div class="form__toggle">
+  //                                   <span class="contract__title">Типа права</span>
+  //                                   <div class="form__toggle-item">
+  //                                     <input name="typeOfOwnership" value="Владелец" type="radio" id="formOwner" ${typeOfOwnership.owner}>
+  //                                     <label onclick="addAttr('contract__number-proxy')" class='form__toggle-btn' for="formOwner">Владелец</label>
+  //                                   </div>
+  //                                   <div class="form__toggle-item">
+  //                                     <input name="typeOfOwnership" value="Доверенность" type="radio" id="formProxy" ${typeOfOwnership.proxy}>
+  //                                     <label onclick="removeAttr('contract__number-proxy')" class='form__toggle-btn' for="formProxy">Доверенность</label>
+  //                                   </div>
+  //                                 </div>
+  //                                 <div class="contract__wrap">
+  //                                   <span class="contract__title">Номер доверености</span>
+  //                                   <input id="address_form" name="attorneyValue" class="contract__number-proxy" type="text" ${typeOfOwnership.number} autocomplete="off">
+  //                                 </div>
+  //                               </div>
+  //                             </div>
+  //                           </div>
+  //                           <div class="footer">
+  //                             <div>
+  //                               <button class="form__btn" type="submit">Сохранить</button>
+  //                               <button class="form__btn" type="reset">Закрыть</button>
+  //                             </div>
+  //                             <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
+  //                           </div>
+  //                         </form>
+  //                       </div>`
+  //   document.body.insertAdjacentHTML('afterbegin', layoutForm);
+  // }
+
+  /**
+   * новая форма
+   */
   openForm(){
     const born = this.getDate(`${this.currentCLient.born}`);
-    const passDate = this.getDate(`${this.currentCLient.passDate}`);
-    const gender = this.setGender();
-    const typeOfOwnership = this.typeOfOwnership();
-    const scopeOfOwnership = this.scopeOfOwnership();
+    // const passDate = this.getDate(`${this.currentCLient.passDate}`);
+    // const gender = this.setGender();
 
     const htmlDom = document.querySelector('HTML');
     htmlDom.setAttribute("style", "overflow-y:hidden;");
@@ -2472,133 +2746,34 @@ class EditClient{
     const currentY = window.pageYOffset;
     const layoutForm = `<div style="top: ${currentY}px;" class="module-form">
                           <form data-face="private" class="form">
-                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link active fio_form-pills" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">ФИО</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link passport_form-pills" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Паспорт</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link address_form-pills" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Адрес,тип права</button>
-                            </li>
-                          </ul>
-                            <div class="tab-content" id="pills-tabContent">
-                              <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                                 <div class="form__fio">
                                   <div class="form__item">
-                                    <span class="contract__title">Фамилия</span>
-                                    <input id="fio_form" type="text" name="lastName" value="${this.currentCLient.lastName ? this.currentCLient.lastName : ''}" autocomplete="off">
+                                    <span class="contract__title">Фамилия<i>*</i></span>
+                                    <input data-required="yes" id="fio_form" type="text" name="lastName" value="${this.currentCLient.lastName ? this.currentCLient.lastName : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
-                                    <span class="contract__title">Дата рождения</span>
-                                    <input id="fio_form" required type="date" name="born" value="${born}">
+                                    <span class="contract__title">Дата рождения<i>*</i></span>
+                                    <input id="fio_form" data-required="yes" type="date" name="born" value="${born}">
                                   </div>
                                   <div class="form__item">
-                                    <span class="contract__title">Имя</span>
-                                    <input id="fio_form" type="text" name="name" value="${this.currentCLient.name ? this.currentCLient.name : ''}" autocomplete="off">
+                                    <span class="contract__title">Имя<i>*</i></span>
+                                    <input data-required="yes" id="fio_form" type="text" name="name" value="${this.currentCLient.name ? this.currentCLient.name : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
-                                    <span class="contract__title">Гражданство</span>
-                                    <input id="fio_form" type="text" name="nationality" value="${this.currentCLient.nationality ? this.currentCLient.nationality : ''}" autocomplete="off">
+                                    <span class="contract__title">Отчество<i>*</i></span>
+                                    <input data-required="yes" id="fio_form" type="text" name="secondName" value="${this.currentCLient.secondName ? this.currentCLient.secondName : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
-                                    <span class="contract__title">Отчество</span>
-                                    <input id="fio_form" type="text" name="secondName" value="${this.currentCLient.secondName ? this.currentCLient.secondName : ''}" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Место рождения</span>
-                                    <input id="fio_form" type="text" name="bornLocality" value="${this.currentCLient.bornLocality ? this.currentCLient.bornLocality : ''}" autocomplete="off">
-                                  </div>
-                                  <div class="form__toggle">
-                                    <span class="contract__title">Пол</span>
-                                    ${gender}
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Комиссия</span>
-                                    <input id="fio_form" type="text" name="costForClient" value="${this.currentCLient.relation.costForClient ? this.currentCLient.relation.costForClient : ''}" autocomplete="off">
+                                    <span class="contract__title">Комиссия<i>*</i></span>
+                                    <input data-required="yes" id="fio_form" type="text" name="costForClient" value="${this.currentCLient.relation.costForClient ? this.currentCLient.relation.costForClient : ''}" autocomplete="off">
                                   </div>
                               </div>
-                              </div>
-                              <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                                <div class="form__passport">
-                                  <div class="form__item">
-                                    <span class="contract__title">Серия</span>
-                                    <input id="passport_form" type="text" name="passRange" value="${this.currentCLient.passRange ? this.currentCLient.passRange : ''}" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Номер</span>
-                                    <input id="passport_form" type="text" name="passNumber" value="${this.currentCLient.passNumber ? this.currentCLient.passNumber : ''}" autocomplete="off">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Дата выдачи</span>
-                                    <input id="passport_form" required type="date" name="passDate" value="${passDate}">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Код подразделения</span>
-                                    <input id="passport_form" type="text" name="passCode" value="${this.currentCLient.passCode ? this.currentCLient.passCode : ''}" autocomplete="off">
-                                  </div>
-                                  <div class="form__item form__passport-getPassport">
-                                    <span class="contract__title">Кем выдан</span>
-                                    <input id="passport_form" type="text" name="passGranted" value="${this.currentCLient.passGranted ? this.currentCLient.passGranted : ''}" autocomplete="off">
-                                  </div>
-                              </div>
-                              </div>
-                              <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                                <div class="form__address">
-                                  <div class="form__item form__address_first">
-                                      <span class="contract__title">Адрес постоянной регистрации</span>
-                                      <input id="address_form" type="text" name="registrationAddress" value="${this.currentCLient.registrationAddress ? this.currentCLient.registrationAddress : ''}" autocomplete="off">
-                                  </div>
-                                  <div class="form__item form__address_second">
-                                    <div class="form__title_wrap">
-                                      <span class="contract__title">Адрес проживания</span>
-                                      <div class="match"> 
-                                        <input class="match__input" id="match" type="checkbox">
-                                        <label class="contract__title" for="match">Совпадает</label>
-                                      </div>
-                                    </div>
-                                    <input id="address_form" type="text" name="residentialAddress" value="${this.currentCLient.residentialAddress ? this.currentCLient.residentialAddress : ''}" autocomplete="off">
-                                  </div>
-                                  <div class="form__toggle"> 
-                                    <span class="contract__title">Объем владения</span>
-                                    <div class="form__toggle-item">
-                                        <input name="scopeOfOwnership" type="radio" id="formFull" ${scopeOfOwnership.full} value="Собственность">
-                                        <label onclick="addAttr('contract__number')" class='form__toggle-btn' for="formFull">Cобственность</label>
-                                    </div>
-                                    <div class="form__toggle-item">
-                                      <input name="scopeOfOwnership" type="radio" id="formPart" ${scopeOfOwnership.part} value="Доля">
-                                      <label onclick="removeAttr('contract__number')" class='form__toggle-btn' for="formPart">Доля</label>
-                                    </div>
-                                  </div> 
-                                  <div class="contract__wrap"> 
-                                    <span class="contract__title">Укажите количество</span>
-                                    <input id="address_form" name="percentageOfOwnership" class="contract__number" type="text" placeholder="1/4" ${scopeOfOwnership.count} autocomplete="off">
-                                  </div>     
-                                  <div class="form__toggle">
-                                    <span class="contract__title">Типа права</span>
-                                    <div class="form__toggle-item">
-                                      <input name="typeOfOwnership" value="Владелец" type="radio" id="formOwner" ${typeOfOwnership.owner}>
-                                      <label onclick="addAttr('contract__number-proxy')" class='form__toggle-btn' for="formOwner">Владелец</label>
-                                    </div>
-                                    <div class="form__toggle-item">
-                                      <input name="typeOfOwnership" value="Доверенность" type="radio" id="formProxy" ${typeOfOwnership.proxy}>
-                                      <label onclick="removeAttr('contract__number-proxy')" class='form__toggle-btn' for="formProxy">Доверенность</label>
-                                    </div>
-                                  </div>
-                                  <div class="contract__wrap"> 
-                                    <span class="contract__title">Номер доверености</span>
-                                    <input id="address_form" name="attorneyValue" class="contract__number-proxy" type="text" ${typeOfOwnership.number} autocomplete="off">
-                                  </div>   
-                                </div>  
-                              </div>
-                            </div>
                             <div class="footer"> 
                               <div> 
                                 <button class="form__btn" type="submit">Сохранить</button>
                                 <button class="form__btn" type="reset">Закрыть</button>
                               </div>
-                              <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
+                              <span class="guid"><i>*</i>поля обязательны для заполнения</span>
                             </div>
                           </form>
                         </div>`
@@ -2699,23 +2874,23 @@ class EditClient{
     const module = document.querySelector('.module-form');
     const form = document.querySelector('.form');
     const htmlDom = document.querySelector('HTML');
-    const registrationAddress = form.querySelector(`INPUT[name='registrationAddress']`);
-    const residentialAddress = form.querySelector(`INPUT[name='residentialAddress']`);
-
-    form.querySelector('#match').addEventListener('change', event => {
-      if (event.target.checked){
-        residentialAddress.value = registrationAddress.value;
-        residentialAddress.setAttribute('disabled', 'disabled');
-        registrationAddress.addEventListener('keyup', setAddressValue);
-      } else {
-        registrationAddress.removeEventListener('keyup', setAddressValue)
-        residentialAddress.removeAttribute('disabled');
-      }
-    })
-
-    function setAddressValue(){
-      residentialAddress.value = registrationAddress.value;
-    }
+    // const registrationAddress = form.querySelector(`INPUT[name='registrationAddress']`);
+    // const residentialAddress = form.querySelector(`INPUT[name='residentialAddress']`);
+    //
+    // form.querySelector('#match').addEventListener('change', event => {
+    //   if (event.target.checked){
+    //     residentialAddress.value = registrationAddress.value;
+    //     residentialAddress.setAttribute('disabled', 'disabled');
+    //     registrationAddress.addEventListener('keyup', setAddressValue);
+    //   } else {
+    //     registrationAddress.removeEventListener('keyup', setAddressValue)
+    //     residentialAddress.removeAttribute('disabled');
+    //   }
+    // })
+    //
+    // function setAddressValue(){
+    //   residentialAddress.value = registrationAddress.value;
+    // }
 
     form.addEventListener('reset', () =>{
       htmlDom.removeAttribute("style");
@@ -2724,8 +2899,8 @@ class EditClient{
 
     form.addEventListener('submit', event =>{
       event.preventDefault();
-      const allInputs = Array.from(event.target.querySelectorAll(`INPUT`));
-      allInputs.splice(allInputs.indexOf(allInputs.find(item => item.type === 'checkbox')), 1);
+      const allInputs = event.target.querySelectorAll(`INPUT`);
+      // allInputs.splice(allInputs.indexOf(allInputs.find(item => item.type === 'checkbox')), 1);
       if (this.validForm(allInputs, event.target.dataset.face)){
         this.setNewChange(allInputs, event.target.dataset.face);
         this.renderChange();
@@ -2741,15 +2916,18 @@ class EditClient{
     };
 
     for (let item of allInputs){
-      if (item.type === 'radio'){
-        if (item.checked){
-          if (item.name === 'typeOfOwnership' || item.name === 'scopeOfOwnership'){
-            editClient.relation[item.name] = item.value;
-          } else {
-            editClient[item.name] = item.value;
-          }
-        }
-      } else if (item.name === 'attorneyValue' || item.name === 'percentageOfOwnership' || item.name === 'costForClient'){
+      // if (item.type === 'radio'){
+      //   if (item.checked){
+      //     // if (item.name === 'typeOfOwnership' || item.name === 'scopeOfOwnership'){
+      //     //   editClient.relation[item.name] = item.value;
+      //     // } else {
+      //     //   editClient[item.name] = item.value;
+      //     // }
+      //     editClient[item.name] = item.value;
+      //   }
+      // // } else if (item.name === 'attorneyValue' || item.name === 'percentageOfOwnership' || item.name === 'costForClient'){
+      // } else
+      if (item.name === 'costForClient'){
         editClient.relation[item.name] = item.value;
       } else {
         editClient[item.name] = item.value;
@@ -2760,6 +2938,8 @@ class EditClient{
     editClient.clientPhone = '';
     editClient.type = type;
     editClient.relation.UID = this.currentCLient.relation.UID;
+    editClient.gender = 'Мужской';
+    editClient.scopeOfOwnership = 'formFull';
 
     this.editClient = editClient;
     app.copyOwner.agencyagreement.signatories.splice(this.currentIndex, 1, this.editClient);
@@ -2769,7 +2949,7 @@ class EditClient{
   //todo если пустая собственность не валидирует
   validForm(allInputs, type){
     if (type === 'private'){
-      if (this.validPrivate(allInputs)){
+      if (this.validPrivateNEWSimple(allInputs)){
         return true;
       }
     } else if (type === 'legal'){
@@ -2778,6 +2958,57 @@ class EditClient{
       }
     }
   }
+  /**
+   * новая валидация формы только с ФИО и датой
+   * @param allInputs
+   * @returns {boolean}
+   */
+  validPrivateNEWSimple(allInputs){
+    const validInputs = {
+      lastName: false,
+      name: false,
+      secondName: false,
+      born: false,
+      costForClient: false,
+    }
+    const libraryRegExp = {
+      lastName: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
+      name: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
+      secondName: /^[А-ЯЁ][а-яё]*( )?-?( )?[А-ЯЁ]?[а-яё]*$/,
+      costForClient: /^\d*$/,
+    }
+    for(let input of allInputs){
+      if (input.name !== 'born' && input.dataset.required === 'yes'){
+        if (input.value.length === 0){
+          validInputs[input.name] = false;
+          input.classList.add('isValid');
+        } else if (!libraryRegExp[input.name].test(input.value)) {
+          validInputs[input.name] = false;
+          input.classList.add('isValid');
+        } else {
+          validInputs[input.name] = true;
+          input.classList.remove('isValid');
+        }
+      } else if (input.name === 'born'){
+        if (new Date() < new Date(input.value) || input.value.length === 0){
+          validInputs[input.name] = false;
+          input.classList.add('isValid');
+        } else {
+          validInputs[input.name] = true;
+          input.classList.remove('isValid');
+        }
+      }
+    }
+    let count = 0;
+    for (let [key, value] of Object.entries(validInputs)){
+      if (value === true){
+        count++;
+      }
+    }
+    console.log(count === 5)
+    return count === 5;
+  }
+
   validPrivate(allInputs){
     const sortInputs = {
       gender: [],
