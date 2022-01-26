@@ -34,7 +34,7 @@ $client = $_REQUEST['client'];
     <title>offer</title>
 </head>
 <body>
-    <div class="main container"></div>
-<script src="script.js?s=<?=rand(0, 1000000)?>"></script>
+    <?php echo('<div class="main container"></div>'); ?>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

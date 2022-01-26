@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <title>newBuildingSeeker</title>
 </head>
 <body>
-<div class="container">
+<div class="container" data-candy="s<?=rand(0, 1000000)?>">
     <table class="table">
         <thead>
             <td><div class="table__td-header">Застройщик <input class="table__input" type="text" autocomplete="off" name="developer"></div></td>
@@ -23,6 +23,6 @@
         <tbody></tbody>
     </table>
 </div>
-<script src="script.js"></script>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

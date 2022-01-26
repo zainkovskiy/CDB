@@ -46,7 +46,7 @@ $ActiveUser = CUser::GetLogin();
     <title>ДОУ</title>
 </head>
 <body>
-    <div class="agency container"></div>
-    <script src="script.js"></script>
+    <?PHP echo('<div class="agency container"></div>'); ?>
+    <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

@@ -33,16 +33,15 @@ $ActiveUser = CUser::GetLogin();
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../select.css">
-    <link rel="stylesheet" href="../main.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../select.css?s=<?=rand(0, 1000000)?>">
+    <link rel="stylesheet" href="../main.css?s=<?=rand(0, 1000000)?>">
+    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <script src="https://api-maps.yandex.ru/2.1/?apikey=9b339b12-4d97-4522-b2e5-da5a5da1c7f6&lang=ru_RU" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Create/edit</title>
 </head>
 <body>
-    <div class="add container"></div>
-
-<script src="script.js"></script>
+   <?php echo('<div class="add container"></div>'); ?>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

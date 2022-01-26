@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <title>objectSeeker</title>
 </head>
 <body>
-<div class="main">
+<div class="main" data-candy="s<?=rand(0, 1000000)?>">
     <div class="container">
         <div class="search">
             <div class="search__wrap">
@@ -37,6 +37,6 @@
         </div>
     </div>
 </div>
-<script src="script.js"></script>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

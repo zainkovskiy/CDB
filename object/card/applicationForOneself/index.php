@@ -26,13 +26,12 @@ $ActiveUser = CUser::GetLogin();
       let login ='<? echo($ActiveUser); ?>';
     </script>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../main.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../main.css?s=<?=rand(0, 1000000)?>">
+    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <title>applicationForOneself</title>
 </head>
 <body>
-    <div class="application">
-    </div>
-    <script src="script.js"></script>
+    <?php echo('<div class="application"></div>'); ?>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

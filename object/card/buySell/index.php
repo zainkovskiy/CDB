@@ -54,8 +54,7 @@ if (array_search(30,$arrUserGroup) === false) {
     <title>ПДКП/ДКП</title>
 </head>
 <body>
-    <div class="buySell container">
-    </div>
-<script src="script.js"></script>
+    <?php echo('<div class="buySell container"></div>'); ?>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

@@ -26,12 +26,11 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
     <title>infoAboutClients</title>
 </head>
 <body>
-    <div class="form">
-    </div>
-    <script src="script.js"></script>
+   <?php echo('<div class="form"></div>'); ?>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

@@ -35,11 +35,11 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../toolsForProject/chief-slider/chief-slider.css">
     <script src="../toolsForProject/chief-slider/chief-slider.js"></script>
-    <link rel="stylesheet" href="scss-css/style.css">
+    <link rel="stylesheet" href="scss-css/style.css?s=<?=rand(0, 1000000)?>">
     <title>customerService</title>
 </head>
 <body>
-<div class="main">
+<div class="main" data-candy="s<?=rand(0, 1000000)?>">
     <div class="header">
         <div class="inJob">
             <input class="inJob__checkbox" id="inJob" name="inJob" type="checkbox">
@@ -56,6 +56,6 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     </div>
     <div class="object"></div>
 </div>
-<script src="js/script.js"></script>
+   <?php echo('<script src="js/script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

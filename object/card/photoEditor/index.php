@@ -51,7 +51,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <title>Фотографии</title>
 </head>
 <body>
-<div class="photo-page container"></div>
-<script src='script.js?s=<?=rand(0, 1000000)?>'></script>
+    <?php echo('<div class="photo-page container"></div>'); ?>
+    <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

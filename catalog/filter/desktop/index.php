@@ -67,7 +67,7 @@ ccc
     <title>searchObject</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container" data-candy="s<?=rand(0, 1000000)?>">
         <div class="methodical">
             <div>
                 <span>Как работать с каталогом?</span>
@@ -197,6 +197,6 @@ ccc
         </div>
         <div class='pagination last-elem visible'></div>
     </div>
-<script src="script.js?s=<?=rand(0, 1000000)?>"></script>
+    <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

@@ -48,8 +48,7 @@ $ActiveUser = CUser::GetLogin();
   <title>Реклама</title>
 </head>
 <body>
-<div class="promotion container"></div>
-<script src="script.js"></script>
-
+    <?php echo('<div class="promotion container"></div>'); ?>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

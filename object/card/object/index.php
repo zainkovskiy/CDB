@@ -57,8 +57,8 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     <title>Объект</title>
 </head>
 <body>
-    <div class="main container"></div>
-<script src="script.js"></script>
+   <?php echo('<div class="main container"></div>'); ?>
+   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>
 </html>
