@@ -526,6 +526,16 @@ class Render {
     }
   }
 
+  setValidity(){
+    if (this.obj.docType === 'Рекламный'){
+      return `90 дней`
+    } else if (new Date(this.obj.expired) < new Date()){
+      return '<b>истек</b>'
+    } else {
+      return 'до'
+    }
+  }
+
   render(){
     const owner = this.isOwner();
     // const scopeOfOwnership = this.scopeOfOwnership();
@@ -539,6 +549,7 @@ class Render {
     const saveChangeText = this.getSaveChangeText();
     const priceAll = this.getAllPrice();
     const accessRights = this.getAccessRights();
+    const validity = this.setValidity();
 
     return `<div class="save-change">
                 ${saveChangeText}
@@ -661,11 +672,16 @@ class Render {
                   -->
                   <div class="contract__wrap ${accessRights}"> 
                     <div class="contract__title-wrap"> 
-                        <span class="contract__title">Срок дейcтвия до</span>
-                        <span data-expired='extend' class="contract__title contract__title-btn 
-                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}">Продлить</span>
+                        <span class="contract__title">Срок дейcтвия договора ${validity}</span>                       
                     </div>
                     <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''} ${this.obj.docType === 'Рекламный' || this.obj.moderatorAccepted === '1' ? 'disabled' : ''}" type="date" value="${expired}">
+                  </div> 
+                  <div class="contract__wrap"> 
+                    <div class="contract__title-wrap"> 
+                        <span class="contract__title"><b>Для продления срока договора</b> нажмите кнопку ниже</span>                       
+                    </div>
+                       <span data-expired='extend' class="contract__title-btn ui-btn ui-btn-primary-dark
+                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}">Продлить</span>
                   </div> 
                 </div>                 
                 <div class="title__header"> 
@@ -699,15 +715,7 @@ class Render {
                         <span class="file__text">Загрузить ДОУ (+ соглашение если СК)</span>                      
                       </div>    
                       <div class="file__container container__contract">${file.contract}</div>                                   
-                    </div>  
-                    <div class="upload__wrap">                    
-                      <div data-container="grp" class="file upload_width"> 
-                        <input name="grp" class="file__input" id="file_grp" type="file" multiple>
-                        <label class="file__label" for="file_grp"></label>
-                        <span class="file__text">Загрузите соглашение о продлении ДОУ</span>
-                      </div>
-                      <div class="file__container container__grp">${file.grp}</div>                          
-                    </div>                    
+                    </div>                  
                     <div class="upload__wrap"> 
                       <div data-container="egrn" class="file upload_width"> 
                       <input name="egrn" class="file__input" id="file_egrn" type="file" multiple>

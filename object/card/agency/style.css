@@ -275,7 +275,7 @@
   gap: 20px;
 }
 .upload__wrap {
-  width: 25%;
+  width: 33%;
 }
 .upload__wrap-module {
   width: 100%;
@@ -483,19 +483,9 @@ input[type=radio] {
   width: 100%;
 }
 .contract__title-btn {
-  font-weight: 700;
-  color: #8F9091;
-  width: auto;
-  cursor: pointer;
-  border: 1px dashed #8F9091;
-  border-bottom: none;
-  padding: 0 5px;
-  pointer-events: auto;
-}
-.contract__title-btn:hover {
-  color: grey;
-  border: 1px solid #8F9091;
-  border-bottom: none;
+  align-self: flex-end;
+  height: 44.5px;
+  width: 100%;
 }
 .contract__toggle-item {
   width: 50%;

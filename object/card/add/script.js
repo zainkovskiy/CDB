@@ -1471,7 +1471,8 @@ function getPartOrFull(){
 
 class Float{
   render(){
-    return `<div class="buttons ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}"> 
+    return `<div class="buttons 
+            ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}"> 
               <input ${add.obj.reqTypeofRealty === 'Квартира' ? 'checked' : ''} 
               class="buttons__input reqTypeofRealty" name="reqTypeofRealty" id="second" type="radio" value="Квартира">
               <label id="reqTypeofRealty" class="buttons__label buttons__label_margin second" for="second">вторичка</label>
@@ -1481,32 +1482,32 @@ class Float{
             </div> 
             <div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Населенный пункт</span> 
                 <input name="reqCity" id="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
                 <div class="reqCity__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Район</span> 
                 <input name="reqArea" id="reqArea" class="form__input search__input reqArea" type="search" 
                 value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}" autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Улица</span> 
                 <input name="reqStreet" id="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
                 <div class="reqStreet__items search__field isVisible"></div>
               </div>              
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" id="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
@@ -1712,33 +1713,33 @@ class Room{
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Населенный пункт</span> 
                 <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
                 <div class="reqCity__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Район</span> 
                 <input name="reqArea" class="form__input search__input reqArea" type="search" 
                 value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
                 autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Улица</span> 
                 <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
                 <div class="reqStreet__items search__field isVisible"></div>
               </div>              
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>                  
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>                    
@@ -1969,33 +1970,33 @@ class House{
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Населенный пункт</span> 
                 <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
                 <div class="reqCity__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Район</span> 
                 <input name="reqArea" class="form__input search__input reqArea" type="search" 
                 value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
                 autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Улица</span> 
                 <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
                 <div class="reqStreet__items search__field isVisible"></div>
               </div>              
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>              
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
@@ -2199,33 +2200,33 @@ class Ground{
     const partOrFull = getPartOrFull();
     return `<div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Населенный пункт</span> 
                 <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
                 <div class="reqCity__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Район</span> 
                 <input name="reqArea" class="form__input search__input reqArea" type="search" 
                 value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
                 autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Улица</span> 
                 <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
                 <div class="reqStreet__items search__field isVisible"></div>
               </div>              
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>              
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
@@ -2322,33 +2323,33 @@ class Garage{
   render(){
     return `<div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется</p></i></span>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Населенный пункт</span> 
                 <input name="reqCity" class="form__input search__input reqCity" type="search" value="${add.obj.reqCity ? add.obj.reqCity : ''}" autocomplete="new-password">
                 <div class="reqCity__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Район</span> 
                 <input name="reqArea" class="form__input search__input reqArea" type="search" 
                 value="${add.obj.reqCity === 'Новосибирск' || add.obj.reqCity === 'Кемерово' ? add.obj.reqArea ? add.obj.reqArea : '' : add.obj.reqRayonObl ? add.obj.reqRayonObl : ''}"
                 autocomplete="new-password">
                 <div class="reqArea__items search__field isVisible"></div>
               </div>
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Улица</span> 
                 <input name="reqStreet" class="form__input search__input reqStreet" type="search" value="${add.obj.reqStreet ? add.obj.reqStreet : ''}" autocomplete="new-password">                
                 <div class="reqStreet__items search__field isVisible"></div>
               </div>              
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>                         
-              <div class="form__item ${add.obj.validatedAd === '1' || add.obj.validatedEx === '1' && add.obj.Rights !== 'Full' ? 'select_disabled' : ''}">
+              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>                 
