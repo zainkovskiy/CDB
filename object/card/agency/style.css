@@ -272,9 +272,10 @@
   display: flex;
   justify-content: space-between;
   margin: 20px 0 0 0;
+  gap: 20px;
 }
 .upload__wrap {
-  width: 23%;
+  width: 25%;
 }
 .upload__wrap-module {
   width: 100%;
@@ -285,9 +286,10 @@
   display: flex;
   justify-content: space-between;
   margin: 20px 0 0 0;
+  gap: 20px;
 }
 .documents__wrap {
-  width: 23%;
+  width: 33%;
   background-color: #fff;
   padding: 20px;
   display: flex;
@@ -389,6 +391,7 @@
   line-height: 16px;
   font-weight: 400;
   color: #8F9091;
+  margin: 0;
 }
 .clients__text span {
   font-size: 16px;
@@ -418,6 +421,16 @@
   font-weight: 400;
   color: #484848;
   margin: 0;
+}
+.clients__alert {
+  margin: 0;
+  color: red;
+  font-weight: 600;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 
 input[type=radio] {
@@ -541,6 +554,9 @@ input {
   color: #8F9091;
   outline: none;
   border: 1px solid #c4c4c4;
+}
+input::placeholder {
+  opacity: 0.3;
 }
 
 .form {
@@ -967,6 +983,7 @@ input {
 
 .disabled {
   opacity: 0.5;
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=style.css.map */

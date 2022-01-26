@@ -47,6 +47,6 @@ $ActiveUser = CUser::GetLogin();
 </head>
 <body>
     <?PHP echo('<div class="agency container"></div>'); ?>
-    <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
+    <?php echo('<script src="script.js?'.chr(rand(65,90)).chr(rand(65,90)).'='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>

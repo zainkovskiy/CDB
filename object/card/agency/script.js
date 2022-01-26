@@ -171,18 +171,22 @@ class Render {
     this.owner = obj.signatories;
   }
   isOwner(){
-    let ownerLayout = '';
     let id = 0;
-    for(let item of this.owner){
-      if (item.type === 'private'){
-        ownerLayout += this.ownerLayout(item, id);
-        id++;
-      } else if (item.type === 'legal'){
-        ownerLayout += this.legalLayout(item, id);
-        id++;
+    if (this.owner.length > 0){
+      let ownerLayout = '';
+      for(let item of this.owner){
+        if (item.type === 'private'){
+          ownerLayout += this.ownerLayout(item, id);
+          id++;
+        } else if (item.type === 'legal'){
+          ownerLayout += this.legalLayout(item, id);
+          id++;
+        }
       }
+      return ownerLayout;
+    } else {
+      return `<div class="clients__alert">Добавьте клиента</div>`
     }
-    return ownerLayout;
   }
 
   getDate(date){
@@ -225,9 +229,9 @@ class Render {
   ownerLayout(item, id){
     const born = this.getDate(item.born);
     // const passDate = this.getDate(item.passDate);
-    const passDate = '0';
-    const fileClients = this.getFileClients(item.documents);
-    const accessRights = this.getAccessRights();
+    // const passDate = '0';
+    // const fileClients = this.getFileClients(item.documents);
+    // const accessRights = this.getAccessRights();
     return `<div class="clients__card id${id}">
                   <div class="clients__item-wrap">
                     <div class="clients__name-wrap">
@@ -239,84 +243,10 @@ class Render {
                                   data-name="${item.lastName}_${item.name}_${item.secondName}"
                                   class="clients__delete clients__btn"></span>
                       </div>    
-                    </div>   
+                    </div> 
+                    <p class="clients__text">Дата рождения<span>${born}</span></p>  
                     <p class="clients__commission">Комиссия клиента <span>${item.relation.costForClient ? item.relation.costForClient : ''} ₽</span></p>           
                   </div>
-                    <div class="accordion accordion-flush container-section" id="passport_client-${id}">
-                      <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#passport_open_client-${id}" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Паспорт
-                          </button>
-                        </h2>
-                        <div id="passport_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#passport_client-${id}">
-                            <div class="clients__wrap"> 
-                                <div class="clients__wrap_left"> 
-                                  <p class="clients__text">Пол<span>${item.gender ? item.gender : 'Не указан'}</span></p>
-                                  <p class="clients__text">Дата рождения<span>${born}</span></p>
-                                  <p class="clients__text">Гражданство<span>${item.nationality ? item.nationality : ''}</span></p>
-                                  <p class="clients__text">Место рождения<span>${item.bornLocality ? item.bornLocality : ''}</span></p>
-                                </div>
-                                <div class="clients__wrap_right"> 
-                                  <p class="clients__text">Серия и номер паспорта<span>${item.passRange ? item.passRange : ''} ${item.passNumber ? item.passNumber : ''}</span></p>
-                                  <p class="clients__text">Выдан<span>${item.passGranted ? item.passGranted : ''}</span></p>
-                                  <div class="clients__data-code"> 
-                                    <p class="clients__text">Дата выдачи<span>${passDate}</span></p>
-                                    <p class="clients__text">Код подразделения<span>${item.passCode ? item.passCode : ''}</span></p>
-                                  </div>
-                                </div>
-                            </div>
-                            <span class="clients__border"></span>
-                            <div data-container="passport-${item.UID}" class="file"> 
-                              <input name="passport-${item.UID}" class="file__input" id="file_passport-${item.UID}" type="file" multiple>
-                              <label class="file__label" for="file_passport-${item.UID}"></label>
-                              <span class="file__text">Загрузите паспорт</span>
-                            </div>
-                            <div class="file__container container__passport-${item.UID}">${fileClients.passport}</div>
-                        </div>     
-                      </div>
-                    </div>
-                    <div class="accordion accordion-flush container-section" id="address_client-${id}">
-                      <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#address_open_client-${id}" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Адреса
-                          </button>
-                        </h2>
-                        <div id="address_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#address_client-${id}">
-                            <div class="clients__padding"> 
-                              <p class="clients__text">Адрес постоянной реистрации<span>${item.registrationAddress ? item.registrationAddress : ''}</span></p>
-                              <p class="clients__text">Адрес проживания<span>${item.residentialAddress ? item.residentialAddress : ''}</span></p>
-                            </div>
-                        </div>     
-                      </div>
-                    </div>
-                    <div class="accordion accordion-flush container-section" id="doc_client-${id}">
-                      <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#doc_open_client-${id}" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Право собственности
-                          </button>
-                        </h2>
-                        <div id="doc_open_client-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#doc_client-${id}">
-                            <div class="clients__wrap clients__grid"> 
-                              <p class="clients__text">Тип права<span>${item.relation.typeOfOwnership ? item.relation.typeOfOwnership : ''}</span></p>
-                              <p class="clients__text">Номер доверенности${item.relation.typeOfOwnership === 'Доверенность'
-      ? `<span>${item.relation.attorneyValue}</span>` : ``}</p>
-                              <p class="clients__text">Объем владения<span>${item.relation.scopeOfOwnership ? item.relation.scopeOfOwnership : ''}</span></p>
-                              <p class="clients__text">Размер доли${item.relation.scopeOfOwnership === 'Доля'
-      ? `<span>${item.relation.percentageOfOwnership}</span>` : ``}</p>
-                            </div>
-                            <span class="clients__border"></span>
-                            <div data-container="doc-${item.UID}" class="file"> 
-                              <input name="doc-${item.UID}" class="file__input" id="file_doc-${item.UID}" type="file" multiple>
-                              <label class="file__label" for="file_doc-${item.UID}"></label>
-                              <span class="file__text">Загрузите доверенность</span>
-                            </div>
-                            <div class="file__container container__doc-${item.UID}">${fileClients.doc}</div>
-                        </div>     
-                      </div>
-                    </div>   
                 </div> `;
   }
   legalLayout(item, id){
@@ -721,7 +651,7 @@ class Render {
                     <div class="contract__title-wrap"> 
                         <span class="contract__title">Срок дейcтвия</span>
                         <span data-expired='extend' class="contract__title contract__title-btn 
-                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'}">Продлить</span>
+                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}">Продлить</span>
                     </div>
                     <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''}" type="date" value="${expired}">
                   </div> 
@@ -1221,23 +1151,23 @@ class Form {
                           <form data-face="private" class="form">
                             <div class="form__fio">
                               <div class="form__item">
-                                <span class="contract__title">Фамилия<i>*</i></span>
-                                <input data-required="yes" id="fio_form" type="text" name="lastName" value="" autocomplete="off">
+                                <span class="contract__title">Фамилия</span>
+                                <input data-required="yes" id="fio_form" type="text" name="lastName" value="" autocomplete="off" placeholder="Иванов">
                               </div>
                               <div class="form__item">
-                                <span class="contract__title">Дата рождения<i>*</i></span>
+                                <span class="contract__title">Имя</span>
+                                <input data-required="yes" id="fio_form" type="text" name="name" value="" autocomplete="off" placeholder="Иван">
+                              </div>
+                              <div class="form__item">
+                                <span class="contract__title">Отчество</span>
+                                <input data-required="yes" id="fio_form" type="text" name="secondName" value="" autocomplete="off" placeholder="Иванович">
+                              </div>
+                              <div class="form__item">
+                                <span class="contract__title">Дата рождения</span>
                                 <input data-required="yes" id="fio_form" type="date" name="born" value="">
                               </div>
                               <div class="form__item">
-                                <span class="contract__title">Имя<i>*</i></span>
-                                <input data-required="yes" id="fio_form" type="text" name="name" value="" autocomplete="off">
-                              </div>
-                              <div class="form__item">
-                                <span class="contract__title">Отчество<i>*</i></span>
-                                <input data-required="yes" id="fio_form" type="text" name="secondName" value="" autocomplete="off">
-                              </div>
-                              <div class="form__item">
-                                <span class="contract__title">Комиссия<i>*</i></span>
+                                <span class="contract__title">Комиссия</span>
                                 <input data-required="yes" id="fio_form" type="text" name="costForClient" autocomplete="off">
                               </div>
                             </div>
@@ -1246,7 +1176,7 @@ class Form {
                                 <button class="form__btn" type="submit">Сохранить</button>
                                 <button class="form__btn" type="reset">Закрыть</button>
                               </div>
-                              <span class="guid"><i>*</i>поля обязательны для заполнения</span>
+                              <span class="guid"><i>*</i>все поля обязательны для заполнения</span>
                             </div>
                           </form>
                         </div>`
@@ -1641,6 +1571,12 @@ class Form {
     newClient.type = type;
     newClient.gender = 'Мужской';
     newClient.scopeOfOwnership = 'formFull';
+    if (app.copyOwner.agencyagreement.signatories.length === 0){
+      document.querySelector('.clients').innerHTML = '';
+      document.querySelector('.contract__title-btn').classList.add('disabled');
+    } else {
+      document.querySelector('.contract__title-btn').classList.remove('disabled');
+    }
 
     const clientsContainer = document.querySelector('.clients');
     const id = app.owner.agencyagreement.signatories.length;
@@ -1651,7 +1587,7 @@ class Form {
     }
     app.copyOwner.agencyagreement.signatories.push(newClient);
     app.newClient = newClient;
-    new File(app.container).init();
+    // new File(app.container).init();
     document.querySelector('.costForClient').innerHTML = '';
     document.querySelector('.costForClient').insertAdjacentHTML('beforeend', `${new Render(app.copyOwner.agencyagreement).getAllPrice()} ₽`);
   }
@@ -2191,6 +2127,10 @@ class Handler{
     this.removeClient(find).then(() => {
       this.removeLoader();
       app.owner = JSON.parse(JSON.stringify(app.copyOwner));
+      if (app.copyOwner.agencyagreement.signatories.length === 0){
+        document.querySelector('.clients').insertAdjacentHTML('beforeend', `<div class="clients__alert">Добавьте клиента</div>`);
+        document.querySelector('.contract__title-btn').classList.add('disabled');
+      }
     })
   }
   async removeClient(find){
@@ -2748,23 +2688,23 @@ class EditClient{
                           <form data-face="private" class="form">
                                 <div class="form__fio">
                                   <div class="form__item">
-                                    <span class="contract__title">Фамилия<i>*</i></span>
+                                    <span class="contract__title">Фамилия</span>
                                     <input data-required="yes" id="fio_form" type="text" name="lastName" value="${this.currentCLient.lastName ? this.currentCLient.lastName : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
-                                    <span class="contract__title">Дата рождения<i>*</i></span>
-                                    <input id="fio_form" data-required="yes" type="date" name="born" value="${born}">
-                                  </div>
-                                  <div class="form__item">
-                                    <span class="contract__title">Имя<i>*</i></span>
+                                    <span class="contract__title">Имя</span>
                                     <input data-required="yes" id="fio_form" type="text" name="name" value="${this.currentCLient.name ? this.currentCLient.name : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
-                                    <span class="contract__title">Отчество<i>*</i></span>
+                                    <span class="contract__title">Отчество</span>
                                     <input data-required="yes" id="fio_form" type="text" name="secondName" value="${this.currentCLient.secondName ? this.currentCLient.secondName : ''}" autocomplete="off">
                                   </div>
                                   <div class="form__item">
-                                    <span class="contract__title">Комиссия<i>*</i></span>
+                                    <span class="contract__title">Дата рождения</span>
+                                    <input id="fio_form" data-required="yes" type="date" name="born" value="${born}">
+                                  </div>
+                                  <div class="form__item">
+                                    <span class="contract__title">Комиссия</span>
                                     <input data-required="yes" id="fio_form" type="text" name="costForClient" value="${this.currentCLient.relation.costForClient ? this.currentCLient.relation.costForClient : ''}" autocomplete="off">
                                   </div>
                               </div>
