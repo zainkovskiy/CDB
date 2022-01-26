@@ -463,8 +463,10 @@ class Render {
   }
   getAllPrice(){
     let price = 0;
-    for (let item of this.owner){
-      price += +item.relation.costForClient;
+    if (this.owner.length > 0){
+      for (let item of this.owner){
+        price += item.relation ? +item.relation.costForClient : 0;
+      }
     }
     return price;
   }
@@ -480,9 +482,13 @@ class Render {
     }
   }
   extendDate(){
-    let dateNextMouth = new Date();
-    dateNextMouth = new Date (dateNextMouth.setMonth(dateNextMouth.getMonth() + 1));
-    return new Date(this.obj.expired) < dateNextMouth;
+    if (this.obj.expired){
+      let dateNextMouth = new Date();
+      dateNextMouth = new Date (dateNextMouth.setMonth(dateNextMouth.getMonth() + 1));
+      return new Date(this.obj.expired) < dateNextMouth;
+    } else {
+      return false
+    }
   }
   setPromo(){
     const promo = {
@@ -507,10 +513,16 @@ class Render {
     return promo;
   }
   getExpired(){
-    if (this.obj.isExtended === '1'){
-      return this.obj.expiredEx ? this.obj.expiredEx.split(" ")[0] : '';
+    if (this.obj.expired){
+      if (this.obj.isExtended === '1'){
+        return this.obj.expiredEx ? this.obj.expiredEx.split(" ")[0] : '';
+      } else {
+        return this.obj.expired ? this.obj.expired.split(" ")[0] : '';
+      }
     } else {
-      return this.obj.expired ? this.obj.expired.split(" ")[0] : '';
+      const currentDay = new Date();
+      let newDate = new Date(currentDay.setDate(currentDay.getDate() + 90));
+      return  newDate.toISOString().split('T')[0];
     }
   }
 
@@ -587,11 +599,11 @@ class Render {
                 <div class="contract__change"> 
                   <div class="contract__wrap"> 
                     <span class="contract__title">Тип договора</span>
-                    <div class="contract__toggle-item item">
+                    <div class="contract__toggle-item item ${this.obj.docType === 'Эксклюзив' && this.obj.moderatorAccepted === '1' ? 'disabled' : 'if'}">
                         <input  name="docType" type="radio" id="exclusive" value="Эксклюзив" ${docType.exclusive}>
                         <label class='contract__btn' for="exclusive">Эксклюзив</label>
                     </div>
-                    <div class="contract__toggle-item item">
+                    <div class="contract__toggle-item item ${this.obj.docType === 'Эксклюзив' && this.obj.moderatorAccepted === '1' ? 'disabled' : 'if'}">
                       <input name="docType" type="radio" id="promo" value="Рекламный" ${docType.promo}>
                       <label class='contract__btn' for="promo">Рекламный</label>
                     </div>
@@ -649,11 +661,11 @@ class Render {
                   -->
                   <div class="contract__wrap ${accessRights}"> 
                     <div class="contract__title-wrap"> 
-                        <span class="contract__title">Срок дейcтвия</span>
+                        <span class="contract__title">Срок дейcтвия до</span>
                         <span data-expired='extend' class="contract__title contract__title-btn 
                         ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}">Продлить</span>
                     </div>
-                    <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''}" type="date" value="${expired}">
+                    <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''} ${this.obj.docType === 'Рекламный' || this.obj.moderatorAccepted === '1' ? 'disabled' : ''}" type="date" value="${expired}">
                   </div> 
                 </div>                 
                 <div class="title__header"> 
@@ -1677,6 +1689,10 @@ class Handler{
           location.href = `https://crm.centralnoe.ru${data.result.document.downloadUrl}`
           console.log(data)
         });
+      } else if (event.target.id === 'promo'){
+        this.setPromoInstructions();
+      } else if (event.target.id === 'exclusive') {
+        this.setExclusiveInstructions();
       } else {
         this.checkCurrentElem();
       }
@@ -1714,6 +1730,23 @@ class Handler{
       }
     }
     return true
+  }
+
+  setPromoInstructions(){
+    if (app.copyOwner.expiredAd){
+      document.querySelector(`INPUT[name='expired']`).value = app.copyOwner.expiredAd.split(" ")[0];
+      document.querySelector(`INPUT[name='expired']`).classList.add('disabled');
+    } else {
+      const currentDay = new Date();
+      let newDate = new Date(currentDay.setDate(currentDay.getDate() + 90));
+      newDate = newDate.toISOString().split('T')[0];
+      document.querySelector(`INPUT[name='expired']`).value = newDate;
+      document.querySelector(`INPUT[name='expired']`).classList.add('disabled');
+    }
+  }
+  setExclusiveInstructions(){
+    document.querySelector(`INPUT[name='expired']`).value = '';
+    document.querySelector(`INPUT[name='expired']`).classList.remove('disabled');
   }
 
   openEditFile(findInDoc){
