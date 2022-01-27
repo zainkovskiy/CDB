@@ -1,28 +1,32 @@
-<? require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");?>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css?s=<?=rand(0, 1000000)?>">
-    <title>newBuildingSeeker</title>
-</head>
-<body>
-<div class="container" data-candy="s<?=rand(0, 1000000)?>">
-    <table class="table">
-        <thead>
-            <td><div class="table__td-header">Застройщик <input class="table__input" type="text" autocomplete="off" name="developer"></div></td>
-            <td><div class="table__td-header">ЖК</div></td>
-            <td><div class="table__td-header">ФИО</div></td>
-            <td><div class="table__td-header">Телефон</div></td>
-            <td><div class="table__td-header">Риелтор</div></td>
-            <td><div class="table__td-header">Тип</div></td>
-            <td><div class="table__td-header">Дата создания <input class="table__input" type="date" autocomplete="off" name="dataCreate"></div></td>
-            <td><div class="table__td-header">Дата отправки <input class="table__checkbox" type="checkbox" id="showAllCheck"><label class="table__label" for="showAllCheck"></label></div></td>
-        </thead>
-        <tbody></tbody>
-    </table>
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
+
+
+CJSCore::Init();
+
+$APPLICATION->SetTitle("Новостройки");
+\Bitrix\Main\UI\Extension::load("ui.forms");
+\Bitrix\Main\UI\Extension::load("ui.buttons");
+\Bitrix\Main\UI\Extension::load("ui.hint");
+CJSCore::Init(['ui','sidepanel','jquery2']);
+
+
+$APPLICATION->IncludeComponent(
+'bitrix:crm.control_panel',
+'',
+array(
+'ID'             => 'CENTR_DB',
+'ACTIVE_ITEM_ID' => 'CENTR_DB',
+)
+);
+
+?>
+
+<div style="padding:0px;">
+    <script src="//api.bitrix24.com/api/v1/"></script>
+    <iframe src="layout.php" width="100%" height="700px" style="border: none">
+
+    </iframe>
+
 </div>
-   <?php echo('<script src="script.js?G='.rand(0,1000000).'"></script>'); ?>
-</body>
-</html>

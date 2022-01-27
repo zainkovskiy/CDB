@@ -37,6 +37,13 @@ body {
   color: #979797;
   width: 100%;
 }
+.table__link {
+  color: #4695d9;
+  cursor: pointer;
+}
+.table__link:hover {
+  border-bottom: 1px solid #4695d9;
+}
 .table__td-header {
   display: flex;
   align-items: center;

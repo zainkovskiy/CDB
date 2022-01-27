@@ -36,6 +36,13 @@ body{
   color: #979797;
   @extend %font-regular;
   width: 100%;
+  &__link{
+    color: #4695d9;
+    cursor: pointer;
+    &:hover{
+      border-bottom: 1px solid #4695d9;
+    }
+  }
   thead{
     @extend %font-bold;
   }

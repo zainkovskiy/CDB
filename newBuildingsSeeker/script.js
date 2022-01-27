@@ -40,6 +40,8 @@ class newBuildingsSeeker {
         } else {
           this.showTable(this.list);
         }
+      } else if (event.target.dataset.open === 'deal'){
+        this.openCard(event.target.dataset.number);
       }
     })
     this.inputDate.addEventListener('change', () => {
@@ -48,6 +50,16 @@ class newBuildingsSeeker {
     this.inputDev.addEventListener('keyup', () => {
       this.filter(this.inputDev.name, this.inputDev.value);
     })
+  }
+  openCard(number){
+    let scrollHeight = Math.max(
+      document.body.scrollWidth, document.documentElement.scrollWidth,
+      document.body.offsetWidth, document.documentElement.offsetWidth,
+      document.body.clientWidth, document.documentElement.clientWidth
+    );
+    let readyString = `https://crm.centralnoe.ru/crm/deal/details/${number}/`;
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: scrollHeight});
+    return true;
   }
   setNewValue(isChecked, req){
     console.log(isChecked, req)
@@ -84,9 +96,10 @@ class Render{
   }
   render(){
     return `<tr> 
+              <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="deal" data-number="${this.row.deal}" >${this.row.deal}</span></div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.developer}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.complex}</div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.name}</div></td>
+              <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="form">${this.row.name}</span></div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.phone}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.realtor}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.type}</div></td>
@@ -119,6 +132,7 @@ class Server {
         dataSend: '2022-01-01',
         reqNumber: 1,
         check: true,
+        deal: 50627,
       },
       {
         developer: 'dev2',
@@ -131,6 +145,7 @@ class Server {
         dataSend: '2020-04-22',
         reqNumber: 2,
         check: false,
+        deal: 50627,
       },
       {
         developer: 'dev3',
@@ -143,6 +158,7 @@ class Server {
         dataSend: '2008-08-04',
         reqNumber: 3,
         check: false,
+        deal: 50627,
       },
       {
         developer: 'dev3',
@@ -155,6 +171,7 @@ class Server {
         dataSend: '2006-10-10',
         reqNumber: 4,
         check: true,
+        deal: 50627,
       },
     ]
   }
