@@ -34,7 +34,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       // UID Текущего пользователя
       let currentUserId = '<? echo($arrApplicationParams['activeUserID']) ;?>';
       // Login текущего пользователя
-      let currentUserLogin = '<? echo($arrApplicationParams['activeUserLogin']);?>';
+      let currentUserLogin = '<? echo($userName);?>';
       // Login владельца сделки
       let dealOwnerLogin = '<? echo($arrApplicationParams['dealOwnerLogin']);?>';
       // UID Владельца сделки
@@ -45,7 +45,6 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       let activeDeal = '<? echo($arrApplicationParams['activeDeal']);?>';
       // JSON c Клиентами сделки
       let dealClients = '<? echo($arrClients);?>';
-ccc
     </SCRIPT>
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -66,6 +65,7 @@ ccc
             <div>
                 <button data-clear="filter" class="ui-btn ui-btn-primary-dark bx-btn__craft">Сбросить фильтры</button>
                 <button data-filter="sale" class="ui-btn ui-btn-primary-dark bx-btn__craft">продавцы</button>
+                <button data-only="mine" class="ui-btn ui-btn-primary-dark bx-btn__craft">только мои</button>
             </div>
             <span class='alert' title="сообщить об ошибке" data-alert="open"></span>
         </div>

@@ -487,45 +487,69 @@ class AddressHandler {
       } else if (event.target.dataset.name === 'add'){
         this.openNewObject();
       } else if (event.target.dataset.filter === 'sale'){
-          this.setFilterSale();
+        this.setFilterSale();
+      } else if (event.target.dataset.only === 'mine'){
+        document.querySelector(`INPUT[name="1c"]`).checked = true;
+        document.querySelector(`INPUT[name="pars"]`).checked = false;
+        this.setAllValue();
+        this.setLoader();
+        this.objectFilter.onlyMy = currentUserLogin;
+        this.sendToServer().then(data => {
+          console.log(data)
+          this.setCountCard(data);
+          new Cards(data).init();
+          this.handlerLinkToStop();
+          document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
+          if (data.length > 100){
+            this.startPaginat = 0;
+            this.currentPaginatActive = 0;
+            this.setPagination();
+            this.renderPagination();
+          } else {
+            this.clearPaginationContainer();
+          }
+          this.removeLoader();
+          document.querySelector('#map').innerHTML = '';
+          this.initMap(this.cards);
+        });
       }
     });
 
     for (let input of document.querySelectorAll('.start__input')){
       input.addEventListener('focus', () => {
         this.checkCurrentElem();
-          if(input.name === 'address'){
-            if (this.addressValue.length === 0){
-              input.value = this.currentRegion;
-              setTimeout(() => {
-                input.selectionStart = input.value.length;
-              }, 50)
-            } else if (this.addressValue.length > 0){
-              input.value = this.addressValue;
-            }
-            const currentRegion = document.querySelector('.place__text').innerHTML;
+        if(input.name === 'address'){
+          if (this.addressValue.length === 0){
+            input.value = this.currentRegion;
             setTimeout(() => {
-              const btnGroup = document.querySelector('.address__btn');
-              if (!btnGroup){
-                if (currentRegion === 'Новосибирская область'){
-                  document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
-                    `<div data-elem="check" class="address__btn">
+              input.selectionStart = input.value.length;
+            }, 50)
+          } else if (this.addressValue.length > 0){
+            input.value = this.addressValue;
+          }
+          const currentRegion = document.querySelector('.place__text').innerHTML;
+          setTimeout(() => {
+            const btnGroup = document.querySelector('.address__btn');
+            if (!btnGroup){
+              if (currentRegion === 'Новосибирская область'){
+                document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
+                  `<div data-elem="check" class="address__btn">
                       <button data-elem="check" data-name="metro" class="address__btn-item"><span class="address__title">Метро</span><span class="address__arrow"></span></button>
                       <button data-elem="check" data-name="district" class="address__btn-item"><span class="address__title">Район и микрорайон</span><span class="address__arrow"></span></button>
                   </div>`)
-                } else if (currentRegion === 'Кемеровская область'){
-                  document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
-                    `<div data-elem="check" class="address__btn">                      
+              } else if (currentRegion === 'Кемеровская область'){
+                document.querySelector('.suggestions-suggestions').insertAdjacentHTML('beforeend',
+                  `<div data-elem="check" class="address__btn">                      
                       <button data-elem="check" data-name="district" class="address__btn-item"><span class="address__title">Район и микрорайон</span><span class="address__arrow"></span></button>
                   </div>`)
-                }
               }
-            }, 500)
-          } else {
-            const elem = document.querySelector(`.${input.name}__block`);
-            elem.classList.remove('visible');
-            this.currentElem = elem;
-          }
+            }
+          }, 500)
+        } else {
+          const elem = document.querySelector(`.${input.name}__block`);
+          elem.classList.remove('visible');
+          this.currentElem = elem;
+        }
       })
       if (input.name === 'address'){
         input.addEventListener('keyup', () => {
@@ -803,16 +827,16 @@ class AddressHandler {
       return cards.find(item => item.reqNumber === reqNumber)
     }
     function renderCard(card){
-      document.querySelector('.map__right').insertAdjacentHTML('beforeend', 
+      document.querySelector('.map__right').insertAdjacentHTML('beforeend',
         `<div class="map-card"> 
                 <img data-open="openCard" data-req="${card.reqNumber}"
                   data-source="${card.reqType}" class="map-card__photo" src="${card.reqPhoto}" alt="photo"> 
                 <span data-open="openCard" data-req="${card.reqNumber}"
                   data-source="${card.reqType}" class="map-card__street">
                   ${card.reqTypeofRealty === "Квартира" || card.reqTypeofRealty === "Дом"
-                  || card.reqTypeofRealty === "Комната"
-                  ? `${card.reqRoomCount ? `${card.reqRoomCount}к, ` : ''}`
-                  : ''}
+        || card.reqTypeofRealty === "Комната"
+          ? `${card.reqRoomCount ? `${card.reqRoomCount}к, ` : ''}`
+          : ''}
                   ${card.reqStreet ? `ул. ${card.reqStreet}, ` : ''}
                   ${card.reqHouseNumber ? `д. ${card.reqHouseNumber}` : ''}
                 </span>            
@@ -824,10 +848,10 @@ class AddressHandler {
                   ${card.reqFlatTotalArea ? `<span class="map-card__flat">${card.reqFlatTotalArea} кв<sup>2</sup></span>` : ''}
                   ${card.reqFloor && card.reqFloors ? `<span class="map-card__floor">${card.reqFloor}/${card.reqFloors} эт. </span>` : ''}
                   ${card.reqTypeofRealty === "Дом" || card.reqTypeofRealty === "Земля" && card.reqLandArea ?
-                  `<span class="map-card__flat">
+          `<span class="map-card__flat">
                       Учаток ${card.reqLandArea} сот.
                   </span>`
-                  : ''}
+          : ''}
                 </div>
                 <div class="map-card__wrap">
                   <span class="map-card__price">${card.reqPrice ? `${card.reqPrice} тыс. ₽` : ''}</span>
@@ -2334,13 +2358,13 @@ class Cards {
                             <a href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=${this.cards[i].reqType}&id=${this.cards[i].reqNumber}" 
                             data-open="openCard" data-req="${this.cards[i].reqNumber}" 
                             data-source="${this.cards[i].reqType}" class="card__title card__link" onclick="event.preventDefault()">
-                              ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом" 
-                              || this.cards[i].reqTypeofRealty === "Комната"
-                              ? `${this.cards[i].reqRoomCount ? `${this.cards[i].reqRoomCount}к ` : ''}`
-                              : ''}
+                              ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом"
+      || this.cards[i].reqTypeofRealty === "Комната"
+        ? `${this.cards[i].reqRoomCount ? `${this.cards[i].reqRoomCount}к ` : ''}`
+        : ''}
                               ${this.cards[i].reqStreet ? `ул. ${this.cards[i].reqStreet} ` : ''}
-                              ${this.cards[i].reqTypeofRealty === 'Дом' || this.cards[i].reqTypeofRealty === 'Земля' || this.cards[i].reqTypeofRealty === 'Гараж' ? '' 
-                              : this.cards[i].reqHouseNumber ? `д. ${this.cards[i].reqHouseNumber}` : ''}
+                              ${this.cards[i].reqTypeofRealty === 'Дом' || this.cards[i].reqTypeofRealty === 'Земля' || this.cards[i].reqTypeofRealty === 'Гараж' ? ''
+        : this.cards[i].reqHouseNumber ? `д. ${this.cards[i].reqHouseNumber}` : ''}
                             </a>
                             <span class="card__text">
                               ${this.cards[i].reqCity ? `${this.cards[i].reqCity} ` : ''}
@@ -2363,10 +2387,10 @@ class Cards {
                             </span>` : ''}
                             ${this.cards[i].reqFloor && this.cards[i].reqFloors ? `<span class="card__text">${this.cards[i].reqFloor}/${this.cards[i].reqFloors} эт. </span>` : ''}
                             ${this.cards[i].reqTypeofRealty === "Дом" || this.cards[i].reqTypeofRealty === "Земля" || this.cards[i].reqTypeofRealty === "Земельный участок" && this.cards[i].reqLandArea ?
-                            `<span class="${this.cards[i].reqFlatTotalArea || this.cards[i].reqFloor ? 'card__text' : 'card__title'}"> 
+        `<span class="${this.cards[i].reqFlatTotalArea || this.cards[i].reqFloor ? 'card__text' : 'card__title'}"> 
                                 Учаток ${this.cards[i].reqLandArea} сот.
                             </span>`
-                            : ''}
+        : ''}
                         </div>
                         <div class="card__info card_right">
                             <span class="card__title">${this.cards[i].reqPrice ? `${this.cards[i].reqPrice} тыс. ₽` : ''}</span>
