@@ -1,23 +1,22 @@
-<?php header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-  header("Last-Modified: " . gmdate("D, d M Y H:i:s")." GMT");
-  header("Cache-Control: no-store,no-cache, must-revalidate");
-  header("Cache-Control: post-check=0,pre-check=0", false);
-  header("Cache-Control: max-age=0", false);
-  header("Pragma: no-cache");
-require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
-CJSCore::Init(['ui','sidepanel','jquery2']);
+<?php
+require_once($_SERVER["DOCUMENT_ROOT"]."/dealincom/class/iHelper.php");
 
-if($USER->IsAuthorized()){
-$APPLICATION->ShowHead();}
+require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
+
+//CJSCore::Init(['ui','sidepanel','jquery2']);
+
+//if($USER->IsAuthorized()){
+//$APPLICATION->ShowHead();}
 mb_internal_encoding("UTF-8");
 $source = $_GET['action'];
 $id = $_GET['id'];
 $contact = $_GET['contact'];
 $deal = $_GET['curdeal'];
 $ActiveUser = CUser::GetLogin();
-\Bitrix\Main\UI\Extension::load("ui.buttons");
-\Bitrix\Main\UI\Extension::load("ui.notification");
-\Bitrix\Main\UI\Extension::load("ui.buttons.icons");
+//\Bitrix\Main\UI\Extension::load("ui.buttons");
+//\Bitrix\Main\UI\Extension::load("ui.notification");
+//\Bitrix\Main\UI\Extension::load("ui.buttons.icons");
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
