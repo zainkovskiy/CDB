@@ -686,6 +686,10 @@ input{
     width: 100%;
     margin: 0 0 20px 0;
   }
+  &__error-deal{
+    color: red;
+    font-weight: 700;
+  }
   &__close{
     cursor: pointer;
     opacity: .5;

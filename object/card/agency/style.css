@@ -690,6 +690,10 @@ input::placeholder {
   width: 100%;
   margin: 0 0 20px 0;
 }
+.module__error-deal {
+  color: red;
+  font-weight: 700;
+}
 .module__close {
   cursor: pointer;
   opacity: 0.5;

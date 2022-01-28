@@ -587,10 +587,14 @@ class Render {
               <div class="title__header"> 
                 <span class="title__header-text clients__title-head">Клиенты</span>
                 <div class="add__change">
-                  <button class="ui-btn ui-btn-primary-dark" data-btn="clients_add" data-choice="private">Добавить</button>
-                  <div class="add isVisible">
+                  <button class="ui-btn ui-btn-primary-dark" data-btn="clients_add">Добавить</button>
+                  <!-- <div class="add isVisible">
                     <button data-choice="private" class="add__button">Частное лицо</button>
                     <button data-choice="legal" class="add__button">Юр. лицо</button>
+                  </div> -->
+                  <div class="add isVisible">
+                    <button data-choice="private" class="add__button">Вручную</button>
+                    <button data-choice="deal" class="add__button">Со сделки</button>
                   </div>
                 </div>
               </div>
@@ -1007,7 +1011,8 @@ class SendFile{
 }
 
 class Form {
-  constructor() {
+  constructor(deal) {
+    this.dealInfo = deal;
   }
 
   /**
@@ -1162,29 +1167,38 @@ class Form {
   /**
    * второй рендер без адреса, оюязательные только фио и дата рождения
    */
-  render(){
+  getDate(){
+    return this.dealInfo.BIRTHDATE.split('T')[0];
+  }
+  render(notFound){
+    console.log(this.dealInfo)
     const htmlDom = document.querySelector('HTML');
     htmlDom.setAttribute("style", "overflow-y:hidden;");
 
     const currentY = window.pageYOffset;
     const layoutForm = `<div style="top: ${currentY}px;" class="module-form">
                           <form data-face="private" class="form">
+                            ${notFound === 'deal' ? `<p class="module__error-deal">Клиент в сделке не найден, заполните поля вручную</p>` : ''}
                             <div class="form__fio">
                               <div class="form__item">
                                 <span class="contract__title">Фамилия</span>
-                                <input data-required="yes" id="fio_form" type="text" name="lastName" value="" autocomplete="off" placeholder="Иванов">
+                                <input data-required="yes" id="fio_form" type="text" name="lastName" autocomplete="off" placeholder="Иванов"
+                                value="${this.dealInfo ? `${this.dealInfo.LAST_NAME ? this.dealInfo.LAST_NAME : ''}` : ''}">
                               </div>
                               <div class="form__item">
                                 <span class="contract__title">Имя</span>
-                                <input data-required="yes" id="fio_form" type="text" name="name" value="" autocomplete="off" placeholder="Иван">
+                                <input data-required="yes" id="fio_form" type="text" name="name" autocomplete="off" placeholder="Иван"
+                                value="${this.dealInfo ? `${this.dealInfo.NAME ? this.dealInfo.NAME : ''}` : ''}">
                               </div>
                               <div class="form__item">
                                 <span class="contract__title">Отчество</span>
-                                <input data-required="yes" id="fio_form" type="text" name="secondName" value="" autocomplete="off" placeholder="Иванович">
+                                <input data-required="yes" id="fio_form" type="text" name="secondName"autocomplete="off" placeholder="Иванович"
+                                value="${this.dealInfo ? `${this.dealInfo.SECOND_NAME ? this.dealInfo.SECOND_NAME : ''}` : ''}">
                               </div>
                               <div class="form__item">
                                 <span class="contract__title">Дата рождения</span>
-                                <input data-required="yes" id="fio_form" type="date" name="born" value="">
+                                <input data-required="yes" id="fio_form" type="date" name="born" 
+                                value="${this.dealInfo ? `${this.dealInfo.BIRTHDATE ? this.getDate() : ''}` : ''}">
                               </div>
                               <div class="form__item">
                                 <span class="contract__title">Комиссия</span>
@@ -1646,9 +1660,8 @@ class Handler{
       } else if (event.target.dataset.action === 'delete'){
         this.removeFile(event)
       } else if (event.target.dataset.btn === 'clients_add'){
-        // this.currentElem = document.querySelector('.add');
-        // this.checkCurrentElem();
-        this.addClients();
+        this.currentElem = document.querySelector('.add');
+        this.checkCurrentElem();
       } else if (event.target.dataset.save === 'all'){
         if (document.querySelector(`INPUT[id='exclusive']`).checked && !this.checkClients()){
           document.querySelector('.save-change-error').innerHTML = '';
@@ -1669,10 +1682,21 @@ class Handler{
         this.removeFile(event);
       } else if (event.target.dataset.choice === 'private'){
         this.checkCurrentElem();
-        this.addClients(event);
+        this.addClients();
       } else if (event.target.dataset.choice === 'legal'){
         this.checkCurrentElem();
         this.addLegal();
+      } else if (event.target.dataset.choice === 'deal'){
+        this.checkCurrentElem();
+        this.setLoader();
+        this.getDealInformation().then(data => {
+          if (data.status === 'ok'){
+            this.addClients(data.contact, 'deal');
+          } else {
+            this.addClients("", 'deal');
+          }
+          this.removeLoader();
+        });
       } else if (event.target.dataset.btn === 'responsible'){
         this.openSelectResponsible(app.testList);
       } else if (event.target.dataset.clear === 'all'){
@@ -1738,6 +1762,28 @@ class Handler{
       }
     }
     return true
+  }
+
+  async getDealInformation(){
+    const myHeaders = {
+      "Content-Type": "application/json; charset=utf-8"
+    };
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: JSON.stringify({
+        reqNumber: UID
+      })
+    };
+
+    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/getClientForAgree.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
+    return await response.json();
   }
 
   setPromoInstructions(){
@@ -2154,8 +2200,8 @@ class Handler{
   addLegal(){
     new Form().renderLegal();
   };
-  addClients(){
-    new Form().render();
+  addClients(dealInfo, idDeal){
+    new Form(dealInfo).render(idDeal);
   }
   removeClientFromDom(){
     document.querySelector(`.${this.currentClient}`).remove();
