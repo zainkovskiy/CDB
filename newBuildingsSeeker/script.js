@@ -1,33 +1,92 @@
 class newBuildingsSeeker {
   constructor(data) {
-    this.list = data;
+    this.list = data.data;
+    this.timestamp = data.timestamp;
+    this.arrayRealtors = [];
     this.filtered = [];
     this.showSend = false;
-    this.table = document.querySelector('.table');
+    this.table = document.querySelector('.container');
     this.inputDev = document.querySelector(`INPUT[name='developer']`);
     this.inputDate = document.querySelector(`INPUT[name='dataCreate']`);
   }
   init(){
-    this.showTable(this.list);
+    this.setStartValue();
     this.handler();
+    this.setStartUpdate();
+  }
+
+  //todo если получится переделать инициализацию с учетом сетТаймоута, рендера и получение данных риелтора
+  setStartUpdate(){
+    setTimeout(() => {
+      server.request({
+        action: 'getUpdates',
+        timestamp: this.timestamp,
+      }).then(row => {
+        if (row.length > 0){
+          this.list.push(...row)
+          server.getAllRealtors({
+            action: 'getBatch',
+            data: this.setArrayRealtors(),
+          }).then(data => {
+            this.arrayRealtors = data;
+            this.renderRows(row);
+          });
+        }
+      })
+    }, 30000);
+  }
+
+  setStartValue(){
+    server.getAllRealtors({
+      action: 'getBatch',
+      data: this.setArrayRealtors(),
+    }).then(data => {
+      this.arrayRealtors = data;
+      this.showTable(this.list);
+    });
+  }
+  setArrayRealtors(){
+    let arrayRealtors = [];
+    for (let item of this.list){
+      if (!arrayRealtors.find(Applicant => Applicant === item.applicant)){
+        arrayRealtors.push(item.applicant);
+      }
+    }
+    return arrayRealtors;
+  }
+  getApplicant(applicant){
+    return this.arrayRealtors.find(realtor => +realtor.UID === +applicant);
   }
   showTable(list){
     if (list.length > 0){
       this.table.querySelector('tbody').innerHTML = '';
-      if (this.showSend){
-        for (let item of list){
-          this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item).render());
-        }
-      } else {
-        for (let item of list){
-          if (!item.check){
-            this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item).render());
-          }
-        }
-      }
+      this.renderRows(list);
     } else {
       this.table.querySelector('tbody').innerHTML = '';
     }
+  }
+  renderRows(list){
+    if (this.showSend){
+      for (let item of list){
+        this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item, this.getApplicant(item.applicant)).render());
+      }
+    } else {
+      for (let item of list){
+        if (item.sendet){
+        } else {
+          this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item, this.getApplicant(item.applicant)).render());
+        }
+      }
+    }
+  }
+  showAllItems(isShow){
+    server.request({
+      action: `${isShow ? 'getAll' : 'get'}`
+    }).then(data => {
+      this.list = data.data;
+      this.timestamp = data.timestamp;
+      this.setStartValue();
+    })
   }
   handler(){
     this.table.addEventListener('click', event => {
@@ -42,6 +101,10 @@ class newBuildingsSeeker {
         }
       } else if (event.target.dataset.open === 'deal'){
         this.openCard(event.target.dataset.number);
+      } else if (event.target.dataset.open === 'form'){
+        this.getFormData(event.target.dataset.uid);
+      } else if (event.target.type === 'checkbox' && event.target.id === 'isShowAll'){
+        this.showAllItems(event.target.checked);
       }
     })
     this.inputDate.addEventListener('change', () => {
@@ -51,6 +114,8 @@ class newBuildingsSeeker {
       this.filter(this.inputDev.name, this.inputDev.value);
     })
   }
+
+
   openCard(number){
     let scrollHeight = Math.max(
       document.body.scrollWidth, document.documentElement.scrollWidth,
@@ -62,7 +127,69 @@ class newBuildingsSeeker {
     return true;
   }
   setNewValue(isChecked, req){
-    console.log(isChecked, req)
+    server.request({
+      action: `${isChecked ? 'sendet' : 'unSendet'}`,
+      UID: req,
+    })
+  }
+  getFormData(uid){
+    server.request({
+      action: 'getForm',
+      UID: uid,
+    }).then(form => {
+      console.log(form)
+      this.openModule(form);
+    })
+  }
+  openModule(form){
+    const htmlDom = document.querySelector('HTML');
+    htmlDom.setAttribute("style", "overflow-y:hidden;");
+    const currentY = window.pageYOffset;
+
+    this.table.insertAdjacentHTML('beforebegin',
+      `<div style="top: ${currentY}px;" class="module">
+                <div class="module__wrap">
+                  <div class="module__header"> 
+                    <h2 class="module__head">Информация о клиенте</h2>
+                    <span data-name="close" class="btn-close"></span>
+                  </div>
+                  <div class="module__center">
+                    <p class="module__text">Фамилия<span>${form.lastName ? form.lastName : ''}</span></p>
+                    <p class="module__text">Имя<span>${form.name ? form.name : ''}</span></p>
+                    <p class="module__text">Отчество<span>${form.secondName ? form.secondName : ''}</span></p>
+                    <p class="module__text">Номер телефона<span>${form.clientPhone ? form.clientPhone : ''}</span></p>
+                    <p class="module__text">Застройщик<span>${form.developer ? form.developer : ''}</span></p>
+                    <p class="module__text">ЖК<span>${form.complex ? form.complex : ''}</span></p>
+                    <p class="module__text">Серия<span>${form.passSeries ? form.passSeries : ''}</span></p>
+                    <p class="module__text">Номер<span>${form.passNumber ? form.passNumber : ''}</span></p>
+                    <p class="module__text">Этаж<span>${form.floor ? form.floor : ''}</span></p>
+                    <p class="module__text">Номер квартиры<span>${form.numberAppartment ? form.numberAppartment : ''}</span></p>
+                    <p class="module__text">Площадь квартиры<span>${form.area ? form.area : ''}</span></p>
+                  </div>
+                  <div class="module__footer"> 
+                    <button data-name="close" class="module__close"><span>Закрыть</span></button>
+                  </div>
+                </div>                          
+              </div>`);
+    this.handlerModule();
+  }
+  handlerModule(){
+    const module = document.querySelector('.module');
+    module.addEventListener('click', event => {
+      if (event.target.dataset.name === 'close'){
+        this.closeModule(module);
+      }
+    })
+    document.body.addEventListener('keyup', e => {
+      if (e.key === 'Escape' && module){
+        this.closeModule(module);
+      }
+    })
+  }
+  closeModule(module){
+    const htmlDom = document.querySelector('HTML');
+    htmlDom.removeAttribute("style");
+    module.remove();
   }
   filter(inputSource, value){
     if (this.inputDev.value.length === 0 && this.inputDate.value.length === 0){
@@ -70,12 +197,21 @@ class newBuildingsSeeker {
       this.showTable(this.list);
     } else if (this.inputDev.value.length > 0 && this.inputDate.value.length > 0){
       const regExp = new RegExp(value, 'i');
-      const doubleFilter = this.filtered.filter(item => regExp.test(item[inputSource]));
+      let doubleFilter = '';
+      if (inputSource === 'dataCreate'){
+        doubleFilter = this.filtered.filter(item => regExp.test(item.created.split(' ')[0]));
+      } else {
+        doubleFilter = this.filtered.filter(item => regExp.test(item[inputSource]));
+      }
       this.showTable(doubleFilter);
     } else {
       if (value.length > 0) {
         const regExp = new RegExp(value, 'i');
-        this.filtered = this.list.filter(item => regExp.test(item[inputSource]));
+        if(inputSource === 'dataCreate'){
+          this.filtered = this.list.filter(item => regExp.test(item.created.split(' ')[0]));
+        } else {
+          this.filtered = this.list.filter(item => regExp.test(item[inputSource]));
+        }
         this.showTable(this.filtered);
       } else {
         const selectInput = {
@@ -83,7 +219,11 @@ class newBuildingsSeeker {
           dataCreate: this.inputDev,
         }
         const regExp = new RegExp(selectInput[inputSource].value, 'i');
-        this.filtered = this.list.filter(item => regExp.test(item[selectInput[inputSource].name]));
+        if (selectInput[inputSource].name === 'dataCreate'){
+          this.filtered = this.list.filter(item => regExp.test(item.created.split(' ')[0]));
+        } else {
+          this.filtered = this.list.filter(item => regExp.test(item[selectInput[inputSource].name]));
+        }
         this.showTable(this.filtered);
       }
     }
@@ -91,25 +231,36 @@ class newBuildingsSeeker {
 }
 
 class Render{
-  constructor(row) {
+  constructor(row, applicant) {
     this.row = row;
+    this.applicant = applicant;
+  }
+  getDate(date){
+    if (date){
+      return date.split(' ')[0].split('-').reverse().join('-');
+    } else {
+      return ''
+    }
   }
   render(){
+    console.log(this.applicant)
     return `<tr> 
-              <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="deal" data-number="${this.row.deal}" >${this.row.deal}</span></div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.developer}</div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.complex}</div></td>
-              <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="form">${this.row.name}</span></div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.phone}</div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.realtor}</div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.type}</div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.dataCreate}</td>
+              <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="deal" data-number="${this.row.dealId}">${this.row.dealId ? this.row.dealId : ''}</span></div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.row.developer ? this.row.developer : ''}</div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.row.complex ? this.row.complex : ''}</div></td>
+              <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="form" data-uid="${this.row.UID}">
+              ${this.row.lastName ? this.row.lastName : ''}${this.row.name ? this.row.name : ''}${this.row.secondName ? this.row.secondName : ''}
+              </span></div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.row.clientPhone ? this.row.clientPhone : ''}</div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.applicant.FULL_NAME ? this.applicant.FULL_NAME : ''}</div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.row.type === 0 ? 'Уведомление' : 'Бронь'}</div></td>
+              <td class="table__row"><div class="table__row_wrap">${this.getDate(this.row.created)}</td>
               <td class="table__row">
                 <div class="table__row_wrap">
-                  <input data-req="${this.row.reqNumber}" class="table__checkbox" type="checkbox" id="${this.row.reqNumber}"
-                  ${this.row.check ? 'checked' : ''}>
-                  <label class="table__label" for="${this.row.reqNumber}"></label>
-                  ${this.row.dataSend}
+                  <input data-req="${this.row.UID}" class="table__checkbox" type="checkbox" id="${this.row.UID}"
+                  ${this.row.sendet ? 'checked' : ''}>
+                  <label class="table__label" for="${this.row.UID}"></label>
+                  ${this.getDate(this.row.sendet)}
                 </div>
               </td>
             </tr>`
@@ -119,65 +270,49 @@ class Render{
 class Server {
   constructor() {
   }
-  async request(){
-    return [
-      {
-        developer: 'dev1',
-        complex: 'complex',
-        realtor: 'realtor',
-        name: 'name',
-        phone: '89997779977',
-        type: 'type',
-        dataCreate: '2022-01-01',
-        dataSend: '2022-01-01',
-        reqNumber: 1,
-        check: true,
-        deal: 50627,
-      },
-      {
-        developer: 'dev2',
-        complex: 'complex',
-        realtor: 'realtor',
-        name: 'name',
-        phone: '89997779977',
-        type: 'type',
-        dataCreate: '2020-04-22',
-        dataSend: '2020-04-22',
-        reqNumber: 2,
-        check: false,
-        deal: 50627,
-      },
-      {
-        developer: 'dev3',
-        complex: 'complex',
-        realtor: 'realtor',
-        name: 'name',
-        phone: '89997779977',
-        type: 'type',
-        dataCreate: '2008-08-04',
-        dataSend: '2008-08-04',
-        reqNumber: 3,
-        check: false,
-        deal: 50627,
-      },
-      {
-        developer: 'dev3',
-        complex: 'complex',
-        name: 'name',
-        phone: '89997779977',
-        realtor: 'realtor',
-        type: 'type',
-        dataCreate: '2006-10-10',
-        dataSend: '2006-10-10',
-        reqNumber: 4,
-        check: true,
-        deal: 50627,
-      },
-    ]
+  async request(request1Cnamed){
+    const myHeaders = {
+      "Content-Type": "application/json; charset=utf-8"
+    };
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: JSON.stringify(request1Cnamed)
+    };
+
+    let response = await fetch("https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Object/BookingDriver.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
+    return await response.json();
+  }
+  async getAllRealtors(arrayRealtors){
+    const myHeaders = {
+      "Content-Type": "application/json; charset=utf-8"
+    };
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: myHeaders,
+      body: JSON.stringify(arrayRealtors)
+    };
+
+    let response = await fetch("https://crm.centralnoe.ru/dealincom/connector/Users.php", requestOptions);
+    if (!response.ok) {
+      throw new Error('Ответ сети был не ok.');
+    }
+    return await response.json();
   }
 }
 
 const server = new Server();
-server.request().then(data => {
+server.request({
+  action: 'get'
+}).then(data => {
   new newBuildingsSeeker(data).init();
 });

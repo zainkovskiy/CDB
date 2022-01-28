@@ -28,6 +28,12 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);?>
 </head>
 <body>
 <div class="container" data-candy="s<?=rand(0, 1000000)?>">
+    <div class="header"><span data-show="all">Показать все</span>
+    <label class="switch">
+      <input id="isShowAll" class="switch__open" type="checkbox">
+      <span class="slider slider__main"></span>
+    </label>
+    </div>
     <table class="table">
         <thead>
             <td><div class="table__td-header">Сделка</div></td>
@@ -38,7 +44,7 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);?>
             <td><div class="table__td-header">Риелтор</div></td>
             <td><div class="table__td-header">Тип</div></td>
             <td><div class="table__td-header">Дата создания <input class="table__input" type="date" autocomplete="off" name="dataCreate"></div></td>
-            <td><div class="table__td-header">Дата отправки <input class="table__checkbox" type="checkbox" id="showAllCheck"><label class="table__label" for="showAllCheck"></label></div></td>
+            <td><div class="table__td-header">Показать отправленные <input class="table__checkbox" type="checkbox" id="showAllCheck"><label class="table__label" for="showAllCheck"></label></div></td>
         </thead>
         <tbody></tbody>
     </table>
