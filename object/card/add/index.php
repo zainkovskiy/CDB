@@ -3,19 +3,19 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/dealincom/class/iHelper.php");
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
-//CJSCore::Init(['ui','sidepanel','jquery2']);
+CJSCore::Init(['ui','sidepanel','jquery2']);
 
-//if($USER->IsAuthorized()){
-//$APPLICATION->ShowHead();}
+if($USER->IsAuthorized()){
+$APPLICATION->ShowHead();}
 mb_internal_encoding("UTF-8");
 $source = $_GET['action'];
 $id = $_GET['id'];
 $contact = $_GET['contact'];
 $deal = $_GET['curdeal'];
 $ActiveUser = CUser::GetLogin();
-//\Bitrix\Main\UI\Extension::load("ui.buttons");
-//\Bitrix\Main\UI\Extension::load("ui.notification");
-//\Bitrix\Main\UI\Extension::load("ui.buttons.icons");
+\Bitrix\Main\UI\Extension::load("ui.buttons");
+\Bitrix\Main\UI\Extension::load("ui.notification");
+\Bitrix\Main\UI\Extension::load("ui.buttons.icons");
 
 ?>
 <!DOCTYPE html>

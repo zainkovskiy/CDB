@@ -780,7 +780,7 @@ class EditPhoto{
                             </div>
                           </div>    
                           <div class="module__footer"> 
-                            <span>Не допускается к размещению фото с водяными знаками и чужих объектов.</span>
+                            <span>При размещении фотографий с видимыми водяными знаками и/или чужих объектов, ответственность о непрохождении модерации и/или отсутствию в рекламе, риелтор берет на себя.</span>
                             <div> 
                               <button data-module="save" class="ui-btn ui-btn-success">Сохранить</button>
                               <button data-module="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>
@@ -920,7 +920,7 @@ class EditPhoto{
 
   checkRightPhoto(){
     for (let photo of this.files){
-      if (photo.height > 800 || photo.width > 800 && photo.allowFormat){
+      if (photo.height >= 800 || photo.width >= 800 && photo.allowFormat){
         this.rightFiles.push(photo);
       }
     }
