@@ -651,7 +651,7 @@ class Handler {
                 requestAlert.subtype = subtype.innerHTML;
                 requestAlert.extype = extypeInfo.innerHTML;
                 requestAlert.reason = reason.innerHTML;
-                requestAlert.reason = reason.innerHTML + ' ' + reasonComment.value;
+                requestAlert.reason = reason.innerHTML + '. ' + reasonComment.value;
                 this.setLoader();
                 this.sendAlert(requestAlert).then(() => {
                   this.removeLoader();
