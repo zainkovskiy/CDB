@@ -249,7 +249,7 @@ class Render{
               <td class="table__row"><div class="table__row_wrap">${this.row.developer ? this.row.developer : ''}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.complex ? this.row.complex : ''}</div></td>
               <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="form" data-uid="${this.row.UID}">
-              ${this.row.lastName ? this.row.lastName : ''}${this.row.name ? this.row.name : ''}${this.row.secondName ? this.row.secondName : ''}
+              ${this.row.lastName ? this.row.lastName : ''} ${this.row.name ? this.row.name : ''} ${this.row.secondName ? this.row.secondName : ''}
               </span></div></td>
               <td class="table__row"><div class="table__row_wrap">${this.row.clientPhone ? this.row.clientPhone : ''}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.applicant.FULL_NAME ? this.applicant.FULL_NAME : ''}</div></td>

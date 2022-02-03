@@ -64,6 +64,7 @@ body {
 .table td {
   padding: 10px;
   border-bottom: 1px solid #cbbdbd;
+  text-align: center;
 }
 .table__row_wrap {
   display: flex;
