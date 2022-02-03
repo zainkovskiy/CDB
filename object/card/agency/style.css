@@ -761,6 +761,10 @@ input::placeholder {
   width: 100%;
   display: block;
 }
+.save-change-error {
+  width: 100%;
+  text-align: center;
+}
 .save-change__group {
   display: flex;
 }

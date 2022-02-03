@@ -46,6 +46,7 @@
 }
 .photo__img-wrap {
   position: relative;
+  width: 100%;
 }
 .photo__img-wrap:hover .photo__delete {
   display: block;
@@ -234,6 +235,7 @@
 
 .table {
   background-color: white;
+  margin: 0;
 }
 .table__row {
   border-bottom: 1px #eef2f4 solid;
@@ -257,7 +259,7 @@
 .table__wrap {
   height: 300px;
   overflow-y: auto;
-  margin: 20px 0;
+  margin: 20px 0 0 0;
 }
 .table__checkbox {
   -webkit-appearance: checkbox;

@@ -43,6 +43,7 @@
     object-fit: contain;
     &-wrap{
       position: relative;
+      width: 100%;
       &:hover .photo__delete{
         display: block;
       }
@@ -224,6 +225,7 @@
 }
 .table{
   background-color: white;
+  margin: 0;
   &__row{
     border-bottom: 1px #eef2f4 solid;
     cursor: pointer;
@@ -246,7 +248,7 @@
   &__wrap{
     height: 300px;
     overflow-y: auto;
-    margin: 20px 0;
+    margin: 20px 0 0 0;
   }
   &__checkbox{
     -webkit-appearance: checkbox;

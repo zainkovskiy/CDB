@@ -756,6 +756,10 @@ input{
     width: 100%;
     display: block;
   }
+  &-error{
+    width: 100%;
+    text-align: center;
+  }
   &__group{
     display: flex;
   }

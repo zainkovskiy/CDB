@@ -816,7 +816,7 @@ class Handler{
       reqCity: /(.|\s)*\S(.|\s)*/,
       reqArea: /^[А-ЯЁа-яё]*$/,
       reqStreet: /(.|\s)*\S(.|\s)*/,
-      reqHouseNumber: /^-?\d[\/\dА-ЯЁа-яё]*?$/,
+      reqHouseNumber: /\.*/,
       reqHouseDeveloper: /\.*/,
       reqFlat: /^\d{1,6}$/,
       reqFlatTotalArea: /^\d*\.?\d*?$/,

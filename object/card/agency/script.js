@@ -120,7 +120,6 @@ class App {
       this.copyOwner = JSON.parse(JSON.stringify(this.owner));
       this.init();
       console.log(this.owner)
-      console.log('test2')
     } else {
       location="https://crm.centralnoe.ru/dealincom/404.php";
     }
@@ -348,9 +347,9 @@ class Render {
   }
   placeLayout(){
     const params = this.obj.params;
-    const street = `, ул. ${params.street}`;
-    const house = `, д. ${params.houseNumber}`;
-    const flat = `, кв. ${params.flatNumber}`;
+    const street = params.street ? `, ул. ${params.street}` : '';
+    const house = params.houseNumber ? `, д. ${params.houseNumber}` : '';
+    const flat = params.flatNumber ? `, кв. ${params.flatNumber}` : '';
     return `<span>${params.city}${street}${house}${flat}</span>`
   }
   setDocType(){
@@ -674,9 +673,9 @@ class Render {
                     </div>
                   </div> 
                   -->
-                  <div class="contract__wrap ${accessRights}"> 
+                  <div class="contract__wrap"> 
                     <div class="contract__title-wrap"> 
-                        <span class="contract__title">Срок дейcтвия договора ${validity}</span>                       
+                        <span class="contract__title contract__title_time">Срок действия договора ${validity}</span>                       
                     </div>
                     <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''} ${this.obj.docType === 'Рекламный' || this.obj.moderatorAccepted === '1' ? 'disabled' : ''}" type="date" value="${expired}">
                   </div> 
@@ -1787,6 +1786,7 @@ class Handler{
   }
 
   setPromoInstructions(){
+    document.querySelector(`.contract__title_time`).innerHTML = 'Срок действия договора 90 дней';
     if (app.copyOwner.expiredAd){
       document.querySelector(`INPUT[name='expired']`).value = app.copyOwner.expiredAd.split(" ")[0];
       document.querySelector(`INPUT[name='expired']`).classList.add('disabled');
@@ -1799,6 +1799,7 @@ class Handler{
     }
   }
   setExclusiveInstructions(){
+    document.querySelector(`.contract__title_time`).innerHTML = 'Срок действия договора до';
     document.querySelector(`INPUT[name='expired']`).value = '';
     document.querySelector(`INPUT[name='expired']`).classList.remove('disabled');
   }
@@ -2067,12 +2068,18 @@ class Handler{
     // }
     checkExpired(inputObj.expired)
     function checkExpired(item){
-      if (new Date() < new Date(item.value)){
+      console.log(app.newClient)
+      if (Object.keys(app.newClient).length !== 0){
+        console.log('here')
         inputValid.expired = true;
-        item.classList.remove('isValid');
       } else {
-        inputFalse.push(item)
-        item.classList.add('isValid');
+        if (new Date() < new Date(item.value)){
+          inputValid.expired = true;
+          item.classList.remove('isValid');
+        } else {
+          inputFalse.push(item)
+          item.classList.add('isValid');
+        }
       }
     }
     // checkTypeOfLaw(inputObj.typeOfLaw);

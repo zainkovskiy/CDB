@@ -323,7 +323,7 @@ class Render {
                       ${createdDate ? createdDate : ''}
                     </span>
                   </p>    
-                  <p class="title p_margin">Актуализированно
+                  <p class="title p_margin">Актуализировано
                     <span class="text text_grey text_right">
                       ${updatedDate ? updatedDate : ''}
                     </span>

@@ -8,6 +8,8 @@ function handlerDownload(){
         clearInterval(interval);
         document.querySelector('.info').innerHTML = `<span>Как работать с фотографиями?</span>
               <button data-info="photo" class="ui-btn ui-btn-primary-dark">инфо</button>`;
+        document.querySelector('.photo__upload').classList.remove('disabled');
+        document.querySelector('.photo__upload-test').innerHTML = 'Загрузите фото';
       }
     })
   }, 15000);
@@ -893,7 +895,9 @@ class EditPhoto{
   }
   showStatusDownload(){
     document.querySelector('.info').innerHTML = `<span>Мы заботимся о Вашем времени! Фотографии в процессе загрузки. Обычно это занимает не более 3-х минут. Можно закрыть страницу,  по факту окончания Вам придет уведомление</span>
-            <span class="info__gif"></span>`
+            <span class="info__gif"></span>`;
+    document.querySelector('.photo__upload').classList.add('disabled');
+    document.querySelector('.photo__upload-test').innerHTML = 'Подождите фото загружаются';
     handlerDownload();
   }
   closeEditWindow(module){
