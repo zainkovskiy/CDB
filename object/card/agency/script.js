@@ -381,7 +381,7 @@ class Render {
       egrn: '',
       contract: '',
       grp: '',
-      other: '',
+      // other: '',
     }
     const accessRights = this.getAccessRights();
     for (let file of this.obj.documents){
@@ -417,24 +417,8 @@ class Render {
                                   </div>
                                 </div>
                               </div>`;
-      } else if (file.documentType === 'grp'){
+      } else if (file.documentType === 'grp' || file.documentType === 'other'){
         fileLayout.grp +=  `<div class="file__item uid${file.UID}">
-                                <p class="file__files"><span>${file.documentName.length > 0 ? file.documentName : 'untitled'}</span></p>
-                                <div class="file__icon">
-                                  <a class="file__svg file__svg-download" href="${file.URI}"
-                                  target="_blank"
-                                     download="${file.documentName.length > 0 ? file.documentName : 'untitled'}"></a>
-                                  <span class="file__burger" data-uid="${file.UID}" data-burger="burger"></span>
-                                  <div class="burger-hide isVisible id${file.UID}"> 
-                                    <div class="burger__btn-group">
-                                        <button data-uid="${file.UID}" data-action="edit" class="burger__btn">Редактировать</button>
-                                        <button data-uid="${file.UID}" data-action="delete" class="burger__btn">Удалить</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>`;
-      } else if (file.documentType === 'other'){
-        fileLayout.other +=  `<div class="file__item uid${file.UID}">
                                 <p class="file__files"><span>${file.documentName.length > 0 ? file.documentName : 'untitled'}</span></p>
                                 <div class="file__icon">
                                   <a class="file__svg file__svg-download" href="${file.URI}"
@@ -720,20 +704,20 @@ class Render {
                       <div class="file__container container__contract">${file.contract}</div>                                   
                     </div>                  
                     <div class="upload__wrap"> 
+                      <div data-container="grp" class="file upload_width"> 
+                      <input name="grp" class="file__input" id="file_grp" type="file" multiple>
+                      <label class="file__label" for="file_grp"></label>
+                      <span class="file__text">Загрузите Акт показа</span>
+                      </div>
+                      <div class="file__container container__grp">${file.grp}</div>   
+                    </div>   
+                    <div class="upload__wrap"> 
                       <div data-container="egrn" class="file upload_width"> 
                       <input name="egrn" class="file__input" id="file_egrn" type="file" multiple>
                       <label class="file__label" for="file_egrn"></label>
-                      <span class="file__text">Загрузите Акт показа</span>
-                      </div>
-                      <div class="file__container container__egrn">${file.egrn}</div>   
-                    </div>   
-                    <div class="upload__wrap"> 
-                      <div data-container="other" class="file upload_width"> 
-                      <input name="other" class="file__input" id="file_other" type="file" multiple>
-                      <label class="file__label" for="file_other"></label>
                       <span class="file__text">Загрузите ЕГРН</span>
                       </div>
-                      <div class="file__container container__other">${file.other}</div>   
+                      <div class="file__container container__egrn">${file.egrn}</div>   
                     </div>                
                   </div>      
                 </div>                 
@@ -1813,10 +1797,9 @@ class Handler{
                           <div class="edit__wrap"> 
                             <span class="edit__text">Тип документа</span>
                             <select class="documentType" name="documentType">
-                              <option>ЕГРН</option>
                               <option>ДОУ</option>
-                              <option>ГРП</option>
-                              <option>Прочие документы</option>
+                              <option>Акт показа</option>
+                              <option>ЕГРН</option>
                             </select>
                           </div>
                           <div>
@@ -1832,10 +1815,8 @@ class Handler{
       firsWord = 'ЕГРН';
     } else if (findInDoc.documentType === 'contract'){
       firsWord = 'ДОУ';
-    } else if (findInDoc.documentType === 'grp'){
-      firsWord = 'ГРП';
-    } else if (findInDoc.documentType === 'other'){
-      firsWord = 'Прочие документы';
+    } else if (findInDoc.documentType === 'grp' || findInDoc.documentType === 'other'){
+      firsWord = 'Акт показа';
     }
     selectStyle('.documentType', `${firsWord}`)
   }
@@ -2430,11 +2411,8 @@ class Handler{
           case 'ДОУ':
             typeFile = 'contract';
             break;
-          case 'ГРП':
+          case 'Акт показа':
             typeFile = 'grp';
-            break;
-          case 'Прочие документы':
-            typeFile = 'other';
             break;
         }
         findInDoc[input.name] = input.value.length > 0 ? input.value : 'untitled';
