@@ -2,34 +2,30 @@ class App{
   constructor() {
     this.container = document.querySelector('.main');
     this.obj = {};
+    this.objAPI = 'https://crm.centralnoe.ru/dealincom/factory/objectViewer.php'
+    this.additional = '';
+    this.additionalAPI = 'https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Object/getState.php';
   }
 
-  async getJson() {
-    var request1Cnamed = {
-      user: login,
-      source: source,
-      id: UID,
+  async getJson(API, request1Cnamed) {
+    const myHeaders = {
+      "Content-Type": "application/json; charset=utf-8",
     };
-
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json; charset=utf-8");
-    var raw = JSON.stringify(request1Cnamed);
-    var requestOptions = {
+    const requestOptions = {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       credentials: "include",
       headers: myHeaders,
-      body: raw
+      body: JSON.stringify(request1Cnamed)
     };
 
-    let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/objectViewer.php", requestOptions);
+    let response = await fetch(API, requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
 
-    this.obj = await response.json();
-    this.init();
+    return await response.json();
   }
 
   async setChart(){
@@ -60,24 +56,56 @@ class App{
 
   init(){
     document.querySelector('.main').scrollIntoView();
-    this.container.insertAdjacentHTML('beforeend', new Render(this.obj).render());
-    this.setTopForStory();
+    this.container.insertAdjacentHTML('beforeend', new Render(this.obj, this.additional).render());
     this.checkSlider();
     if (this.obj.privileges.card === 'full'){
       this.setChart().then(data => {
         if (data.promotionStats){
+          this.container.insertAdjacentHTML('beforeend', this.isChart());
           new ChartCallView(data.promotionStats, data.SelectionStats).init();
+        } else {
+          document.querySelector('.main').classList.add('main_without-chart');
         }
+        this.setTopForStory();
       });
+    }
+    if (source === 'pars'){
+      document.querySelector('.main').classList.add('main_pars');
     }
     console.log(btoa(UID))
     new Handler(this.obj).init();
+    this.initTooltip();
+  }
+
+  initTooltip(){
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  }
+  isChart(){
+    const currentX = document.documentElement.clientWidth;
+    if (currentX < 500){
+      return `<div class="chart" style="width:100%; height:auto;">
+                <canvas id="myChart" width="320" height="320"></canvas>
+              </div>`;
+    } else {
+      return `<div class="chart">
+                <canvas id="myChart"></canvas>
+             </div>`;
+    }
   }
 
   setTopForStory(){
-    const descriptionTop = document.querySelector('.description').getBoundingClientRect().top;
-    const chartBottom = document.querySelector('.chart').getBoundingClientRect().bottom;
-    document.querySelector('.story').setAttribute('style', `max-height: ${chartBottom - descriptionTop}px`);
+    if (document.querySelector('.chart')){
+      const infoTop = document.querySelector('.info ').getBoundingClientRect().top;
+      const chartBottom = document.querySelector('.chart').getBoundingClientRect().bottom;
+      document.querySelector('.story').setAttribute('style', `height: ${chartBottom - infoTop}px`);
+    } else {
+      const infoTop = document.querySelector('.info ').getBoundingClientRect().top;
+      const mapWrapBottom = document.querySelector('.map_wrap').getBoundingClientRect().bottom;
+      document.querySelector('.story').setAttribute('style', `height: ${mapWrapBottom - infoTop}px`);
+    }
   }
   checkSlider(){
     const elms = document.querySelectorAll('.slider');
@@ -96,8 +124,9 @@ class App{
 }
 
 class Render {
-  constructor(obj) {
+  constructor(obj, additional) {
     this.obj = obj;
+    this.additional = additional;
   }
 
   initMap(){
@@ -123,6 +152,7 @@ class Render {
         }
       });
       myMap.geoObjects.add(myGeoObject);
+      myMap.controls.add('zoomControl');
       myMap.behaviors.disable('scrollZoom');
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
         //... отключаем перетаскивание карты
@@ -130,18 +160,18 @@ class Render {
       }
     }
   }
-  isChart(){
-    const currentX = document.documentElement.clientWidth;
-    if (currentX < 500){
-      return `<div class="chart" style="width:100%; height:auto;">
-                <canvas id="myChart" width="320" height="320"></canvas>
-              </div>`;
-    } else {
-      return `<div class="chart">
-                <canvas id="myChart"></canvas>
-             </div>`;
-    }
-  };
+  // isChart(){
+  //   const currentX = document.documentElement.clientWidth;
+  //   if (currentX < 500){
+  //     return `<div class="chart" style="width:100%; height:auto;">
+  //               <canvas id="myChart" width="320" height="320"></canvas>
+  //             </div>`;
+  //   } else {
+  //     return `<div class="chart">
+  //               <canvas id="myChart"></canvas>
+  //            </div>`;
+  //   }
+  // }
   isPhoto(){
     if (this.obj.photo && this.obj.photo.length > 0){
       let photoElem = '';
@@ -199,44 +229,79 @@ class Render {
     }
   }
   haveIsLogo(){
-    if (source === '1c'){
-      return `<span class="about__logo-item" style="background-image: url(${this.obj.logo})"></span>`
+    const libraryIconLogos = {
+      'Avito': 'https://crm.centralnoe.ru/dealincom/assets/img/avito_logo.png',
+      'Cian': 'https://crm.centralnoe.ru/dealincom/assets/img/cian_logo.png',
+      'Domclick': 'https://crm.centralnoe.ru/dealincom/assets/img/dom_logo.jpg',
+      'Site': '../img/centr_logo.png',
+      'Yandex': 'https://crm.centralnoe.ru/dealincom/assets/img/y_logo.png',
+      'N1': 'https://crm.centralnoe.ru/dealincom/assets/img/n1_logo.png',
+    }
+    if (source === '1c' && this.obj.platform.length > 0){
+      let logos = '';
+      for (let logo of this.obj.platform){
+        if (logo.name === 'Site'){
+          logos = `<a class="miscellaneous-information__logo" href='${logo.url}' target="_blank" style="background-image: url(${libraryIconLogos[logo.name]})" title="нажмите чтобы перейти на площадку"></a>` + logos;
+        } else {
+          logos += `<a class="miscellaneous-information__logo" href='${logo.url}' target="_blank" style="background-image: url(${libraryIconLogos[logo.name]})" title="нажмите чтобы перейти на площадку"></a>`
+        }
+      }
+      return logos
+    } else if (source === '1c'){
+      return `<span class="miscellaneous-information__logo" style="background-image: url(${this.obj.logo})"></span>`
     } else {
       let logos = '';
       for (let logo of this.obj.advURL){
-        logos += `<a class="about__logo-item" href='${logo.URL}' target="_blank" style="background-image: url(${logo.logo})" title="нажмите чтобы перейти на площадку"></a>`
+        logos += `<a class="miscellaneous-information__logo" href='${logo.URL}' target="_blank" style="background-image: url(${logo.logo})" title="нажмите чтобы перейти на площадку"></a>`
       }
       return logos
     }
   }
   getPrice(){
-    if (this.obj.price === '0' || this.obj.totalArea === '0'){
-      return `0`
+    if (this.obj.price && this.obj.totalArea){
+      return ((+this.obj.price / +this.obj.totalArea) * 1000).toFixed(0);
     } else {
-      return ((this.obj.price / this.obj.totalArea) * 1000).toFixed(0);
+      return ``
     }
   }
   getDocType(){
     if (source === '1c'){
-      return this.obj.docType ? this.obj.docType : '';
+      return this.additional.docType ? this.additional.docType : '';
     } else {
       return ''
     }
   }
   getClient(){
-    console.log(this.obj)
     if (source === 'pars' || this.obj.privileges.card === 'full' || this.obj.docType === null || this.obj.docType === 'Без договора'){
-      return `<div class="contacts__wrap">
-                  <span class="title">Владелец</span>
-                  <div class="contacts__name"> 
-                    <img class="contacts__img" src="${this.obj.clientPhoto ? this.obj.clientPhoto : `../img/placeholder-user.png`}" alt="">
-                    <span class="text">${this.obj.client ? this.obj.client : 'не указан'}</span>  
-                  </div> 
+      return `<div class="contacts">
+                  <span class="text">Владелец</span>
+                  <span class="contacts__name text">${this.obj.client ? this.obj.client : 'не указан'}</span>  
                   <span class="text text-phone">
-                  <svg class="contacts__phone" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.50224 7.77605C5.08572 8.96893 6.05266 9.93147 7.24818 10.5095C7.33565 10.551 7.4324 10.5689 7.52892 10.5616C7.62544 10.5543 7.71839 10.522 7.79863 10.4679L9.55895 9.29405C9.63681 9.24213 9.72638 9.21046 9.81956 9.2019C9.91275 9.19334 10.0066 9.20816 10.0926 9.24502L13.3858 10.6564C13.4977 10.7039 13.5911 10.7865 13.652 10.8917C13.7128 10.997 13.7378 11.1191 13.7232 11.2398C13.6191 12.0543 13.2217 12.8029 12.6054 13.3455C11.9891 13.8881 11.1961 14.1874 10.375 14.1875C7.83887 14.1875 5.40661 13.18 3.61329 11.3867C1.81997 9.59337 0.8125 7.16111 0.8125 4.62498C0.812543 3.80385 1.11189 3.01089 1.65448 2.39458C2.19707 1.77826 2.94571 1.38086 3.76021 1.27677C3.88088 1.26216 4.00302 1.28717 4.10824 1.34802C4.21346 1.40887 4.29605 1.50227 4.34357 1.61414L5.75619 4.91024C5.79272 4.9955 5.80761 5.08847 5.79952 5.18087C5.79144 5.27327 5.76062 5.36224 5.70983 5.43985L4.54008 7.22718C4.48684 7.30758 4.45537 7.40042 4.44874 7.49662C4.4421 7.59283 4.46054 7.6891 4.50224 7.77605V7.77605Z" stroke="#BDBDBD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  ${this.obj.clientPhone ? this.obj.clientPhone : 'не указан'}</span>
+                  <svg class="contacts__phone" xmlns="http://www.w3.org/2000/svg" 
+                    \t viewBox="0 0 505.709 505.709" xml:space="preserve">
+                    \t\t<path d="M427.554,71.862c-99.206-95.816-256.486-95.816-355.692,0c-98.222,101.697-95.405,263.762,6.292,361.984
+                    \t\t\tc99.206,95.816,256.486,95.816,355.692,0C532.068,332.15,529.251,170.084,427.554,71.862z M421.814,421.814l-0.085-0.085
+                    \t\t\tc-93.352,93.267-244.636,93.198-337.903-0.154S-9.372,176.94,83.98,83.673s244.636-93.198,337.903,0.153
+                    \t\t\tc44.799,44.84,69.946,105.643,69.905,169.028C491.792,316.225,466.622,377.002,421.814,421.814z"/>
+                    
+                    \t\t<path d="M396.641,325.729l-47.957-47.787c-10.884-10.91-28.552-10.931-39.462-0.047c-0.016,0.016-0.031,0.031-0.047,0.047
+                    \t\t\tl-27.477,27.477c-2.079,2.084-5.355,2.372-7.765,0.683c-15.039-10.51-29.117-22.333-42.069-35.328
+                    \t\t\tc-11.6-11.574-22.271-24.042-31.915-37.291c-1.748-2.38-1.494-5.68,0.597-7.765l28.16-28.16c10.872-10.893,10.872-28.531,0-39.424
+                    \t\t\tl-47.957-47.957c-11.051-10.565-28.458-10.565-39.509,0l-15.189,15.189c-22.939,22.681-31.128,56.359-21.163,87.04
+                    \t\t\tc7.436,22.447,17.947,43.755,31.232,63.317c11.96,17.934,25.681,34.628,40.96,49.835c16.611,16.73,35.011,31.581,54.869,44.288
+                    \t\t\tc21.83,14.245,45.799,24.904,70.997,31.573c6.478,1.597,13.126,2.399,19.797,2.389c22.871-0.14,44.752-9.346,60.843-25.6
+                    \t\t\tl13.056-13.056C407.513,354.26,407.513,336.622,396.641,325.729z M384.557,353.514c-0.011,0.011-0.022,0.023-0.034,0.034
+                    \t\t\tl0.085-0.256l-13.056,13.056c-16.775,16.987-41.206,23.976-64.427,18.432c-23.395-6.262-45.635-16.23-65.877-29.525
+                    \t\t\tc-18.806-12.019-36.234-26.069-51.968-41.899c-14.477-14.371-27.483-30.151-38.827-47.104
+                    \t\t\tc-12.408-18.242-22.229-38.114-29.184-59.051c-7.973-24.596-1.366-51.585,17.067-69.717l15.189-15.189
+                    \t\t\tc4.223-4.242,11.085-4.257,15.326-0.034c0.011,0.011,0.023,0.022,0.034,0.034l47.957,47.957
+                    \t\t\tc4.242,4.223,4.257,11.085,0.034,15.326c-0.011,0.011-0.022,0.022-0.034,0.034l-28.16,28.16
+                    \t\t\tc-8.08,7.992-9.096,20.692-2.389,29.867c10.185,13.978,21.456,27.131,33.707,39.339c13.659,13.718,28.508,26.197,44.373,37.291
+                    \t\t\tc9.167,6.394,21.595,5.316,29.525-2.56l27.221-27.648c4.223-4.242,11.085-4.257,15.326-0.034c0.011,0.011,0.022,0.022,0.034,0.034
+                    \t\t\tl48.043,48.128C388.765,342.411,388.78,349.272,384.557,353.514z"/>
+                    </svg>
+                    ${this.obj.clientPhone ? this.obj.clientPhone : 'не указан'}
+                  </span>
               </div>`
     } else {
       return ``
@@ -258,10 +323,36 @@ class Render {
     }
   }
 
+  getTodo(){
+    let todoList = '';
+    for (let text of this.additional.photoStatus){
+      todoList += `<li>${text}</li>`;
+    }
+    return todoList
+  }
+  getStamp(){
+    const stamp = {
+      client: '',
+      moderator: ''
+    }
+    if (this.additional.clientAccepted === "Accepted" && this.additional.docType === "Рекламный договор"){
+      stamp.client = `<span class="stamp">Подтверждено клиентом</span>`;
+    }
+
+    if (this.additional.docModeration === "inProgress" && this.additional.docType !== "Рекламный договор"){
+      stamp.moderator = `<span class="stamp">Документы на проверке</span>`;
+    } else if (this.additional.contentModeration === "Accepted"){
+      stamp.moderator = `<span class="stamp stamp_accepted">Подтверждено модератором</span>`;
+    } else if (this.additional.contentModeration === "inProgress"){
+      stamp.moderator = `<span class="stamp">На основной модерации</span>`;
+    }
+    return stamp;
+  }
+
   render(){
     const photo = this.isPhoto();
-    const createdDate = this.getDate(this.obj.created);
-    const updatedDate = this.getDate(this.obj.updated);
+    const createdDate = this.obj.created && this.getDate(this.obj.created);
+    const updatedDate = this.obj.updated && this.getDate(this.obj.updated);
     let priceMeter = this.getPrice();
     const logo = this.haveIsLogo();
     const historyLayout = this.historyLayout();
@@ -269,8 +360,9 @@ class Render {
     const client = this.getClient();
     const regExp = new RegExp('зарезервировано', 'i');
     const phoneOwner = this.getPhoneOwner();
+    const stamps = this.getStamp();
     this.initMap();
-    const chartView = this.isChart();
+    // const chartView = this.isChart();
     return `<input class="mobile-toggle__input" id="menu__toggle" type="checkbox">
             <label class="mobile-toggle__label" for="menu__toggle"> 
               <span class="mobile-toggle__span"></span>
@@ -304,77 +396,92 @@ class Render {
                 <a href="#" class="slider__control" data-slide="next"></a>
             </div>
             </div> 
-            <div class="about wrapper">
-              <div class="about__date">
-                <div class="about__header">                  
-                  <p class="about__type p_margin title">Тип: 
-                    <span class="text"> 
-                        ${this.obj.roomCount ? `${this.obj.roomCount} к.` : ''}
-                        ${this.obj.typeRealty ? this.obj.typeRealty : ''}
-                    </span>
-                  </p>              
-                  <p class="about__type p_margin title">Заявка № 
-                  <span class="text"> 
-                      ${this.obj.reqNumber ? this.obj.reqNumber : ''}
-                  </span>
-                  </p>
-                  <p class="title p_margin">Создано
-                    <span class="text text_grey text_right">
-                      ${createdDate ? createdDate : ''}
-                    </span>
-                  </p>    
-                  <p class="title p_margin">Актуализировано
-                    <span class="text text_grey text_right">
-                      ${updatedDate ? updatedDate : ''}
-                    </span>
-                  </p>
-                </div>         
-              </div>
-              <div>
-                <span class="about__title">${this.obj.street ? this.obj.street : ''}${this.obj.privileges.card === 'ADB' ? `${this.obj.reqFlat ? `-${this.obj.reqFlat}` : ''}` : ''}</span>
-                <div class="about__address">     
-                  <p class="text p_margin">${this.obj.city ? `${this.obj.city}` : ''} ${this.obj.area ? `${this.obj.area} р-н` : ''}</p>
-                  ${this.obj.metroDistance ? this.obj.metroDistance >= 60 ? '' :
-      `<p class="text p_margin">
-                    <svg width="11" height="6" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M8.41193 0L5.8457 4.47552L3.31259 0L1.20994 
-                                  5.3986H0.845703V6H2.98146V5.42657H2.65034L3.69339 3.00699L5.5808 6H6.09405L7.98146 
-                                  2.97902L9.04107 5.3986H8.66027V6H10.8457V5.3986H10.4649L8.41193 0Z" fill="#E84533"/>
-                    </svg>
-                    ${this.obj.metro ? this.obj.metro : ''}
-                    <span class="text text_grey text_right">&#8226;  ${this.obj.metroDistance ? this.obj.metroDistance : ''} мин. пешком</span>
-                  </p>` : ''}
+            <div class="miscellaneous-information wrapper"> 
+                <div class="miscellaneous-information__header"> 
+                  <p class="title info__text miscellaneous-information__text">Заявка №<span class="text">${UID ? UID : ''}</span></p>
+                  <p class="title info__text miscellaneous-information__text">Статус
+                  <span class="text">
+                  ${this.additional ? `${this.additional.reqStatus ? this.additional.reqStatus : ''}` : ''}
+                  </span></p>
+                  <p class="title info__text miscellaneous-information__text">Создано<span class="text">${createdDate ? createdDate : ''}</span></p>
+                  <p class="title info__text miscellaneous-information__text">Актуализировано<span class="text">${updatedDate ? updatedDate : ''}</span></p>
+                  <p class="title info__text miscellaneous-information__text">Тип договора<span class="text">${docType}</span></p>
+                  <p class="title info__text miscellaneous-information__text">Риелтор<span class="text">
+                  <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.ownerId}" bx-tooltip-user-id="${this.obj.ownerId}">
+                            ${this.obj.owner ? this.obj.owner : ''}
+                  </a> </span></p>
                 </div>
-                ${this.obj.community ? `<p class="text p_margin">${this.obj.community}</p>` : ''}       
+                <div class="miscellaneous-information__bottom"> 
+                  <div class="miscellaneous-information_wrap"> 
+                    ${logo}
+                  </div>
+                  <div class="about__stamp"> 
+                    ${source === '1c' ? stamps.client : ''}
+                    ${source === '1c' ? stamps.moderator : ''}
+                  </div>
+                </div>
+            </div>
+            <div class="about wrapper">
+              <div class="about__top"> 
+                <div class="about__address">  
+                  <span class="text">
+                    ${this.obj.typeRealty === 'Гараж' || this.obj.typeRealty === 'Земельный участок' ? '' : `${this.obj.roomCount ? `${this.obj.roomCount} к.` : ''}`}
+                    ${this.obj.typeRealty ? this.obj.typeRealty : ''}
+                  </span>
+                  <span class="about__title about__title-address">${this.obj.street ? this.obj.street : ''}${this.obj.privileges.card === 'ADB' ? `${this.obj.reqFlat ? `-${this.obj.reqFlat}` : ''}` : ''}</span>   
+                    <p class="text p_margin">${this.obj.city ? `${this.obj.city}` : ''} ${this.obj.area ? `${this.obj.area} р-н` : ''}</p>
+                    ${this.obj.community ? `<p class="text p_margin">${this.obj.community}</p>` : ''}  
+                </div>
               </div>
-              <div class="about__right">
-                  <div class="about__price"> 
-                    ${this.obj.reqOverstate === '1' ? `<span class="about__title">${this.obj.reqOverstatePrice ? this.obj.reqOverstatePrice : ''} тыс. ₽</span>` : ''}          
-                    ${this.obj.reqOverstate === '1' ? `<span class="text text_grey">с завышением</span>` : ''}
-                    <span class="${this.obj.reqOverstate === '1'? 'info__area-text strikethrough' : 'about__title'}">${this.obj.price ? this.obj.price : ''} тыс. ₽</span>  
-                    <span class="text text_grey">${priceMeter} ₽/кв.м
-                    </span>     
-                  </div>                                
+              <div class="attention__wrap ${this.obj.privileges.user !== 'owner' || this.additional.photoStatus.length === 0 ? 'visible' : ''}"> 
+                <ol class="attention__list"> 
+                  ${source === '1c' &&  this.getTodo()}
+                </ol>
               </div>
-              <div class="about__logo">${logo}</div>
-              <div class="about__logo-doc"> 
-                <span class="text about__logo-status">${this.obj.reqStatus ? this.obj.reqStatus : ''}</span>
-                <span class="text text_align">${docType}</span>
+              <div class="about__bottom"> 
+                ${client}
               </div>
             </div>
-            <div class="contacts wrapper">
-              ${client}
-              <span class="contacts__border ${source === 'pars' || client.length === 0 ? 'visible' : ''}"></span>
-              <div class="contacts__wrap ${source === 'pars' ? 'visible' : ''}">
-                  <span class="title">Риелтор</span> 
-                  <div class="contacts__name"> 
-                    <img class="contacts__img" src="${this.obj.ownerPhoto ? this.obj.ownerPhoto : `../img/placeholder-user.png`}" alt="photo">    
-                    <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.ownerId}" bx-tooltip-user-id="${this.obj.ownerId}">
-                        ${this.obj.owner ? this.obj.owner : ''}
-                    </a>  
-                  </div>                                         
-              </div>
-            </div>
+            <div class="about__price wrapper"> 
+                <div> 
+                  <div class="about__price_wrap"> 
+                    <span class="const-price about__title">${this.obj.price ? `${this.obj.price} тыс. ₽` : ''}</span>  
+                    <input class="visibility" 
+                      autocomplete="off"
+                      name="price" 
+                      type="text" 
+                      value="${this.obj.price ? this.obj.price : ''}">     
+                  </div>
+                </div>
+                <div class="about__price_wrap reqOverstate ${this.obj.privileges.user === 'owner' && this.obj.reqOverstate === '1' ? '' : 'visible'}"> 
+                  <span class="text text_grey reqOverstateText">В рекламе ${this.obj.reqOverstate === '1' ? `${this.obj.reqOverstatePrice ? this.obj.reqOverstatePrice : this.obj.price}` : this.obj.price}</span>
+                  <i class="description__status question"                   
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Применено завышение. Указанная цена для выгрузки" ></i>
+                  <input class="visibility" 
+                      autocomplete="off"
+                      name="reqOverstatePrice" 
+                      type="text" 
+                      value="${this.obj.reqOverstate === '1' ? `${this.obj.reqOverstatePrice ? this.obj.reqOverstatePrice : this.obj.price}` : this.obj.price}">     
+                </div>
+                <div class="${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB' || this.obj.privileges.user === 'owner' ? '' : 'visible'}"> 
+                  <div class="about__toggle visibility"> 
+                    <div class="about__price_wrap">
+                      <span class="text text_grey">Завышение</span>
+                      <i class="description__status question"                
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Стирает историю изменения цены для рекламных площадок. Объект выходит в рекламу под новым номером с новой ценой" ></i>
+                    </div>
+                    <label class="switch">
+                      <input data-overstate="toggle" class="switch__open" type="checkbox" ${this.obj.reqOverstate === '1' ? 'checked' : ''}>
+                      <span class="slider__toggle slider__main"></span>
+                    </label>
+                  </div>
+                <span class="edit-btn" data-price="edit">редактировать цену</span>
+                </div> 
+            </div>   
             <div class="info wrapper">
                   <div class="info__area mobile-margin_bottom">
                     <p class="title p_margin">Общая площадь<span class="info__area-text info__area-text_left">
@@ -393,9 +500,22 @@ class Render {
                     <p class="title info__text margin_top">Балкон<span class="text text_right">${this.obj.gallery ? this.obj.gallery : ''}</span></p>
                   </div>
                   <div class="info__info"> 
-                    <p class="title info__text margin_top">Год сдачи<span class="text text_right">${this.obj.buildDate ? this.obj.buildDate : ''}</span></p>
-                    <p class="title info__text margin_top">Материал<span class="text text_right">${this.obj.material ? this.obj.material : ''}</span></p>          
                     <p class="title info__text margin_top">Этажей<span class="text text_right">${this.obj.totalFloors ? this.obj.totalFloors : ''}</span></p> 
+                    <p class="title info__text margin_top">Материал<span class="text text_right">${this.obj.material ? this.obj.material : ''}</span></p>      
+                    <p class="title info__text margin_top"l>Год сдачи<span class="text text_right">${this.obj.buildDate ? this.obj.buildDate : ''}</span></p>    
+                    ${this.obj.metroDistance ? this.obj.metroDistance >= 60 ? '' :
+      `<p class="title info__text margin_top">
+                    <span>
+                    ${this.obj.metro ? this.obj.metro : ''}
+                    <svg width="11" height="6" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8.41193 0L5.8457 4.47552L3.31259 0L1.20994 
+                                  5.3986H0.845703V6H2.98146V5.42657H2.65034L3.69339 3.00699L5.5808 6H6.09405L7.98146 
+                                  2.97902L9.04107 5.3986H8.66027V6H10.8457V5.3986H10.4649L8.41193 0Z" fill="#E84533"/>
+                    </svg>
+                    </span>
+                    <span class="text text_right">${this.obj.metroDistance ? this.obj.metroDistance : ''} мин. пешком</span>
+                  </p>` : ''}
+                    <p class="title info__text margin_top">Стоимость кв.м.<span class="text text_right">${priceMeter}</span></p> 
                   </div>
             </div>
             <div class="btn-group wrapper mobile_visible"> 
@@ -419,14 +539,28 @@ class Render {
             <div class="story wrapper mobile_visible ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'? this.obj.privileges.card
       : 'isVisible'}">${historyLayout}</div>
             <div class="description wrapper">
-                <span class="description__title">Описание</span>    
-                <p class="description__text text p_margin">${this.obj.comment ? this.obj.comment : ' '}</p>
+              <div class="description__header"> 
+                <div class="description__header_wrap"> 
+                  <span class="description__title">Описание</span>  
+                  ${source === '1c' ?
+      `<span
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  title="${+this.additional.commentAccepted === 1 ? 'одобрено модератором' : 'не одобрено модератором'}" 
+                  class="description__status 
+                ${+this.additional.commentAccepted === 1 ? 'description__status_accept' : 'description__status_reject'}
+                ">
+                </span>` : ''} 
+                </div>
+                ${this.obj.privileges.user === 'owner' ? `<span data-description="edit" class="edit-btn">редактировать</span>` : ''}                   
+              </div>
+              <textarea rows="10" class="description__text text" disabled>${this.obj.comment ? this.obj.comment : ' '}</textarea>
             </div>
-            <div style="height: 400px" id="map"></div>
-            ${chartView}`
+            <div class="map_wrap"><div style="height: 400px; width: 100%" id="map"></div></div>`
   }
 
 }
+
 class Handler {
   constructor(obj) {
     this.obj = obj;
@@ -609,6 +743,7 @@ class Handler {
             }
           } else {
             requestAlert.subtype = subtype.innerHTML;
+            console.log(requestAlert)
             this.setLoader();
             this.sendAlert(requestAlert).then(() => {
               this.removeLoader();
@@ -900,6 +1035,87 @@ class Handler {
   init() {
     this.handlerImg();
     this.handlerBtn();
+    this.main.addEventListener('click', event => {
+      if (event.target.dataset.description === 'edit'){
+        event.target.dataset.description = 'save';
+        event.target.innerHTML = 'сохранить';
+        document.querySelector('.description__text').removeAttribute('disabled');
+      } else if (event.target.dataset.description === 'save'){
+        const comment = document.querySelector('.description__text');
+        comment.setAttribute('disabled', 'disabled');
+        event.target.innerHTML = 'Идет сохранение ...';
+        event.target.classList.add('btn-loading');
+        app.getJson(app.objAPI, {
+          action: 'setComment',
+          reqComment: comment.value,
+          id: UID,
+        }).then(data => {
+          console.log(data)
+          event.target.dataset.description = 'edit';
+          event.target.innerHTML = 'редактировать';
+          event.target.classList.remove('btn-loading');
+        })
+      } else if (event.target.dataset.price === 'edit'){
+        event.target.dataset.price = 'save';
+        event.target.innerHTML = 'сохранить';
+        document.querySelector(`INPUT[name='price']`).classList.toggle('visibility');
+        document.querySelector(`INPUT[name='reqOverstatePrice']`).classList.toggle('visibility');
+        document.querySelector(`.about__toggle `).classList.toggle('visibility');
+      } else if (event.target.dataset.price === 'save'){
+        document.querySelector(`INPUT[name='price']`).classList.toggle('visibility');
+        document.querySelector(`INPUT[name='reqOverstatePrice']`).classList.toggle('visibility');
+        document.querySelector(`.about__toggle `).classList.toggle('visibility');
+        this.handleChange(event.target);
+      } else if (event.target.dataset.overstate === 'toggle'){
+        document.querySelector('.reqOverstate').classList.toggle('visible');
+      }
+    })
+  }
+  handleChange(elem){
+    const priseInput = document.querySelector(`INPUT[name='price']`);
+    const overstatePriseInput = document.querySelector(`INPUT[name='reqOverstatePrice']`);
+    const toggleOverstate = document.querySelector(`.switch__open`);
+
+    document.querySelector('.const-price').innerHTML = `${priseInput.value} тыс. ₽`;
+    document.querySelector('.reqOverstateText').innerHTML = `В рекламе ${overstatePriseInput.value}`;
+
+    if (toggleOverstate.checked && +this.obj.reqOverstate === 0 || !toggleOverstate.checked && +this.obj.reqOverstate === 1){
+      this.sendOverstateChange(overstatePriseInput, toggleOverstate, elem);
+    } else if (+this.obj.reqOverstatePrice !== +overstatePriseInput.value){
+      this.sendOverstateChange(overstatePriseInput, toggleOverstate, elem);
+    }
+
+    if (+this.obj.price !== +priseInput.value){
+      elem.innerHTML = 'Идет сохранение ...';
+      elem.classList.add('btn-loading');
+      app.getJson(app.objAPI, {
+        action: 'setPrice',
+        reqPrice: priseInput.value,
+        id: UID,
+      }).then(data =>{
+        console.log(data)
+        elem.dataset.price = 'edit';
+        elem.innerHTML = 'редактировать цену';
+        elem.classList.remove('btn-loading');
+      })
+    }
+  }
+
+
+  sendOverstateChange(price, toggle, elem){
+    elem.innerHTML = 'Идет сохранение ...';
+    elem.classList.add('btn-loading');
+    app.getJson(app.objAPI, {
+      action: 'setOverstate',
+      reqOverstate: toggle.checked ? '1' : '0',
+      reqOverstatePrice: price.value,
+      id: UID,
+    }).then(data =>{
+      console.log(data)
+      elem.dataset.price = 'edit';
+      elem.innerHTML = 'редактировать цену';
+      elem.classList.remove('btn-loading');
+    })
   }
 }
 
@@ -1050,7 +1266,27 @@ class ChartCallView{
 }
 
 const app = new App();
-app.getJson();
+app.getJson(app.objAPI, {
+  user: login,
+  source: source,
+  id: UID,
+}).then(data => {
+  console.log(data)
+  app.obj = data;
+  if (source === '1c'){
+    app.getJson(app.additionalAPI, {
+      reqNumber: UID
+    }).then(data => {
+      if (data.result === 'ok'){
+        console.log(data.state)
+        app.additional = data.state;
+        app.init();
+      }
+    })
+  } else {
+    app.init();
+  }
+});
 
 function selectStyle(select, firstWord, secondClass, isDisable){
   $(select).each(function(){
