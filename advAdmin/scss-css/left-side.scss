@@ -77,17 +77,31 @@
   justify-content: space-around;
   height: 50px;
   align-items: center;
-  &__item{
+  &__btn{
     width: 30%;
+  }
+  &__item{
+    text-align: center;
+    width: 100%;
     font-size: 12px;
     font-family: "montserrat", sans-serif;
     font-weight: 400;
     font-style: normal;
-    text-align: center;
     margin: 0;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid grey;
+    user-select: none;
     & span{
       display: block;
       font-weight: 700;
     }
   }
+  &__checkbox{
+    display: none;
+  }
+}
+.count__checkbox:checked + .count__item{
+  background-color: #505050;
+  color: white;
 }

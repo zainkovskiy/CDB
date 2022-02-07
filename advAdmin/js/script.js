@@ -67,6 +67,7 @@ class App {
     this.currentPhoto = '';
     this.currentPhotoType = true;
     this.deniedReason = [];
+    this.openFile = false;
     this.docsFiles = [];
     this.photoFiles = [];
     this.timerUpdateItems = '';
@@ -136,7 +137,7 @@ class App {
 
     let listLayout = '';
     for (let item of itemsArr){
-      listLayout += `<div class="list__item id${item.reqNumber}" data-item="${item.reqNumber}"> 
+      listLayout += `<div class="list__item id${item.reqNumber} ${this.getTypeEng(item)}" data-item="${item.reqNumber}"> 
                       <div class="list__status"> 
                         <span class="btn__status btn__status_question"></span>
                       </div>
@@ -158,6 +159,17 @@ class App {
       return 'РД'
     }
   }
+  getTypeEng(item){
+    if (item.reqType === 'sk'){
+      if (item.modType === 'first'){
+        return 'first'
+      } else if (item.modType === 'last'){
+        return 'last'
+      }
+    } else if (item.reqType === 'adv'){
+      return 'adv'
+    }
+  }
   layout(){
     const list = this.getList(this.items);
     return `<div class="left-side">
@@ -169,9 +181,18 @@ class App {
               ${list}
             </div>
             <div class="count"> 
-              <p class="count__item">Перв.<span class="count_first">${this.quantityType.first}</span></p>
-              <p class="count__item">Осн.<span class="count_last">${this.quantityType.last}</span></p>
-              <p class="count__item">РД<span class="count_adv">${this.quantityType.adv}</span></p>
+              <label class="count__btn">
+                <input class="count__checkbox" type="checkbox" checked data-type="first">
+                <p class="count__item">Перв.<span class="count_first">${this.quantityType.first}</span></p>
+              </label>
+              <label class="count__btn">
+                <input class="count__checkbox" type="checkbox" checked data-type="last">
+                <p class="count__item">Осн.<span class="count_last">${this.quantityType.last}</span></p>
+              </label>
+              <label class="count__btn">
+                <input class="count__checkbox" type="checkbox" checked data-type="adv">
+                <p class="count__item">РД<span class="count_adv">${this.quantityType.adv}</span></p>
+              </label>
             </div>
             </div>
             <div class="center-side"> 
@@ -336,10 +357,19 @@ class App {
         document.querySelector('.messenger__send-btn').removeAttribute('data-id');
       })
     } else {
-        messengerTextarea.value = '';
-        document.querySelector('.messenger__send-btn').dataset.message = 'send';
-        document.querySelector('.messenger__send-btn').removeAttribute('data-id');
+      messengerTextarea.value = '';
+      document.querySelector('.messenger__send-btn').dataset.message = 'send';
+      document.querySelector('.messenger__send-btn').removeAttribute('data-id');
     }
+  }
+  getDocFiles(){
+    let files = '';
+    if (this.docsFiles.length > 0 && this.currentItem.type.reqType === 'adv'){
+      for (let file of this.docsFiles){
+        files += `<img data-open="file" data-fileid="${file.id}" class="photo__img-file" src="${file.type === 'pdf' ? 'img/pdf.png' : file.url}">`
+      }
+    }
+    return files;
   }
   centerLayout(){
     const photo = this.getPhotoItem(this.currentItem.type.modType === 'first' ? this.docsFiles : this.photoFiles);
@@ -371,19 +401,19 @@ class App {
                       ${this.currentItem.created.split(" ")[1].split('.')[0]}
                     </span>
                   </p>
-                  <p class="card__info-text">Клиент:<span>${this.currentItem.clients[0] ? 
-                    `${this.currentItem.clients[0].lastName ? this.currentItem.clients[0].lastName : ''}
+                  <p class="card__info-text">Клиент:<span>${this.currentItem.clients[0] ?
+      `${this.currentItem.clients[0].lastName ? this.currentItem.clients[0].lastName : ''}
                     ${this.currentItem.clients[0].name ? this.currentItem.clients[0].name : ''}
                     ${this.currentItem.clients[0].secondName ? this.currentItem.clients[0].secondName : ''}`
-                    : ''} </span>
+      : ''} </span>
                   </p>
                   <p class="card__info-text">Тип договора:<span>${this.currentItem.type.type ? this.currentItem.type.type : ''} </span></p>
-                  <p class="card__info-text">Срок действия:<span>${this.currentItem.publishedAt.stop ? 
-                    this.currentItem.publishedAt.stop.split(" ")[0].split('-').reverse().join('.') : ''} </span></p>
-                  <p class="card__info-text">Тип объекста:<span>${this.currentItem.objectType ? 
-                    `${this.currentItem.objectType.type ? this.currentItem.objectType.type : ''}
+                  <p class="card__info-text">Срок действия:<span>${this.currentItem.publishedAt.stop ?
+      this.currentItem.publishedAt.stop.split(" ")[0].split('-').reverse().join('.') : ''} </span></p>
+                  <p class="card__info-text">Тип объекста:<span>${this.currentItem.objectType ?
+      `${this.currentItem.objectType.type ? this.currentItem.objectType.type : ''}
                     ${this.currentItem.objectType.rooms ? `(${this.currentItem.objectType.rooms}к.)` : ''}`
-                    : ''} </span></p>
+      : ''} </span></p>
                   <p class="card__info-text">Квартира:<span>${this.currentItem.objectRoom ? this.currentItem.objectRoom : ''} </span></p>
                   <p class="card__info-text">Доля объекта:<span>${this.currentItem.objectShare ? this.currentItem.objectShare : ''} </span></p>
                   <div class='card__additionally inVisible'> 
@@ -485,6 +515,9 @@ class App {
                     <button data-action="denied" data-control="all" class="button button_denied">вернуть все</button>
                   </div>
                 </div>
+                <div class="bottom__right"> 
+                    ${this.getDocFiles()}
+                </div>
               </div>
               <div class="carousel"> 
                 <div class="slider">
@@ -509,54 +542,61 @@ class App {
         this.toggleActive(event.target);
         this.getItem(event.target.dataset.item);
       } else if (event.target.dataset.get === 'photos'){
-          if (this.photoFiles.length > 0){
-            for (let elem of document.querySelectorAll('.docs_hide')){
-              elem.classList.remove('inVisible');
-            }
-            document.querySelector('.reason').classList.remove('inVisibility');
-            this.setSliderPhoto(this.photoFiles);
-            this.setMainPhoto();
-            this.setStartSlideSelect();
+        if (this.photoFiles.length > 0){
+          for (let elem of document.querySelectorAll('.docs_hide')){
+            elem.classList.remove('inVisible');
           }
-      } else if (event.target.dataset.get === 'docs'){
-          if (this.docsFiles.length > 0){
-            for (let elem of document.querySelectorAll('.docs_hide')){
-              elem.classList.add('inVisible');
-            }
-            document.querySelector('.reason').classList.add('inVisibility');
-            this.setSliderPhoto(this.docsFiles);
-            this.setMainPhoto();
-            this.setStartSlideSelect();
-          }
-      } else if (event.target.dataset.photo_id){
-          this.currentPhoto = this.currentItem.files.find(item => item.id === event.target.dataset.photo_id);
+          document.querySelector('.reason').classList.remove('inVisibility');
+          this.setSliderPhoto(this.photoFiles);
           this.setMainPhoto();
-          this.setNewSlideSelect(event.target);
+          this.setStartSlideSelect();
+        }
+      } else if (event.target.dataset.get === 'docs'){
+        if (this.docsFiles.length > 0){
+          for (let elem of document.querySelectorAll('.docs_hide')){
+            elem.classList.add('inVisible');
+          }
+          document.querySelector('.reason').classList.add('inVisibility');
+          this.setSliderPhoto(this.docsFiles);
+          this.setMainPhoto();
+          this.setStartSlideSelect();
+        }
+      } else if (event.target.dataset.photo_id){
+        this.currentPhoto = this.currentItem.files.find(item => item.id === event.target.dataset.photo_id);
+        this.setMainPhoto();
+        this.setNewSlideSelect(event.target);
       } else if (event.target.dataset.open === 'photo'){
-          transformImage.rotate = 0;
-          transformImage.height = 100;
-          transformImage.width = 100;
-          this.openPhotoFullScreen();
+        transformImage.rotate = 0;
+        transformImage.height = 100;
+        transformImage.width = 100;
+        this.openPhotoFullScreen(this.currentPhoto);
+      } else if (event.target.dataset.open === 'file'){
+        const find = this.currentItem.files.find(file => file.id === event.target.dataset.fileid);
+        this.openFile = !this.openFile;
+        transformImage.rotate = 0;
+        transformImage.height = 100;
+        transformImage.width = 100;
+        this.openPhotoFullScreen(find);
       } else if(event.target.dataset.control){
-          this.switchActionSetStatus(event.target.dataset.action, event.target.dataset.control);
+        this.switchActionSetStatus(event.target.dataset.action, event.target.dataset.control);
       } else if (event.target.dataset.list === 'update'){
-          this.getNewItems();
+        this.getNewItems();
       } else if (event.target.dataset.input === 'reason'){
-          const reasonList = document.querySelector('.reason__list');
-          reasonList.setAttribute('style', `height: ${window.innerHeight - event.target.getBoundingClientRect().bottom - 50}px;`)
-          reasonList.classList.remove('inVisible');
+        const reasonList = document.querySelector('.reason__list');
+        reasonList.setAttribute('style', `height: ${window.innerHeight - event.target.getBoundingClientRect().bottom - 50}px;`)
+        reasonList.classList.remove('inVisible');
       } else if (event.target.dataset.reason === 'reason'){
-          this.setNewReason(event.target);
+        this.setNewReason(event.target);
       } else if (event.target.dataset.search){
-          document.querySelector('.search__field').classList.add('inVisible');
-          const findItem = document.querySelector(`.id${event.target.dataset.search}`)
-          findItem.scrollIntoView({block: "start", behavior: "smooth"});
-          this.toggleActive(findItem);
-          this.getItem(event.target.dataset.search);
+        document.querySelector('.search__field').classList.add('inVisible');
+        const findItem = document.querySelector(`.id${event.target.dataset.search}`)
+        findItem.scrollIntoView({block: "start", behavior: "smooth"});
+        this.toggleActive(findItem);
+        this.getItem(event.target.dataset.search);
       } else if (event.target.dataset.comment === 'toggle'){
-          this.commentToggle(event);
+        this.commentToggle(event);
       } else if (event.target.dataset.request){
-          this.getRequest(event.target.dataset.request);
+        this.getRequest(event.target.dataset.request);
       } else if (event.target.dataset.open === 'card'){
         this.openCard(event.target.dataset.req);
       } else if (event.target.dataset.open === 'person'){
@@ -564,13 +604,13 @@ class App {
         BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
         return true;
       } else if (event.target.dataset.message === 'send'){
-          this.sendMessage();
+        this.sendMessage();
       } else if (event.target.dataset.message === 'delete'){
-          this.deleteMessage(event.target.dataset.id);
+        this.deleteMessage(event.target.dataset.id);
       } else if (event.target.dataset.message === 'edit'){
-          this.editMessage(event.target.dataset.id);
+        this.editMessage(event.target.dataset.id);
       } else if (event.target.dataset.message === 'done'){
-          this.sendEditMessage(event.target.dataset.id);
+        this.sendEditMessage(event.target.dataset.id);
       } else if (event.target.type === 'checkbox' && event.target.name === 'filter'){
         if (event.target.checked){
           this.showNewSliderItems();
@@ -581,8 +621,11 @@ class App {
         document.querySelector('.card__additionally').classList.remove('inVisible');
       } else if (event.target.dataset.info === 'less'){
         document.querySelector('.card__additionally').classList.add('inVisible');
+      } else if(event.target.dataset.type){
+        this.isShowTypeElem(event.target.checked, event.target.dataset.type);
       }
     })
+
 
     const inputSearch = document.querySelector('.input__search');
     inputSearch.addEventListener('keyup', () => {
@@ -604,6 +647,11 @@ class App {
         }
       }
     })
+  }
+  isShowTypeElem(checked, type){
+    for (let item of document.querySelectorAll(`.${type}`)){
+      item.classList[checked ? 'remove' : 'add']('inVisible');
+    }
   }
 
   showAllSliderItems(){
@@ -686,7 +734,7 @@ class App {
       action: action,
       reqNumber: this.currentItem.ad,
     }).then(data => {
-        this.renderAnswer(data);
+      this.renderAnswer(data);
     })
   }
   renderAnswer(answers){
@@ -874,34 +922,34 @@ class App {
     this.handlerModule();
   }
 
-  openPhotoFullScreen(){
-    if (this.currentPhoto){
-      if (this.currentPhoto.type === 'jpg'){
-        this.openJPG();
-      } else if (this.currentPhoto.type === 'pdf'){
-        this.openPDF();
+  openPhotoFullScreen(photo){
+    if (photo){
+      if (photo.type === 'jpg'){
+        this.openJPG(photo);
+      } else if (photo.type === 'pdf'){
+        this.openPDF(photo);
       }
     }
   }
-  openJPG(){
+  openJPG(photo){
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
 
     const currentY = window.pageYOffset;
     const layout = `<div style="top: ${currentY}"  class="module">
                       <span data-name="close" class="module__close"></span>
-                      <img class="module__img" src="${this.currentPhoto.url}" alt="нет фото"> 
+                      <img class="module__img" src="${photo.url}" alt="нет фото"> 
                       <div class="module__controller"> 
                         <span data-rotate="left" class="module__btn module__left"></span>
                         <span data-rotate="right" class="module__btn module__right"></span>
                         <span data-scale="plus" class="module__btn module__zoom-plus"></span>
                         <span data-scale="minus" class="module__btn module__zoom-minus"></span>
-                        <a href="${this.currentPhoto.url}" target="_blank" download class="module__btn module__download""></a>
+                        <a href="${photo.url}" target="_blank" download class="module__btn module__download""></a>
                       </div>
                   </div>`
     document.body.insertAdjacentHTML('beforebegin', layout);
     this.handlerModule();
   }
-  openPDF(){
+  openPDF(photo){
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
 
     const currentY = window.pageYOffset;
@@ -925,10 +973,10 @@ class App {
                       </div>
                   </div>`
     document.body.insertAdjacentHTML('beforebegin', layout);
-    this.callPDFjs();
+    this.callPDFjs(photo);
     this.handlerModule();
   }
-  callPDFjs(){
+  callPDFjs(photo){
     const myState = {
       pdf: null,
       currentPage: 1,
@@ -936,8 +984,8 @@ class App {
     }
     // img/New_Horizons.pdf
     // ${this.currentPhoto.url}
-    console.log(this.currentPhoto.url);
-    pdfjsLib.getDocument(`${this.currentPhoto.url}`).then((pdf) => {
+    console.log(photo.url);
+    pdfjsLib.getDocument(`${photo.url}`).then((pdf) => {
       console.log(pdf)
       myState.pdf = pdf;
       render();
@@ -1081,19 +1129,22 @@ class App {
     module.addEventListener('wheel', event => {
       event.preventDefault();
       if (event.deltaY === -100){
-      //up
-            transformImage.height += 5;
-            transformImage.width += 5;
-            document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
+        //up
+        transformImage.height += 5;
+        transformImage.width += 5;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
       } else if (event.deltaY === 100){
-      //down
-            transformImage.height -= 5;
-            transformImage.width -= 5;
-            document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
+        //down
+        transformImage.height -= 5;
+        transformImage.width -= 5;
+        document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
       }
     })
   }
   closeModule(module){
+    if (this.openFile){
+      this.openFile = !this.openFile;
+    }
     document.querySelector('HTML').removeAttribute("style");
     module.remove();
   }
@@ -1101,32 +1152,39 @@ class App {
   handlerKeyboard(){
     document.body.addEventListener('keyup', event => {
       if (event.code === 'ArrowRight'){
-        const nextElem = this.slideActive.nextElementSibling;
-        if (nextElem && !nextElem.classList.contains('inVisible')){
-          const nextArrow = document.querySelector(`.slider__control[data-slide='next']`);
-          nextArrow.click();
-          this.currentPhoto = this.currentItem.files.find(item => item.id === nextElem.dataset.photo_id);
-          this.setMainPhoto();
-          this.setNewSlideSelect(nextElem);
-          const openPhoto = document.querySelector('.module__img');
-          if (openPhoto){
-            openPhoto.src = this.currentPhoto.url;
+        if (!this.openFile){
+          const nextElem = this.slideActive.nextElementSibling;
+          if (nextElem && !nextElem.classList.contains('inVisible')){
+            const nextArrow = document.querySelector(`.slider__control[data-slide='next']`);
+            nextArrow.click();
+            this.currentPhoto = this.currentItem.files.find(item => item.id === nextElem.dataset.photo_id);
+            this.setMainPhoto();
+            this.setNewSlideSelect(nextElem);
+            const openPhoto = document.querySelector('.module__img');
+            if (openPhoto){
+              openPhoto.src = this.currentPhoto.url;
+            }
           }
         }
       } else if (event.code === 'ArrowLeft'){
-        const prevElem = this.slideActive.previousElementSibling;
-        if (prevElem && !prevElem.classList.contains('inVisible')){
-          const prevArrow = document.querySelector(`.slider__control[data-slide='prev']`);
-          prevArrow.click();
-          this.currentPhoto = this.currentItem.files.find(item => item.id === prevElem.dataset.photo_id);
-          this.setMainPhoto();
-          this.setNewSlideSelect(prevElem);
-          const openPhoto = document.querySelector('.module__img');
-          if (openPhoto){
-            openPhoto.src = this.currentPhoto.url;
+        if (!this.openFile){
+          const prevElem = this.slideActive.previousElementSibling;
+          if (prevElem && !prevElem.classList.contains('inVisible')){
+            const prevArrow = document.querySelector(`.slider__control[data-slide='prev']`);
+            prevArrow.click();
+            this.currentPhoto = this.currentItem.files.find(item => item.id === prevElem.dataset.photo_id);
+            this.setMainPhoto();
+            this.setNewSlideSelect(prevElem);
+            const openPhoto = document.querySelector('.module__img');
+            if (openPhoto){
+              openPhoto.src = this.currentPhoto.url;
+            }
           }
         }
       } else if (event.code === 'Escape'){
+        if (this.openFile){
+          this.openFile = !this.openFile;
+        }
         const module = document.querySelector('.module');
         if (module){
           this.closeModule(module);
@@ -1192,8 +1250,9 @@ class App {
       data: this.currentItem,
       reason: `${this.deniedReason.length > 0 ? this.deniedReason : ''}`,
     }).then(() => {
+      console.log('here')
       this.subtractionQuantityType();
-      const nextItem = this.currentItemActive.nextElementSibling;
+      let nextItem = this.getNext(this.currentItemActive);
       if (nextItem){
         nextItem.scrollIntoView({block: "start", behavior: "smooth"})
         this.toggleActive(nextItem);
@@ -1204,6 +1263,13 @@ class App {
         centerField.insertAdjacentHTML('beforeend',`<p class="center-side__empty">Обновите объекты</p>`);
       }
     })
+  }
+  getNext(elem){
+    let next = elem;
+    do {
+      next = next.nextElementSibling;
+    } while (next && next.classList.contains('inVisible'));
+    return next;
   }
   getNewItems(){
     document.querySelector('.button_update').classList.add('button_load');
@@ -1265,6 +1331,6 @@ api.getJson({
     app = new App(data);
     app.init();
   } else {
-      document.querySelector('.main').insertAdjacentHTML('beforebegin', `<p class="center-side__empty">Нет объектов</p>`)
+    document.querySelector('.main').insertAdjacentHTML('beforebegin', `<p class="center-side__empty">Нет объектов</p>`)
   }
 })

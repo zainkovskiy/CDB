@@ -117,6 +117,7 @@
   margin: 10px 0 0 0;
   border-bottom: 1px solid #c2c2c2;
   border-top: 1px solid #c2c2c2;
+  max-width: calc(100vw - 200px);
 }
 
 .slider__item {
@@ -131,6 +132,7 @@
   cursor: pointer;
   position: relative;
   border: 3px solid white;
+  max-width: 170px;
 }
 .slider__status{
   position: absolute;
@@ -166,6 +168,11 @@
     object-fit: contain;
     cursor: pointer;
     width: 100%;
+  }
+  &__img-file{
+    height: 80px;
+    object-fit: contain;
+    cursor: pointer;
   }
   &__status{
     position: absolute;

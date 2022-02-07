@@ -1107,8 +1107,8 @@ class Handler{
     for (let input of allInput){
       if (input.name === 'reqHouseDeveloper'){
         if (input.value.length > 0){
-          add.obj.reqHouseDeveloper = add.developerId;
-          add.obj.reqContractor = add.developerId;
+          add.obj.reqHouseDeveloper = add.developerId ? add.developerId : add.obj.reqHouseDeveloperId;
+          // add.obj.reqContractor = add.developerId;
         }
       } else if (input.name === 'reqOverstatePrice_checkbox') {
         if (input.checked){
