@@ -7,7 +7,13 @@
 .container{
   padding: 20px;
 }
+.plea{
+  font-family: 'montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
 
+}
 .slide{
   display: inline-block;
 }
@@ -112,6 +118,9 @@
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #E9ECEE;
+    & span {
+      text-align: right;
+    }
   }
 }
 

@@ -110,6 +110,9 @@ class Render {
     return `<div class="header"> 
                 <div class="header__logo"></div>
             </div>
+            <div class="plea wrapper"> 
+              Подтвердите размещение объекта 
+            </div>
             <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -306,7 +309,8 @@ class Handler {
 const app = new App();
 app.getJson({
   action : "get",
-  valid : offer
+  valid : offer,
+  server: JSON.parse(srvParams)
 }).then(data => {
   if (data.result === 'ok'){
     app.ON = data;

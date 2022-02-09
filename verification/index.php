@@ -11,7 +11,12 @@ mb_internal_encoding("UTF-8");
 $selId = $_REQUEST['selId'];
 $offer = $_REQUEST['offer'];
 $client = $_REQUEST['client'];
+$arrServer = [
+              'clientBrowser' => $_SERVER['HTTP_USER_AGENT'],
+              'userAddress' => $_SERVER['REMOTE_ADDR']
+];
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -20,6 +25,7 @@ $client = $_REQUEST['client'];
     let selId = '<? echo($selId);?>';
     let numberOffer = '<? echo($offer);?>';
     let client = '<? echo($client);?>';
+    let srvParams = '<? echo (json_encode($arrServer, true)); ?>';
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
