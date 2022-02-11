@@ -298,8 +298,9 @@ class App{
                   <input data-input="pick" class="input__text input__select pick__input" type="text" readonly value="Выбрать">
                   <div class="about__select pick__select inVisible"> 
                     <span data-option="pick" class="about__option">Выбрать</span>
-                    <span data-option="pick" class="about__option">задача 1</span>
-                    <span data-option="pick" class="about__option">задача 2</span>
+                    <span data-option="pick" class="about__option">Не доступен</span>
+                    <span data-option="pick" class="about__option">Сбросил трубку</span>
+                    <span data-option="pick" class="about__option">Другое</span>
                   </div>
                 </div>
             </div>
@@ -316,13 +317,15 @@ class App{
                   <input data-input="pick" class="input__text input__select pick__input" type="text" readonly value="Выбрать">
                   <div class="about__select pick__select inVisible"> 
                     <span data-option="pick" class="about__option">Выбрать</span>
-                    <span data-option="pick" class="about__option">задача 1</span>
-                    <span data-option="pick" class="about__option">задача 2</span>
+                    <span data-option="pick" class="about__option">Продано</span>
+                    <span data-option="pick" class="about__option">Работает с другим агенством</span>
+                    <span data-option="pick" class="about__option">Не хочет работать с ЦАН</span>
+                    <span data-option="pick" class="about__option">Другое</span>
                   </div>
                 </div>
             </div>
             <div class="module__buttons"> 
-              <button data-save="reason" data-reason="denia" class="ui-btn ui-btn-success">сохранить</button>
+              <button data-save="reason" data-reason="denial" class="ui-btn ui-btn-success">сохранить</button>
               <button data-name="close" class="ui-btn ui-btn-danger">отменить</button>
             </div>`
   }
