@@ -100,6 +100,12 @@ class App{
           }).then(object => {
             console.log(object)
             this.object = object;
+            if (this.object.isFromPars){
+              this.object.reqResponsibleRealtor = login;
+              this.object.reqResponsibleAutor = login;
+              this.object.reqResponsibleAgent = login;
+              this.object.reqEditor = login;
+            }
             this.renderObject(this.object.reqTypeofRealty);
             this.renderControl();
           })
@@ -152,7 +158,7 @@ class App{
           this.currentSelect.value = e.innerHTML;
           this.checkOption();
       } else if (dataset.open){
-          this.openCard(dataset.open, dataset.number);
+          this.openCard(dataset.open, dataset.number, dataset.source);
       } else if (dataset.add){
           this.openModule(dataset.add);
       } else if (dataset.call === "hangup"){
@@ -163,6 +169,7 @@ class App{
       } else if (dataset.answer){
           this.switchAnswer(dataset.answer);
       } else if (dataset.direction){
+        this.setLoader();
         api.requestToServer('getInfo', {
           action: 'finishItem',
           item: this.currentItemUID,
@@ -170,6 +177,7 @@ class App{
           data: this.object,
           direction: dataset.direction,
         }).then(() => {
+          this.removeLoader();
           if (this.checkWork.disabled){
             this.finishSession();
             this.checkWork.disabled = false;
@@ -210,13 +218,25 @@ class App{
         } else if (event.target.classList.contains('reqTypeofRealty')){
             this.object[event.target.name] = event.target.value;
             this.renderObject(event.target.value);
-        } else {
+        } else if (event.target.name === 'reqTypeofFlat'){
+          this.object.reqTypeofRealty = event.target.value;
+        }
+        else {
             this.object[event.target.name] = event.target.value;
         }
       })
     }
   }
-
+  setLoader(){
+    const currentY = window.pageYOffset;
+    const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
+    document.body.insertAdjacentHTML('beforeend', loader);
+    document.body.setAttribute('style', 'overflow: hidden;');
+  }
+  removeLoader(){
+    document.body.removeAttribute('style');
+    document.querySelector('.loader').remove();
+  }
   finishCall(){
     api.requestToServer('getInfo', {
       action: 'hangup',
@@ -257,15 +277,18 @@ class App{
     }
   }
   showDirectionButton(){
-    document.querySelector('.object').insertAdjacentHTML('beforeend',
-      `<div class="object__direction">
+    const direction = document.querySelector('.object__direction');
+    if (!direction) {
+      document.querySelector('.object').insertAdjacentHTML('beforeend',
+        `<div class="object__direction">
               <button data-direction="left" class="can-btn can-btn_width50">левый</button>
               <button data-direction="right" class="can-btn can-btn_width50">правый</button>
             </div>`);
-    document.querySelector('.control').insertAdjacentHTML('beforeend',
-      `<div>
+      document.querySelector('.control').insertAdjacentHTML('beforeend',
+        `<div class="control__notification-block">
               <span class="control__notification">Заполните объект и выберете берег на котором расположен объект</span>
             </div>`);
+    }
   }
   getFailLayout(){
     return `<p class="module__title">Причина отказа</p>
@@ -419,14 +442,15 @@ class App{
    * Открывает слайдер BX
    * @param action указывает что открвыть (объект, клиента, сделку)
    * @param number номер объекта, клиента, сделки
+   * @param from номер объекта, клиента, сделки
    * @returns {boolean}
    */
-  openCard(action, number){
-    // const typeA = '1c';
+
+  openCard(action, number, from){
     const windowWidth = window.innerWidth * 0.9;
     const readyString = {
       client: `https://crm.centralnoe.ru/crm/contact/details/${number}/`,
-      card: `https://crm.centralnoe.ru/CDB/object/card/cardObject.php?login=yes&source=1c&id=${number}`,
+      card: `https://crm.centralnoe.ru/CDB/object/card/cardObject.php?login=yes&source=${from}&id=${number}`,
       deal: `https://crm.centralnoe.ru/crm/deal/details/${number}/`,
       user: `https://crm.centralnoe.ru/company/personal/user/${number}/`,
     }
@@ -456,6 +480,8 @@ class App{
     const containerObject = document.querySelector('.object');
     containerObject.innerHTML = '';
     containerObject.insertAdjacentHTML('beforeend', new ObjectLayout(this.object, reqTypeofRealty).render());
+    const notificationBlock =  document.querySelector('.control__notification-block');
+    notificationBlock && notificationBlock.remove();
     this.checkSlider();
     this.handlerInput();
   }
@@ -513,10 +539,10 @@ class ObjectLayout {
   }
   getPhoto(){
     let photoLayout = '';
-    if (this.item.files){
-      if (this.item.files.length > 0){
-        for (let photo of this.item.files){
-          photoLayout += `<div class="slider__item slider__photo" style="background-image: url(${photo.url ? photo.url : ''})"></div>`
+    if (this.item.reqPhoto){
+      if (this.item.reqPhoto.length > 0){
+        for (let photo of this.item.reqPhoto){
+          photoLayout += `<div class="slider__item slider__photo" style="background-image: url(${photo.URL ? photo.URL : ''})"></div>`
         }
       } else {
         return `<div class="slider__item slider__photo" data-img='img/placeholder.png'' style="background-image: url('img/placeholder.png')"></div>`;
@@ -528,7 +554,16 @@ class ObjectLayout {
   }
   flat(){
     const photo = this.getPhoto();
-    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
+    return `<div class="object__header">
+              <span 
+                data-open="card" 
+                data-source="${this.item.isFromPars ? 'pars' : '1c'}"
+                data-number="${this.item.reqNumber ? this.item.reqNumber :
+              `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+               class="object__title">Объект
+             </span> 
+             ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
+            </div> 
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -566,9 +601,9 @@ class ObjectLayout {
                 </div>
               </div>
               <div class="object__feature"> 
-                <input class="button-input" name="reqTypeofRealty" id="second" type="radio" value="Квартира" ${this.item.reqTypeofRealty !== "Переуступка ДДУ" ? 'checked' : ''}>
+                <input class="button-input" name="reqTypeofFlat" id="second" type="radio" value="Квартира" ${this.item.reqTypeofRealty !== "Переуступка ДДУ" ? 'checked' : ''}>
                 <label class="button-label" for="second">вторичка</label>
-                <input class="button-input" name="reqTypeofRealty" id="part" type="radio" value="Переуступка ДДУ" ${this.item.reqTypeofRealty === "Переуступка ДДУ" ? 'checked' : ''}>
+                <input class="button-input" name="reqTypeofFlat" id="part" type="radio" value="Переуступка ДДУ" ${this.item.reqTypeofRealty === "Переуступка ДДУ" ? 'checked' : ''}>
                 <label class="button-label" for="part">переуступка дду</label>
               </div>
               <span class="title">местоположение</span>
@@ -747,10 +782,6 @@ class ObjectLayout {
                   <span class="subtitle">Цена</span>
                   <input name="reqPrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqPrice ? this.item.reqPrice : ''}">
                 </div>
-                <div class="about__item"> 
-                  <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqOverstatePrice ? this.item.reqOverstatePrice : ''}">
-                </div>
               </div>
               <span class="title">информация о доме</span>
               <div class="about"> 
@@ -781,7 +812,16 @@ class ObjectLayout {
   }
   room(){
     const photo = this.getPhoto();
-    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
+    return `<div class="object__header">
+              <span 
+                data-open="card" 
+                data-source="${this.item.isFromPars ? 'pars' : '1c'}"
+                data-number="${this.item.reqNumber ? this.item.reqNumber :
+      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+               class="object__title">Объект
+             </span> 
+             ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
+            </div>
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -972,10 +1012,6 @@ class ObjectLayout {
                   <span class="subtitle">Цена</span>
                   <input name="reqPrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqPrice ? this.item.reqPrice : ''}">
                 </div>
-                <div class="about__item"> 
-                  <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqOverstatePrice ? this.item.reqOverstatePrice : ''}">
-                </div>
               </div>
               <span class="title">информация о доме</span>
               <div class="about"> 
@@ -1024,7 +1060,16 @@ class ObjectLayout {
   }
   house(){
     const photo = this.getPhoto();
-    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
+    return `<div class="object__header">
+              <span 
+                data-open="card" 
+                data-source="${this.item.isFromPars ? 'pars' : '1c'}"
+                data-number="${this.item.reqNumber ? this.item.reqNumber :
+      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+               class="object__title">Объект
+             </span> 
+             ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
+            </div>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -1254,15 +1299,20 @@ class ObjectLayout {
                   <span class="subtitle">Цена</span>
                   <input name="reqPrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqPrice ? this.item.reqPrice : ''}">
                 </div>
-                <div class="about__item"> 
-                  <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqOverstatePrice ? this.item.reqOverstatePrice : ''}">
-                </div>
               </div>`
   }
   ground(){
     const photo = this.getPhoto();
-    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
+    return `<div class="object__header">
+              <span 
+                data-open="card" 
+                data-source="${this.item.isFromPars ? 'pars' : '1c'}"
+                data-number="${this.item.reqNumber ? this.item.reqNumber :
+      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+               class="object__title">Объект
+             </span> 
+             ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
+            </div>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -1382,15 +1432,20 @@ class ObjectLayout {
                   <span class="subtitle">Цена</span>
                   <input name="reqPrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqPrice ? this.item.reqPrice : ''}">
                 </div>
-                <div class="about__item"> 
-                  <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqOverstatePrice ? this.item.reqOverstatePrice : ''}">
-                </div>
               </div>`
   }
   garage(){
     const photo = this.getPhoto();
-    return `<span data-open="card" data-number="${this.item.reqNumber ? this.item.reqNumber : ''}" class="object__title">Объект</span>  
+    return `<div class="object__header">
+              <span 
+                data-open="card" 
+                data-source="${this.item.isFromPars ? 'pars' : '1c'}"
+                data-number="${this.item.reqNumber ? this.item.reqNumber :
+      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+               class="object__title">Объект
+             </span> 
+             ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
+            </div>  
               <div class="carousel"> 
                 <div class="slider">
                   <div class="slider__container">
@@ -1515,10 +1570,6 @@ class ObjectLayout {
                   <span class="subtitle">Цена</span>
                   <input name="reqPrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqPrice ? this.item.reqPrice : ''}">
                 </div>
-                <div class="about__item"> 
-                  <span class="subtitle">Цена в рекламу</span>
-                  <input name="reqOverstatePrice" class="input__text" type="text" autocomplete="off" value="${this.item.reqOverstatePrice ? this.item.reqOverstatePrice : ''}">
-                </div>
               </div>`
   }
 
@@ -1550,7 +1601,12 @@ class DealLayout{
   }
   render(){
     const stages = this.getStages();
-    return `<span data-open="deal" data-number="${this.deal.ID}" class="object__title">Сделка</span> 
+    return `<span         
+data-open="card" 
+        data-source="${this.item.isFromPars ? 'pars' : '1c'}"
+        data-number="${this.item.reqNumber ? this.item.reqNumber :
+      `${this.item.isFromPars ? this.item.isFromPars : ''}`}"  
+        class="object__title">Сделка</span> 
               <div class="about">
                 <div class="about__item about__item_background">
                   <span class="subtitle">Стадия</span>

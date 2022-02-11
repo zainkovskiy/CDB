@@ -924,8 +924,10 @@ class EditPhoto{
 
   checkRightPhoto(){
     for (let photo of this.files){
-      if (photo.height >= 800 || photo.width >= 800 && photo.allowFormat){
-        this.rightFiles.push(photo);
+      if (photo){
+        if (photo.height >= 800 || photo.width >= 800 && photo.allowFormat){
+          this.rightFiles.push(photo);
+        }
       }
     }
     return this.rightFiles.length > 0

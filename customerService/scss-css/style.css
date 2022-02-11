@@ -213,6 +213,25 @@ body {
   pointer-events: none;
 }
 
+.loader {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #9c9c9c73;
+  display: flex;
+  align-items: center;
+}
+.loader__img {
+  width: 70px;
+  background-image: url("../img/loader.gif");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 70px;
+  margin: 0 auto;
+}
+
 .header {
   border-radius: 5px;
   grid-column-start: 1;
@@ -413,6 +432,17 @@ body {
   background: #C4C4C4;
   padding: 10px;
   overflow: auto;
+}
+.object__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.object__header a {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
 }
 .object__title {
   font-family: "montserrat", sans-serif;
