@@ -1051,7 +1051,7 @@ class Handler {
         event.target.classList.add('btn-loading');
         app.getJson(app.objAPI, {
           action: 'setComment',
-          reqComment: comment.value,
+          reqComment: comment.value.replace(/\n/g, ``),
           id: UID,
         }).then(data => {
           console.log(data)

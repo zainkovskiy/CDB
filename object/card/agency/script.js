@@ -904,24 +904,32 @@ class SendFile{
     for (let item of this.files){
       data.append('photo[]', item)
     }
+    data.append('reqNumber', UID)
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json; charset=utf-8");
-    let requestOptions = {
-      method: 'POST',
-      mode: 'no-cors',
-      cache: 'no-cache',
-      credentials: "include",
-      headers: myHeaders,
-      body: data
+    // let myHeaders = new Headers();
+    // myHeaders.append("Content-Type", "application/json; charset=utf-8");
+    // let requestOptions = {
+    //   method: 'POST',
+    //   mode: 'no-cors',
+    //   cache: 'no-cache',
+    //   credentials: "include",
+    //   headers: myHeaders,
+    //   body: data
+    // };
+    //
+    // let response = await fetch("https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/MediaExchange/DocUploader.php", requestOptions);
+    // if (response){
+    //   const jsonA = await response.json();
+    //
+    //   this.setFiles(jsonA);
+    // }
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/MediaExchange/DocUploader.php", true);
+    xhr.responseType = 'json';
+    xhr.send(data);
+    xhr.onload = () => {
+      this.setFiles(xhr.response);
     };
-
-    let response = await fetch("https://crm.centralnoe.ru/dealincom/uploader.php", requestOptions);
-    if (response){
-      const jsonA = await response.json();
-
-      this.setFiles(jsonA);
-    }
   }
   setFiles(files){
     const passport = new RegExp('passport', 'i');
