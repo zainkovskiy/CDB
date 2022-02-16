@@ -1487,3 +1487,4 @@ function selectStyle(select, firstWord, id){
 
   });
 }
+

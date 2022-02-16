@@ -297,6 +297,10 @@ INPUT[type=text] {
   align-items: center;
   gap: 5px;
 }
+.text_link {
+  color: #0a58ca;
+  cursor: pointer;
+}
 
 .title {
   font-weight: 400;
@@ -793,6 +797,9 @@ input:checked + .slider__toggle:before {
   100% {
     background-color: aliceblue;
   }
+}
+.disabled {
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=style.css.map */

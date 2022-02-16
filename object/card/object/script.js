@@ -403,12 +403,11 @@ class Render {
             <div class="miscellaneous-information wrapper"> 
                 <div class="miscellaneous-information__header"> 
                   <p class="title info__text miscellaneous-information__text">Заявка №<span class="text">${UID ? UID : ''}</span></p>
-                  <p class="title info__text miscellaneous-information__text">Статус
-                  <span class="text">
-                  ${this.additional ? `${this.additional.reqStatus ? this.additional.reqStatus : ''}` : ''}
-                  </span></p>
+                  <p class="title info__text miscellaneous-information__text">Сделка
+                    <span class="text text_link" data-open="deal" data-deal="${this.obj.deal}">${this.obj.deal ? this.obj.deal : ''}</span>
+                  </p>
                   <p class="title info__text miscellaneous-information__text">Создано<span class="text">${createdDate ? createdDate : ''}</span></p>
-                  <p class="title info__text miscellaneous-information__text">Актуализировано<span class="text">${updatedDate ? updatedDate : ''}</span></p>
+                  <p class="title info__text miscellaneous-information__text">Статус<span class="text">${this.additional ? `${this.additional.reqStatus ? this.additional.reqStatus : ''}` : ''}</span></p>
                   <p class="title info__text miscellaneous-information__text">Тип договора<span class="text">${docType}</span></p>
                   <p class="title info__text miscellaneous-information__text">Риелтор<span class="text">
                   <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.ownerId}" bx-tooltip-user-id="${this.obj.ownerId}">
@@ -523,7 +522,7 @@ class Render {
                   </div>
             </div>
             <div class="btn-group wrapper mobile_visible"> 
-              <button data-name="openCard" class="btn_edit ui-btn ui-btn-primary-dark 
+              <button data-name="openCard" data-open="reservation" class="btn_edit ui-btn ui-btn-primary-dark 
                     ${this.obj.docType === 'Эксклюзивный договор' || this.obj.docType === 'Рекламный договор'
     || regExp.test(this.obj.docType) ? 'isVisible' : ''}">
                     Зарезервировать
@@ -590,7 +589,7 @@ class Handler {
       if (event.target.dataset.name === 'alert'){
         this.openAlert();
       } else if (event.target.dataset.name === 'openCard'){
-        this.openCard(UID);
+        this.openCard(UID, 'reservation');
       } else if (event.target.dataset.name === 'photoOrder'){
         let field = `<div class="module__wrap">
                     <textarea placeholder="Введите коментарий для фотографа" class="form-alert__area" 
@@ -602,12 +601,17 @@ class Handler {
       }
     });
   }
-  openCard(idReq) {
-    if (source === '1c'){
-      location = `https://crm.centralnoe.ru/CDB/object/card/applicationForOneself/?id=${UID}&deal=${deal}`;
-    } else {
-      let readyString = `https://crm.centralnoe.ru/CDB/object/card/infoAboutClients/?id=${idReq}&deal=${deal}`;
+  openCard(idReq, path) {
+    if (path === 'deal'){
+      let readyString = `https://crm.centralnoe.ru/crm/deal/details/${idReq}/`;
       BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+    } else {
+      if (source === '1c'){
+        location = `https://crm.centralnoe.ru/CDB/object/card/applicationForOneself/?id=${UID}&deal=${deal}`;
+      } else {
+        let readyString = `https://crm.centralnoe.ru/CDB/object/card/infoAboutClients/?id=${idReq}&deal=${deal}`;
+        BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+      }
     }
   }
 
@@ -1072,6 +1076,8 @@ class Handler {
         this.handleChange(event.target);
       } else if (event.target.dataset.overstate === 'toggle'){
         document.querySelector('.reqOverstate').classList.toggle('visibility');
+      } else if (event.target.dataset.open === 'deal'){
+        event.target.dataset.deal !== 'null' && this.openCard(event.target.dataset.deal, event.target.dataset.open);
       }
     })
   }
@@ -1104,7 +1110,6 @@ class Handler {
       })
     }
   }
-
 
   sendOverstateChange(price, toggle, elem){
     elem.innerHTML = 'Идет сохранение ...';
