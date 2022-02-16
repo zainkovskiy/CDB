@@ -36,6 +36,7 @@ class App{
     this.sessionNumber = '';
     this.isNotItem = true;
     this.currentItemUID = '';
+    this.info = '';
     this.object = '';
     this.deal = '';
     this.client = '';
@@ -46,7 +47,7 @@ class App{
   init(){
     this.checkWork.addEventListener('change', () => {
       if (this.checkWork.checked && this.isNotItem){
-          this.startJobs();
+        this.startJobs();
       } else {
         if (this.isNotItem){
           document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
@@ -75,6 +76,7 @@ class App{
       operatorId: loginID,
       action: 'stopWorking',
       UID: this.sessionNumber,
+      comment: document.querySelector('.client__area').value,
     }).then(() => {
       this.clearDom();
       this.clearThis();
@@ -85,6 +87,7 @@ class App{
       operatorId: loginID,
       action: 'getItem',
     }).then(info => {
+      this.info = info;
       this.isNotItem = false;
       console.log(info)
       if (info.result){
@@ -152,22 +155,22 @@ class App{
           this.openSelectBlock(e);
         }
       } else if (dataset.select === 'option'){
-          if (dataset.phone !== 'number'){
-            this.object[this.currentSelect.name] = e.innerHTML;
-          }
-          this.currentSelect.value = e.innerHTML;
-          this.checkOption();
+        if (dataset.phone !== 'number'){
+          this.object[this.currentSelect.name] = e.innerHTML;
+        }
+        this.currentSelect.value = e.innerHTML;
+        this.checkOption();
       } else if (dataset.open){
-          this.openCard(dataset.open, dataset.number, dataset.source);
+        this.openCard(dataset.open, dataset.number, dataset.source);
       } else if (dataset.add){
-          this.openModule(dataset.add);
+        this.openModule(dataset.add);
       } else if (dataset.call === "hangup"){
         e.classList.add('disabled');
         this.finishCall(e);
       } else if (dataset.send === 'sms'){
         this.sendSms();
       } else if (dataset.answer){
-          this.switchAnswer(dataset.answer);
+        this.switchAnswer(dataset.answer);
       } else if (dataset.direction){
         this.setLoader();
         api.requestToServer('getInfo', {
@@ -176,6 +179,7 @@ class App{
           result: 1,
           data: this.object,
           direction: dataset.direction,
+          comment: document.querySelector('.client__area').value,
         }).then(() => {
           this.removeLoader();
           if (this.checkWork.disabled){
@@ -216,13 +220,13 @@ class App{
         if (event.target.name === 'reqHouseBuildDate'){
           this.object[event.target.name] = event.target.value.split('-').reverse().join('.');
         } else if (event.target.classList.contains('reqTypeofRealty')){
-            this.object[event.target.name] = event.target.value;
-            this.renderObject(event.target.value);
+          this.object[event.target.name] = event.target.value;
+          this.renderObject(event.target.value);
         } else if (event.target.name === 'reqTypeofFlat'){
           this.object.reqTypeofRealty = event.target.value;
         }
         else {
-            this.object[event.target.name] = event.target.value;
+          this.object[event.target.name] = event.target.value;
         }
       })
     }
@@ -274,7 +278,31 @@ class App{
       case 'denial':
         this.openModule(answer);
         break;
+      case 'confirms':
+        this.sendConfirms('confirms');
+        break;
     }
+  }
+  sendConfirms(action){
+    this.setLoader();
+    api.requestToServer('getInfo', {
+      action: 'finishItem',
+      item: this.currentItemUID,
+      result: 1,
+      data: this.object,
+      direction: action,
+      comment: document.querySelector('.client__area').value,
+    }).then(() => {
+      this.removeLoader();
+      if (this.checkWork.disabled){
+        this.finishSession();
+        this.checkWork.disabled = false;
+      } else {
+        this.clearDom();
+        this.clearThis();
+        this.counterTime();
+      }
+    });
   }
   showDirectionButton(){
     const direction = document.querySelector('.object__direction');
@@ -359,10 +387,10 @@ class App{
       if (dataset.name === 'close'){
         this.closeModule(module);
       } else if (dataset.input === 'pick'){
-          document.querySelector(`.${dataset.input}__select`).classList.remove('inVisible');
+        document.querySelector(`.${dataset.input}__select`).classList.remove('inVisible');
       } else if (dataset.option === 'pick'){
-          document.querySelector(`.${dataset.option}__input`).value = e.innerHTML;
-          document.querySelector(`.${dataset.option}__select`).classList.add('inVisible');
+        document.querySelector(`.${dataset.option}__input`).value = e.innerHTML;
+        document.querySelector(`.${dataset.option}__select`).classList.add('inVisible');
       } else if (dataset.save === 'reason'){
         const inputReason = module.querySelector(`INPUT[type='text']`);
         if (inputReason.value === 'Выбрать'){
@@ -500,7 +528,7 @@ class App{
           const clientContainer = document.querySelector('.client');
           console.log(this.client)
           clientContainer.innerHTML = '';
-          clientContainer.insertAdjacentHTML('beforeend', new ClientLayout(this.client, realtor).render())
+          clientContainer.insertAdjacentHTML('beforeend', new ClientLayout(this.client, realtor, this.info).render())
         })
       }
     })
@@ -562,7 +590,7 @@ class ObjectLayout {
                 data-open="card" 
                 data-source="${this.item.isFromPars ? 'pars' : '1c'}"
                 data-number="${this.item.reqNumber ? this.item.reqNumber :
-              `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
                class="object__title">Объект
              </span> 
              ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
@@ -1644,9 +1672,10 @@ data-open="card"
 }
 
 class ClientLayout{
-  constructor(client, realtor) {
+  constructor(client, realtor, info) {
     this.client = client;
     this.realtor = realtor;
+    this.info = info;
   }
   getPhone(){
     if (this.client.HAS_PHONE === "Y"){
@@ -1718,7 +1747,7 @@ class ClientLayout{
                 </div>
                 <div class="client__buttons"> 
                     <button data-answer="denial" class="can-btn can-btn_width33 client__btn-fail">отказ</button>
-                    <button data-answer="agree" class="can-btn can-btn_width33 client__btn-agree">согласен</button>
+                    <button data-answer="${this.info.request.type === 'frompars' ? 'agree' : 'confirms'}" class="can-btn can-btn_width33 client__btn-agree">${this.info.request.type === 'frompars' ? 'согласен' : 'подтверждает'}</button>
                     <button data-answer="fail" class="can-btn can-btn_width33 client__btn-fail">не ответил</button>
                 </div>
               </div>`
