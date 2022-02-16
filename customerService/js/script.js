@@ -170,7 +170,7 @@ class App{
       } else if (dataset.send === 'sms'){
         this.sendSms();
       } else if (dataset.answer){
-        this.switchAnswer(dataset.answer);
+        this.switchAnswer(dataset.answer, dataset.type);
       } else if (dataset.direction){
         this.setLoader();
         api.requestToServer('getInfo', {
@@ -179,6 +179,7 @@ class App{
           result: 1,
           data: this.object,
           direction: dataset.direction,
+          type: dataset.type,
           comment: document.querySelector('.client__area').value,
         }).then(() => {
           this.removeLoader();
@@ -267,10 +268,10 @@ class App{
     })
   }
 
-  switchAnswer(answer){
+  switchAnswer(answer, type){
     switch (answer){
       case 'agree':
-        this.showDirectionButton();
+        this.showDirectionButton(type);
         break;
       case 'fail':
         this.openModule(answer);
@@ -304,13 +305,13 @@ class App{
       }
     });
   }
-  showDirectionButton(){
+  showDirectionButton(type){
     const direction = document.querySelector('.object__direction');
     if (!direction) {
       document.querySelector('.object').insertAdjacentHTML('beforeend',
         `<div class="object__direction">
-              <button data-direction="left" class="can-btn can-btn_width50">левый</button>
-              <button data-direction="right" class="can-btn can-btn_width50">правый</button>
+              <button data-direction="left" data-type="${type}" class="can-btn can-btn_width50">левый</button>
+              <button data-direction="right" data-type="${type}" class="can-btn can-btn_width50">правый</button>
             </div>`);
       document.querySelector('.control').insertAdjacentHTML('beforeend',
         `<div class="control__notification-block">
@@ -1698,9 +1699,28 @@ class ClientLayout{
       return option;
     }
   }
+  agreeButtons(){
+    if (this.info.request.type === 'frompars'){
+      return `<button 
+                data-answer="agree" 
+                data-type="application"
+                class="can-btn can-btn_width33 client__btn-agree">
+                заявка
+              </button> 
+              <button 
+                data-answer="agree" 
+                data-type="advertising"
+                class="can-btn can-btn_width33 client__btn-agree">
+                рд
+              </button>`
+    } else {
+      return `<button data-answer="confirms" class="can-btn can-btn_width33 client__btn-agree">подтверждает</button>`
+    }
+  }
   render(){
     const phone = this.getPhone();
     const phoneSelect = this.getPhoneSelect();
+    const agreeButtons = this.agreeButtons();
     return `<div class="client__title-wrap"> 
                 <span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
                 <span data-call="hangup" class="client__phone_cancel"></span>
@@ -1747,7 +1767,7 @@ class ClientLayout{
                 </div>
                 <div class="client__buttons"> 
                     <button data-answer="denial" class="can-btn can-btn_width33 client__btn-fail">отказ</button>
-                    <button data-answer="${this.info.request.type === 'frompars' ? 'agree' : 'confirms'}" class="can-btn can-btn_width33 client__btn-agree">${this.info.request.type === 'frompars' ? 'согласен' : 'подтверждает'}</button>
+                    ${agreeButtons}                  
                     <button data-answer="fail" class="can-btn can-btn_width33 client__btn-fail">не ответил</button>
                 </div>
               </div>`
