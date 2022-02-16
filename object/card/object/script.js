@@ -5,6 +5,7 @@ class App{
     this.objAPI = 'https://crm.centralnoe.ru/dealincom/factory/objectViewer.php'
     this.additional = '';
     this.additionalAPI = 'https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Object/getState.php';
+    this.listUsers = 'https://crm.centralnoe.ru/dealincom/connector/findUsers.php'
   }
 
   async getJson(API, request1Cnamed) {
@@ -409,10 +410,10 @@ class Render {
                   <p class="title info__text miscellaneous-information__text">Создано<span class="text">${createdDate ? createdDate : ''}</span></p>
                   <p class="title info__text miscellaneous-information__text">Статус<span class="text">${this.additional ? `${this.additional.reqStatus ? this.additional.reqStatus : ''}` : ''}</span></p>
                   <p class="title info__text miscellaneous-information__text">Тип договора<span class="text">${docType}</span></p>
-                  <p class="title info__text miscellaneous-information__text">Риелтор<span class="text">
+                  <p class="title info__text miscellaneous-information__text miscellaneous-information__realtor">Риелтор<span class="text">
                   <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.ownerId}" bx-tooltip-user-id="${this.obj.ownerId}">
                             ${this.obj.owner ? this.obj.owner : ''}
-                  </a> </span></p>
+                  </a> <i ${source !== '1c' && !this.obj.isGod && 'visible'} data-choose="responsible" class="miscellaneous-information__btn-choose"></i></span></p>
                 </div>
                 <div class="miscellaneous-information__bottom"> 
                   <div class="miscellaneous-information_wrap"> 
@@ -665,6 +666,11 @@ class Handler {
         })
       } else if (event.target.dataset.name === 'cancelOrderPhoto'){
         this.closeModule(module);
+      } else if (event.target.dataset.btn === 'search'){
+        this.renderResponsible(module);
+      } else if (event.target.dataset.responsible === 'select'){
+        this.closeModule(module);
+        this.setNewResponsible(event.target.dataset.login);
       }
     })
     document.onkeydown = (event) => {
@@ -673,12 +679,52 @@ class Handler {
           this.nextImg(module);
         } else if (event.code === 'ArrowLeft'){
           this.previousImg(module);
-        } else if (event.code === 'Escape'){
-          this.closeModule(module);
-          this.statusImg = false;
         }
       }
+      if (event.code === 'Escape'){
+        this.closeModule(module);
+        this.statusImg = false;
+      } else if (event.key === 'Enter' && module.querySelector('.responsible__list')){
+        this.renderResponsible(module);
+      }
     }
+  }
+  setNewResponsible(loginResponsible){
+    app.getJson(app.objAPI, {
+      action: 'newResponsible',
+      reqNumber: 'UID',
+      responsible: loginResponsible,
+      author: login,
+    }).then(data => {
+      data.result === 'ok' && location.reload();
+    })
+  }
+  renderResponsible(module){
+    const inputs = module.querySelectorAll('INPUT[type="search"]');
+    const response = {};
+    let checkInputValue = '';
+    for (let input of inputs){
+      response[input.name] = input.value;
+      checkInputValue += input.value;
+    }
+    if (checkInputValue.length === 0) {
+      return
+    }
+    app.getJson(app.listUsers, response).then(data => {
+      module.querySelector('.responsible__list').innerHTML = '';
+      console.log(data)
+      for (let item of data){
+        module.querySelector('.responsible__list').insertAdjacentHTML('beforeend',
+          `<p class="responsible__item" 
+                        data-responsible="select" 
+                        data-login="${item.LOGIN}">
+                        ${item.LAST_NAME} ${item.NAME}
+                        <span>
+                          ${item.WORK_DEPARTMENT}
+                        </span>
+                    </p>`)
+      }
+    })
   }
   closeModule(module){
     module.remove();
@@ -1078,8 +1124,31 @@ class Handler {
         document.querySelector('.reqOverstate').classList.toggle('visibility');
       } else if (event.target.dataset.open === 'deal'){
         event.target.dataset.deal !== 'null' && this.openCard(event.target.dataset.deal, event.target.dataset.open);
+      } else if (event.target.dataset.choose === "responsible"){
+        this.openModule(this.chooseResponsible());
       }
     })
+  }
+  chooseResponsible(){
+    return `<div class="responsible">
+              <div class="responsible__header">Поиск</div>
+              <div class="responsible__search">
+                <label class="responsible__label"> 
+                  Фамилия
+                  <input name="name" class="responsible__input" type="search">
+                </label>
+                <label class="responsible__label">
+                  Филиал
+                  <input name="department" class="responsible__input" type="search">
+                </label>
+                <button data-btn="search" class="responsible__search-btn"></button>
+              </div>
+              <div class="responsible__title">
+                <span>Ответственный</span>
+                <span>Филиал</span>
+              </div>
+              <div class="responsible__list"></div>
+            </div>`
   }
   handleChange(elem){
     const priseInput = document.querySelector(`INPUT[name='price']`);
