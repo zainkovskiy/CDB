@@ -8,10 +8,10 @@ class Add {
     this.container.insertAdjacentHTML('beforeend', new Header(this.obj.reqTypeofRealty).render());
     if (add.obj.Rights === 'Full'){
       selectStyle('.reqStatus', 'reqStatus',
-        `${add.obj.reqStatus ? add.obj.reqStatus : 'Выберете'}`);
+        `${add.obj.reqStatus ? add.obj.reqStatus : 'Выберите'}`);
     } else {
       selectStyle('.reqStatus', 'select_disabled',
-        `${add.obj.reqStatus ? add.obj.reqStatus : 'Выберете'}`);
+        `${add.obj.reqStatus ? add.obj.reqStatus : 'Выберите'}`);
     }
     selectStyle('.reqNumber', 'select_reqNumber',
       `${add.obj.reqNumber ? add.obj.reqNumber : ''}`);
@@ -102,68 +102,68 @@ class Add {
       form.insertAdjacentHTML('beforeend', new Float().render());
       new Search().init();
       selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-        `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
       selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
-        `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
+        `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберите'}`);
       selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
-        `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
+        `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберите'}`);
       selectStyle('.reqBathroomType', 'reqBathroomType',
-        `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберите'}`);
       selectStyle('.reqRepairStatus', 'reqRepairStatus',
-        `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберете'}`);
+        `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберите'}`);
       selectStyle('.reqMaterial', 'reqMaterial',
-        `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
     } else if (this.obj.reqTypeofRealty === 'Комната') {
       form.insertAdjacentHTML('beforeend', new Room().render());
       new Search().init();
       selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-        `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
       selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
         `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберет'}`);
       selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
         `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберет'}`);
       selectStyle('.reqBathroomType', 'reqBathroomType',
-        `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберите'}`);
       selectStyle('.reqMaterial', 'reqMaterial',
-        `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
       selectStyle('.reqHouseType', 'reqHouseType',
-        `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+        `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберите'}`);
     } else if (this.obj.reqTypeofRealty === 'Дом') {
       form.insertAdjacentHTML('beforeend', new House().render());
       new Search().init();
       this.initMap(this.obj.lat, this.obj.lng);
       selectStyle('.reqHouseType', 'reqHouseType',
-        `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+        `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберите'}`);
       selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-        `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+        `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
       selectStyle('.reqBathroomType', 'reqBathroomType',
-        `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+        `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберите'}`);
       selectStyle('.reqHouseRoof', 'reqHouseRoof',
-        `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберете'}`);
+        `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберите'}`);
       selectStyle('.reqHouseHeating', 'reqHouseHeating',
-        `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберете'}`);
+        `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберите'}`);
       selectStyle('.reqWaterPipes', 'reqWaterPipes',
-        `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+        `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберите'}`);
       selectStyle('.reqDrainage', 'reqDrainage',
-        `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+        `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберите'}`);
     } else if (this.obj.reqTypeofRealty === 'Земельный участок') {
       form.insertAdjacentHTML('beforeend', new Ground().render());
       new Search().init();
       this.initMap(this.obj.lat, this.obj.lng);
       selectStyle('.reqWaterPipes', 'reqWaterPipes',
-        `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+        `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберите'}`);
       selectStyle('.reqDrainage', 'reqDrainage',
-        `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+        `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберите'}`);
       selectStyle('.reqGroundCategory', 'reqGroundCategory',
-        `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберете'}`);
+        `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберите'}`);
     } else if (this.obj.reqTypeofRealty === 'Гараж') {
       form.insertAdjacentHTML('beforeend', new Garage().render());
       new Search().init();
       this.initMap(this.obj.lat, this.obj.lng);
       selectStyle('.reqMaterial', 'reqMaterial',
-        `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+        `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
       selectStyle('.reqGarageType', 'reqGarageType',
-        `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберете'}`);
+        `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберите'}`);
     }
   }
   initMap(x, y){
@@ -480,17 +480,17 @@ class Handler{
         this.form.insertAdjacentHTML('beforeend', new Float().render());
         new Search().init();
         selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
         selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
-          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
+          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберите'}`);
         selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
-          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
+          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберите'}`);
         selectStyle('.reqBathroomType', 'reqBathroomType',
-          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберите'}`);
         selectStyle('.reqRepairStatus', 'reqRepairStatus',
-          `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберете'}`);
+          `${add.obj.reqRepairStatus ? add.obj.reqRepairStatus : 'Выберите'}`);
         selectStyle('.reqMaterial', 'reqMaterial',
-          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
         this.handlerPrice();
         break
       case 'room':
@@ -498,17 +498,17 @@ class Handler{
         this.form.insertAdjacentHTML('beforeend', new Room().render());
         new Search().init();
         selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
         selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
-          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберете'}`);
+          `${add.obj.reqTypeofFlat ? add.obj.reqTypeofFlat : 'Выберите'}`);
         selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
-          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберете'}`);
+          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберите'}`);
         selectStyle('.reqBathroomType', 'reqBathroomType',
-          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберите'}`);
         selectStyle('.reqMaterial', 'reqMaterial',
-          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
         selectStyle('.reqHouseType', 'reqHouseType',
-          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберите'}`);
         this.handlerPrice();
         break
       case 'house':
@@ -517,19 +517,19 @@ class Handler{
         new Search().init();
         add.initMap(add.obj.lat, add.obj.lng);
         selectStyle('.reqHouseType', 'reqHouseType',
-          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберете'}`);
+          `${add.obj.reqHouseType ? add.obj.reqHouseType : 'Выберите'}`);
         selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
-          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберете'}`);
+          `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
         selectStyle('.reqBathroomType', 'reqBathroomType',
-          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберете'}`);
+          `${add.obj.reqBathroomType ? add.obj.reqBathroomType : 'Выберите'}`);
         selectStyle('.reqHouseRoof', 'reqHouseRoof',
-          `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберете'}`);
+          `${add.obj.reqHouseRoof ? add.obj.reqHouseRoof : 'Выберите'}`);
         selectStyle('.reqHouseHeating', 'reqHouseHeating',
-          `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберете'}`);
+          `${add.obj.reqHouseHeating ? add.obj.reqHouseHeating : 'Выберите'}`);
         selectStyle('.reqWaterPipes', 'reqWaterPipes',
-          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберите'}`);
         selectStyle('.reqDrainage', 'reqDrainage',
-          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберите'}`);
         this.handlerPrice();
         break
       case 'ground':
@@ -538,11 +538,11 @@ class Handler{
         new Search().init();
         add.initMap(add.obj.lat, add.obj.lng);
         selectStyle('.reqWaterPipes', 'reqWaterPipes',
-          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберете'}`);
+          `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберите'}`);
         selectStyle('.reqDrainage', 'reqDrainage',
-          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберете'}`);
+          `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберите'}`);
         selectStyle('.reqGroundCategory', 'reqGroundCategory',
-          `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберете'}`);
+          `${add.obj.reqGroundCategory ? add.obj.reqGroundCategory : 'Выберите'}`);
         this.handlerPrice();
         break
       case 'garage':
@@ -551,9 +551,9 @@ class Handler{
         new Search().init();
         add.initMap(add.obj.lat, add.obj.lng);
         selectStyle('.reqMaterial', 'reqMaterial',
-          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберете'}`);
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
         selectStyle('.reqGarageType', 'reqGarageType',
-          `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберете'}`);
+          `${add.obj.reqGarageType ? add.obj.reqGarageType : 'Выберите'}`);
         this.handlerPrice();
         break
     }
@@ -1075,7 +1075,7 @@ class Handler{
     }
     for (let select of allSelect){
       let currentDiv = document.querySelector(`DIV.${select.name}`);
-      if (currentDiv.innerHTML === 'Выберете'){
+      if (currentDiv.innerHTML === 'Выберите'){
         library[currentDiv.id] = false;
         currentDiv.classList.add('isValid');
       } else {
@@ -1130,7 +1130,7 @@ class Handler{
 
     for (let select of allSelect){
       let currentDiv = document.querySelector(`DIV.${select.name}`);
-      if (currentDiv.innerHTML === 'Выберете'){
+      if (currentDiv.innerHTML === 'Выберите'){
         add.obj[currentDiv.id] = null;
       } else {
         add.obj[currentDiv.id] = currentDiv.innerHTML;
@@ -1482,7 +1482,7 @@ class Float{
             </div> 
             <div class="place"> 
               <span class="form__title">местоположение<i class="i">*<p class="guid">дополнительный ориентир не обязательно поле. для города Новосибирск и Кемерово - обязательно указание всех реквизитов адреса. Для остальных - Указание района - не требуется.</p></i></span>
-              <div class="form__item${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
+              <div class="form__item">
                 <span class="form__subtitle">Регион</span> 
                 <input name="reqRegion" id="reqRegion" class="form__input search__input reqRegion" type="search" value="${add.obj.reqRegion ? add.obj.reqRegion : 'Новосибирская область'}" autocomplete="new-password">
                 <div class="reqRegion__items search__field isVisible"></div>
@@ -1507,7 +1507,7 @@ class Float{
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" id="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>
-              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
+              <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
@@ -1573,7 +1573,7 @@ class Float{
               <div class="form__item"> 
                 <span class="form__subtitle">Балкон/лоджия</span> 
                 <select class="reqGalleryAvailability" name="reqGalleryAvailability"> 
-                  <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон' ? 'selected' : ''}>1 балкон</option>
                   <option ${add.obj.reqGalleryAvailability === '1 лоджия' ? 'selected' : ''}>1 лоджия</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон 1 лоджия' ? 'selected' : ''}>1 балкон 1 лоджия</option>
@@ -1594,7 +1594,7 @@ class Float{
               <div class="form__item"> 
                 <span class="form__subtitle">Тип квартиры</span> 
                 <select class="reqTypeofFlat" name="reqTypeofFlat"> 
-                  <option value="empty" ${!add.obj.reqTypeofFlat ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqTypeofFlat ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqTypeofFlat === 'Прочее' ? 'selected' : ''}>Прочее</option>
                   <option ${add.obj.reqTypeofFlat === 'Хрущёвка' ? 'selected' : ''}>Хрущёвка</option>
                   <option ${add.obj.reqTypeofFlat === 'Апартаменты' ? 'selected' : ''}>Апартаменты</option>
@@ -1616,7 +1616,7 @@ class Float{
               <div class="form__item"> 
                 <span class="form__subtitle">Планировка</span>               
                 <select class="reqTypeofLayout" name="reqTypeofLayout"> 
-                  <option value="empty" ${!add.obj.reqTypeofLayout ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqTypeofLayout ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqTypeofLayout === 'Смежные' ? 'selected' : ''}>Смежные</option>
                   <option ${add.obj.reqTypeofLayout === 'Изолированные' ? 'selected' : ''}>Изолированные</option>
                   <option ${add.obj.reqTypeofLayout === 'Смежно-изолированные' ? 'selected' : ''}>Смежно-изолированные</option>
@@ -1626,7 +1626,7 @@ class Float{
               <div class="form__item"> 
                 <span class="form__subtitle">Санузел</span>               
                 <select class="reqBathroomType" name="reqBathroomType"> 
-                  <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqBathroomType === 'Неизвестно' ? 'selected' : ''}>Неизвестно</option>
                   <option ${add.obj.reqBathroomType === 'Два' ? 'selected' : ''}>Два</option>
                   <option ${add.obj.reqBathroomType === '2 ванны' ? 'selected' : ''}>2 ванны</option>
@@ -1641,7 +1641,7 @@ class Float{
               <div class="form__item"> 
                 <span class="form__subtitle">Ремонт</span>               
                 <select class="reqRepairStatus" name="reqRepairStatus"> 
-                  <option value="empty" ${!add.obj.repair ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.repair ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqRepairStatus === 'Под ключ' ? 'selected' : ''}>Под ключ</option>
                   <option ${add.obj.reqRepairStatus === 'Черновая отделка' ? 'selected' : ''}>Черновая отделка</option>
                   <option ${add.obj.reqRepairStatus === 'Чистовая отделка' ? 'selected' : ''}>Чистовая отделка</option>
@@ -1681,7 +1681,7 @@ class Float{
               <div class="form__item"> 
                 <span class="form__subtitle">Материал дома</span>               
                 <select class="reqMaterial" name="reqMaterial"> 
-                  <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqMaterial === 'Кирпич' ? 'selected' : ''}>Кирпич</option>
                   <option ${add.obj.reqMaterial === 'Панель' ? 'selected' : ''}>Панель</option>
                   <option ${add.obj.reqMaterial === 'Шлакоблоки' ? 'selected' : ''}>Шлакоблоки</option>
@@ -1739,7 +1739,7 @@ class Room{
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>                  
-              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
+              <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>                    
@@ -1830,7 +1830,7 @@ class Room{
               <div class="form__item"> 
                 <span class="form__subtitle">Тип квартиры</span> 
                 <select class="reqTypeofFlat" name="reqTypeofFlat"> 
-                  <option value="empty" ${!add.obj.reqTypeofFlat ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqTypeofFlat ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqTypeofFlat === 'Прочее' ? 'selected' : ''}>Прочее</option>
                   <option ${add.obj.reqTypeofFlat === 'Хрущёвка' ? 'selected' : ''}>Хрущёвка</option>
                   <option ${add.obj.reqTypeofFlat === 'Апартаменты' ? 'selected' : ''}>Апартаменты</option>
@@ -1852,7 +1852,7 @@ class Room{
               <div class="form__item"> 
                 <span class="form__subtitle">Планировка</span>               
                 <select class="reqTypeofLayout" name="reqTypeofLayout"> 
-                  <option value="empty" ${!add.obj.reqTypeofLayout ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqTypeofLayout ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqTypeofLayout === 'Смежные' ? 'selected' : ''}>Смежные</option>
                   <option ${add.obj.reqTypeofLayout === 'Изолированные' ? 'selected' : ''}>Изолированные</option>
                   <option ${add.obj.reqTypeofLayout === 'Смежно-изолированные' ? 'selected' : ''}>Смежно-изолированные</option>
@@ -1862,7 +1862,7 @@ class Room{
               <div class="form__item"> 
                 <span class="form__subtitle">Балкон/лоджия</span> 
                 <select class="reqGalleryAvailability" name="reqGalleryAvailability"> 
-                  <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон' ? 'selected' : ''}>1 балкон</option>
                   <option ${add.obj.reqGalleryAvailability === '1 лоджия' ? 'selected' : ''}>1 лоджия</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон 1 лоджия' ? 'selected' : ''}>1 балкон 1 лоджия</option>
@@ -1883,7 +1883,7 @@ class Room{
               <div class="form__item"> 
                 <span class="form__subtitle">Санузел</span>               
                 <select class="reqBathroomType" name="reqBathroomType"> 
-                  <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqBathroomType === 'Неизвестно' ? 'selected' : ''}>Неизвестно</option>
                   <option ${add.obj.reqBathroomType === 'Два' ? 'selected' : ''}>Два</option>
                   <option ${add.obj.reqBathroomType === '2 ванны' ? 'selected' : ''}>2 ванны</option>
@@ -1918,7 +1918,7 @@ class Room{
               <div class="form__item"> 
                 <span class="form__subtitle">Тип дома</span> 
                 <select class="reqHouseType" name="reqHouseType"> 
-                  <option value="empty" ${!add.obj.reqHouseType ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqHouseType ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqHouseType === 'Прочее' ? 'selected' : ''}>Дача</option>
                   <option ${add.obj.reqHouseType === 'Хрущёвка' ? 'selected' : ''}>Дом</option>
                   <option ${add.obj.reqHouseType === 'Апартаменты' ? 'selected' : ''}>Квартира на земле</option>
@@ -1933,7 +1933,7 @@ class Room{
               <div class="form__item"> 
                 <span class="form__subtitle">Материал дома</span>               
                 <select class="reqMaterial" name="reqMaterial"> 
-                  <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqMaterial === 'Кирпич' ? 'selected' : ''}>Кирпич</option>
                   <option ${add.obj.reqMaterial === 'Панель' ? 'selected' : ''}>Панель</option>
                   <option ${add.obj.reqMaterial === 'Шлакоблоки' ? 'selected' : ''}>Шлакоблоки</option>
@@ -1996,7 +1996,7 @@ class House{
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>              
-              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
+              <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
@@ -2065,7 +2065,7 @@ class House{
               <div class="form__item"> 
                 <span class="form__subtitle">Тип дома</span> 
                 <select class="reqHouseType" name="reqHouseType"> 
-                  <option value="empty" ${!add.obj.reqHouseType ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqHouseType ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqHouseType === 'Прочее' ? 'selected' : ''}>Дача</option>
                   <option ${add.obj.reqHouseType === 'Хрущёвка' ? 'selected' : ''}>Дом</option>
                   <option ${add.obj.reqHouseType === 'Апартаменты' ? 'selected' : ''}>Квартира на земле</option>
@@ -2080,7 +2080,7 @@ class House{
               <div class="form__item"> 
                 <span class="form__subtitle">Балкон/лоджия</span> 
                 <select class="reqGalleryAvailability" name="reqGalleryAvailability"> 
-                  <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон' ? 'selected' : ''}>1 балкон</option>
                   <option ${add.obj.reqGalleryAvailability === '1 лоджия' ? 'selected' : ''}>1 лоджия</option>
                   <option ${add.obj.reqGalleryAvailability === '1 балкон 1 лоджия' ? 'selected' : ''}>1 балкон 1 лоджия</option>
@@ -2101,7 +2101,7 @@ class House{
               <div class="form__item"> 
                 <span class="form__subtitle">Санузел</span>               
                 <select class="reqBathroomType" name="reqBathroomType"> 
-                  <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqBathroomType ? 'selected' : ''}>Выберите</option>
                   <option value="Неизвестно" ${add.obj.reqBathroomType === 'Неизвестно' ? 'selected' : ''}>Неизвестно</option>
                   <option value="Два" ${add.obj.reqBathroomType === 'Два' ? 'selected' : ''}>Два</option>
                   <option value="2 ванны" ${add.obj.reqBathroomType === '2 ванны' ? 'selected' : ''}>2 ванны</option>
@@ -2116,7 +2116,7 @@ class House{
               <div class="form__item"> 
                 <span class="form__subtitle">Кровля</span>               
                 <select id="reqHouseRoof" class="reqHouseRoof" name="reqHouseRoof"> 
-                  <option value="empty" ${!add.obj.reqHouseRoof ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqHouseRoof ? 'selected' : ''}>Выберите</option>
                   <option value="Железо" ${add.obj.reqHouseRoof === 'Железо' ? 'selected' : ''}>Железо</option>
                   <option value="Шифер" ${add.obj.reqHouseRoof === 'Шифер' ? 'selected' : ''}>Шифер</option>
                   <option value="Ондулин" ${add.obj.reqHouseRoof === 'Ондулин' ? 'selected' : ''}>Ондулин</option>
@@ -2129,7 +2129,7 @@ class House{
               <div class="form__item"> 
                 <span class="form__subtitle">Отопление</span>               
                 <select id="reqHouseHeating" class="reqHouseHeating" name="reqHouseHeating"> 
-                  <option value="empty" ${!add.obj.reqHouseHeating ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqHouseHeating ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqHouseHeating === 'Печное' ? 'selected' : ''}>Печное</option>
                   <option ${add.obj.reqHouseHeating === 'Газовый котел' ? 'selected' : ''}>Газовый котел</option>
                   <option ${add.obj.reqHouseHeating === 'Электрический котел' ? 'selected' : ''}>Электрический котел</option>
@@ -2142,7 +2142,7 @@ class House{
               <div class="form__item"> 
                 <span class="form__subtitle">Водопровод</span>               
                 <select id="reqWaterPipes" class="reqWaterPipes" name="reqWaterPipes"> 
-                  <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqWaterPipes === 'Не указано' ? 'selected' : ''}>Не указано</option>
                   <option ${add.obj.reqWaterPipes === 'Отсутствует' ? 'selected' : ''}>Отсутствует</option>
                   <option ${add.obj.reqWaterPipes === 'Зимний' ? 'selected' : ''}>Зимний</option>
@@ -2152,7 +2152,7 @@ class House{
               <div class="form__item"> 
                 <span class="form__subtitle">Слив</span>               
                 <select id="reqDrainage" class="reqDrainage" name="reqDrainage"> 
-                  <option value="empty" ${add.obj.reqDrainage ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${add.obj.reqDrainage ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqDrainage === 'Не указано' ? 'selected' : ''}>Не указано</option>
                   <option ${add.obj.reqDrainage === 'Отсутствует' ? 'selected' : ''}>Отсутствует</option>
                   <option ${add.obj.reqDrainage === 'Канализация' ? 'selected' : ''}>Канализация</option>
@@ -2226,7 +2226,7 @@ class Ground{
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>              
-              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
+              <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>
@@ -2262,7 +2262,7 @@ class Ground{
               <div class="form__item"> 
                 <span class="form__subtitle">Водопровод</span>               
                 <select class="reqWaterPipes" name="reqWaterPipes"> 
-                  <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqWaterPipes ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqWaterPipes === 'Не указано' ? 'selected' : ''}>Не указано</option>
                   <option ${add.obj.reqWaterPipes === 'Отсутствует' ? 'selected' : ''}>Отсутствует</option>
                   <option ${add.obj.reqWaterPipes === 'Зимний' ? 'selected' : ''}>Зимний</option>
@@ -2272,7 +2272,7 @@ class Ground{
               <div class="form__item"> 
                 <span class="form__subtitle">Слив</span>               
                 <select class="reqDrainage" name="reqDrainage"> 
-                  <option value="empty" ${add.obj.reqDrainage ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${add.obj.reqDrainage ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqDrainage === 'Не указано' ? 'selected' : ''}>Не указано</option>
                   <option ${add.obj.reqDrainage === 'Отсутствует' ? 'selected' : ''}>Отсутствует</option>
                   <option ${add.obj.reqDrainage === 'Канализация' ? 'selected' : ''}>Канализация</option>
@@ -2283,7 +2283,7 @@ class Ground{
               <div class="form__item"> 
                 <span class="form__subtitle">Категория земли</span>               
                 <select class="reqGroundCategory" name="reqGroundCategory"> 
-                  <option value="empty" ${add.obj.reqGroundCategory ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${add.obj.reqGroundCategory ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqGroundCategory === 'Не указано' ? 'selected' : ''}>Индивидуального строительства</option>
                   <option ${add.obj.reqGroundCategory === 'Отсутствует' ? 'selected' : ''}>Для садоводчества</option>
                   <option ${add.obj.reqGroundCategory === 'Отсутствует' ? 'selected' : ''}>Другое</option>
@@ -2349,7 +2349,7 @@ class Garage{
                 <span class="form__subtitle">Номер дома</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>                         
-              <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
+              <div class="form__item">
                 <span class="form__subtitle">Дополнительный ориентир</span> 
                 <input name="reqAdditionalLandmark" id="reqAdditionalLandmark" class="form__input" type="text" value="${add.obj.reqAdditionalLandmark ? add.obj.reqAdditionalLandmark : ''}" autocomplete="new-password">
               </div>                 
@@ -2380,7 +2380,7 @@ class Garage{
               <div class="form__item"> 
                 <span class="form__subtitle">Материал стен</span>               
                 <select class="reqMaterial" name="reqMaterial"> 
-                  <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqMaterial === 'Кирпич' ? 'selected' : ''}>Кирпич</option>
                   <option ${add.obj.reqMaterial === 'Панель' ? 'selected' : ''}>Панель</option>
                   <option ${add.obj.reqMaterial === 'Шлакоблоки' ? 'selected' : ''}>Шлакоблоки</option>
@@ -2409,7 +2409,7 @@ class Garage{
               <div class="form__item"> 
                 <span class="form__subtitle">Тип гаража</span>               
                 <select class="reqGarageType" name="reqGarageType"> 
-                  <option value="empty" ${!add.obj.reqGarageType ? 'selected' : ''}>Выберете</option>
+                  <option value="empty" ${!add.obj.reqGarageType ? 'selected' : ''}>Выберите</option>
                   <option ${add.obj.reqGarageType === 'Кирпич' ? 'selected' : ''}>Гараж</option>
                   <option ${add.obj.reqGarageType === 'Панель' ? 'selected' : ''}>Машиноместо</option>
                   <option ${add.obj.reqGarageType === 'Шлакоблоки' ? 'selected' : ''}>Бокс</option>

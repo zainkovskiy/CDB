@@ -860,7 +860,7 @@ class Handler {
   alertADBLayout(){
     return `<div class="module__wrap">
               <div class="module__header">
-                  <span class="module-title">Выберете причину</span>
+                  <span class="module-title">Выберите причину</span>
               </div>
               <div class="form-alert">
                 <div class="form-alert__wrap">

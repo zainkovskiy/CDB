@@ -2331,7 +2331,7 @@ class Handler{
                       </tr>`
     }
     const layout = `<div class="responsible"> 
-                      <p class="responsible__text">Выберете ответственное лицо</p>
+                      <p class="responsible__text">Выберите ответственное лицо</p>
                       <form class="responsible__form">
                         <input class="responsible__input" type="text">
                         <button class="responsible__search-btn" type="submit"></button>

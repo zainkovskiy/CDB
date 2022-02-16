@@ -49,7 +49,7 @@ class App {
     })
   }
   setStartSelectStyle(){
-    selectStyle('.summary__type', `${this.obj.type ? this.obj.type : 'Выберете'}`, `type`);
+    selectStyle('.summary__type', `${this.obj.type ? this.obj.type : 'Выберите'}`, `type`);
     selectStyle('.summary__kind', `${this.obj.redemption ? this.obj.redemption : 'Нет'}`, 'redemption');
   }
   getObj(data){
@@ -956,7 +956,7 @@ class Handler{
     const allInputs = module.querySelectorAll(`INPUT[type='text']`);
 
     for (let select of allSelect){
-      if (select.innerHTML === 'Выберете'){
+      if (select.innerHTML === 'Выберите'){
         select.classList.add('isValid');
         validValue[select.id] = false;
       } else {
@@ -1056,9 +1056,9 @@ class Handler{
               </div>`
   }
   setExtendedSelect(){
-    selectStyle('.typeRecord', `${this.currentRow.typeRecord ? this.currentRow.typeRecord : 'Выберете'}`, 'typeRecord');
-    selectStyle('.accomplice', `${this.currentRow.accomplice ? this.currentRow.accomplice.FULL_NAME : 'Выберете'}`, 'accomplice');
-    selectStyle('.contractId', `${this.currentRow.contractId ? this.currentRow.contractId.UID : 'Выберете'}`, 'contractId');
+    selectStyle('.typeRecord', `${this.currentRow.typeRecord ? this.currentRow.typeRecord : 'Выберите'}`, 'typeRecord');
+    selectStyle('.accomplice', `${this.currentRow.accomplice ? this.currentRow.accomplice.FULL_NAME : 'Выберите'}`, 'accomplice');
+    selectStyle('.contractId', `${this.currentRow.contractId ? this.currentRow.contractId.UID : 'Выберите'}`, 'contractId');
   }
 
   editFileLayout(){
@@ -1161,7 +1161,7 @@ class Handler{
     return date;
   }
   negotiationSelect(){
-    return `<span class="title__header-text">Выберете дату согласования</span>
+    return `<span class="title__header-text">Выберите дату согласования</span>
             <div class="negotiation"> 
               ${this.negotiationGetDate()}
             </div>`

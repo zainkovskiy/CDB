@@ -436,7 +436,7 @@ class AddressHandler {
             author : currentUserId,
           }
           this.getDealOrHistory(req).then(data => {
-            this.openModule('Выберете сделку', this.dealLayout(data));
+            this.openModule('Выберите сделку', this.dealLayout(data));
             this.checkCurrentElem();
           });
         }
@@ -1312,7 +1312,7 @@ class AddressHandler {
     return `<div class="error-information"> 
               <span class="error-information__text">Заполните обязательные поля формы обратной связи, после чего нажмите кнопку "Отправить"</span>
               <div class="error-information__wrap"> 
-                <span class="error-information__title">Выберете истоник ошибки</span> 
+                <span class="error-information__title">Выберите истоник ошибки</span> 
                 <div class="error-information__select"> 
                   <div class="error-information__input input-source" data-input="error" data-error="source">Каталог ОН</div>
                   <div class="error-information__block visible block-source"> 
@@ -1323,7 +1323,7 @@ class AddressHandler {
                 </div>
               </div>            
               <div class="error-information__wrap"> 
-                <span class="error-information__title">Выберете причину обращения</span>
+                <span class="error-information__title">Выберите причину обращения</span>
                 <div class="error-information__select"> 
                   <div class="error-information__input input-reason" data-input="error" data-error="reason">Некорректный результат поиска</div>
                   <div class="error-information__block visible block-reason"> 

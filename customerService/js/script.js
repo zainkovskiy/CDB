@@ -315,7 +315,7 @@ class App{
             </div>`);
       document.querySelector('.control').insertAdjacentHTML('beforeend',
         `<div class="control__notification-block">
-              <span class="control__notification">Заполните объект и выберете берег на котором расположен объект</span>
+              <span class="control__notification">Заполните объект и Выберите берег на котором расположен объект</span>
             </div>`);
     }
   }
@@ -715,7 +715,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqGalleryAvailability" class="input__text input__select" type="text" readonly value="${this.item.reqGalleryAvailability ? this.item.reqGalleryAvailability : ''}">
                     <div data-check="elem" class="about__select reqGalleryAvailability inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">1 балкон</span>
                       <span data-check="elem" data-select="option" class="about__option">1 лоджия</span>
                       <span data-check="elem" data-select="option" class="about__option">1 балкон 1 лоджия</span>
@@ -739,7 +739,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqTypeofFlat" class="input__text input__select" type="text" readonly value="${this.item.reqTypeofFlat ? this.item.reqTypeofFlat : ''}">
                     <div data-check="elem" class="about__select reqTypeofFlat inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Прочее</span>
                       <span data-check="elem" data-select="option" class="about__option">Хрущёвка</span>
                       <span data-check="elem" data-select="option" class="about__option">Апартаменты</span>
@@ -764,7 +764,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqTypeofLayout" class="input__text input__select" type="text" readonly value="${this.item.reqTypeofLayout ? this.item.reqTypeofLayout : ''}">
                     <div data-check="elem" class="about__select reqTypeofLayout inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Смежные</span>
                       <span data-check="elem" data-select="option" class="about__option">Изолированные</span>
                       <span data-check="elem" data-select="option" class="about__option">Смежно-изолированные</span>
@@ -777,7 +777,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqBathroomType" class="input__text input__select" type="text" readonly value="${this.item.reqBathroomType ? this.item.reqBathroomType : ''}">
                     <div data-check="elem" class="about__select reqBathroomType inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Неизвестно</span>
                       <span data-check="elem" data-select="option" class="about__option">2 ванны</span>
                       <span data-check="elem" data-select="option" class="about__option">Совместный</span>
@@ -794,7 +794,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqRepairStatus" class="input__text input__select" type="text" readonly value="${this.item.reqRepairStatus ? this.item.reqRepairStatus : ''}">
                     <div data-check="elem" class="about__select reqRepairStatus inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Под ключ</span>
                       <span data-check="elem" data-select="option" class="about__option">Черновая отделка</span>
                       <span data-check="elem" data-select="option" class="about__option">Чистовая отделка</span>
@@ -826,7 +826,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqMaterial" class="input__text input__select" type="text" readonly value="${this.item.reqMaterial ? this.item.reqMaterial : ''}">
                     <div data-check="elem" class="about__select about__select_last reqMaterial inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Кирпич</span>
                       <span data-check="elem" data-select="option" class="about__option">Панель</span>
                       <span data-check="elem" data-select="option" class="about__option">Шлакоблоки</span>
@@ -963,7 +963,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqGalleryAvailability" class="input__text input__select" type="text" readonly value="${this.item.reqGalleryAvailability ? this.item.reqGalleryAvailability : ''}">
                     <div data-check="elem" class="about__select reqGalleryAvailability inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">1 балкон</span>
                       <span data-check="elem" data-select="option" class="about__option">1 лоджия</span>
                       <span data-check="elem" data-select="option" class="about__option">1 балкон 1 лоджия</span>
@@ -987,7 +987,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqTypeofFlat" class="input__text input__select" type="text" readonly value="${this.item.reqTypeofFlat ? this.item.reqTypeofFlat : ''}">
                     <div data-check="elem" class="about__select reqTypeofFlat inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Прочее</span>
                       <span data-check="elem" data-select="option" class="about__option">Хрущёвка</span>
                       <span data-check="elem" data-select="option" class="about__option">Апартаменты</span>
@@ -1012,7 +1012,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqTypeofLayout" class="input__text input__select" type="text" readonly value="${this.item.reqTypeofLayout ? this.item.reqTypeofLayout : ''}">
                     <div data-check="elem" class="about__select reqTypeofLayout inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Смежные</span>
                       <span data-check="elem" data-select="option" class="about__option">Изолированные</span>
                       <span data-check="elem" data-select="option" class="about__option">Смежно-изолированные</span>
@@ -1025,7 +1025,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqBathroomType" class="input__text input__select" type="text" readonly value="${this.item.reqBathroomType ? this.item.reqBathroomType : ''}">
                     <div data-check="elem" class="about__select reqBathroomType inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Неизвестно</span>
                       <span data-check="elem" data-select="option" class="about__option">2 ванны</span>
                       <span data-check="elem" data-select="option" class="about__option">Совместный</span>
@@ -1056,7 +1056,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqMaterial" class="input__text input__select" type="text" readonly value="${this.item.reqMaterial ? this.item.reqMaterial : ''}">
                     <div data-check="elem" class="about__select about__select_last reqMaterial inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Кирпич</span>
                       <span data-check="elem" data-select="option" class="about__option">Панель</span>
                       <span data-check="elem" data-select="option" class="about__option">Шлакоблоки</span>
@@ -1075,7 +1075,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqHouseType" class="input__text input__select" type="text" readonly value="${this.item.reqHouseType ? this.item.reqHouseType : ''}">
                     <div data-check="elem" class="about__select about__select_last reqHouseType  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Дача</span>
                       <span data-check="elem" data-select="option" class="about__option">Дом</span>
                       <span data-check="elem" data-select="option" class="about__option">Квартира на земле</span>
@@ -1207,7 +1207,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqGalleryAvailability" class="input__text input__select" type="text" readonly value="${this.item.reqGalleryAvailability ? this.item.reqGalleryAvailability : ''}">
                     <div data-check="elem" class="about__select reqGalleryAvailability inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">1 балкон</span>
                       <span data-check="elem" data-select="option" class="about__option">1 лоджия</span>
                       <span data-check="elem" data-select="option" class="about__option">1 балкон 1 лоджия</span>
@@ -1231,7 +1231,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqBathroomType" class="input__text input__select" type="text" readonly value="${this.item.reqBathroomType ? this.item.reqBathroomType : ''}">
                     <div data-check="elem" class="about__select reqBathroomType inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Неизвестно</span>
                       <span data-check="elem" data-select="option" class="about__option">2 ванны</span>
                       <span data-check="elem" data-select="option" class="about__option">Совместный</span>
@@ -1248,7 +1248,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqHouseType " class="input__text input__select" type="text" readonly value="${this.item.reqHouseType ? this.item.reqHouseType : ''}">
                     <div data-check="elem" class="about__select reqHouseType  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Дача</span>
                       <span data-check="elem" data-select="option" class="about__option">Дом</span>
                       <span data-check="elem" data-select="option" class="about__option">Квартира на земле</span>
@@ -1266,7 +1266,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqHouseRoof " class="input__text input__select" type="text" readonly value="${this.item.reqHouseRoof ? this.item.reqHouseRoof : ''}">
                     <div data-check="elem" class="about__select reqHouseRoof  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Железо</span>
                       <span data-check="elem" data-select="option" class="about__option">Шифер</span>
                       <span data-check="elem" data-select="option" class="about__option">Ондулин</span>
@@ -1282,7 +1282,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqHouseHeating " class="input__text input__select" type="text" readonly value="${this.item.reqHouseHeating ? this.item.reqHouseHeating : ''}">
                     <div data-check="elem" class="about__select reqHouseHeating  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Печное</span>
                       <span data-check="elem" data-select="option" class="about__option">Газовый котел</span>
                       <span data-check="elem" data-select="option" class="about__option">Электрический котел</span>
@@ -1298,7 +1298,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqWaterPipes " class="input__text input__select" type="text" readonly readonly value="${this.item.reqWaterPipes ? this.item.reqWaterPipes : ''}">
                     <div data-check="elem" class="about__select reqWaterPipes  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Не указано</span>
                       <span data-check="elem" data-select="option" class="about__option">Отсутствует</span>
                       <span data-check="elem" data-select="option" class="about__option">Зимний</span>
@@ -1311,7 +1311,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqDrainage " class="input__text input__select" type="text" readonly readonly value="${this.item.reqDrainage ? this.item.reqDrainage : ''}">
                     <div data-check="elem" class="about__select about__select_last reqDrainage  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Не указано</span>
                       <span data-check="elem" data-select="option" class="about__option">Отсутствует</span>
                       <span data-check="elem" data-select="option" class="about__option">Канализация</span>
@@ -1423,7 +1423,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqWaterPipes " class="input__text input__select" type="text" readonly value="${this.item.reqWaterPipes ? this.item.reqWaterPipes : ''}">
                     <div data-check="elem" class="about__select reqWaterPipes  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Не указано</span>
                       <span data-check="elem" data-select="option" class="about__option">Отсутствует</span>
                       <span data-check="elem" data-select="option" class="about__option">Зимний</span>
@@ -1436,7 +1436,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqWaterPipes" class="input__text input__select" type="text" readonly value="${this.item.reqWaterPipes ? this.item.reqWaterPipes : ''}">
                     <div data-check="elem" class="about__select reqWaterPipes  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Не указано</span>
                       <span data-check="elem" data-select="option" class="about__option">Отсутствует</span>
                       <span data-check="elem" data-select="option" class="about__option">Канализация</span>
@@ -1450,7 +1450,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqGroundCategory" class="input__text input__select" type="text" readonly value="${this.item.reqGroundCategory ? this.item.reqGroundCategory : ''}">
                     <div data-check="elem" class="about__select about__select_last reqGroundCategory  inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Индивидуального строительства</span>
                       <span data-check="elem" data-select="option" class="about__option">Для садоводчества</span>
                       <span data-check="elem" data-select="option" class="about__option">Другое</span>
@@ -1564,7 +1564,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqMaterial" class="input__text input__select" type="text" readonly value="${this.item.reqMaterial ? this.item.reqMaterial : ''}">
                     <div data-check="elem" class="about__select reqMaterial inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Кирпич</span>
                       <span data-check="elem" data-select="option" class="about__option">Панель</span>
                       <span data-check="elem" data-select="option" class="about__option">Шлакоблоки</span>
@@ -1584,7 +1584,7 @@ class ObjectLayout {
                   <div data-check="elem" class="about__container"> 
                     <input data-check="elem" name="reqGarageType" class="input__text input__select" type="text" readonly value="${this.item.reqGarageType ? this.item.reqGarageType : ''}">
                     <div data-check="elem" class="about__select reqGarageType inVisible"> 
-                      <span data-check="elem" data-select="option" class="about__option">Выберете</span>
+                      <span data-check="elem" data-select="option" class="about__option">Выберите</span>
                       <span data-check="elem" data-select="option" class="about__option">Гараж</span>
                       <span data-check="elem" data-select="option" class="about__option">Машиноместо</span>
                       <span data-check="elem" data-select="option" class="about__option">Бокс</span>
