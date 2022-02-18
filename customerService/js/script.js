@@ -167,6 +167,16 @@ class App{
       } else if (dataset.call === "hangup"){
         e.classList.add('disabled');
         this.finishCall(e);
+      } else if (dataset.call === 'callback'){
+          event.target.classList.add('disabled');
+          api.requestToServer('getInfo', {
+            action: 'reCall',
+            item: this.info.UID,
+          }).then(() => {
+            setTimeout(() => {
+              event.target.classList.remove('disabled');
+            },5000)
+          })
       } else if (dataset.send === 'sms'){
         this.sendSms();
       } else if (dataset.answer){
@@ -1723,7 +1733,8 @@ class ClientLayout{
     const agreeButtons = this.agreeButtons();
     return `<div class="client__title-wrap"> 
                 <span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
-                <span data-call="hangup" class="client__phone_cancel"></span>
+                <span data-call="callback" class="can-btn">перезвонить</span>
+<!--                <span data-call="hangup" class="client__phone_cancel"></span>-->
             </div>
               <div class="about client__info">                
               <div class="about__item about__item_background">

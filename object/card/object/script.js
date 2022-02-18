@@ -413,7 +413,7 @@ class Render {
                   <p class="title info__text miscellaneous-information__text miscellaneous-information__realtor">Риелтор<span class="text">
                   <a class="contacts__link text" onclick="event.preventDefault()" class="blog-p-user-name" id="bp_R1gY0o5G" href="/company/personal/user/${this.obj.ownerId}" bx-tooltip-user-id="${this.obj.ownerId}">
                             ${this.obj.owner ? this.obj.owner : ''}
-                  </a> <i ${source !== '1c' && !this.obj.isGod && 'visible'} data-choose="responsible" class="miscellaneous-information__btn-choose"></i></span></p>
+                  </a> <i data-choose="responsible" class="miscellaneous-information__btn-choose ${this.obj.isGod && source === '1c' ? '' : 'visible'}"></i></span></p>
                 </div>
                 <div class="miscellaneous-information__bottom"> 
                   <div class="miscellaneous-information_wrap"> 
