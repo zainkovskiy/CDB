@@ -2,6 +2,7 @@
 header('Content-Type: text/html; charset=UTF-8');
 mb_internal_encoding("UTF-8");
 
+require_once($_SERVER["DOCUMENT_ROOT"]."/dealincom/class/crest.php");
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
 $rawDATA =  base64_decode($_REQUEST['params']);
@@ -12,6 +13,24 @@ $arrClients = json_encode($arrApplicationParams['dealClients'], true);
               $arrClients = '{}';
     }
 // ИНИЦИАЛИЗАЦИЯ ОКРУЖЕНИЯ
+$DealRes = CRest::call('user.get', array('ID' => CUser::GetID()));
+
+$depArr = $DealRes['result'][0]['UF_DEPARTMENT'];
+unset($DealRes);
+
+$arrResult = [];
+
+foreach ($depArr as $department){
+  //EMAIL
+      $curDepName = CRest::call('department.get', array('ID' => $department, 'ACTIVE' => true));
+
+      $DealRes = CRest::call('user.search', array('filter' => ['UF_DEPARTMENT_NAME' => $curDepName['result'][0]['NAME']]));
+
+      foreach($DealRes['result'] as $usersC)
+      {
+          $arrResult[] = "'".mb_strtolower(explode('@',$usersC['EMAIL'])[0])."'";
+      }
+}
 
 CJSCore::Init();
 
@@ -45,6 +64,8 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       let activeDeal = '<? echo($arrApplicationParams['activeDeal']);?>';
       // JSON c Клиентами сделки
       let dealClients = '<? echo($arrClients);?>';
+      //список членов групп
+      let arrUserGroup = "<? echo(implode(',' , $arrResult));?>";
     </SCRIPT>
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -66,6 +87,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                 <button data-clear="filter" class="ui-btn ui-btn-primary-dark bx-btn__craft">Сбросить фильтры</button>
                 <button data-filter="sale" class="ui-btn ui-btn-primary-dark bx-btn__craft">продавцы</button>
                 <button data-only="mine" class="ui-btn ui-btn-primary-dark bx-btn__craft">только мои</button>
+                <button data-only="office" class="ui-btn ui-btn-primary-dark bx-btn__craft">Мой офис</button>
             </div>
             <span class='alert' title="сообщить об ошибке" data-alert="open"></span>
         </div>

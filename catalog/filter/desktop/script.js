@@ -77,6 +77,7 @@ function selectStyle(select, firstWord){
 }
 const novosibirsk = 'Новосибирская';
 const kemerovo = 'Кемеровская область - Кузбасс';
+console.log(arrUserGroup)
 
 $("#address").suggestions({
   token: "408e6651c0b9bfc8e2f487383d45353973f3285c",
@@ -512,6 +513,28 @@ class AddressHandler {
           document.querySelector('#map').innerHTML = '';
           this.initMap(this.cards);
         });
+      } else if (event.target.dataset.only === 'office'){
+        this.setAllValue();
+        this.setLoader();
+        this.objectFilter.onlyOffice = arrUserGroup;
+        this.sendToServer().then(data => {
+          this.objectFilter.onlyOffice = '';
+          this.setCountCard(data);
+          new Cards(data).init();
+          this.handlerLinkToStop();
+          document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
+          if (data.length > 100){
+            this.startPaginat = 0;
+            this.currentPaginatActive = 0;
+            this.setPagination();
+            this.renderPagination();
+          } else {
+            this.clearPaginationContainer();
+          }
+          this.removeLoader();
+          document.querySelector('#map').innerHTML = '';
+          this.initMap(this.cards);
+        }).catch(() => this.removeLoader())
       }
     });
 
