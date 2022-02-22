@@ -45,7 +45,6 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
       let activeDeal = '<? echo($arrApplicationParams['activeDeal']);?>';
       // JSON c Клиентами сделки
       let dealClients = '<? echo($arrClients);?>';
-ccc
     </SCRIPT>
     <script>
         BX24.ready(async () => {

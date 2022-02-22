@@ -692,7 +692,7 @@ class Handler {
   setNewResponsible(loginResponsible){
     app.getJson(app.objAPI, {
       action: 'newResponsible',
-      reqNumber: 'UID',
+      reqNumber: UID,
       responsible: loginResponsible,
       author: login,
     }).then(data => {
@@ -1101,7 +1101,7 @@ class Handler {
         event.target.classList.add('btn-loading');
         app.getJson(app.objAPI, {
           action: 'setComment',
-          reqComment: comment.value.replace(/\n/g, ``),
+          reqComment: comment.value.replace(/\n/g, ` *EOL `),
           id: UID,
         }).then(data => {
           console.log(data)
@@ -1346,6 +1346,7 @@ class ChartCallView{
 const app = new App();
 app.getJson(app.objAPI, {
   user: login,
+  userId: loginID,
   source: source,
   id: UID,
 }).then(data => {

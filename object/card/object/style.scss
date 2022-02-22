@@ -489,8 +489,7 @@ INPUT[type=text]{
   }
   &__close{
     cursor: pointer;
-    opacity: .5;
-    transition: opacity .3s;
+    transition: transform .3s;
     height: 40px;
     width: 40px;
     background-image: url('../img/button-close.svg');
@@ -501,7 +500,7 @@ INPUT[type=text]{
     right: 20px;
     background-size: contain;
     &:hover{
-      opacity: 1;
+      transform: scale(1.2);
     }
   }
   &__img-wrap{

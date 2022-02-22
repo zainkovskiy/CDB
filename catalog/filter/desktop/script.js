@@ -77,7 +77,6 @@ function selectStyle(select, firstWord){
 }
 const novosibirsk = 'Новосибирская';
 const kemerovo = 'Кемеровская область - Кузбасс';
-console.log(arrUserGroup)
 
 $("#address").suggestions({
   token: "408e6651c0b9bfc8e2f487383d45353973f3285c",

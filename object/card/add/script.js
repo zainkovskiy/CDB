@@ -355,7 +355,7 @@ class Handler{
           }, 500)
         }
         this.setChange(allInput, allSelect, allRadio);
-        add.obj[textArea.name] = textArea.value.replace(/\n/g, ``);
+        add.obj[textArea.name] = textArea.value.replace(/\n/g, ` *EOL `);
         if (action === 'old'){
           document.querySelector('.save-change__text').innerHTML = 'Объект подлежит повторной модерации';
           document.querySelector('.save-change').classList.add('save-change_active');
@@ -2223,7 +2223,7 @@ class Ground{
                 <div class="reqStreet__items search__field isVisible"></div>
               </div>              
               <div class="form__item ${add.obj.Rights === 'Full' ? '' : `${add.obj.validatedAd === '1' || add.obj.validatedEx === '1'? 'select_disabled' : ''}`}">
-                <span class="form__subtitle">Номер дома</span> 
+                <span class="form__subtitle">Номер участка</span> 
                 <input name="reqHouseNumber" class="form__input" type="text" value="${add.obj.reqHouseNumber ? add.obj.reqHouseNumber : ''}" autocomplete="new-password">
               </div>              
               <div class="form__item">
