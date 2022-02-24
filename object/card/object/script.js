@@ -538,7 +538,7 @@ class Render {
               <button class="btn_edit ui-btn ui-btn-primary
                 ${this.obj.privileges.user !== 'owner' || this.obj.docType === 'Без договора' ? 'isVisible' : this.obj.privileges.user}"
                 data-name="photoOrder">Фотосъемка</button>
-              <button data-name="alert" class="btn_edit ui-btn ui-btn-danger-light">${this.obj.privileges.card === 'ADB' ? 'статус' : 'Вниманию модератора'}</button>
+              <button data-name="alert" class="btn_edit ui-btn ui-btn-danger-light">${this.obj.privileges.card === 'ADB' ? 'статус' : 'сообщить о проблеме'}</button>
             </div>
             <div class="story wrapper mobile_visible ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB' ? this.obj.privileges.card
       : 'isVisible'}">${historyLayout}</div>

@@ -6,6 +6,7 @@ class API{
       getClient: 'https://crm.centralnoe.ru/dealincom/factory/Clients.php',
       getDeal: 'https://crm.centralnoe.ru/dealincom/factory/Deals.php',
       getRealtor: 'https://crm.centralnoe.ru/dealincom/factory/Users.php',
+      getUsers: 'https://crm.centralnoe.ru/dealincom/connector/findUsers.php'
     };
   }
   async requestToServer(api, requestNamed){
@@ -87,6 +88,10 @@ class App{
       operatorId: loginID,
       action: 'getItem',
     }).then(info => {
+      if (info.error){
+        alert('список обзвона закончился');
+        return
+      }
       this.info = info;
       this.isNotItem = false;
       console.log(info)
@@ -144,6 +149,33 @@ class App{
     }, 5000)
   }
 
+  validField(){
+    const validLibrary = {
+      totalArea: true,
+      livingArea: true,
+    }
+
+    const totalArea = document.querySelector(`INPUT[name='reqFlatTotalArea']`);
+    const livingArea = document.querySelector(`INPUT[name='reqFlatLivingArea']`);
+
+    if (totalArea && totalArea.value.length === 0 || totalArea && +totalArea.value === 0){
+      totalArea.classList.add('inValid');
+      validLibrary.totalArea = false;
+    } else {
+      totalArea.classList.remove('inValid');
+      validLibrary.totalArea = true;
+    }
+    if (livingArea && livingArea.value.length === 0 || livingArea && +livingArea.value === 0){
+      livingArea.classList.add('inValid');
+      validLibrary.livingArea = false;
+    } else {
+      livingArea.classList.remove('inValid');
+      validLibrary.livingArea = true;
+    }
+
+    return validLibrary.livingArea && validLibrary.totalArea;
+  }
+
   handler(){
     this.containerMain.addEventListener('click', event => {
       const e = event.target;
@@ -182,32 +214,34 @@ class App{
       } else if (dataset.answer){
         this.switchAnswer(dataset.answer, dataset.type);
       } else if (dataset.direction){
-        this.setLoader();
-        api.requestToServer('getInfo', {
-          action: 'finishItem',
-          item: this.currentItemUID,
-          result: 1,
-          data: this.object,
-          direction: dataset.direction,
-          type: dataset.type,
-          comment: document.querySelector('.client__area').value,
-        }).then(() => {
-          this.removeLoader();
-          if (this.checkWork.disabled){
-            this.finishSession();
-            this.checkWork.disabled = false;
-          } else {
-            this.clearDom();
-            this.clearThis();
-            this.counterTime();
-          }
-        });
+          this.setLoader();
+          api.requestToServer('getInfo', {
+            action: 'finishItem',
+            item: this.currentItemUID,
+            result: 1,
+            data: this.object,
+            direction: dataset.direction,
+            type: dataset.type,
+            comment: document.querySelector('.client__area').value,
+          }).then(() => {
+            this.removeLoader();
+            if (this.checkWork.disabled){
+              this.finishSession();
+              this.checkWork.disabled = false;
+            } else {
+              this.clearDom();
+              this.clearThis();
+              this.counterTime();
+            }
+          });
       } else if (dataset.next === 'item'){
         if (this.checkWork.checked && this.isNotItem){
           document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
           document.querySelector('.inJob__next').classList.add('disabled');
           this.getItem();
         }
+      } else if (dataset.choice === 'responsible') {
+        this.openModule('responsible');
       }
     })
     document.body.addEventListener('click', event => {
@@ -216,14 +250,66 @@ class App{
       }
     })
     document.body.addEventListener('keyup', event => {
+      const module = document.querySelector('.module');
       if(event.key === "Escape"){
-        const module = document.querySelector('.module');
         if (module){
           this.closeModule(module);
         }
       }
     })
   }
+  openResponsibleList(){
+    return `<div class="responsible">
+              <div class="responsible__header">Поиск</div>
+              <div class="responsible__search">
+                <label class="responsible__label"> 
+                  Фамилия
+                  <input name="name" class="responsible__input" type="search">
+                </label>
+                <label class="responsible__label">
+                  Филиал
+                  <input name="department" class="responsible__input" type="search">
+                </label>
+                <button data-btn="search" class="responsible__search-btn"></button>
+              </div>
+              <div class="responsible__title">
+                <span>Ответственный</span>
+                <span>Филиал</span>
+              </div>
+              <div class="responsible__list"></div>
+              <button data-name="responsible" data-type="application" class="can-btn responsible__btn">выбрать</button>
+            </div>`
+  }
+  renderResponsible(module){
+    const inputs = module.querySelectorAll('INPUT[type="search"]');
+    const response = {};
+    let checkInputValue = '';
+    for (let input of inputs){
+      response[input.name] = input.value;
+      checkInputValue += input.value;
+    }
+    if (checkInputValue.length === 0) {
+      return
+    }
+    api.requestToServer('getUsers', response).then(data => {
+      module.querySelector('.responsible__list').innerHTML = '';
+      console.log(data)
+      for (let item of data){
+        module.querySelector('.responsible__list').insertAdjacentHTML('beforeend',
+          `<div class="responsible__row">
+                <input class="responsible__radio" id="${item.LOGIN}" type="radio" name="responsible"/>
+                <label for="${item.LOGIN}" class="responsible__item">
+                     ${item.LAST_NAME} ${item.NAME}
+                       <span>
+                         ${item.WORK_DEPARTMENT}
+                      </span>
+                 </label>
+                 </div>`
+        )
+      }
+    })
+  }
+
   handlerInput(){
     const allInputs = document.querySelectorAll('INPUT:not(.inJob__checkbox)');
     for (let input of allInputs){
@@ -281,7 +367,9 @@ class App{
   switchAnswer(answer, type){
     switch (answer){
       case 'agree':
-        this.showDirectionButton(type);
+        if (this.validField()){
+          this.showDirectionButton(type);
+        }
         break;
       case 'fail':
         this.openModule(answer);
@@ -290,7 +378,9 @@ class App{
         this.openModule(answer);
         break;
       case 'confirms':
-        this.sendConfirms('confirms');
+        if (this.validField()){
+          this.sendConfirms('confirms');
+        }
         break;
     }
   }
@@ -320,12 +410,13 @@ class App{
     if (!direction) {
       document.querySelector('.object').insertAdjacentHTML('beforeend',
         `<div class="object__direction">
-              <button data-direction="left" data-type="${type}" class="can-btn can-btn_width50">левый</button>
-              <button data-direction="right" data-type="${type}" class="can-btn can-btn_width50">правый</button>
+              <button data-direction="left" data-type="${type}" class="can-btn can-btn_width33">левый</button>
+              <button data-choice="responsible" data-type="${type}" class="can-btn can-btn_width33">в ручную</button>
+              <button data-direction="right" data-type="${type}" class="can-btn can-btn_width33">правый</button>
             </div>`);
       document.querySelector('.control').insertAdjacentHTML('beforeend',
         `<div class="control__notification-block">
-              <span class="control__notification">Заполните объект и Выберите берег на котором расположен объект</span>
+              <span class="control__notification">Заполните объект и выберите берег на котором расположен объект</span>
             </div>`);
     }
   }
@@ -339,7 +430,7 @@ class App{
                     <span data-option="pick" class="about__option">Выбрать</span>
                     <span data-option="pick" class="about__option">Не доступен</span>
                     <span data-option="pick" class="about__option">Сбросил трубку</span>
-                    <span data-option="pick" class="about__option">Другое</span>
+                    <span data-option="pick" class="about__option">Не взял трубку</span>
                   </div>
                 </div>
             </div>
@@ -358,8 +449,8 @@ class App{
                     <span data-option="pick" class="about__option">Выбрать</span>
                     <span data-option="pick" class="about__option">Продано</span>
                     <span data-option="pick" class="about__option">Работает с другим агенством</span>
+                    <span data-option="pick" class="about__option">Это агенство</span>
                     <span data-option="pick" class="about__option">Не хочет работать с ЦАН</span>
-                    <span data-option="pick" class="about__option">Другое</span>
                   </div>
                 </div>
             </div>
@@ -374,6 +465,7 @@ class App{
       task: this.getTaskLayout(),
       denial: this.getDenialLayout(),
       fail: this.getFailLayout(),
+      responsible: this.openResponsibleList(),
     }
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
     const currentY = window.pageYOffset;
@@ -419,8 +511,39 @@ class App{
             }
           });
         }
+      } else if (event.target.dataset.btn === 'search'){
+        this.renderResponsible(module);
+      } else if (event.target.dataset.name === 'responsible'){
+        const login = module.querySelector(`INPUT[type=radio]:checked`).id;
+        if (login){
+          this.closeModule();
+          this.setLoader();
+          api.requestToServer('getInfo', {
+            action: 'finishItem',
+            item: this.currentItemUID,
+            result: 1,
+            data: this.object,
+            login: login,
+            comment: document.querySelector('.client__area').value,
+          }).then(() => {
+            this.removeLoader();
+            if (this.checkWork.disabled){
+              this.finishSession();
+              this.checkWork.disabled = false;
+            } else {
+              this.clearDom();
+              this.clearThis();
+              this.counterTime();
+            }
+          });
+        }
       }
     })
+    module.onkeydown = (event) => {
+      if (event.key === 'Enter' && module.querySelector('.responsible__list')){
+        this.renderResponsible(module);
+      }
+    }
   }
 
   setReasonObject(reasonSource, reasonText){
