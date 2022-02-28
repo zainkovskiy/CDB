@@ -162,7 +162,7 @@ ul {
   background-repeat: no-repeat;
   cursor: pointer;
   transition: opacity .3s,
-              transform .3s;
+  transform .3s;
   &:hover{
     opacity: .6;
   }
@@ -952,6 +952,9 @@ ul {
     }
     &-all{
       background-image: url("img/all.png");
+    }
+    &-mlsn{
+      background-image: url("img/mlsn.jpg");
     }
   }
 }

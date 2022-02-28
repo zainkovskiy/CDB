@@ -986,6 +986,9 @@ ul {
 .source__label-all {
   background-image: url("img/all.png");
 }
+.source__label-mlsn {
+  background-image: url("img/mlsn.jpg");
+}
 
 .region {
   display: flex;

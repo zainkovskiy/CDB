@@ -491,6 +491,7 @@ class AddressHandler {
       } else if (event.target.dataset.only === 'mine'){
         document.querySelector(`INPUT[name="1c"]`).checked = true;
         document.querySelector(`INPUT[name="pars"]`).checked = false;
+        document.querySelector(`INPUT[name="mlsn"]`).checked = false;
         this.setAllValue();
         this.setLoader();
         this.objectFilter.onlyMy = currentUserLogin;

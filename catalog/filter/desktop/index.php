@@ -148,6 +148,10 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                         <input class="source__input" name="pars" id="all" type="checkbox">
                         <label class="source__label source__label-all" for="all"></label>
                       </div>
+                      <div class="source__wrap" title="МЛС Новостройки">
+                        <input class="source__input" name="mlsn" id="mlsn" type="checkbox">
+                        <label class="source__label source__label-mlsn" for="mlsn"></label>
+                      </div>
                 <button title="Поиск" class="ui-btn btn-search bx-btn__craft" data-name="search">найти</button>
             </div>
         </div>
