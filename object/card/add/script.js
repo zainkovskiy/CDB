@@ -899,6 +899,17 @@ class Handler{
         }
       }
     }
+
+    const developer = document.querySelector(`INPUT[name='reqHouseDeveloper']`);
+    const typeHouse = document.querySelector(`INPUT[value='Переуступка ДДУ']:checked`);
+    if (developer.value.length === 0 && typeHouse){
+      library[developer.name] = false;
+      developer.classList.add('isValid');
+    } else {
+      library[developer.name] = true;
+      developer.classList.remove('isValid');
+    }
+
     const reqCity = document.querySelector(`INPUT[name='reqCity']`);
     const reqArea = document.querySelector(`INPUT[name='reqArea']`);
     if (reqCity.value === 'Новосибирск' || reqCity.value === 'Кемерово'){
