@@ -1373,7 +1373,7 @@ class AddressHandler {
   }
   searchToClients(){
     return `<div class="client-module"> 
-              <span class="client-module__subtitle">Введите ID клиета (6 цифр)</span>
+              <span class="client-module__subtitle">Введите номер для клиета (6 цифр)</span>
               <input class="start__input" type="number" name="clientIdInner"> 
             </div>           
             <div class="metro__footer module__footer"> 
