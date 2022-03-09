@@ -47,7 +47,7 @@ class Layout{
                 <span class="header__logo"></span>       
             </header>
             <section class="main">
-                <a href="leads/index.html" data-count="5" class="main__btn">Лиды</a>
+                <a href="leads/index.php" data-count="5" class="main__btn">Лиды</a>
                 <a href="deals/index.html" data-count="15" class="main__btn">Сделки</a>
                 <button data-count="2" class="main__btn">Контакты</button>
                 <button data-count="22" class="main__btn">Звонки</button>

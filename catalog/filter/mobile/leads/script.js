@@ -1,4 +1,3 @@
-let loginId = 2921;
 class Leads {
   constructor() {
     this.leads = [];
@@ -85,13 +84,13 @@ class Handler {
       action: 'setWin',
       category: select.innerHTML,
       UID: id,
-      userId: loginId
+      userId: loginID
     }
     inputs.forEach(input => {
       qualify[input.name] = input.value;
     })
     getData(qualify).then(() => {
-      location.href = 'https://crm.centralnoe.ru/CDB(dev)/catalog/filter/mobile/leads/index.html';
+      location.href = 'index.php';
     })
   }
   setLoader(){
@@ -110,7 +109,10 @@ class Handler {
       if (item.PROVIDER_TYPE_ID === "CALL") {
         timeLineStory += `<p class="card__subtitle">${item.SUBJECT}
                             <span class="card__subtitle-child">${item.DESCRIPTION}</span>
-                            <audio class="card__audio" src="${item.FILES[0].url}" controls></audio>
+                            ${
+                              +item.DESCRIPTION !== 3 &&
+                              `<audio class="card__audio" src="${item.FILES[0].url}" controls></audio>`
+                            }
                            </p>`
       }
     }
@@ -208,7 +210,7 @@ class Handler {
       UID: id,
       type: type,
     }).then(() => {
-      location.href = 'https://crm.centralnoe.ru/CDB(dev)/catalog/filter/mobile/leads/index.html';
+      location.href = 'index.php';
     })
   }
   openQualifyForm(id, phone){
@@ -263,7 +265,7 @@ const leads = new Leads();
 getData({
   action: 'getList',
   type: 'qualify',
-  userId: loginId,
+  userId: loginID,
 }).then(data=>{
   console.log(data)
   leads.leads = data;

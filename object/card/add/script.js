@@ -101,6 +101,7 @@ class Add {
     if (this.obj.reqTypeofRealty === 'Квартира' || this.obj.reqTypeofRealty === 'Переуступка ДДУ' || this.obj.reqTypeofRealty === 'Новостройка (от застройщика)') {
       form.insertAdjacentHTML('beforeend', new Float().render());
       new Search().init();
+      this.initMap(this.obj.lat, this.obj.lng);
       selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
         `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
       selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
@@ -116,6 +117,7 @@ class Add {
     } else if (this.obj.reqTypeofRealty === 'Комната') {
       form.insertAdjacentHTML('beforeend', new Room().render());
       new Search().init();
+      this.initMap(this.obj.lat, this.obj.lng);
       selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
         `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
       selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
@@ -479,6 +481,7 @@ class Handler{
         this.form.innerHTML = '';
         this.form.insertAdjacentHTML('beforeend', new Float().render());
         new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
         selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
           `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
         selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
@@ -497,6 +500,7 @@ class Handler{
         this.form.innerHTML = '';
         this.form.insertAdjacentHTML('beforeend', new Room().render());
         new Search().init();
+        add.initMap(add.obj.lat, add.obj.lng);
         selectStyle('.reqGalleryAvailability', 'reqGalleryAvailability',
           `${add.obj.reqGalleryAvailability ? add.obj.reqGalleryAvailability : 'Выберите'}`);
         selectStyle('.reqTypeofFlat', 'reqTypeofFlat',
@@ -899,15 +903,17 @@ class Handler{
         }
       }
     }
-
     const developer = document.querySelector(`INPUT[name='reqHouseDeveloper']`);
     const typeHouse = document.querySelector(`INPUT[value='Переуступка ДДУ']:checked`);
-    if (developer.value.length === 0 && typeHouse){
-      library[developer.name] = false;
-      developer.classList.add('isValid');
-    } else {
-      library[developer.name] = true;
-      developer.classList.remove('isValid');
+
+    if (developer) {
+      if (developer.value.length === 0 && typeHouse){
+        library[developer.name] = false;
+        developer.classList.add('isValid');
+      } else {
+        library[developer.name] = true;
+        developer.classList.remove('isValid');
+      }
     }
 
     const reqCity = document.querySelector(`INPUT[name='reqCity']`);
@@ -1415,10 +1421,10 @@ class Search{
       container.classList.add('isVisible');
       this.request = true;
     } else {
-        for (let item of data){
-          container.insertAdjacentHTML('beforeend',
-            `<p data-id1c="${item.Id1C ? item.Id1C : ''}" data-value="${item[valueName]}" data-input="${input.name}" class="search__item">${item[valueName]}</p>`)
-        }
+      for (let item of data){
+        container.insertAdjacentHTML('beforeend',
+          `<p data-id1c="${item.Id1C ? item.Id1C : ''}" data-value="${item[valueName]}" data-input="${input.name}" class="search__item">${item[valueName]}</p>`)
+      }
       // if (data.length > 10){
       //   for (let i = 0; i < 10; i++){
       //     container.insertAdjacentHTML('beforeend',
@@ -1530,6 +1536,15 @@ class Float{
                 <span class="form__subtitle">Кадастровый номер объекта</span> 
                 <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
               </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X</span> 
+                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты Y</span> 
+                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
+              </div>
+              <div id="map"></div>
             </div>          
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">Обязательны к заполнению все поля, кроме Застройщика</p></i></span>
@@ -1761,7 +1776,16 @@ class Room{
               <div class="form__item">
                 <span class="form__subtitle">Кадастровый номер объекта</span> 
                 <input name="reqObjectCadastralNumber" class="form__input" type="text" value="${add.obj.reqObjectCadastralNumber ? add.obj.reqObjectCadastralNumber : ''}" autocomplete="new-password">
-              </div>    
+              </div>   
+              <div class="form__item">
+                <span class="form__subtitle">Координаты X</span> 
+                <input name="lat" class="form__input" type="text" value="${add.obj.lat ? add.obj.lat : ''}" autocomplete="new-password">
+              </div>
+              <div class="form__item">
+                <span class="form__subtitle">Координаты Y</span> 
+                <input name="lng" class="form__input" type="text" value="${add.obj.lng ? add.obj.lng : ''}" autocomplete="new-password">
+              </div>
+              <div id="map"></div> 
             </div>                 
             <div class="info"> 
               <span class="form__title">информация об объекте недвижимости<i class="i">*<p class="guid">все поля обязательны для заполнения. При заполнении ОБЯЗАТЕЛЬНО укажите площадь каждой комнаты на продажу, в соответствующих полях. В случае если комната не является объектом, укажите Долю на продажу и общую долю в помещении.</p></i></span>
