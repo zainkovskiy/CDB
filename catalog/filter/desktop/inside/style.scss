@@ -14,3 +14,13 @@ body{
 .setting{
   padding: 0;
 }
+.client-module{
+  padding: 1rem;
+  &__subtitle{
+    font-size: 14px;
+    font-weight: 400;
+    color: #8F9091;
+    margin: 0 0 0.5rem 0;
+    display: block;
+  }
+}

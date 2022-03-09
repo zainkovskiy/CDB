@@ -88,6 +88,8 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                 <button data-filter="sale" class="ui-btn ui-btn-primary-dark bx-btn__craft">продавцы</button>
                 <button data-only="mine" class="ui-btn ui-btn-primary-dark bx-btn__craft">только мои</button>
                 <button data-only="office" class="ui-btn ui-btn-primary-dark bx-btn__craft">Мой офис</button>
+                <button data-client="search" class="ui-btn ui-btn-primary-dark bx-btn__craft">Поиск по клиенту</button>
+                <button data-url="search" class="ui-btn ui-btn-primary-dark bx-btn__craft">Поиск по ссылке</button>
             </div>
             <span class='alert' title="сообщить об ошибке" data-alert="open"></span>
         </div>
@@ -174,7 +176,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
         </div>
         <div class='setting'>
             <div class="sort">
-                <span class="search-form__title">Выберете сортировку</span>
+                <span class="search-form__title search-form__title_sort">Выберете сортировку</span>
                 <input data-elem="check" class="start__input" name='sort' value="Сортировка по умолчанию" readonly>
                 <span class='start__input-arrow start__input-arrow_sort'></span>
                 <div data-elem="check" class="sort__wrap sort__block visible">

@@ -535,6 +535,12 @@ class AddressHandler {
           document.querySelector('#map').innerHTML = '';
           this.initMap(this.cards);
         }).catch(() => this.removeLoader())
+      } else if (event.target.dataset.client === 'search'){
+        this.openModule('Поиск по клиенту', this.searchToClients());
+        this.checkCurrentElem();
+      } else if (event.target.dataset.url === 'search') {
+        this.openModule('Поиск по ссылке', this.searchToURL());
+        this.checkCurrentElem();
       }
     });
 
@@ -1293,6 +1299,62 @@ class AddressHandler {
             this.closeModule(module);
           });
         }
+      } else if (event.target.dataset.client === 'save') {
+        const clientId = module.querySelector('INPUT');
+        if (clientId.value.length === 6){
+          clientId.classList.remove('isValid');
+          this.closeModule(module);
+          this.setAllValue();
+          this.setLoader();
+          this.objectFilter[clientId.name] = clientId.value;
+          this.sendToServer().then(data => {
+            console.log(data)
+            this.setCountCard(data);
+            new Cards(data).init();
+            this.handlerLinkToStop();
+            document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
+            if (data.length > 100){
+              this.startPaginat = 0;
+              this.currentPaginatActive = 0;
+              this.setPagination();
+              this.renderPagination();
+            } else {
+              this.clearPaginationContainer();
+            }
+            this.removeLoader();
+            document.querySelector('#map').innerHTML = '';
+            this.initMap(this.cards);
+          });
+        } else {
+          clientId.classList.add('isValid');
+        }
+      } else if (event.target.dataset.url === 'save') {
+        document.querySelector(`INPUT[name="1c"]`).checked = false;
+        document.querySelector(`INPUT[name="pars"]`).checked = true;
+        document.querySelector(`INPUT[name="mlsn"]`).checked = false;
+        const url = module.querySelector('INPUT');
+        this.closeModule(module);
+        this.setAllValue();
+        this.setLoader();
+        this.objectFilter[url.name] = url.value;
+        this.sendToServer().then(data => {
+          console.log(data)
+          this.setCountCard(data);
+          new Cards(data).init();
+          this.handlerLinkToStop();
+          document.querySelector(`INPUT[name='sort']`).value = `Сортировка по умолчанию`;
+          if (data.length > 100){
+            this.startPaginat = 0;
+            this.currentPaginatActive = 0;
+            this.setPagination();
+            this.renderPagination();
+          } else {
+            this.clearPaginationContainer();
+          }
+          this.removeLoader();
+          document.querySelector('#map').innerHTML = '';
+          this.initMap(this.cards);
+        });
       } else {
         this.checkCurrentElem();
       }
@@ -1304,11 +1366,31 @@ class AddressHandler {
       })
     }
   }
+
   closeModule(module){
     document.querySelector('HTML').removeAttribute("style");
     module.remove();
   }
-
+  searchToClients(){
+    return `<div class="client-module"> 
+              <span class="client-module__subtitle">Введите ID клиета (6 цифр)</span>
+              <input class="start__input" type="number" name="clientIdInner"> 
+            </div>           
+            <div class="metro__footer module__footer"> 
+              <button data-client="save" class="module__save" type="button">Сохранить</button>
+              <button data-name="close" class="module__reset row__input_right"><span>Закрыть</span></button>
+            </div>`
+  }
+  searchToURL(){
+    return `<div class="client-module"> 
+              <span class="client-module__subtitle">Укажите ссылку на объявление</span>
+              <input class="start__input" type="text" name="outURL"> 
+            </div>           
+            <div class="metro__footer module__footer"> 
+              <button data-url="save" class="module__save" type="button">Сохранить</button>
+              <button data-name="close" class="module__reset row__input_right"><span>Закрыть</span></button>
+            </div>`
+  }
   async alertErrorSend(moduleValue){
     const errorInformation = {
       source: moduleValue.source,
@@ -1559,6 +1641,7 @@ class AddressHandler {
     this.objectFilter.reqFlatLivingArea = [];
     this.objectFilter.reqFloor = [];
     this.objectFilter.reqFloorCount = [];
+    this.objectFilter.reqLandArea = [];
     const allInputs = module.querySelectorAll('INPUT');
     for (let input of allInputs) {
       if (input.type === 'radio') {
@@ -1819,6 +1902,17 @@ class AddressHandler {
                       <input name="reqFlatLivingArea" class="row__input row__input_right" type="text" placeholder="до" 
                       autocomplete="off" value="${this.objectFilter.reqFlatLivingArea ? this.objectFilter.reqFlatLivingArea[1] !== 'null' ? this.objectFilter.reqFlatLivingArea[1] : '' : ''}">
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row"> 
+                <div class="row__text row__text_bold">Площадь участка в сотках</div>
+                <div class="row__items"> 
+                  <div class="row__item"> 
+                    <input name="reqLandArea" class="row__input row__input_left" type="text" placeholder="от" 
+                    autocomplete="off" value="${this.objectFilter.reqLandArea ? this.objectFilter.reqLandArea[0] !== 'null' ? this.objectFilter.reqLandArea[0] : '' : ''}">
+                    <input name="reqLandArea" class="row__input row__input_right" type="text" placeholder="до" 
+                    autocomplete="off" value="${this.objectFilter.reqLandArea ? this.objectFilter.reqLandArea[1] !== 'null' ? this.objectFilter.reqLandArea[1] : '' : ''}">
                   </div>
                 </div>
               </div>

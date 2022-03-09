@@ -157,7 +157,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
         </div>
         <div class='setting'>
             <div class="sort">
-                <span class="search-form__title">Выберете сортировку</span>
+                <span class="search-form__title search-form__title_sort">Выберете сортировку</span>
                 <input data-elem="check" class="start__input" name='sort' value="Сортировка по умолчанию" readonly>
                 <span class='start__input-arrow start__input-arrow_sort'></span>
                 <div data-elem="check" class="sort__wrap sort__block visible">
