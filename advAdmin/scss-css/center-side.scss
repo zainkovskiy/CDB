@@ -245,7 +245,7 @@
 
 .info{
   display: grid;
-  grid-template-rows: calc(50% - 5px) calc(50% - 5px);
+  grid-template-rows: calc(30% - 5px) calc(30% - 5px) calc(40% - 5px);
   grid-gap: 10px;
   &__title{
     margin: 0 0 10px 0;

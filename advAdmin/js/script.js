@@ -14,7 +14,6 @@ class Api {
       headers: myHeaders,
       body: raw
     };
-
     let response = await fetch(this.API, requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
@@ -31,34 +30,10 @@ let transformImage = {
 }
 const placeholderPDF = 'https://crm.centralnoe.ru/advertisement/img/default/pdf.png';
 
-const reasonApplication = {
-  value1: 'Недостаточное кол-во подтвержденных объектов (менее 4-х)',
-  value2: 'Неверно указан АДРЕС объекта',
-  value3: 'Отсутствие доп соглашения о продлении',
-  value4: 'Не указан срок действия договора',
-  value5: 'Дубль',
-  value6: 'Для помещения необходимо добавить хотя бы одну фотографию интерьера',
-  value7: 'Нет в списке выкупленных объектов',
-  value8: 'Не предоставленны правопологающие документы',
-  value9: 'Неверно указан срок окончания ДОУ',
-  value10: 'Отсутствие информации в доп. соглашении',
-  value11: 'Неверно указан ТИП объекта',
-  value12: 'Не предоставлены документы, подтверждающие смену фамилии собственника',
-  value13: 'Недостаточное количество документов. Нет правоустанавливающего документа.',
-  value14: 'Нет даты подписания договора',
-  value15: 'Нет первой страницы ДОУ',
-  value16: 'Прикреплен пустой пакет документов',
-  value17: 'Данные в заявке и документов не совпадают',
-  value18: 'Нет подписей сторон',
-  value19: 'Документы невозможно проверить',
-  value20: 'Данный объект занесен в стоп-лист',
-  value21: 'Разные ФИО собственника и клиента',
-  value22: 'Иное',
-}
-
 class App {
   constructor(data) {
     this.items = data.data;
+    this.reasons = data.reasons;
     this.serverTime = data.serverTime;
     this.container = document.querySelector('.main');
     this.currentItem = '';
@@ -214,8 +189,34 @@ class App {
       this.checkSlider();
       this.setStartSlideSelect();
       this.setHeightForField();
+      this.initMap();
     } else {
       centerField.insertAdjacentHTML('beforeend',`<p class="center-side__empty">Нет данных по объекту</p>`);
+    }
+  }
+  initMap(){
+    let cords = [];
+    if (this.currentItem.object.lat && this.currentItem.object.lng) {
+      cords.push(this.currentItem.object.lat);
+      cords.push(this.currentItem.object.lng);
+    } else {
+      cords = ['55.030204', '82.920430'];
+    }
+
+    ymaps.ready(init);
+    function init(){
+      var myMap = new ymaps.Map("map", {
+        center: cords,
+        zoom: 15,
+        controls: [],
+      });
+      var myGeoObject = new ymaps.GeoObject({
+        geometry: {
+          type: "Point", // тип геометрии - точка
+          coordinates: cords, // координаты точки
+        }
+      });
+      myMap.geoObjects.add(myGeoObject);
     }
   }
   setHeightForField(){
@@ -362,15 +363,15 @@ class App {
       document.querySelector('.messenger__send-btn').removeAttribute('data-id');
     }
   }
-  getDocFiles(){
-    let files = '';
-    if (this.docsFiles.length > 0 && this.currentItem.type.reqType === 'adv'){
-      for (let file of this.docsFiles){
-        files += `<img data-open="file" data-fileid="${file.id}" class="photo__img-file" src="${file.type === 'pdf' ? 'img/pdf.png' : file.url}">`
-      }
-    }
-    return files;
-  }
+  // getDocFiles(){
+  //   let files = '';
+  //   if (this.docsFiles.length > 0 && this.currentItem.type.reqType === 'adv'){
+  //     for (let file of this.docsFiles){
+  //       files += `<img data-open="file" data-fileid="${file.id}" class="photo__img-file" src="${file.type === 'pdf' ? 'img/pdf.png' : file.url}">`
+  //     }
+  //   }
+  //   return files;
+  // }
   centerLayout(){
     const photo = this.getPhotoItem(this.currentItem.type.modType === 'first' ? this.docsFiles : this.photoFiles);
     const message = this.getMessages();
@@ -434,6 +435,7 @@ class App {
                     </div>
                     <div class="card__buttons"> 
                       <button data-open="card" data-req="${this.currentItem.ad}" class="button card__btn">открыть</button>
+                      <button data-open="edit" data-req="${this.currentItem.ad}" class="button card__btn">редактировать</button>
                     </div>
                   </div>
                 </div> 
@@ -472,6 +474,7 @@ class App {
                     <span data-action="send" data-message="send" class="messenger__send-btn"></span>
                   </div>
                 </div>
+                <div id="map"></div>
               </div>               
             </div>
             <div class="center-side__bottom"> 
@@ -507,17 +510,23 @@ class App {
                   <div class="${this.currentPhotoType ? '' : 'inVisible'}"> 
                     <button data-action="approved" data-control="application" class="button button_approved">подтвердить</button>
                     <button data-action="denied" data-control="application" class="button button_denied">вернуть</button>
+                    ${this.getStatusForReason(this.currentItem.type) === 'Первичная' ?
+      `<button data-action="egrn" data-control="application" class="button button_approved">заказать ЕГРН</button>` : ''}
                   </div>
                   <div class="${this.currentPhotoType ? 'inVisible' : ''}"> 
                     <button data-action="approved" data-control="all" class="button button_approved">подтвердить все</button>
                     <button data-action="approved" data-control="one" class="button button_approved docs_hide">подтвердить</button>
                     <button data-action="denied" data-control="one" class="button button_denied docs_hide">вернуть</button>
                     <button data-action="denied" data-control="all" class="button button_denied">вернуть все</button>
+                    ${this.getStatusForReason(this.currentItem.type) === 'Первичная' ?
+      `<button  class="button button_approved">заказать ЕГРН</button>` : ''}
                   </div>
                 </div>
-                <div class="bottom__right"> 
-                    ${this.getDocFiles()}
-                </div>
+                <!-- <div class="bottom__right"> 
+                /**
+                 this.getDocFiles()
+                **/
+                </div> -->
               </div>
               <div class="carousel"> 
                 <div class="slider">
@@ -599,6 +608,8 @@ class App {
         this.getRequest(event.target.dataset.request);
       } else if (event.target.dataset.open === 'card'){
         this.openCard(event.target.dataset.req);
+      } else if (event.target.dataset.open === 'edit') {
+        this.openEdit(event.target.dataset.req);
       } else if (event.target.dataset.open === 'person'){
         let readyString = `/company/personal/user/${event.target.dataset.id}/`;
         BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
@@ -689,6 +700,11 @@ class App {
 
   openCard(reqNumber){
     let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=1c&id="+reqNumber;
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+    return true;
+  }
+  openEdit(reqNumber){
+    let readyString = `https://crm.centralnoe.ru/CDB/object/card/add/?login=yes&action=old&id=${reqNumber}&contact=&curdeal=`;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
     return true;
   }
@@ -800,6 +816,10 @@ class App {
         this.sendItem('approved');
       } else if (action === 'denied'){
         this.openSelectReason();
+      } else if (action === 'egrn'){
+        this.deniedReason.push(300);
+        this.setStatusCurrentItem('denied');
+        this.sendItem('denied');
       }
     }
   }
@@ -813,7 +833,29 @@ class App {
     document.querySelector('.reason__input').value = reason.innerHTML;
     this.currentPhoto.rejectionReason = reason.innerHTML === '...' ? '' : reason.innerHTML;
   }
-
+  getReason(type){
+    let reasons = '';
+    for (let reason of this.reasons){
+      if (type === reason.modType){
+        reasons += `<div class="module__reason-item">
+                        <input name="${reason.UID}" type="checkbox" id="${reason.UID}">
+                        <label for="${reason.UID}">${reason.message}</label>
+                      </div>`
+      }
+    }
+    return reasons;
+  }
+  getStatusForReason(type){
+    if (type.reqType === 'sk'){
+      if (type.modType === 'first'){
+        return 'Первичная'
+      } else if (type.modType === 'last'){
+        return 'Основная'
+      }
+    } else if (type.reqType === 'adv'){
+      return 'РД'
+    }
+  }
   openSelectReason(){
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
     const currentY = window.pageYOffset;
@@ -822,96 +864,9 @@ class App {
                       <div class="module__wrap"> 
                         <p class="module__title">Причина</p>
                         <div class="module__reason"> 
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value1">
-                              <label for="value1">Недостаточное кол-во подтвержденных объектов (менее 4-х)</label>
-                            </div>                             
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value2">
-                              <label for="value2">Неверно указан АДРЕС объекта</label>
-                            </div>                             
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value3">
-                              <label for="value3">Отсутствие доп соглашения о продлении</label>
-                            </div>                             
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value4">
-                              <label for="value4">Не указан срок действия договора</label>
-                            </div>                             
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value5">
-                              <label for="value5">Дубль</label>
-                            </div>                             
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value6">
-                              <label for="value6">Для помещения необходимо добавить хотя бы одну фотографию интерьера</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value7">
-                              <label for="value7">Нет в списке выкупленных объектов</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value8">
-                              <label for="value8">Не предоставленны правопологающие документы</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value9">
-                              <label for="value9">Неверно указан срок окончания ДОУ</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value10">
-                              <label for="value10">Отсутствие информации в доп. соглашении</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value11">
-                              <label for="value11">Неверно указан ТИП объекта</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value12">
-                              <label for="value12">Не предоставлены документы, подтверждающие смену фамилии собственника</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value13">
-                              <label for="value13">Недостаточное количество документов. Нет правоустанавливающего документа.</label>
-                            </div>                             
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value14">
-                              <label for="value14">Нет даты подписания договора</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value15">
-                              <label for="value15">Нет первой страницы ДОУ</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value16">
-                              <label for="value16">Прикреплен пустой пакет документов</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value17">
-                              <label for="value17">Данные в заявке и документов не совпадают</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value18">
-                              <label for="value18">Нет подписей сторон</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value19">
-                              <label for="value19">Документы невозможно проверить</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value20">
-                              <label for="value20">Данный объект занесен в стоп-лист</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value21">
-                              <label for="value21">Разные ФИО собственника и клиента</label>
-                            </div>                            
-                            <div class="module__reason-item">
-                              <input type="checkbox" id="value22">
-                              <label for="value22">Иное</label>
-                            </div>                            
+                            ${this.getReason(this.getStatusForReason(this.currentItem.type))}                                                    
                         </div>
-                        <textarea class="module__area messenger__textarea" cols="30" rows="10"></textarea>
+                        <textarea name="message" class="module__area messenger__textarea" cols="30" rows="10"></textarea>
                         <div> 
                           <button data-name="apply" class="button button_approved">применить</button>
                           <button data-name="close" class="button button_denied">отменить</button>
@@ -947,7 +902,7 @@ class App {
                       </div>
                   </div>`
     document.body.insertAdjacentHTML('beforebegin', layout);
-    this.handlerModule();
+    this.handlerModule('photo');
   }
   openPDF(photo){
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
@@ -1065,7 +1020,7 @@ class App {
         render();
       });
   }
-  handlerModule(){
+  handlerModule(sourceLayout){
     const module = document.querySelector('.module');
     module.addEventListener('click', event => {
       if (event.target.dataset.name === 'close'){
@@ -1080,9 +1035,9 @@ class App {
         this.deniedReason = [];
         const selectReason = module.querySelectorAll('INPUT:checked');
         const area = document.querySelector('.module__area ');
-        if (selectReason.length > 0){
+        if (selectReason && selectReason.length > 0){
           for (let reason of selectReason){
-            this.deniedReason.push(reasonApplication[reason.id]);
+            this.deniedReason.push(reason.id);
           }
           area.value.length > 0 ? this.deniedReason.push(area.value) : '';
           this.setStatusCurrentItem('denied');
@@ -1099,7 +1054,7 @@ class App {
         document.querySelector('.module__img').setAttribute('style', `transform: rotate(${transformImage.rotate}deg); height: ${transformImage.height}%; width: ${transformImage.width}%;`);
       }
     })
-    this.handlerMouse(module);
+    sourceLayout === 'photo' && this.handlerMouse(module);
   }
   handlerMouse(module){
     let down = 0;
@@ -1327,7 +1282,6 @@ api.getJson({
 }).then(data => {
   console.log(data)
   if (data.items > 0){
-    console.log(data)
     app = new App(data);
     app.init();
   } else {

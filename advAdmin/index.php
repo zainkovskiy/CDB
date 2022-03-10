@@ -32,6 +32,7 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     <link rel="stylesheet" href="../toolsForProject/chief-slider/chief-slider.css">
     <script src="../toolsForProject/chief-slider/chief-slider.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU" type="text/javascript"></script>
     <link rel="stylesheet" href="scss-css/style.css">
     <title>Moderator</title>
 </head>
