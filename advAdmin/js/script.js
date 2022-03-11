@@ -59,7 +59,7 @@ class App {
     this.container.insertAdjacentHTML('beforeend', this.layout());
     this.currentItemActive = document.querySelector('.list__item');
     this.currentItemActive.classList.add('list__item_active');
-    this.getItem(this.items[0].reqNumber);
+    this.getItem(this.items[0].itemUID);
     this.handler();
     this.handlerKeyboard();
     this.setTimer();
@@ -112,7 +112,7 @@ class App {
 
     let listLayout = '';
     for (let item of itemsArr){
-      listLayout += `<div class="list__item id${item.reqNumber} ${this.getTypeEng(item)}" data-item="${item.reqNumber}"> 
+      listLayout += `<div class="list__item id${item.itemUID} ${this.getTypeEng(item)}" data-item="${item.itemUID}"> 
                       <div class="list__status"> 
                         <span class="btn__status btn__status_question"></span>
                       </div>
