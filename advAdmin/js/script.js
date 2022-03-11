@@ -1,6 +1,6 @@
 class Api {
   constructor() {
-    this.API = 'https://50970.vds.miran.ru:553/Servers/Internal/AdAdmin.php';
+    this.API = 'https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Legal/Server.php';
   }
   async getJson(requestNamed){
     const myHeaders = new Headers();

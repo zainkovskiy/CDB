@@ -206,7 +206,7 @@ class Render{
                 <div class="photo__info photo__wrap"> 
                   <p class="photo__info-text">Всего фото: <span>${this.photos.length}</span></p>
                   <p class="photo__info-text">К выгрузке: <span>${web}</span></p>
-                  <p class="photo__info-text">Одобренно: <span>${moderationStatusCount}</span></p>
+                  <p class="photo__info-text">Одобрено: <span>${moderationStatusCount}</span></p>
                 </div>
                 <div class="photo__btn"> 
                   <div class="photo__upload"> 
