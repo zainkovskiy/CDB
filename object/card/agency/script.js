@@ -663,12 +663,12 @@ class Render {
                     </div>
                     <input name="expired" class="contract__date-input ${this.extendDate() ? 'isValid' : ''} ${this.obj.docType === 'Рекламный' || this.obj.moderatorAccepted === '1' ? 'disabled' : ''}" type="date" value="${expired}">
                   </div> 
-                  <div class="contract__wrap contract__block-btn ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}"> 
+                  <div class="contract__wrap contract__block-btn ${this.extendDate() && (this.obj.isExtended === '0' || !this.obj.isExtended) ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}"> 
                     <div class="contract__title-wrap"> 
                         <span class="contract__title"><b>Для продления срока договора</b> нажмите кнопку ниже</span>                       
                     </div>
                        <span data-expired='extend' class="contract__title-btn ui-btn ui-btn-primary-dark
-                        ${this.extendDate() && this.obj.isExtended === '0' ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}">Продлить</span>
+                        ${this.extendDate() && (this.obj.isExtended === '0' || !this.obj.isExtended) ? '' : 'isVisible'} ${this.owner.length === 0 ? 'disabled' : ''}">Продлить</span>
                   </div> 
                 </div>                 
                 <div class="title__header"> 
