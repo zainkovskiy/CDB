@@ -127,7 +127,7 @@ class App {
   }
   getType(item){
     if (item.reqType === "sk" && item.modType === "first"){
-      return 'Перв.'
+      return 'СК'
     } else if (item.reqType === "sk" && item.modType === "last"){
       return 'Осн.'
     } else if (item.reqType === "adv"){
@@ -158,7 +158,7 @@ class App {
             <div class="count"> 
               <label class="count__btn">
                 <input class="count__checkbox" type="checkbox" checked data-type="first">
-                <p class="count__item">Перв.<span class="count_first">${this.quantityType.first}</span></p>
+                <p class="count__item">СК<span class="count_first">${this.quantityType.first}</span></p>
               </label>
               <label class="count__btn">
                 <input class="count__checkbox" type="checkbox" checked data-type="last">
@@ -1039,9 +1039,9 @@ class App {
           for (let reason of selectReason){
             this.deniedReason.push(reason.id);
           }
-          area.value.length > 0 ? this.deniedReason.push(area.value) : '';
+          // area.value.length > 0 ? this.deniedReason.push(area.value) : '';
           this.setStatusCurrentItem('denied');
-          this.sendItem('denied');
+          this.sendItem('denied', area.value);
           this.closeModule(module);
         }
       } else if(event.target.dataset.scale === 'plus'){
@@ -1196,7 +1196,7 @@ class App {
       }
     })
   }
-  sendItem(status){
+  sendItem(status, comment){
     this.currentItem.comment = document.querySelector('.card__comment-field').value;
     console.log(this.currentItem)
     api.getJson({
@@ -1204,6 +1204,7 @@ class App {
       reqStatus: status,
       data: this.currentItem,
       reason: `${this.deniedReason.length > 0 ? this.deniedReason : ''}`,
+      commentReason: comment
     }).then(() => {
       console.log('here')
       this.subtractionQuantityType();
