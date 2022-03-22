@@ -1018,7 +1018,7 @@ class AddressHandler {
     const sourceInputs = document.querySelectorAll('.source__input');
     let countCheckSource = 0;
     for (let input of sourceInputs){
-      input.addEventListener('change', () => {
+      input.addEventListener('change', event => {
         countCheckSource = 0;
         for (let inputCheck of sourceInputs){
           if (inputCheck.checked){
@@ -1026,9 +1026,22 @@ class AddressHandler {
           }
         }
         if (countCheckSource > 0){
-          document.querySelector('.btn-search').removeAttribute('disabled');
+          document.querySelectorAll('.btn-search').forEach(btn => {
+            btn.removeAttribute('disabled')
+          });
         } else {
-          document.querySelector('.btn-search').setAttribute('disabled', 'disabled');
+          document.querySelectorAll('.btn-search').forEach(btn => {
+            btn.setAttribute('disabled', 'disabled');
+          });
+        }
+        if (event.target.name === 'mlsn') {
+          sourceInputs.forEach(input => {
+            input.name !== 'mlsn' ? input.checked = false : '';
+          })
+        } else {
+          sourceInputs.forEach(input => {
+            input.name === 'mlsn' ? input.checked = false : '';
+          })
         }
       })
     }
