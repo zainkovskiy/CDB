@@ -689,10 +689,10 @@ class Render {
                         <span class="file__text">Соглашение о продление ДОУ</span>
                         <span data-documents="extension" class="documents__btn"></span>
                       </div>
-                      <div class="documents__wrap"> 
+                      <!-- <div class="documents__wrap"> 
                         <span class="file__text">Скачать Акт показа</span>
                         <span class="documents__btn"></span>
-                      </div>
+                      </div> -->
                   </div>
                   <div class="upload"> 
                     <div class="upload__wrap">                   

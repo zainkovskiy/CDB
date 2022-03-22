@@ -853,7 +853,11 @@ class App {
         return 'Основная'
       }
     } else if (type.reqType === 'adv'){
-      return 'РД'
+      if (type.modType === 'first'){
+        return 'Рекламный'
+      } else if (type.modType === 'last'){
+        return 'Основная'
+      }
     }
   }
   openSelectReason(){
