@@ -123,7 +123,7 @@ class newBuildingsSeeker {
       document.body.clientWidth, document.documentElement.clientWidth
     );
     let readyString = `https://crm.centralnoe.ru/crm/deal/details/${number}/`;
-    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: scrollHeight});
+    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 'scrollHeight'});
     return true;
   }
   setNewValue(isChecked, req){
