@@ -782,7 +782,7 @@ class EditPhoto{
                             </div>
                           </div>    
                           <div class="module__footer"> 
-                            <span>При размещении фотографий с видимыми водяными знаками и/или чужих объектов, ответственность о непрохождении модерации и/или отсутствию в рекламе, риелтор берет на себя.</span>
+                            <span class="module__attention">При размещении фотографий с видимыми водяными знаками и/или чужих объектов, ответственность о непрохождении модерации и/или отсутствию в рекламе, риелтор берет на себя.</span>
                             <div> 
                               <button data-module="save" class="ui-btn ui-btn-success">Сохранить</button>
                               <button data-module="close" class="ui-btn ui-btn-danger-dark">Закрыть</button>

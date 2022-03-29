@@ -538,6 +538,9 @@
   align-items: center;
   gap: 10px;
 }
+.module__attention {
+  text-align: center;
+}
 .module-upload {
   display: flex;
   align-items: center;
