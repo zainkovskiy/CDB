@@ -130,6 +130,7 @@ class newBuildingsSeeker {
     server.request({
       action: `${isChecked ? 'sendet' : 'unSendet'}`,
       UID: req,
+      loginID: loginID
     })
   }
   getFormData(uid){

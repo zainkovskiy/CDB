@@ -5,22 +5,11 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_befo
 
 CJSCore::Init();
 
-$APPLICATION->SetTitle("Новостройки");
+$APPLICATION->SetTitle("Уведомления и брони");
 \Bitrix\Main\UI\Extension::load("ui.forms");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 \Bitrix\Main\UI\Extension::load("ui.hint");
 CJSCore::Init(['ui','sidepanel','jquery2']);
-
-
-$APPLICATION->IncludeComponent(
-'bitrix:crm.control_panel',
-'',
-array(
-'ID'             => 'CENTR_DB',
-'ACTIVE_ITEM_ID' => 'CENTR_DB',
-)
-);
-
 ?>
 
 <div style="padding:0px;">

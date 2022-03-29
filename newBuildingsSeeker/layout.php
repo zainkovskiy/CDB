@@ -2,9 +2,6 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 $APPLICATION->SetTitle("");
 ?>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
 <?
 CJSCore::Init();
 $ActiveUser = CUser::GetLogin();
@@ -19,7 +16,14 @@ $APPLICATION->SetTitle("");
 \Bitrix\Main\UI\Extension::load("ui.forms");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 
-CJSCore::Init(['ui','sidepanel','jquery2', 'im']);?>
+CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
+?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script>
+    let loginID ='<? echo($ActiveUserID); ?>';
+</script>
 <script src="//api.bitrix24.com/api/v1/"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
