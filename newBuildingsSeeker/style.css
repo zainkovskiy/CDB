@@ -42,7 +42,7 @@ body {
 
 .table {
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 12px;
   color: #979797;
   width: 100%;
 }
@@ -50,6 +50,7 @@ body {
   color: #4695d9;
   cursor: pointer;
   border-bottom: 1px solid transparent;
+  margin: 0;
 }
 .table__link:hover {
   border-bottom: 1px solid #4695d9;
@@ -70,6 +71,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 .table__input {
   border-radius: 5px;

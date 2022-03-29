@@ -141,6 +141,16 @@ class newBuildingsSeeker {
       this.openModule(form);
     })
   }
+  getFile(files){
+    let filesTemplate = '';
+    if (files && files.length > 0){
+      let parseFiles = JSON.parse(files);
+      parseFiles.forEach(file => {
+        filesTemplate += `<p class="module__text">${file.name} <a download="Паспорт" href="${file.URI}">скачать</a></p>`
+      })
+    }
+    return filesTemplate;
+  }
   openModule(form){
     const htmlDom = document.querySelector('HTML');
     htmlDom.setAttribute("style", "overflow-y:hidden;");
@@ -165,6 +175,7 @@ class newBuildingsSeeker {
                     <p class="module__text">Этаж<span>${form.floor ? form.floor : ''}</span></p>
                     <p class="module__text">Номер квартиры<span>${form.numberAppartment ? form.numberAppartment : ''}</span></p>
                     <p class="module__text">Площадь квартиры<span>${form.area ? form.area : ''}</span></p>
+                    ${this.getFile(form.file)}
                   </div>
                   <div class="module__footer"> 
                     <button data-name="close" class="module__close"><span>Закрыть</span></button>
@@ -243,17 +254,32 @@ class Render{
     }
   }
   render(){
-    console.log(this.applicant)
     return `<tr> 
               <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="deal" data-number="${this.row.dealId}">${this.row.dealId ? this.row.dealId : ''}</span></div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.developer ? this.row.developer : ''}</div></td>
+              <td class="table__row">
+                <div class="table__row_wrap">
+                  <span>${this.row.developer ? this.row.developer : ''}</span>
+                  <span>${this.row.manager ? this.row.manager : ''}</span>
+                  <span>${this.row.managerPhone ? this.row.managerPhone : ''}</span>
+                </div>
+              </td>
               <td class="table__row"><div class="table__row_wrap">${this.row.complex ? this.row.complex : ''}</div></td>
-              <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="form" data-uid="${this.row.UID}">
-              ${this.row.lastName ? this.row.lastName : ''} ${this.row.name ? this.row.name : ''} ${this.row.secondName ? this.row.secondName : ''}
-              </span></div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.clientPhone ? this.row.clientPhone : ''}</div></td>
+              <td class="table__row">
+                <div class="table__row_wrap">
+                  <span>${this.row.price ? this.row.price : ''}<span/>
+                  <span>${this.row.priceType ? this.row.priceType : ''}<span/>
+                </div>
+              </td>
+              <td class="table__row">
+                <div class="table__row_wrap">
+                  <span class="table__link" data-open="form" data-uid="${this.row.UID}">
+                    ${this.row.lastName ? this.row.lastName : ''} ${this.row.name ? this.row.name : ''} ${this.row.secondName ? this.row.secondName : ''}
+                  </span>
+                    ${this.row.clientPhone ? this.row.clientPhone : ''}
+                </div>
+                </td>
               <td class="table__row"><div class="table__row_wrap">${this.applicant.FULL_NAME ? this.applicant.FULL_NAME : ''}</div></td>
-              <td class="table__row"><div class="table__row_wrap">${this.row.type === 0 ? 'Уведомление' : 'Бронь'}</div></td>
+              <td class="table__row"><div class="table__row_wrap">${+this.row.type === 0 ? 'Уведомление' : 'Бронь'}</div></td>
               <td class="table__row"><div class="table__row_wrap">${this.getDate(this.row.created)}</td>
               <td class="table__row">
                 <div class="table__row_wrap">
@@ -314,5 +340,6 @@ const server = new Server();
 server.request({
   action: 'get'
 }).then(data => {
+  console.log(data)
   new newBuildingsSeeker(data).init();
 });

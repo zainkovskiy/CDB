@@ -39,8 +39,8 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);?>
             <td><div class="table__td-header">Сделка</div></td>
             <td><div class="table__td-header">Застройщик <input class="table__input" type="text" autocomplete="off" name="developer"></div></td>
             <td><div class="table__td-header">ЖК</div></td>
-            <td><div class="table__td-header">ФИО</div></td>
-            <td><div class="table__td-header">Телефон</div></td>
+            <td><div class="table__td-header">Оплата</div></td>
+            <td><div class="table__td-header">Клиент</div></td>
             <td><div class="table__td-header">Риелтор</div></td>
             <td><div class="table__td-header">Тип</div></td>
             <td><div class="table__td-header">Дата создания <input class="table__input" type="date" autocomplete="off" name="dataCreate"></div></td>
