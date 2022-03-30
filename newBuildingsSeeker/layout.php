@@ -32,12 +32,12 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
 </head>
 <body>
 <div class="container" data-candy="s<?=rand(0, 1000000)?>">
-    <div class="header"><span data-show="all">Показать все</span>
+    <!-- <div class="header"><span data-show="all">Показать все</span>
     <label class="switch">
       <input id="isShowAll" class="switch__open" type="checkbox">
       <span class="slider slider__main"></span>
     </label>
-    </div>
+    </div> -->
     <table class="table">
         <thead>
             <td><div class="table__td-header">Сделка</div></td>

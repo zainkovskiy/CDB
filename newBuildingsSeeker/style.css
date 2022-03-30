@@ -171,6 +171,16 @@ body {
   border: 1px solid #3bc8f5;
 }
 
+.empty-data {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  text-align: center;
+  font-size: 22px;
+  color: grey;
+  letter-spacing: 0.8px;
+}
+
 .btn-close {
   position: absolute;
   z-index: 5;

@@ -4,7 +4,7 @@ class newBuildingsSeeker {
     this.timestamp = data.timestamp;
     this.arrayRealtors = [];
     this.filtered = [];
-    this.showSend = false;
+    this.showSend = true;
     this.table = document.querySelector('.container');
     this.inputDev = document.querySelector(`INPUT[name='developer']`);
     this.inputDate = document.querySelector(`INPUT[name='dataCreate']`);
@@ -59,13 +59,16 @@ class newBuildingsSeeker {
   }
   showTable(list){
     if (list.length > 0){
+      document.querySelector('.empty-data') && document.querySelector('.empty-data').remove()
       this.table.querySelector('tbody').innerHTML = '';
       this.renderRows(list);
     } else {
       this.table.querySelector('tbody').innerHTML = '';
+      this.table.insertAdjacentHTML('beforeend', `<p class="empty-data">нет данных</p>`)
     }
   }
   renderRows(list){
+    console.log(list)
     if (this.showSend){
       for (let item of list){
         this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item, this.getApplicant(item.applicant)).render());
@@ -93,19 +96,21 @@ class newBuildingsSeeker {
       if (event.target.type === 'checkbox' && event.target.dataset.req){
         this.setNewValue(event.target.checked, event.target.dataset.req);
       } else if (event.target.type === 'checkbox' && event.target.id === 'showAllCheck'){
-        this.showSend = event.target.checked;
-        if (this.filtered.length > 0){
-          this.showTable(this.filtered);
-        } else {
-          this.showTable(this.list);
-        }
+        this.showAllItems(event.target.checked);
+        // this.showSend = event.target.checked;
+        // if (this.filtered.length > 0){
+        //   this.showTable(this.filtered);
+        // } else {
+        //   this.showTable(this.list);
+        // }
       } else if (event.target.dataset.open === 'deal'){
         this.openCard(event.target.dataset.number);
       } else if (event.target.dataset.open === 'form'){
         this.getFormData(event.target.dataset.uid);
-      } else if (event.target.type === 'checkbox' && event.target.id === 'isShowAll'){
-        this.showAllItems(event.target.checked);
       }
+      // else if (event.target.type === 'checkbox' && event.target.id === 'isShowAll'){
+      //   this.showAllItems(event.target.checked);
+      // }
     })
     this.inputDate.addEventListener('change', () => {
       this.filter(this.inputDate.name, this.inputDate.value);
