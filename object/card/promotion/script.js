@@ -176,7 +176,7 @@ class HandlerTop{
       //   this.setChangePlatform(data.currentLimit);
       // }
     })
-    return countPrice < promotion.settingPlatform.balance
+    return countPrice <= promotion.settingPlatform.balance
   }
   setChangePlatform(currentLimit){
     let history = [];
