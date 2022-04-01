@@ -25,6 +25,7 @@ class Promotion {
     var request1Cnamed = new Object();
     request1Cnamed.reqNumber = UID;
     request1Cnamed.activeUser = login;
+    request1Cnamed.userId = userId;
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
@@ -66,7 +67,7 @@ class RenderTop{
             <nav class="change-page">
               <a class="ui-btn ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
               <a class="ui-btn ui-btn-icon-page change-page__link" href="../agency/?source=${source}&id=${objectUID}">ДОУ</a>
-              <a class="ui-btn change-page__link" href="../photoEditor/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>
+              <a class="ui-btn change-page__link" href="../photo/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>
                             
               <!-- <a class="ui-btn ui-btn-icon-page change-page__link
               ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' ? '' : 'isVisible'}" 
@@ -86,8 +87,8 @@ class RenderTop{
             <div class="header__buttons"> 
               <button data-table="show" class="ui-btn price-btn">${this.balance} руб.</button>
               <span data-basket="show" class="basket__btn"></span>
+              <span class="basket__count isVisible"></span>
             </div>
-                <span class="basket__count isVisible"></span>
                 <div class="basket isVisible"> 
                   <span class="basket__title">Корзина пуста</span>
                   <div class="basket__total"> 
@@ -135,7 +136,10 @@ class HandlerTop{
         }, 500);
       } else if (event.target.dataset.save === 'all'){
         if (basket.basket.length > 0){
-          this.checkPay();
+          if (this.checkPay()){
+            document.querySelector('.save-change').classList.add('save-change_close');
+            this.setChangePlatform(promotion.settingPlatform.balance);
+          }
         } else if (basket.offOption.length > 0){
           this.delOptions();
         }
@@ -164,13 +168,15 @@ class HandlerTop{
     payBody.action = 'checkCost';
     payBody.price = countPrice;
     payBody.activeUser = login;
+    payBody.userId = userId;
     this.getData(payBody).then((data) => {
-      if (data.status === 'Ok'){
-        document.querySelector('.price-btn').innerHTML = `${data.currentLimit} руб.`;
-        document.querySelector('.save-change').classList.add('save-change_close');
-        this.setChangePlatform(data.currentLimit);
-      }
+      // if (data.status === 'Ok'){
+      //   document.querySelector('.price-btn').innerHTML = `${data.currentLimit} руб.`;
+      //   document.querySelector('.save-change').classList.add('save-change_close');
+      //   this.setChangePlatform(data.currentLimit);
+      // }
     })
+    return countPrice < promotion.settingPlatform.balance
   }
   setChangePlatform(currentLimit){
     let history = [];
@@ -195,9 +201,10 @@ class HandlerTop{
     const bodyPlatform = new Object();
     bodyPlatform.action = 'writeHistory';
     bodyPlatform.history = history;
+    bodyPlatform.userId = userId;
     console.log(history);
     this.getData(bodyPlatform).then(()=>{
-        window.location.reload()
+      window.location.reload()
     })
   }
   delOptions(){
@@ -245,7 +252,7 @@ class HandlerTop{
     const table = document.querySelector('.header__table');
     table.innerHTML = '';
     table.insertAdjacentHTML('beforeend',
-`<thead class="table-header">
+      `<thead class="table-header">
         <tr>
         <td>Дата</td>
         <td>Заявка</td>
@@ -257,7 +264,7 @@ class HandlerTop{
         </thead>`);
     for (let item of data){
       table.insertAdjacentHTML('beforeend',
-  `<tr>
+        `<tr>
           <td data-label="Дата">${item.created.split(" ")[0].split('-').reverse().join('.')}</td>
           <td data-label="Заявка">${item.UID}</td>
           <td data-label="Площадка">${this.platformList[item.platform]}</td>
@@ -338,8 +345,8 @@ class Avito{
                   </label>
                   <span class="panel__text">${this.sortPrice.XL} ₽</span>
                   <span class="panel__text">${this.platform.selectors.XL
-                  ? `до ${this.platform.selectors.XL[0].split(" ")[0].split('-').reverse().join('.')}`
-                  : ''}</span>
+        ? `до ${this.platform.selectors.XL[0].split(" ")[0].split('-').reverse().join('.')}`
+        : ''}</span>
                 </div>
                 <div class="panel__item">
                   <span class="panel__text">Выделение цветом</span>
@@ -352,8 +359,8 @@ class Avito{
                   </label>
                   <span class="panel__text">${this.sortPrice.Highlight} ₽</span>
                   <span class="panel__text">${this.platform.selectors.Highlight
-                  ? `до ${this.platform.selectors.Highlight[0].split(" ")[0].split('-').reverse().join('.')}`
-                  : ''}</span>
+        ? `до ${this.platform.selectors.Highlight[0].split(" ")[0].split('-').reverse().join('.')}`
+        : ''}</span>
                 </div>
                 <div class="panel__item isVisible">
                   <span class="panel__text">Премиум на Domofond</span>
@@ -375,9 +382,9 @@ class Avito{
                     <option>x2 на 7 дней - 540 ₽</option>
                     <option>x2 на 1 день - 150 ₽</option>
                   </select>
-                  <span class="panel__text">${this.platform.selectors.Pack 
-                  ? `до ${this.platform.selectors.Pack[0].split(" ")[0].split('-').reverse().join('.')}`
-                  : ''}</span>
+                  <span class="panel__text">${this.platform.selectors.Pack
+        ? `до ${this.platform.selectors.Pack[0].split(" ")[0].split('-').reverse().join('.')}`
+        : ''}</span>
                 </div>
               </div>
             </div>`)

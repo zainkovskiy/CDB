@@ -66,6 +66,7 @@
   border-radius: 5px;
   &__buttons{
     display: flex;
+    position: relative;
   }
   &__container{
     width: 100%;
@@ -161,15 +162,15 @@
     position: absolute;
     background-color: red;
     color: white;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 20px;
     font-size: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 9px;
-    right: 12px;
+    top: -9px;
+    right: 8px;
   }
   &__total{
     border-top: 1px solid #E5E5E5;

@@ -9,6 +9,11 @@ body {
 .methodical {
   padding: 0;
 }
+.methodical__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 
 .search-form {
   padding: 0;

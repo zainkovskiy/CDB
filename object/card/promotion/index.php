@@ -14,6 +14,7 @@ mb_internal_encoding("UTF-8");
 $source = $_GET['source'];
 $id = $_GET['id'];
 $ActiveUser = CUser::GetLogin();
+$UserID = CUser::GetID();
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 
 ?>
@@ -21,6 +22,7 @@ $ActiveUser = CUser::GetLogin();
 <html lang="ru">
 <head>
   <script>
+    let userId ='<? echo($UserID); ?>';
     let source ='<? echo($source); ?>';
     let objectUID ='<? echo($id); ?>';
     let login ='<? echo($ActiveUser); ?>';

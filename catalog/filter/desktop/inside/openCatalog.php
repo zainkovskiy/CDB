@@ -38,6 +38,7 @@ if($USER->IsAuthorized()){
 $APPLICATION->ShowHead();}
 
 $userName = CUser::GetLogin();
+$userID = CUser::GetID();
 
 \Bitrix\Main\UI\Extension::load("ui.forms");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
@@ -51,7 +52,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <script src="//api.bitrix24.com/api/v1/"> </script>
     <SCRIPT>
       // UID Текущего пользователя
-      let currentUserId = '<? echo($arrApplicationParams['activeUserID']) ;?>';
+      let currentUserId = '<? echo($userID) ;?>';
       // Login текущего пользователя
       let currentUserLogin = '<? echo($userName);?>';
       // Login владельца сделки
@@ -81,9 +82,9 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
     <title>searchObject</title>
 </head>
 <body>
-    <div class="container data-candy="s<?=rand(0, 1000000)?>"">
+    <div class="container" data-candy="s<?=rand(0, 1000000)?>">
         <div class="methodical">
-            <div>
+            <div class="methodical__buttons">
                 <button data-clear="filter" class="ui-btn ui-btn-primary-dark bx-btn__craft">Сбросить фильтры</button>
                 <button data-filter="sale" class="ui-btn ui-btn-primary-dark bx-btn__craft">продавцы</button>
                 <button data-only="mine" class="ui-btn ui-btn-primary-dark bx-btn__craft">только мои</button>
