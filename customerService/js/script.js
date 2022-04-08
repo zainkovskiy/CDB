@@ -46,24 +46,32 @@ class App{
     this.currentOptions = '';
   }
   init(){
-    this.checkWork.addEventListener('change', () => {
-      if (this.checkWork.checked && this.isNotItem){
-        this.startJobs();
-      } else {
-        if (this.isNotItem){
-          document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
-          this.finishSession();
-        } else {
-          this.checkWork.disabled = true;
-        }
+    document.querySelector('.inJob__phone').addEventListener('keyup', event => {
+      const regExp = new RegExp(/\d{4}/, 'g');
+      if (event.target.value.length > 0 && regExp.test(+event.target.value)){
+        this.checkWork.disabled = false;
+        event.target.disabled = true;
+        this.checkWork.addEventListener('change', () => {
+          if (this.checkWork.checked && this.isNotItem){
+            this.startJobs(+event.target.value);
+          } else {
+            if (this.isNotItem){
+              document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
+              this.finishSession();
+            } else {
+              this.checkWork.disabled = true;
+            }
+          }
+        });
+        this.handler();
       }
-    });
-    this.handler();
+    })
   }
-  startJobs(){
+  startJobs(phone){
     api.requestToServer('getInfo', {
       operatorId: loginID,
-      action: 'onWorking'
+      action: 'onWorking',
+      ext: phone
     }).then(startWork => {
       console.log(startWork)
       if (startWork.result){
@@ -180,7 +188,7 @@ class App{
     this.containerMain.addEventListener('click', event => {
       const e = event.target;
       const dataset = event.target.dataset;
-      if (e.tagName === 'INPUT' && e.type === 'text'){
+      if (e.tagName === 'INPUT' && e.type === 'text' && !e.classList.contains('inJob__phone')){
         if (this.currentSelect && this.currentSelect === e){
           this.checkOption();
         } else {
@@ -200,40 +208,40 @@ class App{
         e.classList.add('disabled');
         this.finishCall(e);
       } else if (dataset.call === 'callback'){
-          event.target.classList.add('disabled');
-          api.requestToServer('getInfo', {
-            action: 'reCall',
-            item: this.info.UID,
-          }).then(() => {
-            setTimeout(() => {
-              event.target.classList.remove('disabled');
-            },5000)
-          })
+        event.target.classList.add('disabled');
+        api.requestToServer('getInfo', {
+          action: 'reCall',
+          item: this.info.UID,
+        }).then(() => {
+          setTimeout(() => {
+            event.target.classList.remove('disabled');
+          },5000)
+        })
       } else if (dataset.send === 'sms'){
         this.sendSms();
       } else if (dataset.answer){
         this.switchAnswer(dataset.answer, dataset.type);
       } else if (dataset.direction){
-          this.setLoader();
-          api.requestToServer('getInfo', {
-            action: 'finishItem',
-            item: this.currentItemUID,
-            result: 1,
-            data: this.object,
-            direction: dataset.direction,
-            type: dataset.type,
-            comment: document.querySelector('.client__area').value,
-          }).then(() => {
-            this.removeLoader();
-            if (this.checkWork.disabled){
-              this.finishSession();
-              this.checkWork.disabled = false;
-            } else {
-              this.clearDom();
-              this.clearThis();
-              this.counterTime();
-            }
-          });
+        this.setLoader();
+        api.requestToServer('getInfo', {
+          action: 'finishItem',
+          item: this.currentItemUID,
+          result: 1,
+          data: this.object,
+          direction: dataset.direction,
+          type: dataset.type,
+          comment: document.querySelector('.client__area').value,
+        }).then(() => {
+          this.removeLoader();
+          if (this.checkWork.disabled){
+            this.finishSession();
+            this.checkWork.disabled = false;
+          } else {
+            this.clearDom();
+            this.clearThis();
+            this.counterTime();
+          }
+        });
       } else if (dataset.next === 'item'){
         if (this.checkWork.checked && this.isNotItem){
           document.querySelector('.inJob__load').classList.remove('inJob__next_timer');

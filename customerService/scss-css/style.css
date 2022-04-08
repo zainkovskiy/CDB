@@ -400,6 +400,14 @@ body {
 .inJob__checkbox:disabled ~ .inJob__label {
   opacity: 0.5;
 }
+.inJob__phone {
+  margin: 0 0 0 1rem;
+  padding: 10px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  font-size: 16px;
+}
 
 @keyframes gradient {
   from {

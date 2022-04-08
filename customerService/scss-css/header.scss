@@ -73,6 +73,14 @@
       opacity: .5;
     }
   }
+  &__phone{
+    margin: 0 0 0 1rem;
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    font-size: 16px;
+  }
 }
 @keyframes gradient {
   from {

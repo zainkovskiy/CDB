@@ -42,13 +42,14 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
 <div class="main" data-candy="s<?=rand(0, 1000000)?>">
     <div class="header">
         <div class="inJob">
-            <input class="inJob__checkbox" id="inJob" name="inJob" type="checkbox">
+            <input class="inJob__checkbox" id="inJob" name="inJob" type="checkbox" disabled>
             <label class="inJob__label" for="inJob">Работаю</label>
             <div data-next="item" class="inJob__next disabled">
                 <span data-next="item" class="inJob__text">Следующий</span>
                 <div data-next="item" class="inJob__load"></div>
             </div>
         </div>
+        <input class="inJob__phone" type="text" placeholder="номер телефона">
     </div>
     <div class="left">
         <div class="client"></div>
