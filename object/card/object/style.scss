@@ -836,6 +836,7 @@ input:checked + .slider__toggle:before {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 70vw;
   &__header{
     font-size: 18px;
     font-weight: bold;
@@ -889,7 +890,7 @@ input:checked + .slider__toggle:before {
     min-height: 50vh;
     max-height: 50vh;
     overflow: auto;
-    width: 35vw;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -903,6 +904,9 @@ input:checked + .slider__toggle:before {
     transition: border .3s;
     &:hover{
       border-bottom: 1px dashed #767676;
+    }
+    &:active{
+      background-color: rgba(162, 162, 162, 0.49);
     }
   }
 }

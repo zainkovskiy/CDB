@@ -605,7 +605,7 @@ class Handler {
   openCard(idReq, path) {
     if (path === 'deal'){
       let readyString = `https://crm.centralnoe.ru/crm/deal/details/${idReq}/`;
-      BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+      BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: window.innerWidth, });
     } else {
       if (source === '1c'){
         location = `https://crm.centralnoe.ru/CDB/object/card/applicationForOneself/?id=${UID}&deal=${deal}`;
@@ -669,6 +669,7 @@ class Handler {
       } else if (event.target.dataset.btn === 'search'){
         this.renderResponsible(module);
       } else if (event.target.dataset.responsible === 'select'){
+        this.setLoader();
         this.closeModule(module);
         this.setNewResponsible(event.target.dataset.login);
       }
@@ -695,6 +696,7 @@ class Handler {
       reqNumber: UID,
       responsible: loginResponsible,
       author: login,
+      dealId: this.obj.deal
     }).then(data => {
       data.result === 'ok' && location.reload();
     })

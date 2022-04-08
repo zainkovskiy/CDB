@@ -73,7 +73,11 @@ class App {
           this.quantityType.last++;
         }
       } else if (item.reqType === 'adv'){
-        this.quantityType.adv++;
+        if (item.modType === 'first'){
+          this.quantityType.adv++;
+        } else if (item.modType === 'last'){
+          this.quantityType.last++;
+        }
       }
     }
   }
@@ -105,7 +109,9 @@ class App {
     }, 300000);
     let date = new Date();
     let deadline = new Date (date.setMinutes(date.getMinutes()+5));
-    this.initializeClock(deadline);
+    if (this.items && this.items.length > 0) {
+      this.initializeClock(deadline);
+    }
   }
 
   getList(itemsArr){
@@ -128,20 +134,18 @@ class App {
   getType(item){
     if (item.reqType === "sk" && item.modType === "first"){
       return 'СК'
-    } else if (item.reqType === "sk" && item.modType === "last"){
+    } else if (item.modType === "last"){
       return 'Осн.'
     } else if (item.reqType === "adv"){
       return 'РД'
     }
   }
   getTypeEng(item){
-    if (item.reqType === 'sk'){
-      if (item.modType === 'first'){
-        return 'first'
-      } else if (item.modType === 'last'){
-        return 'last'
-      }
-    } else if (item.reqType === 'adv'){
+    if (item.reqType === 'sk' && item.modType === 'first'){
+      return 'first'
+    } else if (item.modType === 'last') {
+      return 'last'
+    } else {
       return 'adv'
     }
   }
@@ -1232,22 +1236,32 @@ class App {
     return next;
   }
   getNewItems(){
-    document.querySelector('.button_update').classList.add('button_load');
+    if (this.items && this.items.length > 0){
+      document.querySelector('.button_update').classList.add('button_load');
+    }
     api.getJson({
-      action: 'getUpdates',
+      action: `${this.items && this.items.length > 0 ? 'getUpdates' : 'getList'}`,
       serverTime: this.serverTime,
     }).then(newData => {
-      this.serverTime = newData.serverTime;
-      document.querySelector('.button_update').classList.remove('button_load');
-      this.setTimer();
-      if (+newData.items > 0){
-        this.items.push(newData.data);
-        this.setQuantityType(newData.data);
-        document.querySelector('.list').insertAdjacentHTML('beforeend', this.getList(newData.data));
-        this.renderQuantity();
+      if(this.items && this.items.length > 0){
+        this.serverTime = newData.serverTime;
+        document.querySelector('.button_update').classList.remove('button_load');
+        this.setTimer();
+        if (+newData.items > 0){
+          this.items.push(newData.data);
+          this.setQuantityType(newData.data);
+          document.querySelector('.list').insertAdjacentHTML('beforeend', this.getList(newData.data));
+          this.renderQuantity();
+        }
+        console.log('this is update');
+        console.log(newData);
+      } else {
+        clearInterval(this.timerUpdateItems);
+        clearInterval(this.timerClock);
+        document.querySelector('.center-side__empty').remove();
+        app = new App(newData);
+        app.init();
       }
-      console.log('this is update');
-      console.log(newData);
     })
   }
 
@@ -1290,6 +1304,8 @@ api.getJson({
     app = new App(data);
     app.init();
   } else {
+    app = new App(data);
+    app.setTimer();
     document.querySelector('.main').insertAdjacentHTML('beforebegin', `<p class="center-side__empty">Нет объектов</p>`)
   }
 })

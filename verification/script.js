@@ -8,18 +8,19 @@ class App{
 
   init(){
     this.container.insertAdjacentHTML('beforeend', new Render(this.ON).render());
-
-    const elms = document.querySelectorAll('.slider');
-    const currentX = document.documentElement.clientWidth;
-    if (currentX > 500){
-      for (let i = 0, len = elms.length; i < len; i++) {
-        // инициализация elms[i] в качестве слайдера
-        new ChiefSlider(elms[i]);
+    if (this.ON.photo.length > 0) {
+      const elms = document.querySelectorAll('.slider');
+      const currentX = document.documentElement.clientWidth;
+      if (currentX > 500){
+        for (let i = 0, len = elms.length; i < len; i++) {
+          // инициализация elms[i] в качестве слайдера
+          new ChiefSlider(elms[i]);
+        }
+      } else {
+        const slider = new ChiefSlider('.slider', {
+          loop: false
+        });
       }
-    } else {
-      const slider = new ChiefSlider('.slider', {
-        loop: false
-      });
     }
 
     new Handler(this.container, this.ON).init();
@@ -113,12 +114,12 @@ class Render {
             <div class="plea wrapper"> 
               Подтвердите размещение объекта 
             </div>
-            <div class="carousel"> 
+            <div class="carousel ${this.obj.photo.length === 0 ? 'inVisible' : ''}"> 
                 <div class="slider">
                   <div class="slider__container">
                       <div class="slider__wrapper">                     
                           <div class="slider__items">
-                            ${photo}
+                            ${this.obj.photo.length > 0 && photo}
                           </div>
                       </div>
                   </div>

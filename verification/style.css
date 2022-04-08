@@ -366,4 +366,8 @@
   border: 1px solid red;
 }
 
+.inVisible {
+  display: none;
+}
+
 /*# sourceMappingURL=style.css.map */
