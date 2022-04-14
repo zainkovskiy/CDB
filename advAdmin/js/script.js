@@ -1,8 +1,13 @@
+function getPlaceholder(img){
+  img.src = 'https://crm.centralnoe.ru/dealincom/assets/img/placeholder.png'
+}
+
 class Api {
   constructor() {
     this.API = 'https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Legal/Server.php';
+    this.realtor = 'https://crm.centralnoe.ru/dealincom/factory/Users.php';
   }
-  async getJson(requestNamed){
+  async getJson(api, requestNamed){
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
     const raw = JSON.stringify(requestNamed);
@@ -14,7 +19,7 @@ class Api {
       headers: myHeaders,
       body: raw
     };
-    let response = await fetch(this.API, requestOptions);
+    let response = await fetch(api, requestOptions);
     if (!response.ok) {
       throw new Error('Ответ сети был не ok.');
     }
@@ -91,7 +96,11 @@ class App {
           this.quantityType.last--;
         }
       } else if (findItem.reqType === 'adv'){
-        this.quantityType.adv--;
+        if (findItem.modType === 'first'){
+          this.quantityType.adv--;
+        } else if (findItem.modType === 'last'){
+          this.quantityType.last--;
+        }
       }
       this.renderQuantity();
     }
@@ -247,7 +256,7 @@ class App {
       case 'denied':
         return 'btn__status_denied'
       case 'pending':
-        return 'btn__status_pending'
+        return 'btn__status_question'
     }
   }
   getPhotoItem(files){
@@ -305,7 +314,7 @@ class App {
   }
   messageItem(message){
     return `<span class="messenger__message message${message.UID}">${message.comment}
-              <i data-message="edit" data-id="${message.UID}" class="messenger__btn messenger__btn_edit"></i>
+<!--              <i data-message="edit" data-id="${message.UID}" class="messenger__btn messenger__btn_edit"></i>-->
               <i data-message="delete" data-id="${message.UID}" class="messenger__btn messenger__btn_delete"></i>
             </span>`
   }
@@ -313,9 +322,9 @@ class App {
     const messengerField = document.querySelector('.messenger__field');
     const message = document.querySelector('.messenger__textarea');
     if (message.value.length > 0 && message.value !== ' '){
-      api.getJson({
+      api.getJson(api.API, {
         action: 'newComment',
-        reqNumber: this.currentItem.ad,
+        reqNumber: this.currentItem.contractId,
         comment: message.value,
       }).then(data => {
         if (this.currentItem.messages === 'null' || this.currentItem.messages === null){
@@ -328,7 +337,7 @@ class App {
     }
   }
   deleteMessage(uid){
-    api.getJson({
+    api.getJson(api.API, {
       action: 'delComment',
       UID: uid,
     }).then(() => {
@@ -347,7 +356,7 @@ class App {
   sendEditMessage(uid){
     const messengerTextarea = document.querySelector('.messenger__textarea');
     if (messengerTextarea.value.length > 0 && messengerTextarea.value !== " "){
-      api.getJson({
+      api.getJson(api.API, {
         action: 'editComment',
         UID: uid,
         comment: messengerTextarea.value,
@@ -392,8 +401,9 @@ class App {
               </span>
               <div class="contact">
                   <img class="contact__img" src="${this.currentItem.author.PERSONAL_PHOTO ? this.currentItem.author.PERSONAL_PHOTO : 'img/placeholder-user.png'}" alt="">
-                  <span class="contact__link text" data-open="person" data-id="${this.currentItem.author.UID}">
-                      ${this.currentItem.author.FULL_NAME ? this.currentItem.author.FULL_NAME : ''}
+                  <span class="contact__link text" data-open="person" data-id="${this.currentItem.author.ID}">
+                      ${this.currentItem.author.NAME ? this.currentItem.author.NAME : ''} 
+                      ${this.currentItem.author.LAST_NAME ? this.currentItem.author.LAST_NAME : ''}
                   </span>                               
               </div>
             </div>
@@ -454,11 +464,12 @@ class App {
               </div>
               <div class="photo"> 
                 <div class="photo__wrap"> 
-                  <img data-open="photo" class="photo__img" src="${photo.startPhoto}" alt="нет фото">
+                  <img data-open="photo" class="photo__img" src="${photo.startPhoto}" alt="нет фото" onerror="getPlaceholder(this)">
                   <span class="btn__status ${photo.startStatus} photo__status"></span>   
                 </div>
               </div> 
               <div class="info">
+                <div id="map"></div>
                 <div class="request"> 
                   <span class="card__comment-title info__title">Поиск дублей</span>
                   <div class="request__buttons"> 
@@ -478,7 +489,6 @@ class App {
                     <span data-action="send" data-message="send" class="messenger__send-btn"></span>
                   </div>
                 </div>
-                <div id="map"></div>
               </div>               
             </div>
             <div class="center-side__bottom"> 
@@ -750,7 +760,7 @@ class App {
   }
 
   getRequest(action){
-    api.getJson({
+    api.getJson(api.API, {
       action: action,
       reqNumber: this.currentItem.ad,
     }).then(data => {
@@ -900,7 +910,7 @@ class App {
     const currentY = window.pageYOffset;
     const layout = `<div style="top: ${currentY}"  class="module">
                       <span data-name="close" class="module__close"></span>
-                      <img class="module__img" src="${photo.url}" alt="нет фото"> 
+                      <img class="module__img" src="${photo.url}" alt="нет фото" onerror="getPlaceholder(this)"> 
                       <div class="module__controller"> 
                         <span data-rotate="left" class="module__btn module__left"></span>
                         <span data-rotate="right" class="module__btn module__right"></span>
@@ -1188,7 +1198,7 @@ class App {
     this.currentItemActive.classList.add('list__item_active');
   }
   getItem(reqNumber){
-    api.getJson({
+    api.getJson(api.API, {
       action: 'getItem',
       reqNumber: reqNumber,
     }).then(item => {
@@ -1196,8 +1206,15 @@ class App {
         this.currentItem = item;
         console.log('this is item')
         console.log(this.currentItem)
-        this.sortFilesItem();
-        this.renderItem();
+        api.getJson(api.realtor, {
+          id: this.currentItem.author,
+          adm: this.currentItem.author,
+        }).then(realtor => {
+          this.currentItem.author = realtor;
+          this.sortFilesItem();
+          this.renderItem();
+          console.log(this.currentItem)
+        })
       } else {
         this.currentItem = '';
         this.renderItem();
@@ -1205,9 +1222,9 @@ class App {
     })
   }
   sendItem(status, comment){
-    this.currentItem.comment = document.querySelector('.card__comment-field').value;
+    this.currentItem.comment = document.querySelector('.card__comment-field').value.replace(/\n/g, ` *EOL `);
     console.log(this.currentItem)
-    api.getJson({
+    api.getJson(api.API, {
       action: 'setItem',
       reqStatus: status,
       data: this.currentItem,
@@ -1239,7 +1256,7 @@ class App {
     if (this.items && this.items.length > 0){
       document.querySelector('.button_update').classList.add('button_load');
     }
-    api.getJson({
+    api.getJson(api.API, {
       action: `${this.items && this.items.length > 0 ? 'getUpdates' : 'getList'}`,
       serverTime: this.serverTime,
     }).then(newData => {
@@ -1296,7 +1313,7 @@ class App {
 
 const api = new Api();
 let app = '';
-api.getJson({
+api.getJson(api.API, {
   action : "getList"
 }).then(data => {
   console.log(data)
