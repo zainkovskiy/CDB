@@ -524,16 +524,16 @@ class App {
                   <div class="${this.currentPhotoType ? '' : 'inVisible'}"> 
                     <button data-action="approved" data-control="application" class="button button_approved">подтвердить</button>
                     <button data-action="denied" data-control="application" class="button button_denied">вернуть</button>
-                    ${this.getStatusForReason(this.currentItem.type) === 'Первичная' ?
-      `<button data-action="egrn" data-control="application" class="button button_approved">заказать ЕГРН</button>` : ''}
+                   <!-- ${this.getStatusForReason(this.currentItem.type) === 'Первичная' ?
+      `<button data-action="egrn" data-control="application" class="button button_approved">заказать ЕГРН</button>` : ''} -->
                   </div>
                   <div class="${this.currentPhotoType ? 'inVisible' : ''}"> 
                     <button data-action="approved" data-control="all" class="button button_approved">подтвердить все</button>
                     <button data-action="approved" data-control="one" class="button button_approved docs_hide">подтвердить</button>
                     <button data-action="denied" data-control="one" class="button button_denied docs_hide">вернуть</button>
                     <button data-action="denied" data-control="all" class="button button_denied">вернуть все</button>
-                    ${this.getStatusForReason(this.currentItem.type) === 'Первичная' ?
-      `<button  class="button button_approved">заказать ЕГРН</button>` : ''}
+                    <!-- ${this.getStatusForReason(this.currentItem.type) === 'Первичная' ?
+      `<button  class="button button_approved">заказать ЕГРН</button>` : ''} -->
                   </div>
                 </div>
                 <!-- <div class="bottom__right"> 
