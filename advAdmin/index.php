@@ -33,11 +33,11 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
     <script src="../toolsForProject/chief-slider/chief-slider.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU" type="text/javascript"></script>
-    <link rel="stylesheet" href="scss-css/style.css">
+    <link rel="stylesheet" href="scss-css/style.css?s=<?=rand(0, 1000000)?>">
     <title>Moderator</title>
 </head>
 <body>
-<div class="main"></div>
-<script src="js/script.js"></script>
+    <?php echo('<div class="main"></div>'); ?>
+    <?php echo('<script src="js/script.js?G='.rand(0,1000000).'"></script>'); ?>
 </body>
 </html>
