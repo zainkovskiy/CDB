@@ -1,0 +1,73 @@
+@font-face {
+  font-family: "montserrat";
+  src: url("font/Montserrat-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "montserrat";
+  src: url("font/Montserrat-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+}
+.controller__alert, .controller__file-name {
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.8px;
+}
+
+.controller__btn {
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0.8px;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #dfdfdf;
+  background-image: url("img/centr_logo.png");
+  background-position: 50% 2%;
+  background-repeat: no-repeat;
+  background-size: 22%;
+  background-blend-mode: soft-light;
+}
+
+.controller {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.controller__file {
+  display: none;
+}
+.controller__file-name {
+  font-size: 12px;
+}
+.controller__btn {
+  display: block;
+  padding: 5px 10px;
+  text-transform: uppercase;
+  text-align: center;
+  border: 1px solid black;
+  cursor: pointer;
+  user-select: none;
+}
+.controller__btn:hover {
+  background-color: #fff;
+}
+.controller__btn:active {
+  background-color: #ccc;
+}
+.controller__btn_disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/*# sourceMappingURL=style.css.map */

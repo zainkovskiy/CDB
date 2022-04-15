@@ -412,8 +412,8 @@ class App {
                 <div class="card__info"> 
                   <p class="card__info-text">Заявка: 
                     <span data-info="more" data-req="${this.currentItem.ad}" class="card__info-text_link">
-                      от ${this.currentItem.created.split(" ")[0].split('-').reverse().join('.')}
-                      ${this.currentItem.created.split(" ")[1].split('.')[0]}
+                      от ${this.currentItem.created && this.currentItem.created.split(" ")[0].split('-').reverse().join('.')}
+                      ${this.currentItem.created && this.currentItem.created.split(" ")[1].split('.')[0]}
                     </span>
                   </p>
                   <p class="card__info-text">Клиент:<span>${this.currentItem.clients[0] ?

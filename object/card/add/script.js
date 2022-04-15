@@ -359,7 +359,8 @@ class Handler{
         this.setChange(allInput, allSelect, allRadio);
         add.obj[textArea.name] = textArea.value.replace(/\n/g, ` *EOL `);
         if (action === 'old'){
-          document.querySelector('.save-change__text').innerHTML = 'Объект подлежит повторной модерации';
+          document.querySelector('.save-change__text').innerHTML = 'Проверьте местоположение на карте! При необходимости поправьте координаты';
+          document.querySelector('INPUT[name="lat"]').scrollIntoView({block: "center", behavior: "smooth"});
           document.querySelector('.save-change').classList.add('save-change_active');
           if (add.obj.Rights === 'Full'){
             this.setStatusAndModeration();
