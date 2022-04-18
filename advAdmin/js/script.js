@@ -631,7 +631,7 @@ class App {
         return true;
       } else if (event.target.dataset.open === 'deal'){
         let readyString = `https://crm.centralnoe.ru/crm/deal/details/${event.target.dataset.deal}/`;
-        BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+        BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: '100%', });
         return true;
       } else if (event.target.dataset.message === 'send'){
         this.sendMessage();
