@@ -450,6 +450,7 @@ class App {
                     <div class="card__buttons"> 
                       <button data-open="card" data-req="${this.currentItem.ad}" class="button card__btn">открыть</button>
                       <button data-open="edit" data-req="${this.currentItem.ad}" class="button card__btn">редактировать</button>
+                      <button data-open="deal" data-deal="${this.currentItem.contractId}" class="button card__btn">сделка</button>
                     </div>
                   </div>
                 </div> 
@@ -626,6 +627,10 @@ class App {
         this.openEdit(event.target.dataset.req);
       } else if (event.target.dataset.open === 'person'){
         let readyString = `/company/personal/user/${event.target.dataset.id}/`;
+        BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
+        return true;
+      } else if (event.target.dataset.open === 'deal'){
+        let readyString = `https://crm.centralnoe.ru/crm/deal/details/${event.target.dataset.deal}/`;
         BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
         return true;
       } else if (event.target.dataset.message === 'send'){
