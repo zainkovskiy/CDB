@@ -168,14 +168,6 @@ img {
   background-size: 70%;
   pointer-events: none;
 }
-.btn__status_approved {
-  background-color: #BBED21;
-  background-image: url("../img/approved.svg");
-}
-.btn__status_denied {
-  background-color: #ED2121;
-  background-image: url("../img/denied.svg");
-}
 .btn__status_question {
   background-color: #d5d5d5;
   background-image: url("../img/question-mark.svg");
@@ -186,6 +178,14 @@ img {
   position: absolute;
   left: 5px;
   top: 5px;
+}
+.btn__status_denied {
+  background-color: #ED2121;
+  background-image: url("../img/denied.svg");
+}
+.btn__status_approved {
+  background-color: #BBED21;
+  background-image: url("../img/approved.svg");
 }
 
 /* SCROLLBAR */

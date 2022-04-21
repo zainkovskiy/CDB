@@ -374,18 +374,10 @@ class Render {
             </label>
             <nav class="change-page">
               <a class="ui-btn ui-btn-secondary ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
-              <a class="ui-btn ui-btn-icon-page change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
-      ? this.obj.privileges.card : 'isVisible'}" href="../agency/?source=${source}&id=${btoa(UID)}">ДОУ</a>
-              <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
-      ? this.obj.privileges.card : 'isVisible'}" href="../photoEditor/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Фото</a>
-              <!-- <a class="ui-btn ui-btn-icon-page change-page__link 
-              ${login === "zainkovskiyaa" || login === 'mischenkoiv' || login === 'osmanovnyu' || login === 'denishevalf' ? '' : 'isVisible'}" 
-              href="../agency/?source=${source}&id=${UID}&IDDEAL=${deal}">ДОУ</a> -->
-
+              <a class="ui-btn ui-btn-icon-page change-page__link" href="../plug/?source=${source}&id=${btoa(UID)}">ДОУ</a>
+              <a class="ui-btn change-page__link" href="../plug/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Фото</a>
               <a class="ui-btn change-page__link ${this.obj.privileges.card === 'full' || this.obj.privileges.card === 'ADB'
       ? this.obj.privileges.card : 'isVisible'}" href="../promotion/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">Реклама</a>
-              <a class="ui-btn ui-btn-icon-done change-page__link ${this.obj.privileges.card === 'ADB'
-      ? '' : 'disable'}" href="../buySell/?source=${source}&id=${btoa(UID)}&IDDEAL=${deal}">ПДКП/ДКП</a>
             </nav>
             <div class="carousel"> 
                 <div class="slider">

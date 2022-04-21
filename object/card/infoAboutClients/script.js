@@ -190,7 +190,8 @@ class Handler{
               this.removeLoader();
               if (data.result === 'ok' && data.deal){
                 const contact = document.querySelector(`INPUT[name='PHONE']`).value;
-                location=`https://crm.centralnoe.ru/objectCard/add/?action=frompars&id=${UID}&contact=${contact}&deal=${data.deal}`;
+                // location=`https://crm.centralnoe.ru/objectCard/add/?action=frompars&id=${UID}&contact=${contact}&deal=${data.deal}`;
+                location=`https://crm.centralnoe.ru/CDB/object/card/add/?action=frompars&id=${UID}&contact=${contact}&deal=${data.deal}`;
               } else {
                 BX.SidePanel.Instance.close();
               }

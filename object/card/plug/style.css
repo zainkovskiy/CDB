@@ -1,0 +1,23 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plug__text {
+  display: block;
+  color: #484848;
+}
+.plug__img {
+  display: block;
+  width: 100%;
+}
+.plug__link {
+  display: block;
+}
+.plug__manual {
+  color: #484848;
+  font-weight: 700;
+}
+
+/*# sourceMappingURL=style.css.map */

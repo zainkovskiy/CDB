@@ -165,14 +165,6 @@ img{
   background-position: center;
   background-size: 70%;
   pointer-events: none;
-  &_approved{
-    background-color: #BBED21;
-    background-image: url("../img/approved.svg");
-  }
-  &_denied{
-    background-color: #ED2121;
-    background-image: url("../img/denied.svg");
-  }
   &_question{
     background-color: #d5d5d5;
     background-image: url("../img/question-mark.svg");
@@ -183,6 +175,14 @@ img{
     position: absolute;
     left: 5px;
     top: 5px;
+  }
+  &_denied{
+    background-color: #ED2121;
+    background-image: url("../img/denied.svg");
+  }
+  &_approved{
+    background-color: #BBED21;
+    background-image: url("../img/approved.svg");
   }
 }
 
