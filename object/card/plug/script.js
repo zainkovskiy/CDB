@@ -15,9 +15,11 @@ class Plug {
           Теперь данный функционал ДОУ и Фото не доступен из объекта. Для дальнейшей работы объект должен быть привязан к сделке.
         </span>
         <img class="plug__img" src="../img/image.png" alt="photo">
-        <img class="plug__img" src="../img/deaPhotol.png" alt="photo">
-        <span class="plug__manual">Инструкции:</span>
+        <span class="plug__text">Если объект не привязан</span>
+        <span class="plug__manual">Инструкция по привязке сделки к объекту:</span>
         <a class="plug__link" download="Как привязать сделку к объекту" href="files/bind.docx">Как привязать сделку к объекту</a>
+        <img class="plug__img" src="../img/deaPhotol.png" alt="photo">
+        <span class="plug__manual">Инструкции по работе с новым функционалом ДОУ и Фото:</span>
         <a class="plug__link" download="Как работать с новым ДОУ" href="files/dou.docx">Как работать с новым ДОУ</a>
         <a class="plug__link" download="Как работать с новым Фото" href="files/photo.docx">Как работать с новым Фото</a>
       </div>`)
