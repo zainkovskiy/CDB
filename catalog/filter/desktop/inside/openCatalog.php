@@ -89,7 +89,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                 <button data-filter="sale" class="ui-btn ui-btn-primary-dark bx-btn__craft">продавцы</button>
                 <button data-only="mine" class="ui-btn ui-btn-primary-dark bx-btn__craft">только мои</button>
                 <button data-only="office" class="ui-btn ui-btn-primary-dark bx-btn__craft">Мой офис</button>
-                <button data-client="search" class="ui-btn ui-btn-primary-dark bx-btn__craft">Поиск по клиенту</button>
+                <button data-client="search" class="ui-btn ui-btn-primary-dark bx-btn__craft">Номер клиента</button>
                 <button data-url="search" class="ui-btn ui-btn-primary-dark bx-btn__craft">Поиск по ссылке</button>
             </div>
             <span class='alert' title="сообщить об ошибке" data-alert="open"></span>
@@ -102,7 +102,7 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
             </div>
             <span class="search-form__title">Комнаты</span>
             <span class="search-form__title">Цена в тыс. руб.</span>
-            <span class="filter-clear" data-clear='filter'>Сбросить все фильтры</span>
+            <span class="search-form__title">Застройщик/ЖК (для новостроек)</span>
             <div class="type">
                 <input data-elem="check" class="start__input" name="reqTypeofRealty" type="text" value="Квартиры" autocomplete="new-password" readonly>
                 <span class='start__input-arrow'></span>
@@ -155,25 +155,20 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                     </div>
                 </div>
             </div>
-            <div class="buttons">
-                  <div class='btn__wrap-extra'>
-                      <button title="Еще фильтры" class="ui-btn btn-search bx-btn__craft" data-name="extra">Доп. фильтры</button>
-                      <span class='count count-extra visible'></span>
-                    </div>
-                      <div class="source__wrap">
-                        <input checked class="source__input" name="1c" id="centr" type="checkbox">
-                        <label class="source__label source__label-centr" for="centr"></label>
-                      </div>
-                      <div class="source__wrap">
-                        <input class="source__input" name="pars" id="all" type="checkbox">
-                        <label class="source__label source__label-all" for="all"></label>
-                      </div>
-                      <div class="source__wrap" title="МЛС Новостройки">
-                         <input class="source__input" name="mlsn" id="mlsn" type="checkbox">
-                         <label class="source__label source__label-mlsn" for="mlsn"></label>
-                       </div>
-                <button title="Поиск" class="ui-btn btn-search bx-btn__craft" data-name="search">найти</button>
-            </div>
+              <div class="builder">
+                <input data-type=''
+                  data-elem="check"
+                  class="start__input"
+                  name="builder"
+                  type="text"
+                  value=""
+                  autocomplete="off"
+                  disabled
+                >
+                <span class='start__input-arrow'></span>
+                <div data-elem="check" class="type__wrap builder__block visible">
+                </div>
+              </div>
         </div>
         <div class='setting'>
             <div class="sort">
@@ -192,24 +187,50 @@ CJSCore::Init(['ui','sidepanel','jquery2']);
                 </div>
             </div>
             <p class='quantity'></p>
-            <div class='basket'>
-                <button title="Новый объект" class="btn-add ui-btn ui-btn-primary" data-name="add">Добавить новый объект</button>
-                <button title="Карта" class="btn btn-map" data-name="map"></button>
-                <div class="basket__wrapper">
-                    <button title="Корзина" data-elem="check" class="btn btn-basket" data-name="basket"></button>
-                    <span class='count count-basket visible'></span>
-                </div>
-                <button title="Сохраненные фильтры" class="btn btn-story" data-name="story"></button>
-                <div data-elem="check" class="basket__wrap basket__block visible">
-                    <div data-elem="check" class='basket__items'>
+            <div>
+              <span class="filter-clear" data-clear='filter' style="display: block; margin: 0 0 10px 0">
+                Сбросить все фильтры
+              </span>
+              <div style='display: flex; gap: 0.5rem'>
+                <div class='basket'>
+                    <button title="Новый объект" class="btn-add ui-btn ui-btn-primary" data-name="add">Добавить новый объект</button>
+                    <button title="Карта" class="btn btn-map" data-name="map"></button>
+                    <div class="basket__wrapper">
+                        <button title="Корзина" data-elem="check" class="btn btn-basket" data-name="basket"></button>
+                        <span class='count count-basket visible'></span>
+                    </div>
+                    <button title="Сохраненные фильтры" class="btn btn-story" data-name="story"></button>
+                    <div data-elem="check" class="basket__wrap basket__block visible">
+                        <div data-elem="check" class='basket__items'>
 
-                    </div>
-                    <div class='basket__btn-wrap'>
-                        <button data-elem="check" class="ui-btn" data-basket="save">сохранить</button>
-                        <button data-elem="check" class="ui-btn ui-btn-danger-dark" data-basket="clear">очистить</button>
+                        </div>
+                        <div class='basket__btn-wrap'>
+                            <button data-elem="check" class="ui-btn" data-basket="save">сохранить</button>
+                            <button data-elem="check" class="ui-btn ui-btn-danger-dark" data-basket="clear">очистить</button>
+                        </div>
                     </div>
                 </div>
+                <div class="buttons">
+                  <div class='btn__wrap-extra'>
+                    <button title="Еще фильтры" class="ui-btn btn-search bx-btn__craft" data-name="extra">Доп. фильтры</button>
+                    <span class='count count-extra visible'></span>
+                    </div>
+                      <div class="source__wrap">
+                        <input checked class="source__input" name="1c" id="centr" type="checkbox">
+                        <label class="source__label source__label-centr" for="centr"></label>
+                      </div>
+                      <div class="source__wrap">
+                        <input class="source__input" name="pars" id="all" type="checkbox">
+                        <label class="source__label source__label-all" for="all"></label>
+                      </div>
+                      <div class="source__wrap" title="Новостройки">
+                       <input class="source__input" name="mlsn" id="mlsn" type="checkbox">
+                       <label class="source__label source__label-mlsn" for="mlsn"></label>
+                       </div>
+                <button title="Поиск" class="ui-btn btn-search bx-btn__craft" data-name="search">найти</button>
+              </div>
             </div>
+          </div>
         </div>
         <div class='pagination visible'></div>
         <div class="map__wrapper visible">

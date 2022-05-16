@@ -536,11 +536,13 @@ class AddressHandler {
           this.initMap(this.cards);
         }).catch(() => this.removeLoader())
       } else if (event.target.dataset.client === 'search'){
-        this.openModule('Поиск по клиенту', this.searchToClients());
+        this.openModule('Поиск по номеру для клиента', this.searchToClients());
         this.checkCurrentElem();
       } else if (event.target.dataset.url === 'search') {
         this.openModule('Поиск по ссылке', this.searchToURL());
         this.checkCurrentElem();
+      } else if (event.target.dataset.input === 'builder'){
+        this.setBuildInputValue(event);
       }
     });
 
@@ -574,7 +576,8 @@ class AddressHandler {
               }
             }
           }, 500)
-        } else {
+        }else if (input.name === 'builder') {
+        }else {
           const elem = document.querySelector(`.${input.name}__block`);
           elem.classList.remove('visible');
           this.currentElem = elem;
@@ -630,6 +633,14 @@ class AddressHandler {
           input.selectionStart = input.value.length;
         })
       }
+      if (input.name === 'builder'){
+        input.addEventListener('keyup', event => this.getBuilderList(event))
+        input.addEventListener('blur', event => {
+          if (event.target.value.length === 0){
+            this.deleteKeyBuilder();
+          }
+        })
+      }
     }
 
     document.body.addEventListener('click', event => {
@@ -639,6 +650,63 @@ class AddressHandler {
     })
 
     this.handlerPriceFilter();
+  }
+  async getBuilderList(event){
+    const requestOptions = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: "include",
+      headers: {"Content-Type": "application/json; charset=utf-8",},
+      body: JSON.stringify({
+        action: "blockBuilderName",
+        req : event.target.value
+      })
+    };
+    const res = await fetch('https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Object/FilterGetter.php', requestOptions)
+    if (!res.ok){
+      throw new Error('Ответ сети был не ok.');
+    }
+    res.json().then(data => {
+      this.renderBuilderItems(data, event.target.name);
+      console.log(data)
+    })
+  }
+  renderBuilderItems(builderItems, containerName){
+    const container = document.querySelector(`.${containerName}__block`);
+    container.innerHTML = '';
+    if (builderItems.length > 0) {
+      builderItems.map(item => {
+        container.insertAdjacentHTML('beforeend', `<div class="builder__row" 
+          data-elem="check" 
+          data-input=${containerName}
+          data-type=${item.type}
+          data-value=${item.name.replace(/\s/g, '!')}
+          >
+            <span class="builder__top">${item.type === "blockBuilderName" ? 'Застройщик' : "ЖК"}</span>
+            <span class="builder__bottom">${item.name}</span>
+          </div>`)
+      })
+    } else {
+      container.insertAdjacentHTML('beforeend', `<span class="builder__bottom builder__error">нет совпадений</span>`)
+    }
+    container.classList.remove('visible');
+    this.currentElem = container;
+  }
+  deleteKeyBuilder(){
+    if (this.objectFilter.blockName){
+      delete this.objectFilter.blockName;
+    }
+    if (this.objectFilter.blockBuilderName){
+      delete this.objectFilter.blockBuilderName;
+    }
+  }
+  setBuildInputValue(event){
+    const dataset = event.target.dataset;
+    const input = document.querySelector(`input[name=${dataset.input}]`);
+    input.value = dataset.value.replace(/!/g, ' ');
+    input.dataset.type = dataset.type;
+    this.checkCurrentElem();
   }
   setFilterSale(){
     if (!this.objectFilter.filterSale || this.objectFilter.filterSale === 0){
@@ -917,7 +985,7 @@ class AddressHandler {
   openCard(idReq, source) {
     const typeA = source;
     let ScrW = window.screen.width*0.95;
-    let readyString = "https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source="+typeA+"&id="+idReq;
+    let readyString = "https://crm.centralnoe.ru/cardObject/?source="+typeA+"&reqNumber="+idReq;
     BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 925, });
     return true;
   }
@@ -1038,10 +1106,16 @@ class AddressHandler {
           sourceInputs.forEach(input => {
             input.name !== 'mlsn' ? input.checked = false : '';
           })
+          document.querySelector(`INPUT[name='builder']`).disabled = false;
         } else {
           sourceInputs.forEach(input => {
             input.name === 'mlsn' ? input.checked = false : '';
           })
+          const builderInput = document.querySelector(`INPUT[name='builder']`);
+          builderInput.disabled = true;
+          builderInput.value = '';
+          builderInput.dataset.type = '';
+          this.deleteKeyBuilder();
         }
       })
     }
@@ -1076,6 +1150,7 @@ class AddressHandler {
   }
 
   setAllValue(){
+    const buildInput = document.querySelector(`INPUT[name='builder']`);
     this.objectFilter.fullAddress = this.addressValue ? this.addressValue : null;
     this.objectFilter.metroDistance = this.metroTime ? this.metroTime : null;
     this.objectFilter.area = this.districtArray.length === 0 ? null : this.districtArray;
@@ -1087,6 +1162,9 @@ class AddressHandler {
     this.objectFilter.city = this.addressObject ? this.addressObject.data.city ? this.addressObject.data.city : null : null;
     this.objectFilter.settlement = this.addressObject ? this.addressObject.data.settlement ? this.addressObject.data.settlement : null : null;
     this.objectFilter.houseNumber = this.addressObject ? this.addressObject.data.house ? this.addressObject.data.house : null : null;
+    if (buildInput.dataset.type && buildInput.value.length > 0) {
+      this.objectFilter[buildInput.dataset.type] = buildInput.value;
+    }
     for (let room of this.countRoom){
       this.objectFilter.reqRoomCount.push(room.value);
     }
@@ -2485,7 +2563,7 @@ class Cards {
                     <img data-open="openCard" data-req="${this.cards[i].reqNumber}" data-source="${this.cards[i].reqType}" class="card__img" src="${this.cards[i].reqPhoto}" alt="img" onerror="errorImg(this)">
                     <div class="card__wrap">
                         <div class="card__info">                 
-                            <a href="https://crm.centralnoe.ru/CDB/object/card/cardObject.php?source=${this.cards[i].reqType}&id=${this.cards[i].reqNumber}" 
+                            <a href="https://crm.centralnoe.ru/cardObject/?source=${this.cards[i].reqType}&reqNumber=${this.cards[i].reqNumber}" 
                             data-open="openCard" data-req="${this.cards[i].reqNumber}" 
                             data-source="${this.cards[i].reqType}" class="card__title card__link" onclick="event.preventDefault()">
                               ${this.cards[i].reqTypeofRealty === "Квартира" || this.cards[i].reqTypeofRealty === "Дом"

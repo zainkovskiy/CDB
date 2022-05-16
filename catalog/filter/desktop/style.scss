@@ -138,7 +138,7 @@ ul {
   padding: 20px;
   background-color: white;
   display: grid;
-  grid-template-columns: 15% 1fr 15% 15% min-content;
+  grid-template-columns: 15% 1fr 15% 15% 15%;
   grid-template-rows: repeat(2, auto);
   grid-gap: 10px;
   margin: 0 0 10px 0;
@@ -203,6 +203,10 @@ ul {
   border-radius: 5px;
   position: relative;
   text-overflow: ellipsis;
+  &:disabled{
+    opacity: .3;
+    background-color: #bfbfbf;
+  }
   &-empty{
     position: absolute;
     display: block;
@@ -256,6 +260,8 @@ ul {
     box-shadow: 4px 4px 8px 0 rgb(34 60 80 / 20%);
     padding: 5px 0;
     z-index: 5;
+    width: 100%;
+    border-radius: 5px;
   }
   &__select{
     width: 100%;
@@ -290,6 +296,8 @@ ul {
     box-shadow: 4px 4px 8px 0 rgb(34 60 80 / 20%);
     padding: 5px 0;
     z-index: 5;
+    width: 100%;
+    border-radius: 5px;
   }
   &__label{
     width: 100%;
@@ -418,6 +426,8 @@ ul {
     padding: 10px;
     z-index: 5;
     right: 0;
+    border-radius: 5px;
+    width: 100%;
   }
   &__input{
     background: white;
@@ -425,8 +435,8 @@ ul {
     border: 1px solid #c4c4c4;
     font-size: 14px;
     padding: 6px 10px;
-    width: 60px;
     border-radius: 5px;
+    width: 100%;
   }
   &__wrap{
     display: flex;
@@ -438,6 +448,7 @@ ul {
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
+      justify-content: space-between;
     }
   }
   &__toggle-item{
@@ -480,6 +491,42 @@ ul {
       bottom: 0;
       margin: auto 0;
     }
+  }
+}
+
+.builder{
+  position: relative;
+  &__row{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    cursor: pointer;
+    box-sizing: border-box;
+    user-select: none;
+    &:hover{
+      background: #f2f2f2;
+    }
+  }
+  &__block{
+    max-height: 400px;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+  &__top{
+    font-size: 9px;
+    pointer-events: none;
+  }
+  &__bottom{
+    pointer-events: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  &__error{
+    width: 100%;
+    padding: 10px;
+    display: block;
   }
 }
 
@@ -960,7 +1007,7 @@ ul {
       background-image: url("img/all.png");
     }
     &-mlsn{
-      background-image: url("img/trendagent-without-back.png");
+      background-image: url("https://crm.centralnoe.ru/dealincom/assets/building.png");
       background-size: 60%;
     }
   }

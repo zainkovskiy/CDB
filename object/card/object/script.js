@@ -277,7 +277,7 @@ class Render {
     }
   }
   getClient(){
-    if (source === 'pars' || this.obj.privileges.card === 'full' || this.obj.docType === null || this.obj.docType === 'Без договора'){
+    if (source === 'pars' || this.additional.docType === null || this.additional.docType === 'Без договора'){
       return `<div class="contacts">
                   <span class="text">Владелец</span>
                   <span class="contacts__name text">${this.obj.client ? this.obj.client : 'не указан'}</span>  

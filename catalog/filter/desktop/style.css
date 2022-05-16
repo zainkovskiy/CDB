@@ -147,7 +147,7 @@ ul {
   padding: 20px;
   background-color: white;
   display: grid;
-  grid-template-columns: 15% 1fr 15% 15% min-content;
+  grid-template-columns: 15% 1fr 15% 15% 15%;
   grid-template-rows: repeat(2, auto);
   grid-gap: 10px;
   margin: 0 0 10px 0;
@@ -216,6 +216,10 @@ ul {
   position: relative;
   text-overflow: ellipsis;
 }
+.start__input:disabled {
+  opacity: 0.3;
+  background-color: #bfbfbf;
+}
 .start__input-empty {
   position: absolute;
   display: block;
@@ -271,6 +275,8 @@ ul {
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   padding: 5px 0;
   z-index: 5;
+  width: 100%;
+  border-radius: 5px;
 }
 .type__select {
   width: 100%;
@@ -307,6 +313,8 @@ ul {
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   padding: 5px 0;
   z-index: 5;
+  width: 100%;
+  border-radius: 5px;
 }
 .room__label {
   width: 100%;
@@ -440,6 +448,8 @@ ul {
   padding: 10px;
   z-index: 5;
   right: 0;
+  border-radius: 5px;
+  width: 100%;
 }
 .price__input {
   background: white;
@@ -447,8 +457,8 @@ ul {
   border: 1px solid #c4c4c4;
   font-size: 14px;
   padding: 6px 10px;
-  width: 60px;
   border-radius: 5px;
+  width: 100%;
 }
 .price__wrap {
   display: flex;
@@ -461,6 +471,7 @@ ul {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
+  justify-content: space-between;
 }
 .price__toggle-item {
   display: flex;
@@ -502,6 +513,42 @@ ul {
   top: 0;
   bottom: 0;
   margin: auto 0;
+}
+
+.builder {
+  position: relative;
+}
+.builder__row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  user-select: none;
+}
+.builder__row:hover {
+  background: #f2f2f2;
+}
+.builder__block {
+  max-height: 400px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.builder__top {
+  font-size: 9px;
+  pointer-events: none;
+}
+.builder__bottom {
+  pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.builder__error {
+  width: 100%;
+  padding: 10px;
+  display: block;
 }
 
 .module {
@@ -993,7 +1040,7 @@ ul {
   background-image: url("img/all.png");
 }
 .source__label-mlsn {
-  background-image: url("img/trendagent-without-back.png");
+  background-image: url("https://crm.centralnoe.ru/dealincom/assets/building.png");
   background-size: 60%;
 }
 
