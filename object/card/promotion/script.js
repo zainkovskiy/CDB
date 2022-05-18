@@ -22,21 +22,17 @@ class Promotion {
   //   }
   // }
   async getSetting(){
-    var request1Cnamed = new Object();
-    request1Cnamed.reqNumber = UID;
-    request1Cnamed.activeUser = login;
-    request1Cnamed.userId = userId;
-
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json; charset=utf-8");
-    var raw = JSON.stringify(request1Cnamed);
-    var requestOptions = {
+    const requestOptions = {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       credentials: "include",
-      headers: myHeaders,
-      body: raw
+      headers: {"Content-Type": "application/json; charset=utf-8"},
+      body: JSON.stringify({
+        reqNumber: UID,
+        activeUser: login,
+        userId: userId,
+      })
     };
 
     let response = await fetch("https://crm.centralnoe.ru/dealincom/factory/adFactory.php", requestOptions);
@@ -64,12 +60,6 @@ class RenderTop{
             <label class="mobile-toggle__label" for="menu__toggle"> 
               <span class="mobile-toggle__span"></span>
             </label>
-            <nav class="change-page">
-              <a class="ui-btn ui-btn-icon-eye-opened change-page__link" href="../object/?source=${source}&id=${UID}&IDDEAL=${deal}">Объект</a>              
-              <a class="ui-btn ui-btn-icon-page change-page__link" href="../plug/?source=${source}&id=${objectUID}">ДОУ</a>
-              <a class="ui-btn change-page__link" href="../plug/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Фото</a>              
-              <a class="ui-btn ui-btn-secondary change-page__link" href="../promotion/?source=${source}&id=${objectUID}&IDDEAL=${deal}">Реклама</a>
-            </nav> 
             <div class="header">
             <div class="place">
               <span data-place="avito" class="place__btn place__btn-avito"></span>

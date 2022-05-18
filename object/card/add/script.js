@@ -265,7 +265,6 @@ class Header {
             <div class="header"> 
               <div class="header__wrap"> 
                 <span class="header__title">Объект недвижимости</span>
-                <a href="../object/?source=1c&id=${UID}&IDDEAL=${deal}" class="header__back ${action === 'new' && !contact ? 'inVisible' : ''}">Вернуться к объекту</a>
                 <span onclick="BX.SidePanel.Instance.close([immediately=false])" class="header__back">Закрыть вкладку</span>
               </div>
               <div class="header__bottom"> 

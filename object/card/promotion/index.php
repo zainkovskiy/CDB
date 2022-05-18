@@ -29,13 +29,6 @@ $UserID = CUser::GetID();
     let deal = '<? echo($_GET['IDDEAL']); ?>';
   </script>
   <script src="//api.bitrix24.com/api/v1/"></script>
-  <script>
-      BX24.ready(async () => {
-      console.log('Heght' + document.scrollHeight);
-          const h = window.screen.availHeight;
-          BX24.resizeWindow(window.innerWidth,  h, () => {} );
-          })
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">

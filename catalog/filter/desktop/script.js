@@ -2160,7 +2160,7 @@ class AddressHandler {
                   <div class="row__item"> 
                     <input name="isShowAgent" class="row__checkbox" type="checkbox" id="isAgent"
                     ${this.objectFilter.isShowAgent ? 'checked' : ''}>
-                    <label class="row__label-check" for="isAgent">Не выводить агенства<i class="i"></i></label>
+                    <label class="row__label-check" for="isAgent">Не выводить агентства<i class="i"></i></label>
                   </div>
                   <div class="row__item"> 
                     <input name="isReserve" class="row__checkbox" type="checkbox" id="isReserve"
