@@ -336,7 +336,7 @@ class Avito{
                   <span class="panel__text">Выделение цветом</span>
                   <label class="switch">
                     <input data-price="${this.sortPrice.Highlight}" data-action="Выделение цветом" data-options="Highlight" name="AVITO/Domofond" type="checkbox" 
-                      ${this.platform.selectors.highlighting ? 'checked' : ''}
+                      ${this.platform.selectors.Highlight ? 'checked' : ''}
                       ${this.platform.selectors.XL || this.platform.selectors.Pack ? 'disabled' : ''}
                       >
                     <span class="slider"></span>
@@ -410,7 +410,7 @@ class HandlerAvito{
     } else if (this.platform.selectors.length !== 0){
       valueDisable = 'eventNone';
     }
-    selectStyle('.panel-avito', 'avito-select',`${selectWord ? selectWord : 'Выбрать'}`, `${valueDisable}`);
+    selectStyle('.panel-avito', 'avito-select',`${selectWord ? selectWord : 'Выбрать'}, ${valueDisable}`);
   }
   handlerCheckbox(){
     const allCheckbox = this.container.querySelectorAll(`INPUT[type='checkbox']`);

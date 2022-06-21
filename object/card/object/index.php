@@ -1,31 +1,16 @@
 <?php
-require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
-$static_html_cache = \Bitrix\Main\Data\StaticHtmlCache::getInstance();
-$static_html_cache->deleteAll();
-require_once($_SERVER["DOCUMENT_ROOT"]."/dealincom/class/iHelper.php");
 
-CJSCore::Init();
+$arrParams = $_GET;
 
-if($USER->IsAuthorized()){
-    $APPLICATION->ShowHead();}
-mb_internal_encoding("UTF-8");
-$source = $_GET['source'];
-$id = $_GET['id'];
-$deal = $_GET['IDDEAL'];
-$ActiveUser = CUser::GetLogin();
-$ActiveUserID = CUser::GetID();
-\Bitrix\Main\UI\Extension::load("ui.buttons");
-\Bitrix\Main\UI\Extension::load("ui.notification");
-\Bitrix\Main\UI\Extension::load("ui.buttons.icons");
-\Bitrix\Main\UI\Extension::load("ui.tooltip");
+$arrParams['reqNumber'] = $arrParams['id'];
 
-CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
+header("Location: https://crm.centralnoe.ru/cardObject/?".http_build_query($arrParams));
 ?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <script>
-    let source ='<? echo($source); ?>';
+    let source ='<? echo($source); ?>';s
     let UID ='<? echo($id); ?>';
     let login ='<? echo($ActiveUser); ?>';
     let loginID ='<? echo($ActiveUserID); ?>';

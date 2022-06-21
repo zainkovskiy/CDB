@@ -481,9 +481,11 @@ class AddressHandler {
       } else if (event.target.dataset.info === 'catalog'){
         this.openInfo();
       } else if (event.target.dataset.alert === 'open'){
-        this.openModule('Сообщить об ошибке', this.alertErrorLayout());
-        const sound = new Audio('audio/bell-sound.mp3')
-        sound.play();
+        BX.SidePanel.Instance.open(`https://crm.centralnoe.ru/attention/questions/?reqNumber=${1}&source=1c&action=5`, {animationDuration: 300,  width: 925, });
+        //
+        // this.openModule('Сообщить об ошибке', this.alertErrorLayout());
+        // const sound = new Audio('audio/bell-sound.mp3')
+        // sound.play();
       } else if (event.target.dataset.name === 'add'){
         this.openNewObject();
       } else if (event.target.dataset.filter === 'sale'){
