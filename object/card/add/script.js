@@ -1680,23 +1680,27 @@ class Float{
                 </select>
               </div>
             </div> 
-            <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
-              <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
-                <input name="reqPrice" id="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autocomplete="new-password">
-              </div> 
-              <div class="form__item">
-                <div class="form__item-subitle"> 
-                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
-                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
-                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+            ${ action !== 'old' ?
+      `<div class="price">
+                <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+                <div class="form__item">
+                  <span class="form__subtitle">Цена, тыс руб.</span>
+                  <input name="reqPrice" id="reqPrice" class="form__input" type="text"
+                         value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autoComplete="new-password">
                 </div>
-                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
-                autocomplete="new-password">
-              </div>
-            </div>
+                <div class="form__item">
+                  <div class="form__item-subitle">
+                    <span class="form__subtitle">Цена в рекламу, тыс руб.</span>
+                    <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                           ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                  </div>
+                  <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text"
+                         value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}"
+                         ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
+                         autoComplete="new-password">
+                </div>
+              </div>` : ''
+    }            
             <div class="infoHouse"> 
               <span class="form__title">информация о доме<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
               <div class="form__item">
@@ -1931,23 +1935,27 @@ class Room{
                 </select>
               </div>
             </div> 
-            <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
-              <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
-                <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
-              </div>
-              <div class="form__item">
-                <div class="form__item-subitle"> 
-                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
-                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
-                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+            ${ action !== 'old' ?
+      `<div class="price">
+                <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+                <div class="form__item">
+                  <span class="form__subtitle">Цена, тыс руб.</span>
+                  <input name="reqPrice" id="reqPrice" class="form__input" type="text"
+                         value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autoComplete="new-password">
                 </div>
-                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
-                autocomplete="new-password">
-              </div>
-            </div>
+                <div class="form__item">
+                  <div class="form__item-subitle">
+                    <span class="form__subtitle">Цена в рекламу, тыс руб.</span>
+                    <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                           ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                  </div>
+                  <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text"
+                         value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}"
+                         ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
+                         autoComplete="new-password">
+                </div>
+              </div>`  : ''
+    }               
             <div class="infoHouse"> 
               <span class="form__title">информация о доме<i class="i">*<p class="guid">все поля обязательны для заполнения</p></i></span>
               <div class="form__item"> 
@@ -2201,23 +2209,27 @@ class House{
                 value="${add.obj.reqHouseBuildDate ? add.obj.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
               </div>          
             </div> 
-            <div class="price"> 
+            ${ action !== 'old' ?
+      `<div class="price">
               <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
               <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
-                <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
+                <span class="form__subtitle">Цена, тыс руб.</span>
+                <input name="reqPrice" id="reqPrice" class="form__input" type="text"
+                       value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autoComplete="new-password">
               </div>
               <div class="form__item">
-                <div class="form__item-subitle"> 
-                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
+                <div class="form__item-subitle">
+                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span>
                   <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
-                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
+                         ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
                 </div>
-                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
-                autocomplete="new-password">
+                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text"
+                       value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}"
+                       ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
+                       autoComplete="new-password">
               </div>
-            </div>                
+            </div>` : ''
+    }           
             <div class="comment"> 
               <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
@@ -2325,23 +2337,27 @@ class Ground{
                 </select>
               </div>         
             </div> 
-            <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
-              <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
-                <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
-              </div>               
-              <div class="form__item">
-                <div class="form__item-subitle"> 
-                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
-                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
-                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
-                </div>
-                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
-                autocomplete="new-password">
+            ${ action !== 'old' ?
+      `<div class="price">
+            <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+            <div class="form__item">
+              <span class="form__subtitle">Цена, тыс руб.</span>
+              <input name="reqPrice" id="reqPrice" class="form__input" type="text"
+                     value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autoComplete="new-password">
+            </div>
+            <div class="form__item">
+              <div class="form__item-subitle">
+                <span class="form__subtitle">Цена в рекламу, тыс руб.</span>
+                <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                       ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
               </div>
-            </div>                        
+              <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text"
+                     value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}"
+                     ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
+                     autoComplete="new-password">
+            </div>
+            </div>` : ''
+    }                             
             <div class="comment"> 
               <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
@@ -2456,23 +2472,27 @@ class Garage{
                 value="${add.obj.reqHouseBuildDate ? add.obj.reqHouseBuildDate.split('.').reverse().join('-') : ''}">
               </div>            
             </div> 
-            <div class="price"> 
-              <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
-              <div class="form__item">
-                <span class="form__subtitle">Цена, тыс руб.</span> 
-                <input name="reqPrice" class="form__input" type="text" value="${add.obj.reqPrice ? add.obj.reqPrice : ''}">
-              </div>               
-              <div class="form__item">
-                <div class="form__item-subitle"> 
-                  <span class="form__subtitle">Цена в рекламу, тыс руб.</span> 
-                  <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
-                  ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
-                </div>
-                <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text" 
-                value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}" ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
-                autocomplete="new-password">
+            ${ action !== 'old' ?
+      `<div class="price">
+            <span class="form__title">цена<i class="i">*<p class="guid">При указании "цены в рекламу" отличной от основной, на рекламных площадках N1, CIAN, Domclick будет выгружена "цена в рекламу"</p></i></span>
+            <div class="form__item">
+              <span class="form__subtitle">Цена, тыс руб.</span>
+              <input name="reqPrice" id="reqPrice" class="form__input" type="text"
+                     value="${add.obj.reqPrice ? add.obj.reqPrice : ''}" autoComplete="new-password">
+            </div>
+            <div class="form__item">
+              <div class="form__item-subitle">
+                <span class="form__subtitle">Цена в рекламу, тыс руб.</span>
+                <input name="reqOverstatePrice_checkbox" class="form__reqOverstatePrice_checkbox" type="checkbox"
+                       ${add.obj.reqOverstate === '1' ? 'checked' : ''}>
               </div>
-            </div>                        
+              <input name="reqOverstatePrice" id="reqOverstatePrice" class="form__input" type="text"
+                     value="${add.obj.reqOverstate === '1' ? add.obj.reqOverstatePrice : `${add.obj.reqPrice ? add.obj.reqPrice : ''}`}"
+                     ${add.obj.reqOverstate === '1' ? '' : 'disabled'}
+                     autoComplete="new-password">
+            </div>
+            </div>` : ''
+    }                             
             <div class="comment"> 
               <span class="form__title">Комментарии<i class="i">*<p class="guid">Обязательно к заполнению. Внимание! Комментарий должен быть "продающим". Запрещено описывать с использованием обилия восклицательных знаков и с использованием CAPS LOCK, а так же указывать что объект в задатке.</p></i></span>
               <textarea class="comment__input" name="reqComment" cols="30" rows="10">${add.obj.reqComment ? add.obj.reqComment : ''}</textarea>
