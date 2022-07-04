@@ -2121,6 +2121,16 @@ class House{
                   </select>         
               </div>
               <div class="form__item"> 
+                <span class="form__subtitle">Планировка</span>               
+                <select class="reqTypeofLayout" name="reqTypeofLayout"> 
+                  <option value="empty" ${!add.obj.reqTypeofLayout ? 'selected' : ''}>Выберите</option>
+                  <option ${add.obj.reqTypeofLayout === 'Смежные' ? 'selected' : ''}>Смежные</option>
+                  <option ${add.obj.reqTypeofLayout === 'Изолированные' ? 'selected' : ''}>Изолированные</option>
+                  <option ${add.obj.reqTypeofLayout === 'Смежно-изолированные' ? 'selected' : ''}>Смежно-изолированные</option>
+                  <option ${add.obj.reqTypeofLayout === 'Свободная планировка' ? 'selected' : ''}>Свободная планировка</option>
+                </select>
+              </div>
+              <div class="form__item"> 
                 <span class="form__subtitle">Балкон/лоджия</span> 
                 <select class="reqGalleryAvailability" name="reqGalleryAvailability"> 
                   <option value="empty" ${!add.obj.reqGalleryAvailability ? 'selected' : ''}>Выберите</option>
