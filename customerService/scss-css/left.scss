@@ -1,14 +1,19 @@
 .left{
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  grid-gap: 10px;
+  background: #C4C4C4;
 }
 $any-color: #ff5d5d;
 
 .client{
   border-radius: 5px;
-  background: #C4C4C4;
   padding: 10px;
+  &__source{
+    font-size: 24px;
+    font-family: "montserrat", sans-serif;
+    display: block;
+    text-align: center;
+    font-weight: 700;
+    color: darkcyan;
+  }
   &__phone_cancel{
     display: block;
     width: 30px;
@@ -97,7 +102,6 @@ $any-color: #ff5d5d;
 
 .control{
   border-radius: 5px;
-  background: #C4C4C4;
   padding: 10px;
   &__wrap{
     margin: 0 0 10px 0;

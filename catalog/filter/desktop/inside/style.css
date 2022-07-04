@@ -9,9 +9,13 @@ body {
 .methodical {
   padding: 0;
 }
+
 .methodical__buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   gap: 0.5rem;
 }
 
@@ -27,6 +31,7 @@ body {
 .client-module {
   padding: 1rem;
 }
+
 .client-module__subtitle {
   font-size: 14px;
   font-weight: 400;
@@ -34,5 +39,4 @@ body {
   margin: 0 0 0.5rem 0;
   display: block;
 }
-
 /*# sourceMappingURL=style.css.map */

@@ -1,23 +1,55 @@
 @media (max-width: 1600px) {
   .center-side__top {
-    grid-template-columns: 200px 1fr 200px;
+    -ms-grid-columns: 300px 1fr 300px;
+        grid-template-columns: 300px 1fr 300px;
   }
-
+  .center-side__header {
+    -ms-grid-columns: 200px 1fr 300px;
+        grid-template-columns: 200px 1fr 300px;
+  }
   .card__info-text {
     font-size: 11px;
   }
-
   .photo__img {
     height: 400px;
   }
-
   .slider__photo {
     height: 100px;
   }
-
   .bottom {
-    grid-template-columns: 200px 1fr 200px;
+    -ms-grid-columns: 200px 1fr 200px;
+        grid-template-columns: 200px 1fr 200px;
+  }
+  .button {
+    padding: 5px;
+    font-size: 11px;
+  }
+  .card__title {
+    font-size: 22px;
+  }
+  .contact__img {
+    width: 35px;
+    height: 35px;
+  }
+  .contact__link text {
+    font-size: 14px;
+  }
+  .reason__input {
+    padding: 5px 20px 5px 5px;
+  }
+  .card__comment-title {
+    font-size: 12px;
+  }
+  .messenger__message {
+    font-size: 11px;
+  }
+  .reason__item, .search__item {
+    padding: 5px;
+    font-size: 12px;
+  }
+  .btn__status {
+    width: 20px;
+    height: 20px;
   }
 }
-
 /*# sourceMappingURL=media.css.map */

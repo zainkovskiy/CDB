@@ -59,7 +59,7 @@ ul {
 }
 
 .select__gap:after {
-  content: "";
+  content: '';
   display: block;
   width: 15px;
   height: 15px;
@@ -71,20 +71,14 @@ ul {
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  -webkit-transition: all 0.27s ease-in-out;
-  -o-transition: all 0.27s ease-in-out;
-  transition: all 0.27s ease-in-out;
+  -webkit-transition: all .27s ease-in-out;
+  transition: all .27s ease-in-out;
   -webkit-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  -o-transform: rotate(0deg);
   transform: rotate(0deg);
 }
 
 .on.select__gap:after {
   -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-
 /*# sourceMappingURL=select.css.map */

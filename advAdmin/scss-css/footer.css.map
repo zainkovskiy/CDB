@@ -1,1 +1,9 @@
-{"version":3,"sourceRoot":"","sources":[],"names":[],"mappings":"","file":"footer.css"}
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,OAAO,CAAA;EACL,SAAS,EAAE,MAAM;EACjB,OAAO,EAAE,IAAI;EACb,WAAW,EAAE,MAAM;CAUpB;;AATE,AAAD,eAAS,CAAA;EACP,OAAO,EAAE,IAAI;EACb,WAAW,EAAE,MAAM;EACnB,WAAW,EAAE,wBAAwB;EACrC,WAAW,EAAE,GAAG;EAChB,KAAK,EAAE,IAAI;EACX,KAAK,EAAE,KAAK;EACZ,WAAW,EAAE,IAAI;CAClB",
+    "sources": [
+        "footer.scss"
+    ],
+    "names": [],
+    "file": "footer.css"
+}

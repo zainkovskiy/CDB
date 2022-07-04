@@ -1,8 +1,139 @@
 .header {
   border-radius: 5px;
-  grid-column-start: 1;
+  -ms-grid-column: 1;
+      grid-column-start: 1;
   grid-column-end: 3;
   background: #C4C4C4;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 10px;
 }
 
+.inJob {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.inJob__label {
+  text-align: center;
+  width: 100%;
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 10px 0 0 10px;
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-color: white;
+}
+
+.inJob__next {
+  border: 1px solid black;
+  border-radius: 0 10px 10px 0;
+  border-left: none;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: relative;
+  background-color: white;
+}
+
+.inJob__next_timer {
+  -webkit-animation: gradient 5s linear;
+          animation: gradient 5s linear;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+
+.inJob__text {
+  font-family: "montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 16px;
+  position: relative;
+  z-index: 5;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.inJob__load {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  border-radius: 0 10px 10px 0;
+  background-color: greenyellow;
+}
+
+.inJob__checkbox {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  margin: 0;
+}
+
+.inJob__checkbox:checked ~ .inJob__label {
+  background-color: #42c327;
+  color: white;
+  border: 1px solid #3a8625;
+}
+
+.inJob__checkbox:disabled ~ .inJob__label {
+  opacity: .5;
+}
+
+.inJob__phone {
+  margin: 0 0 0 1rem;
+  padding: 10px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  font-size: 16px;
+}
+
+@-webkit-keyframes gradient {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes gradient {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
 /*# sourceMappingURL=header.css.map */

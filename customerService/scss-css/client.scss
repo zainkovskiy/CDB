@@ -1,7 +1,14 @@
 .client{
   border-radius: 5px;
-  background: #C4C4C4;
   padding: 10px;
+  &__source{
+    font-size: 24px;
+    font-family: "montserrat", sans-serif;
+    display: block;
+    text-align: center;
+    font-weight: 700;
+    color: darkcyan;
+  }
   &__comment{
     display: flex;
     flex-direction: column;

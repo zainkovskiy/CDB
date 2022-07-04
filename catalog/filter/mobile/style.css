@@ -12,6 +12,7 @@ body {
   padding: 10px;
   border-radius: 5px;
 }
+
 .header__logo {
   display: block;
   background-image: url("img/logo_CAN.png");
@@ -20,19 +21,32 @@ body {
   background-size: contain;
   height: 90px;
 }
+
 .header__wrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   margin: 10px 0 0 0;
 }
 
 .main {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   margin: 10px 0 0 0;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
+
 .main__btn {
   width: 49%;
   border-radius: 5px 0 5px 0;
@@ -40,20 +54,27 @@ body {
   border: none;
   background-color: white;
   margin: 0 0 10px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
   padding: 10px;
   position: relative;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   text-decoration: none;
   color: black;
   font-size: 14px;
   font-family: sans-serif;
 }
+
 .main__btn::before {
-  content: "";
+  content: '';
   position: absolute;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   width: 60px;
   height: 60px;
   border-bottom: solid 30px #aaaaaa;
@@ -64,9 +85,12 @@ body {
   bottom: 0;
   left: 0;
 }
+
 .main__btn::after {
   content: attr(data-count);
   position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   width: 15px;
   height: 15px;
@@ -77,8 +101,12 @@ body {
   color: white;
   font-size: 11px;
   padding: 3px;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .footer__btn {
@@ -88,5 +116,4 @@ body {
   padding: 10px;
   border-radius: 5px;
 }
-
 /*# sourceMappingURL=style.css.map */

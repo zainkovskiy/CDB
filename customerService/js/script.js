@@ -1,4 +1,4 @@
-class API{
+class API {
   constructor() {
     this.apiURL = {
       getInfo: 'https://hs-01.centralnoe.ru/Project-Selket-Main/Servers/Call/Server.php',
@@ -9,7 +9,8 @@ class API{
       getUsers: 'https://crm.centralnoe.ru/dealincom/connector/findUsers.php'
     };
   }
-  async requestToServer(api, requestNamed){
+
+  async requestToServer(api, requestNamed) {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json; charset=utf-8");
     const raw = JSON.stringify(requestNamed);
@@ -30,7 +31,7 @@ class API{
   }
 }
 
-class App{
+class App {
   constructor() {
     this.checkWork = document.querySelector('.inJob__checkbox');
     this.containerMain = document.querySelector('.main');
@@ -45,17 +46,18 @@ class App{
     this.currentSelect = '';
     this.currentOptions = '';
   }
-  init(){
+
+  init() {
     document.querySelector('.inJob__phone').addEventListener('keyup', event => {
       const regExp = new RegExp(/\d{4}/, 'g');
-      if (event.target.value.length > 0 && regExp.test(+event.target.value)){
+      if (event.target.value.length > 0 && regExp.test(+event.target.value)) {
         this.checkWork.disabled = false;
         event.target.disabled = true;
         this.checkWork.addEventListener('change', () => {
-          if (this.checkWork.checked && this.isNotItem){
+          if (this.checkWork.checked && this.isNotItem) {
             this.startJobs(+event.target.value);
           } else {
-            if (this.isNotItem){
+            if (this.isNotItem) {
               document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
               this.finishSession();
             } else {
@@ -67,21 +69,23 @@ class App{
       }
     })
   }
-  startJobs(phone){
+
+  startJobs(phone) {
     api.requestToServer('getInfo', {
       operatorId: loginID,
       action: 'onWorking',
       ext: phone
     }).then(startWork => {
       console.log(startWork)
-      if (startWork.result){
+      if (startWork.result) {
         this.sessionNumber = startWork.UID;
         this.getItem();
       }
     })
   }
-  finishSession(){
-    api.requestToServer('getInfo',{
+
+  finishSession() {
+    api.requestToServer('getInfo', {
       operatorId: loginID,
       action: 'stopWorking',
       UID: this.sessionNumber,
@@ -91,23 +95,24 @@ class App{
       this.clearThis();
     })
   }
-  getItem(){
+
+  getItem() {
     api.requestToServer('getInfo', {
       operatorId: loginID,
       action: 'getItem',
     }).then(info => {
-      if (info.error){
+      if (info.error) {
         alert('список обзвона закончился');
         return
       }
       this.info = info;
       this.isNotItem = false;
       console.log(info)
-      if (info.result){
+      if (info.result) {
         this.currentItemUID = info.UID;
         this.clientUID = info.client.UID;
         this.renderClientValue();
-        if (info.request){
+        if (info.request) {
           api.requestToServer('getObject', {
             action: info.request.type,
             reqNumber: info.request.UID,
@@ -116,28 +121,28 @@ class App{
           }).then(object => {
             console.log(object)
             this.object = object;
-            if (this.object.isFromPars){
+            if (this.object.isFromPars) {
               this.object.reqResponsibleRealtor = login;
               this.object.reqResponsibleAutor = login;
               this.object.reqResponsibleAgent = login;
               this.object.reqEditor = login;
             }
             this.renderObject(this.object.reqTypeofRealty);
-            this.renderControl();
           })
-        } else if (info.deal){
+        } else if (info.deal) {
           this.renderDeal(info.deal.UID);
-          this.renderControl();
         }
       }
     })
   }
-  clearDom(){
+
+  clearDom() {
     document.querySelector('.client').innerHTML = '';
     document.querySelector('.object').innerHTML = '';
     document.querySelector('.control').innerHTML = '';
   }
-  clearThis(){
+
+  clearThis() {
     this.client = '';
     this.clientUID = '';
     this.currentItemUID = '';
@@ -145,19 +150,20 @@ class App{
     this.object = '';
     this.isNotItem = true;
   }
-  counterTime(){
+
+  counterTime() {
     document.querySelector('.inJob__load').classList.add('inJob__next_timer');
     document.querySelector('.inJob__next').classList.remove('disabled');
     setTimeout(() => {
       document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
       document.querySelector('.inJob__next').classList.add('disabled');
-      if (this.checkWork.checked === true){
+      if (this.checkWork.checked === true) {
         this.getItem();
       }
     }, 5000)
   }
 
-  validField(){
+  validField() {
     const validLibrary = {
       totalArea: true,
       livingArea: true,
@@ -166,14 +172,14 @@ class App{
     const totalArea = document.querySelector(`INPUT[name='reqFlatTotalArea']`);
     const livingArea = document.querySelector(`INPUT[name='reqFlatLivingArea']`);
 
-    if (totalArea && totalArea.value.length === 0 || totalArea && +totalArea.value === 0){
+    if (totalArea && totalArea.value.length === 0 || totalArea && +totalArea.value === 0) {
       totalArea.classList.add('inValid');
       validLibrary.totalArea = false;
     } else {
       totalArea.classList.remove('inValid');
       validLibrary.totalArea = true;
     }
-    if (livingArea && livingArea.value.length === 0 || livingArea && +livingArea.value === 0){
+    if (livingArea && livingArea.value.length === 0 || livingArea && +livingArea.value === 0) {
       livingArea.classList.add('inValid');
       validLibrary.livingArea = false;
     } else {
@@ -184,30 +190,30 @@ class App{
     return validLibrary.livingArea && validLibrary.totalArea;
   }
 
-  handler(){
+  handler() {
     this.containerMain.addEventListener('click', event => {
       const e = event.target;
       const dataset = event.target.dataset;
-      if (e.tagName === 'INPUT' && e.type === 'text' && !e.classList.contains('inJob__phone')){
-        if (this.currentSelect && this.currentSelect === e){
+      if (e.tagName === 'INPUT' && e.type === 'text' && !e.classList.contains('inJob__phone')) {
+        if (this.currentSelect && this.currentSelect === e) {
           this.checkOption();
         } else {
           this.openSelectBlock(e);
         }
-      } else if (dataset.select === 'option'){
-        if (dataset.phone !== 'number'){
+      } else if (dataset.select === 'option') {
+        if (dataset.phone !== 'number') {
           this.object[this.currentSelect.name] = e.innerHTML;
         }
         this.currentSelect.value = e.innerHTML;
         this.checkOption();
-      } else if (dataset.open){
+      } else if (dataset.open) {
         this.openCard(dataset.open, dataset.number, dataset.source);
-      } else if (dataset.add){
+      } else if (dataset.add) {
         this.openModule(dataset.add);
-      } else if (dataset.call === "hangup"){
+      } else if (dataset.call === "hangup") {
         e.classList.add('disabled');
         this.finishCall(e);
-      } else if (dataset.call === 'callback'){
+      } else if (dataset.call === 'callback') {
         event.target.classList.add('disabled');
         api.requestToServer('getInfo', {
           action: 'reCall',
@@ -215,13 +221,13 @@ class App{
         }).then(() => {
           setTimeout(() => {
             event.target.classList.remove('disabled');
-          },5000)
+          }, 5000)
         })
-      } else if (dataset.send === 'sms'){
+      } else if (dataset.send === 'sms') {
         this.sendSms();
-      } else if (dataset.answer){
+      } else if (dataset.answer) {
         this.switchAnswer(dataset.answer, dataset.type);
-      } else if (dataset.direction){
+      } else if (dataset.direction) {
         this.setLoader();
         api.requestToServer('getInfo', {
           action: 'finishItem',
@@ -231,9 +237,10 @@ class App{
           direction: dataset.direction,
           type: dataset.type,
           comment: document.querySelector('.client__area').value,
+          typeEntity: this.info.request.type
         }).then(() => {
           this.removeLoader();
-          if (this.checkWork.disabled){
+          if (this.checkWork.disabled) {
             this.finishSession();
             this.checkWork.disabled = false;
           } else {
@@ -242,8 +249,8 @@ class App{
             this.counterTime();
           }
         });
-      } else if (dataset.next === 'item'){
-        if (this.checkWork.checked && this.isNotItem){
+      } else if (dataset.next === 'item') {
+        if (this.checkWork.checked && this.isNotItem) {
           document.querySelector('.inJob__load').classList.remove('inJob__next_timer');
           document.querySelector('.inJob__next').classList.add('disabled');
           this.getItem();
@@ -253,20 +260,21 @@ class App{
       }
     })
     document.body.addEventListener('click', event => {
-      if (event.target.dataset.check !== 'elem'){
+      if (event.target.dataset.check !== 'elem') {
         this.checkOption();
       }
     })
     document.body.addEventListener('keyup', event => {
       const module = document.querySelector('.module');
-      if(event.key === "Escape"){
-        if (module){
+      if (event.key === "Escape") {
+        if (module) {
           this.closeModule(module);
         }
       }
     })
   }
-  openResponsibleList(){
+
+  openResponsibleList() {
     return `<div class="responsible">
               <div class="responsible__header">Поиск</div>
               <div class="responsible__search">
@@ -288,11 +296,12 @@ class App{
               <button data-name="responsible" data-type="application" class="can-btn responsible__btn">выбрать</button>
             </div>`
   }
-  renderResponsible(module){
+
+  renderResponsible(module) {
     const inputs = module.querySelectorAll('INPUT[type="search"]');
     const response = {};
     let checkInputValue = '';
-    for (let input of inputs){
+    for (let input of inputs) {
       response[input.name] = input.value;
       checkInputValue += input.value;
     }
@@ -302,7 +311,7 @@ class App{
     api.requestToServer('getUsers', response).then(data => {
       module.querySelector('.responsible__list').innerHTML = '';
       console.log(data)
-      for (let item of data){
+      for (let item of data) {
         module.querySelector('.responsible__list').insertAdjacentHTML('beforeend',
           `<div class="responsible__row">
                 <input class="responsible__radio" id="${item.LOGIN}" type="radio" name="responsible"/>
@@ -318,45 +327,48 @@ class App{
     })
   }
 
-  handlerInput(){
+  handlerInput() {
     const allInputs = document.querySelectorAll('INPUT:not(.inJob__checkbox)');
-    for (let input of allInputs){
+    for (let input of allInputs) {
       input.addEventListener('change', event => {
-        if (event.target.name === 'reqHouseBuildDate'){
+        if (event.target.name === 'reqHouseBuildDate') {
           this.object[event.target.name] = event.target.value.split('-').reverse().join('.');
-        } else if (event.target.classList.contains('reqTypeofRealty')){
+        } else if (event.target.classList.contains('reqTypeofRealty')) {
           this.object[event.target.name] = event.target.value;
           this.renderObject(event.target.value);
-        } else if (event.target.name === 'reqTypeofFlat'){
+        } else if (event.target.name === 'reqTypeofFlat') {
           this.object.reqTypeofRealty = event.target.value;
-        }
-        else {
+        } else {
           this.object[event.target.name] = event.target.value;
         }
       })
     }
   }
-  setLoader(){
+
+  setLoader() {
     const currentY = window.pageYOffset;
     const loader = `<div style="top: ${currentY}px" class="loader"><div class="loader__img"></div><div>`;
     document.body.insertAdjacentHTML('beforeend', loader);
     document.body.setAttribute('style', 'overflow: hidden;');
   }
-  removeLoader(){
+
+  removeLoader() {
     document.body.removeAttribute('style');
     document.querySelector('.loader').remove();
   }
-  finishCall(){
+
+  finishCall() {
     api.requestToServer('getInfo', {
       action: 'hangup',
       entityId: this.currentItemUID,
     }).then(data => {
-      if (data.result){
+      if (data.result) {
         alert('вызов завершен');
       }
     })
   }
-  sendSms(){
+
+  sendSms() {
     const textField = document.querySelector('.client__area-sms');
     const numberPhone = document.querySelector(`INPUT[name='numberPhone']`).value.replace(/[^0-9]/g, ' ');
     api.requestToServer('getInfo', {
@@ -365,17 +377,17 @@ class App{
       phone: numberPhone,
       entityId: this.currentItemUID,
     }).then(data => {
-      if (data.status === 'ok'){
+      if (data.status === 'ok') {
         alert('сообщение отправлено');
         textField.value = '';
       }
     })
   }
 
-  switchAnswer(answer, type){
-    switch (answer){
+  switchAnswer(answer, type) {
+    switch (answer) {
       case 'agree':
-        if (this.validField()){
+        if (this.validField()) {
           this.showDirectionButton(type);
         }
         break;
@@ -386,13 +398,14 @@ class App{
         this.openModule(answer);
         break;
       case 'confirms':
-        if (this.validField()){
+        if (this.validField()) {
           this.sendConfirms('confirms');
         }
         break;
     }
   }
-  sendConfirms(action){
+
+  sendConfirms(action) {
     this.setLoader();
     api.requestToServer('getInfo', {
       action: 'finishItem',
@@ -401,9 +414,10 @@ class App{
       data: this.object,
       direction: action,
       comment: document.querySelector('.client__area').value,
+      typeEntity: this.info.request.type
     }).then(() => {
       this.removeLoader();
-      if (this.checkWork.disabled){
+      if (this.checkWork.disabled) {
         this.finishSession();
         this.checkWork.disabled = false;
       } else {
@@ -413,7 +427,8 @@ class App{
       }
     });
   }
-  showDirectionButton(type){
+
+  showDirectionButton(type) {
     const direction = document.querySelector('.object__direction');
     if (!direction) {
       document.querySelector('.object').insertAdjacentHTML('beforeend',
@@ -428,7 +443,8 @@ class App{
             </div>`);
     }
   }
-  getFailLayout(){
+
+  getFailLayout() {
     return `<p class="module__title">Причина отказа</p>
             <div class="module__task"> 
               <span class="subtitle">Причина</span>
@@ -447,7 +463,8 @@ class App{
               <button data-name="close" class="ui-btn ui-btn-danger">отменить</button>
             </div>`
   }
-  getDenialLayout(){
+
+  getDenialLayout() {
     return `<p class="module__title">Причина завершение звонка</p>
             <div class="module__task">
               <span class="subtitle">Причина</span>
@@ -468,7 +485,7 @@ class App{
             </div>`
   }
 
-  openModule(layout){
+  openModule(layout) {
     const moduleLayout = {
       task: this.getTaskLayout(),
       denial: this.getDenialLayout(),
@@ -486,30 +503,32 @@ class App{
             </div>`);
     this.handlerModule();
   }
-  closeModule(module){
+
+  closeModule(module) {
     document.querySelector('HTML').removeAttribute("style");
     module.remove();
   }
-  handlerModule(){
+
+  handlerModule() {
     const module = document.querySelector('.module');
     module.addEventListener('click', event => {
       const e = event.target;
       const dataset = event.target.dataset;
-      if (dataset.name === 'close'){
+      if (dataset.name === 'close') {
         this.closeModule(module);
-      } else if (dataset.input === 'pick'){
+      } else if (dataset.input === 'pick') {
         document.querySelector(`.${dataset.input}__select`).classList.remove('inVisible');
-      } else if (dataset.option === 'pick'){
+      } else if (dataset.option === 'pick') {
         document.querySelector(`.${dataset.option}__input`).value = e.innerHTML;
         document.querySelector(`.${dataset.option}__select`).classList.add('inVisible');
-      } else if (dataset.save === 'reason'){
+      } else if (dataset.save === 'reason') {
         const inputReason = module.querySelector(`INPUT[type='text']`);
-        if (inputReason.value === 'Выбрать'){
+        if (inputReason.value === 'Выбрать') {
           return
         } else {
           api.requestToServer('getInfo', this.setReasonObject(dataset.reason, inputReason.value)).then(() => {
             this.closeModule(module);
-            if (this.checkWork.disabled){
+            if (this.checkWork.disabled) {
               this.finishSession();
               this.checkWork.disabled = false;
             } else {
@@ -519,11 +538,11 @@ class App{
             }
           });
         }
-      } else if (event.target.dataset.btn === 'search'){
+      } else if (event.target.dataset.btn === 'search') {
         this.renderResponsible(module);
-      } else if (event.target.dataset.name === 'responsible'){
+      } else if (event.target.dataset.name === 'responsible') {
         const login = module.querySelector(`INPUT[type=radio]:checked`).id;
-        if (login){
+        if (login) {
           this.closeModule();
           this.setLoader();
           api.requestToServer('getInfo', {
@@ -533,9 +552,10 @@ class App{
             data: this.object,
             login: login,
             comment: document.querySelector('.client__area').value,
+            typeEntity: this.info.request.type
           }).then(() => {
             this.removeLoader();
-            if (this.checkWork.disabled){
+            if (this.checkWork.disabled) {
               this.finishSession();
               this.checkWork.disabled = false;
             } else {
@@ -548,23 +568,25 @@ class App{
       }
     })
     module.onkeydown = (event) => {
-      if (event.key === 'Enter' && module.querySelector('.responsible__list')){
+      if (event.key === 'Enter' && module.querySelector('.responsible__list')) {
         this.renderResponsible(module);
       }
     }
   }
 
-  setReasonObject(reasonSource, reasonText){
+  setReasonObject(reasonSource, reasonText) {
+    console.log(this.info.type)
     return {
       action: 'finishItem',
       result: 0,
       reason: reasonText,
       reasonType: reasonSource,
       item: this.currentItemUID,
+      typeEntity: this.info.request.type
     }
   }
 
-  getTaskLayout(){
+  getTaskLayout() {
     return `<p class="module__title">Комментарий риелтору</p>
             <div class="module__task"> 
               <span class="subtitle">Задача</span>
@@ -586,25 +608,27 @@ class App{
               <button data-name="close" class="ui-btn ui-btn-danger">отменить</button>
             </div>`
   }
+
   /**
    * Принимайт input по событию, открывает блок выбора новых параметров
    * Работает как select-option
    * @param input
    */
-  openSelectBlock(input){
+  openSelectBlock(input) {
     const findBlock = document.querySelector(`.${input.name}`);
-    if (findBlock){
+    if (findBlock) {
       this.checkOption();
       this.currentOptions = findBlock;
       this.currentOptions.classList.remove('inVisible');
       this.currentSelect = input;
     }
   }
+
   /**
    * Закрывает блок выбора новых параметров открытых с openSelectBlock
    */
-  checkOption(){
-    if (this.currentOptions){
+  checkOption() {
+    if (this.currentOptions) {
       this.currentOptions.classList.add('inVisible');
       this.currentOptions = '';
       this.currentSelect = '';
@@ -619,7 +643,7 @@ class App{
    * @returns {boolean}
    */
 
-  openCard(action, number, from){
+  openCard(action, number, from) {
     const windowWidth = window.innerWidth * 0.9;
     const readyString = {
       client: `https://crm.centralnoe.ru/crm/contact/details/${number}/`,
@@ -627,19 +651,22 @@ class App{
       deal: `https://crm.centralnoe.ru/crm/deal/details/${number}/`,
       user: `https://crm.centralnoe.ru/company/personal/user/${number}/`,
     }
-    BX.SidePanel.Instance.open(readyString[action], {animationDuration: 300,  width: windowWidth, events: {
+    BX.SidePanel.Instance.open(readyString[action], {
+      animationDuration: 300, width: windowWidth, events: {
         onclose: () => {
           console.log(action);
-          if (action === 'client'){
+          if (action === 'client') {
             this.renderClientValue();
-          } else if (action === 'deal'){
+          } else if (action === 'deal') {
             this.renderDeal(this.deal.ID)
           }
-        }}});
+        }
+      }
+    });
     return true;
   }
 
-  checkSlider(){
+  checkSlider() {
     const elms = document.querySelectorAll('.slider');
     for (let i = 0, len = elms.length; i < len; i++) {
       // инициализация elms[i] в качестве слайдера
@@ -649,21 +676,22 @@ class App{
     }
   }
 
-  renderObject(reqTypeofRealty){
+  renderObject(reqTypeofRealty) {
     const containerObject = document.querySelector('.object');
     containerObject.innerHTML = '';
     containerObject.insertAdjacentHTML('beforeend', new ObjectLayout(this.object, reqTypeofRealty).render());
-    const notificationBlock =  document.querySelector('.control__notification-block');
+    const notificationBlock = document.querySelector('.control__notification-block');
     notificationBlock && notificationBlock.remove();
     this.checkSlider();
     this.handlerInput();
   }
-  renderClientValue(){
-    api.requestToServer('getClient',{
+
+  renderClientValue() {
+    api.requestToServer('getClient', {
       id: this.clientUID,
     }).then(client => {
       this.client = client;
-      if (this.client.ASSIGNED_BY_ID){
+      if (this.client.ASSIGNED_BY_ID) {
         api.requestToServer('getRealtor', {
           id: this.client.ASSIGNED_BY_ID,
         }).then(realtor => {
@@ -675,7 +703,8 @@ class App{
       }
     })
   }
-  renderDeal(dealUID){
+
+  renderDeal(dealUID) {
     api.requestToServer('getDeal', {
       id: dealUID,
     }).then(deal => {
@@ -691,11 +720,6 @@ class App{
       })
     })
   }
-  renderControl(){
-    const controlContainer = document.querySelector('.control');
-    controlContainer.innerHTML = '';
-    controlContainer.insertAdjacentHTML('beforeend', new ControlLayout().render())
-  }
 }
 
 class ObjectLayout {
@@ -710,11 +734,12 @@ class ObjectLayout {
       'Гараж': this.garage(),
     }
   }
-  getPhoto(){
+
+  getPhoto() {
     let photoLayout = '';
-    if (this.item.reqPhoto){
-      if (this.item.reqPhoto.length > 0){
-        for (let photo of this.item.reqPhoto){
+    if (this.item.reqPhoto) {
+      if (this.item.reqPhoto.length > 0) {
+        for (let photo of this.item.reqPhoto) {
           photoLayout += `<div class="slider__item slider__photo" style="background-image: url(${photo.URL ? photo.URL : ''})"></div>`
         }
       } else {
@@ -725,7 +750,8 @@ class ObjectLayout {
     }
     return photoLayout;
   }
-  flat(){
+
+  flat() {
     const photo = this.getPhoto();
     return `<div class="object__header">
               <span 
@@ -983,7 +1009,8 @@ class ObjectLayout {
                 </div>  
               </div>`
   }
-  room(){
+
+  room() {
     const photo = this.getPhoto();
     return `<div class="object__header">
               <span 
@@ -1231,7 +1258,8 @@ class ObjectLayout {
                 </div>  
               </div>`
   }
-  house(){
+
+  house() {
     const photo = this.getPhoto();
     return `<div class="object__header">
               <span 
@@ -1474,7 +1502,8 @@ class ObjectLayout {
                 </div>
               </div>`
   }
-  ground(){
+
+  ground() {
     const photo = this.getPhoto();
     return `<div class="object__header">
               <span 
@@ -1607,7 +1636,8 @@ class ObjectLayout {
                 </div>
               </div>`
   }
-  garage(){
+
+  garage() {
     const photo = this.getPhoto();
     return `<div class="object__header">
               <span 
@@ -1746,17 +1776,18 @@ class ObjectLayout {
               </div>`
   }
 
-  render(){
+  render() {
     return `${this.type[this.reqType]}`
   }
 }
 
-class DealLayout{
+class DealLayout {
   constructor(deal, realtor) {
     this.deal = deal;
     this.realtor = realtor;
   }
-  getStages(){
+
+  getStages() {
     const stages = {
       'C6:1': 'Выход на задаток',
       'C6:2': 'Отложена',
@@ -1772,7 +1803,8 @@ class DealLayout{
     }
     return stages[this.deal.STAGE_ID];
   }
-  render(){
+
+  render() {
     const stages = this.getStages();
     return `<span         
 data-open="card" 
@@ -1791,7 +1823,7 @@ data-open="card"
                 </div>
                 <div class="about__item about__item_background">
                   <span class="subtitle">Риелтор</span>
-                  <span data-open="user" data-number="${this.realtor.ID  ? this.realtor.ID : ''}" class="subtitle subtitle_open">
+                  <span data-open="user" data-number="${this.realtor.ID ? this.realtor.ID : ''}" class="subtitle subtitle_open">
                     ${this.realtor.LAST_NAME ? this.realtor.LAST_NAME : ''}
                     ${this.realtor.NAME ? this.realtor.NAME : ''}
                     ${this.realtor.SECOND_NAME ? this.realtor.SECOND_NAME : ''}
@@ -1813,16 +1845,17 @@ data-open="card"
   }
 }
 
-class ClientLayout{
+class ClientLayout {
   constructor(client, realtor, info) {
     this.client = client;
     this.realtor = realtor;
     this.info = info;
   }
-  getPhone(){
-    if (this.client.HAS_PHONE === "Y"){
+
+  getPhone() {
+    if (this.client.HAS_PHONE === "Y") {
       let phones = '';
-      for (let phone of this.client.PHONE){
+      for (let phone of this.client.PHONE) {
         phones += `<div class="about__item about__item_background">
                       <span class="subtitle">Телефон</span>
                       <span class="subtitle">${phone.VALUE}</span>
@@ -1831,17 +1864,19 @@ class ClientLayout{
       return phones;
     }
   }
-  getPhoneSelect(){
-    if (this.client.HAS_PHONE === "Y"){
+
+  getPhoneSelect() {
+    if (this.client.HAS_PHONE === "Y") {
       let option = '';
-      for (let phone of this.client.PHONE){
+      for (let phone of this.client.PHONE) {
         option += `<span data-check="elem" data-select="option" data-phone="number" class="about__option">${phone.VALUE}</span>`
       }
       return option;
     }
   }
-  agreeButtons(){
-    if (this.info.request.type === 'frompars'){
+
+  agreeButtons() {
+    if (this.info.request.type === 'frompars') {
       return `<button 
                 data-answer="agree" 
                 data-type="application"
@@ -1858,13 +1893,21 @@ class ClientLayout{
       return `<button data-answer="confirms" class="can-btn can-btn_width33 client__btn-agree">подтверждает</button>`
     }
   }
-  render(){
+
+  render() {
     const phone = this.getPhone();
     const phoneSelect = this.getPhoneSelect();
     const agreeButtons = this.agreeButtons();
-    return `<div class="client__title-wrap"> 
-                <span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
-                <span data-call="callback" class="can-btn">перезвонить</span>
+    return `
+              ${
+                    this.info.request.type === 'frompars' ? `<span class="client__source">Прозвон парсинга</span>` : ''
+                  }
+              ${
+                    this.info.request.type === 'old' ? `<span class="client__source">Актуализация базы данных</span>` : ''
+                  }
+            <div class="client__title-wrap"> 
+              <span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
+              <span data-call="callback" class="can-btn">перезвонить</span>
 <!--                <span data-call="hangup" class="client__phone_cancel"></span>-->
             </div>
               <div class="about client__info">                
@@ -1913,16 +1956,6 @@ class ClientLayout{
                     <button data-answer="fail" class="can-btn can-btn_width33 client__btn-fail">не ответил</button>
                 </div>
               </div>`
-  }
-}
-
-class ControlLayout{
-  constructor() {
-  }
-  render(){
-    return `<div class="control__wrap">
-                <span data-add="task" class="subtitle subtitle_open">Добавить задачу/заметку для Риелтора</span>
-            </div>`
   }
 }
 
