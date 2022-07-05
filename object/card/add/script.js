@@ -148,6 +148,8 @@ class Add {
         `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберите'}`);
       selectStyle('.reqDrainage', 'reqDrainage',
         `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберите'}`);
+      selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
+        `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберите'}`);
     } else if (this.obj.reqTypeofRealty === 'Земельный участок') {
       form.insertAdjacentHTML('beforeend', new Ground().render());
       new Search().init();
