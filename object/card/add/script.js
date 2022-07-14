@@ -150,6 +150,8 @@ class Add {
         `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберите'}`);
       selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
         `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберите'}`);
+      selectStyle('.reqMaterial', 'reqMaterial',
+        `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
     } else if (this.obj.reqTypeofRealty === 'Земельный участок') {
       form.insertAdjacentHTML('beforeend', new Ground().render());
       new Search().init();
@@ -536,6 +538,10 @@ class Handler{
           `${add.obj.reqWaterPipes ? add.obj.reqWaterPipes : 'Выберите'}`);
         selectStyle('.reqDrainage', 'reqDrainage',
           `${add.obj.reqDrainage ? add.obj.reqDrainage : 'Выберите'}`);
+        selectStyle('.reqTypeofLayout', 'reqTypeofLayout',
+          `${add.obj.reqTypeofLayout ? add.obj.reqTypeofLayout : 'Выберите'}`);
+        selectStyle('.reqMaterial', 'reqMaterial',
+          `${add.obj.reqMaterial ? add.obj.reqMaterial : 'Выберите'}`);
         this.handlerPrice();
         break
       case 'ground':
@@ -2121,6 +2127,23 @@ class House{
                   <option ${add.obj.reqHouseType === 'Малоэтажная' ? 'selected' : ''}>Таунхаус</option>
                   <option ${add.obj.reqHouseType === 'Ленинградка' ? 'selected' : ''}>Часть дома</option>
                   </select>         
+              </div>
+              <div class="form__item"> 
+                <span class="form__subtitle">Материал стен</span>               
+                <select class="reqMaterial" name="reqMaterial"> 
+                  <option value="empty" ${!add.obj.reqMaterial ? 'selected' : ''}>Выберите</option>
+                  <option ${add.obj.reqMaterial === 'Кирпич' ? 'selected' : ''}>Кирпич</option>
+                  <option ${add.obj.reqMaterial === 'Панель' ? 'selected' : ''}>Панель</option>
+                  <option ${add.obj.reqMaterial === 'Шлакоблоки' ? 'selected' : ''}>Шлакоблоки</option>
+                  <option ${add.obj.reqMaterial === 'Дерево' ? 'selected' : ''}>Дерево</option>
+                  <option ${add.obj.reqMaterial === 'Монолит' ? 'selected' : ''}>Монолит</option>
+                  <option ${add.obj.reqMaterial === 'Сибит' ? 'selected' : ''}>Сибит</option>
+                  <option ${add.obj.reqMaterial === 'Каркасно-засыпной' ? 'selected' : ''}>Каркасно-засыпной</option>
+                  <option ${add.obj.reqMaterial === 'Металло-каркассный' ? 'selected' : ''}>Металло-каркассный</option>
+                  <option ${add.obj.reqMaterial === 'Кирпично-каркасный' ? 'selected' : ''}>Кирпично-каркасный</option>
+                  <option ${add.obj.reqMaterial === 'Камень' ? 'selected' : ''}>Камень</option>
+                  <option ${add.obj.reqMaterial === 'Не указано' ? 'selected' : ''}>Не указано</option>
+                </select>
               </div>
               <div class="form__item"> 
                 <span class="form__subtitle">Планировка</span>               
