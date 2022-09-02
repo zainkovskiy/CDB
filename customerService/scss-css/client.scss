@@ -1,7 +1,8 @@
-.client{
+.client {
   border-radius: 5px;
   padding: 10px;
-  &__source{
+
+  &__source {
     font-size: 24px;
     font-family: "montserrat", sans-serif;
     display: block;
@@ -9,14 +10,16 @@
     font-weight: 700;
     color: darkcyan;
   }
-  &__comment{
+
+  &__comment {
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 100%;
     margin: 20px 0 0 0;
   }
-  &__area{
+
+  &__area {
     resize: none;
     width: 100%;
     outline: none;
@@ -27,13 +30,21 @@
     padding: 10px;
     box-sizing: border-box;
   }
-  &__btn{
+
+  &__btn {
     align-self: flex-start;
   }
-  &__buttons{
+
+  &__buttons {
     margin: 10px 0 0 0;
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+
+    &-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 }

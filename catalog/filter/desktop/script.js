@@ -726,7 +726,7 @@ class AddressHandler {
     if (activeDeal.length === 0){
       document.querySelector('.btn-story').classList.add('visible');
       document.querySelector('.btn-add').classList.add('visible');
-      document.querySelector('.btn-basket').setAttribute('style', 'margin: 0;');
+      // document.querySelector('.btn-basket').setAttribute('style', 'margin: 0;');
     }
     if (dealClients === 'null'){
       document.querySelector('.btn-add').classList.add('visible');
@@ -2611,7 +2611,7 @@ class Cards {
                         </div>
                         <div class="card__info card_end">
                             <div class="card__btn-list">
-                                <button class="card__btn btn${this.cards[i].reqNumber}" data-req="${this.cards[i].reqNumber}" data-card="reserv" title="добавить в подборку"> 
+                                <!-- <button class="card__btn btn${this.cards[i].reqNumber}" data-req="${this.cards[i].reqNumber}" data-card="reserv" title="добавить в подборку"> 
                                   <svg class="event-none" width="30" height="30" fill="#BEC1C0" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                   \t viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                                   <g id="Layer_1_1_">
@@ -2624,6 +2624,7 @@ class Cards {
                                   </g>
                                   </svg>
                                 </button>
+                                -->
                             </div>
                         </div>
                         <div class="card__info card_last card_between card_right">

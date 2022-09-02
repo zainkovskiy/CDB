@@ -49,6 +49,7 @@ CJSCore::Init(['ui','sidepanel','jquery2', 'im']);
             <td><div class="table__td-header">Тип</div></td>
             <td><div class="table__td-header">Дата создания <input class="table__input" type="date" autocomplete="off" name="dataCreate"></div></td>
             <td><div class="table__td-header">Показать отправленные <input class="table__checkbox" type="checkbox" id="showAllCheck"><label class="table__label" for="showAllCheck"></label></div></td>
+            <td><div class="table__td-header">Приняты застройщиком</div></td>
         </thead>
         <tbody></tbody>
     </table>

@@ -9,20 +9,20 @@ class newBuildingsSeeker {
     this.inputDev = document.querySelector(`INPUT[name='developer']`);
     this.inputDate = document.querySelector(`INPUT[name='dataCreate']`);
   }
-  init(){
+  init() {
     this.setStartValue();
     this.handler();
     this.setStartUpdate();
   }
 
   //todo если получится переделать инициализацию с учетом сетТаймоута, рендера и получение данных риелтора
-  setStartUpdate(){
+  setStartUpdate() {
     setTimeout(() => {
       server.request({
         action: 'getUpdates',
         timestamp: this.timestamp,
       }).then(row => {
-        if (row.length > 0){
+        if (row.length > 0) {
           this.list.push(...row)
           server.getAllRealtors({
             action: 'getBatch',
@@ -36,7 +36,7 @@ class newBuildingsSeeker {
     }, 30000);
   }
 
-  setStartValue(){
+  setStartValue() {
     server.getAllRealtors({
       action: 'getBatch',
       data: this.setArrayRealtors(),
@@ -45,20 +45,20 @@ class newBuildingsSeeker {
       this.showTable(this.list);
     });
   }
-  setArrayRealtors(){
+  setArrayRealtors() {
     let arrayRealtors = [];
-    for (let item of this.list){
-      if (!arrayRealtors.find(Applicant => Applicant === item.applicant)){
+    for (let item of this.list) {
+      if (!arrayRealtors.find(Applicant => Applicant === item.applicant)) {
         arrayRealtors.push(item.applicant);
       }
     }
     return arrayRealtors;
   }
-  getApplicant(applicant){
+  getApplicant(applicant) {
     return this.arrayRealtors.find(realtor => +realtor.UID === +applicant);
   }
-  showTable(list){
-    if (list.length > 0){
+  showTable(list) {
+    if (list.length > 0) {
       document.querySelector('.empty-data') && document.querySelector('.empty-data').remove()
       this.table.querySelector('tbody').innerHTML = '';
       this.renderRows(list);
@@ -67,22 +67,21 @@ class newBuildingsSeeker {
       this.table.insertAdjacentHTML('beforeend', `<p class="empty-data">нет данных</p>`)
     }
   }
-  renderRows(list){
-    console.log(list)
-    if (this.showSend){
-      for (let item of list){
+  renderRows(list) {
+    if (this.showSend) {
+      for (let item of list) {
         this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item, this.getApplicant(item.applicant)).render());
       }
     } else {
-      for (let item of list){
-        if (item.sendet){
+      for (let item of list) {
+        if (item.sendet) {
         } else {
           this.table.querySelector('tbody').insertAdjacentHTML('beforeend', new Render(item, this.getApplicant(item.applicant)).render());
         }
       }
     }
   }
-  showAllItems(isShow){
+  showAllItems(isShow) {
     server.request({
       action: `${isShow ? 'getAll' : 'get'}`
     }).then(data => {
@@ -91,11 +90,11 @@ class newBuildingsSeeker {
       this.setStartValue();
     })
   }
-  handler(){
+  handler() {
     this.table.addEventListener('click', event => {
-      if (event.target.type === 'checkbox' && event.target.dataset.req){
+      if (event.target.type === 'checkbox' && event.target.dataset.req) {
         this.setNewValue(event.target.checked, event.target.dataset.req);
-      } else if (event.target.type === 'checkbox' && event.target.id === 'showAllCheck'){
+      } else if (event.target.type === 'checkbox' && event.target.id === 'showAllCheck') {
         this.showAllItems(event.target.checked);
         // this.showSend = event.target.checked;
         // if (this.filtered.length > 0){
@@ -103,10 +102,12 @@ class newBuildingsSeeker {
         // } else {
         //   this.showTable(this.list);
         // }
-      } else if (event.target.dataset.open === 'deal'){
+      } else if (event.target.dataset.open === 'deal') {
         this.openCard(event.target.dataset.number);
-      } else if (event.target.dataset.open === 'form'){
+      } else if (event.target.dataset.open === 'form') {
         this.getFormData(event.target.dataset.uid);
+      } else if (event.target.type === 'checkbox' && event.target.dataset.deliv) {
+        this.sendDelivChenge(event.target.dataset.deliv, event.target.checked);
       }
       // else if (event.target.type === 'checkbox' && event.target.id === 'isShowAll'){
       //   this.showAllItems(event.target.checked);
@@ -121,35 +122,40 @@ class newBuildingsSeeker {
   }
 
 
-  openCard(number){
+  openCard(number) {
     let scrollHeight = Math.max(
       document.body.scrollWidth, document.documentElement.scrollWidth,
       document.body.offsetWidth, document.documentElement.offsetWidth,
       document.body.clientWidth, document.documentElement.clientWidth
     );
     let readyString = `https://crm.centralnoe.ru/crm/deal/details/${number}/`;
-    BX.SidePanel.Instance.open(readyString, {animationDuration: 300,  width: 'scrollHeight'});
+    BX.SidePanel.Instance.open(readyString, { animationDuration: 300, width: 'scrollHeight' });
     return true;
   }
-  setNewValue(isChecked, req){
+  setNewValue(isChecked, req) {
     server.request({
       action: `${isChecked ? 'sendet' : 'unSendet'}`,
       UID: req,
       loginID: loginID
     })
   }
-  getFormData(uid){
+  sendDelivChenge(UID, action) {
+    server.request({
+      action: `${action ? 'delivered' : 'undelivered'}`,
+      UID: UID,
+    })
+  }
+  getFormData(uid) {
     server.request({
       action: 'getForm',
       UID: uid,
     }).then(form => {
-      console.log(form)
       this.openModule(form);
     })
   }
-  getFile(files){
+  getFile(files) {
     let filesTemplate = '';
-    if (files && files.length > 0){
+    if (files && files.length > 0) {
       let parseFiles = JSON.parse(files);
       parseFiles.forEach(file => {
         filesTemplate += `<p class="module__text">${file.name} <a download="Паспорт" href="${file.URI}">скачать</a></p>`
@@ -157,7 +163,7 @@ class newBuildingsSeeker {
     }
     return filesTemplate;
   }
-  openModule(form){
+  openModule(form) {
     const htmlDom = document.querySelector('HTML');
     htmlDom.setAttribute("style", "overflow-y:hidden;");
     const currentY = window.pageYOffset;
@@ -190,32 +196,32 @@ class newBuildingsSeeker {
               </div>`);
     this.handlerModule();
   }
-  handlerModule(){
+  handlerModule() {
     const module = document.querySelector('.module');
     module.addEventListener('click', event => {
-      if (event.target.dataset.name === 'close'){
+      if (event.target.dataset.name === 'close') {
         this.closeModule(module);
       }
     })
     document.body.addEventListener('keyup', e => {
-      if (e.key === 'Escape' && module){
+      if (e.key === 'Escape' && module) {
         this.closeModule(module);
       }
     })
   }
-  closeModule(module){
+  closeModule(module) {
     const htmlDom = document.querySelector('HTML');
     htmlDom.removeAttribute("style");
     module.remove();
   }
-  filter(inputSource, value){
-    if (this.inputDev.value.length === 0 && this.inputDate.value.length === 0){
+  filter(inputSource, value) {
+    if (this.inputDev.value.length === 0 && this.inputDate.value.length === 0) {
       this.filtered = [];
       this.showTable(this.list);
-    } else if (this.inputDev.value.length > 0 && this.inputDate.value.length > 0){
+    } else if (this.inputDev.value.length > 0 && this.inputDate.value.length > 0) {
       const regExp = new RegExp(value, 'i');
       let doubleFilter = '';
-      if (inputSource === 'dataCreate'){
+      if (inputSource === 'dataCreate') {
         doubleFilter = this.filtered.filter(item => regExp.test(item.created.split(' ')[0]));
       } else {
         doubleFilter = this.filtered.filter(item => regExp.test(item[inputSource]));
@@ -224,7 +230,7 @@ class newBuildingsSeeker {
     } else {
       if (value.length > 0) {
         const regExp = new RegExp(value, 'i');
-        if(inputSource === 'dataCreate'){
+        if (inputSource === 'dataCreate') {
           this.filtered = this.list.filter(item => regExp.test(item.created.split(' ')[0]));
         } else {
           this.filtered = this.list.filter(item => regExp.test(item[inputSource]));
@@ -236,7 +242,7 @@ class newBuildingsSeeker {
           dataCreate: this.inputDev,
         }
         const regExp = new RegExp(selectInput[inputSource].value, 'i');
-        if (selectInput[inputSource].name === 'dataCreate'){
+        if (selectInput[inputSource].name === 'dataCreate') {
           this.filtered = this.list.filter(item => regExp.test(item.created.split(' ')[0]));
         } else {
           this.filtered = this.list.filter(item => regExp.test(item[selectInput[inputSource].name]));
@@ -247,19 +253,19 @@ class newBuildingsSeeker {
   }
 }
 
-class Render{
+class Render {
   constructor(row, applicant) {
     this.row = row;
     this.applicant = applicant;
   }
-  getDate(date){
-    if (date){
+  getDate(date) {
+    if (date) {
       return date.split(' ')[0].split('-').reverse().join('-');
     } else {
       return ''
     }
   }
-  render(){
+  render() {
     return `<tr> 
               <td class="table__row"><div class="table__row_wrap"><span class="table__link" data-open="deal" data-number="${this.row.dealId}">${this.row.dealId ? this.row.dealId : ''}</span></div></td>
               <td class="table__row">
@@ -294,6 +300,12 @@ class Render{
                   <label class="table__label" for="${this.row.UID}"></label>
                   ${this.getDate(this.row.sendet)}
                 </div>
+              </td>              
+              <td class="table__row">
+                <div class="table__row_wrap">
+                  <input data-deliv=${this.row.UID} class="table__checkbox" type="checkbox" ${this.row.delivered ? 'checked' : ''} id='deliv${this.row.UID}'>
+                  <label class="table__label" for="deliv${this.row.UID}"></label>
+                </div>
               </td>
             </tr>`
   }
@@ -302,7 +314,7 @@ class Render{
 class Server {
   constructor() {
   }
-  async request(request1Cnamed){
+  async request(request1Cnamed) {
     const myHeaders = {
       "Content-Type": "application/json; charset=utf-8"
     };
@@ -321,7 +333,7 @@ class Server {
     }
     return await response.json();
   }
-  async getAllRealtors(arrayRealtors){
+  async getAllRealtors(arrayRealtors) {
     const myHeaders = {
       "Content-Type": "application/json; charset=utf-8"
     };
@@ -346,6 +358,5 @@ const server = new Server();
 server.request({
   action: 'get'
 }).then(data => {
-  console.log(data)
   new newBuildingsSeeker(data).init();
 });

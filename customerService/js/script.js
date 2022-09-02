@@ -223,6 +223,19 @@ class App {
             event.target.classList.remove('disabled');
           }, 5000)
         })
+      } else if (dataset.call === 'callbackLater') {
+        const callbackDate = document.querySelector('INPUT[name="callbackDate"]');
+        if (callbackDate.value) {
+          api.requestToServer('getInfo', {
+            action: 'reCallLater',
+            item: this.info.UID,
+            laterCall: callbackDate.value
+          }).then(() => {
+            this.clearDom();
+            this.clearThis();
+            this.counterTime();
+          })
+        }
       } else if (dataset.send === 'sms') {
         this.sendSms();
       } else if (dataset.answer) {
@@ -397,6 +410,9 @@ class App {
       case 'denial':
         this.openModule(answer);
         break;
+      case 'postponed':
+        this.openModule(answer);
+        break;
       case 'confirms':
         if (this.validField()) {
           this.sendConfirms('confirms');
@@ -485,12 +501,27 @@ class App {
             </div>`
   }
 
+  openPostponed() {
+    return `<p class="module__title">Отложена до</p>
+              <div class="module__task">
+                <span class="subtitle">Дата</span>
+                  <div class="module__container"> 
+                    <input style="width: 100%" class="input__text" name="postponedDate" type="date">
+                  </div>
+              </div>
+              <div class="module__buttons"> 
+                <button data-save="postponed" class="ui-btn ui-btn-success">сохранить</button>
+                <button data-name="close" class="ui-btn ui-btn-danger">отменить</button>
+              </div>`
+  }
+
   openModule(layout) {
     const moduleLayout = {
       task: this.getTaskLayout(),
       denial: this.getDenialLayout(),
       fail: this.getFailLayout(),
       responsible: this.openResponsibleList(),
+      postponed: this.openPostponed(),
     }
     document.querySelector('HTML').setAttribute("style", "overflow-y:hidden;");
     const currentY = window.pageYOffset;
@@ -537,6 +568,26 @@ class App {
               this.counterTime();
             }
           });
+        }
+      } else if (dataset.save === 'postponed') {
+        const inpuDate = module.querySelector(`INPUT[type='date']`);
+        if (inpuDate.value) {
+          api.requestToServer('getInfo', {
+            action: 'finishItem',
+            result: 3,
+            laterDate: inpuDate.value,
+            item: this.currentItemUID,
+          }).then(() => {
+            this.closeModule(module);
+            if (this.checkWork.disabled) {
+              this.finishSession();
+              this.checkWork.disabled = false;
+            } else {
+              this.clearDom();
+              this.clearThis();
+              this.counterTime();
+            }
+          })
         }
       } else if (event.target.dataset.btn === 'search') {
         this.renderResponsible(module);
@@ -758,7 +809,7 @@ class ObjectLayout {
                 data-open="card" 
                 data-source="${this.item.isFromPars ? 'pars' : '1c'}"
                 data-number="${this.item.reqNumber ? this.item.reqNumber :
-      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+        `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
                class="object__title">Объект
              </span> 
              ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
@@ -1017,7 +1068,7 @@ class ObjectLayout {
                 data-open="card" 
                 data-source="${this.item.isFromPars ? 'pars' : '1c'}"
                 data-number="${this.item.reqNumber ? this.item.reqNumber :
-      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+        `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
                class="object__title">Объект
              </span> 
              ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
@@ -1266,7 +1317,7 @@ class ObjectLayout {
                 data-open="card" 
                 data-source="${this.item.isFromPars ? 'pars' : '1c'}"
                 data-number="${this.item.reqNumber ? this.item.reqNumber :
-      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+        `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
                class="object__title">Объект
              </span> 
              ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
@@ -1510,7 +1561,7 @@ class ObjectLayout {
                 data-open="card" 
                 data-source="${this.item.isFromPars ? 'pars' : '1c'}"
                 data-number="${this.item.reqNumber ? this.item.reqNumber :
-      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+        `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
                class="object__title">Объект
              </span> 
              ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
@@ -1644,7 +1695,7 @@ class ObjectLayout {
                 data-open="card" 
                 data-source="${this.item.isFromPars ? 'pars' : '1c'}"
                 data-number="${this.item.reqNumber ? this.item.reqNumber :
-      `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
+        `${this.item.isFromPars ? this.item.isFromPars : ''}`}" 
                class="object__title">Объект
              </span> 
              ${this.item.isFromPars && `<a target="_blank" href="${this.item.reqUrl}">Ссылка на объект</a>`}
@@ -1810,7 +1861,7 @@ class DealLayout {
 data-open="card" 
         data-source="${this.item.isFromPars ? 'pars' : '1c'}"
         data-number="${this.item.reqNumber ? this.item.reqNumber :
-      `${this.item.isFromPars ? this.item.isFromPars : ''}`}"  
+        `${this.item.isFromPars ? this.item.isFromPars : ''}`}"  
         class="object__title">Сделка</span> 
               <div class="about">
                 <div class="about__item about__item_background">
@@ -1851,7 +1902,6 @@ class ClientLayout {
     this.realtor = realtor;
     this.info = info;
   }
-
   getPhone() {
     if (this.client.HAS_PHONE === "Y") {
       let phones = '';
@@ -1890,7 +1940,8 @@ class ClientLayout {
                 рд
               </button>`
     } else {
-      return `<button data-answer="confirms" class="can-btn can-btn_width33 client__btn-agree">подтверждает</button>`
+      return `<button data-answer="confirms" class="can-btn can-btn_width33 client__btn-agree">подтверждает</button>
+      <button data-answer="postponed" class="can-btn can-btn_width33 client__btn-agree">Отложена</button>`
     }
   }
 
@@ -1898,16 +1949,21 @@ class ClientLayout {
     const phone = this.getPhone();
     const phoneSelect = this.getPhoneSelect();
     const agreeButtons = this.agreeButtons();
+    console.log('------------------------------');
+    console.log(this.info);
     return `
-              ${
-                    this.info.request.type === 'frompars' ? `<span class="client__source">Прозвон парсинга</span>` : ''
-                  }
-              ${
-                    this.info.request.type === 'old' ? `<span class="client__source">Актуализация базы данных</span>` : ''
-                  }
-            <div class="client__title-wrap"> 
+              <div class='client__title_wrap'>
               <span data-open="client" data-number="${this.client.ID ? this.client.ID : ''}" class="object__title">Клиент</span>
-              <span data-call="callback" class="can-btn">перезвонить</span>
+              ${this.info.listName &&
+      `<span class="client__source">${this.info.listName}</span>`
+      }
+              </div>
+              <div class="client__buttons-top">
+                <span data-call="callback" class="can-btn">перезвонить</span>
+                <div>
+                  <span data-call="callbackLater" class="can-btn">перезвонить позже</span>
+                  <input name='callbackDate' class="input__text" type="datetime-local">
+                </div>
 <!--                <span data-call="hangup" class="client__phone_cancel"></span>-->
             </div>
               <div class="about client__info">                

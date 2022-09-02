@@ -1,6 +1,174 @@
 .left {
-  display: grid;
-  grid-template-rows: 50% 50%;
+  background: #C4C4C4;
 }
 
+.control__notification {
+  font-family: "montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.client {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.client__source {
+  font-size: 24px;
+  font-family: "montserrat", sans-serif;
+  display: block;
+  text-align: center;
+  font-weight: 700;
+  color: darkcyan;
+}
+
+.client__phone_cancel {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+  background-color: #ff5d5d;
+  background-image: url("../img/phone.svg");
+  background-repeat: no-repeat;
+  background-size: 60%;
+  background-position: center;
+  cursor: pointer;
+  -webkit-transition: background-color .3s;
+  transition: background-color .3s;
+}
+
+.client__phone_cancel:hover {
+  background-color: #b55151;
+}
+
+.client__phone_cancel:active {
+  background-color: #ff8282;
+}
+
+.client__title_wrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.client__field-text {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 10px;
+  -ms-grid-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+
+.client__comment {
+  display: -ms-grid;
+  display: grid;
+  width: 100%;
+  margin: 20px 0 0 0;
+  -ms-grid-rows: min-content 1fr;
+      grid-template-rows: -webkit-min-content 1fr;
+      grid-template-rows: min-content 1fr;
+  grid-gap: 10px;
+}
+
+.client__comment-sms {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.client__area {
+  resize: none;
+  width: 100%;
+  outline: none;
+  font-family: "montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 12px;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.client__area-sms {
+  border-radius: 5px 5px 0 0;
+}
+
+.client__btn-sms {
+  border-radius: 0 0 5px 5px;
+  border-top: none;
+}
+
+.client__btn-agree {
+  background-color: #90bdff;
+}
+
+.client__btn-agree:hover {
+  background-color: #6c8cb8;
+}
+
+.client__btn-agree:active {
+  background-color: #bed8ff;
+}
+
+.client__btn-fail {
+  background-color: #ff7979;
+}
+
+.client__btn-fail:hover {
+  background-color: #ff4c4c;
+}
+
+.client__btn-fail:active {
+  background-color: #efa6a6;
+}
+
+.client__buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+}
+
+.client__buttons-top {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 10px 0 0 0;
+}
+
+.control {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.control__wrap {
+  margin: 0 0 10px 0;
+}
+
+.control__notification {
+  font-size: 24px;
+  color: red;
+}
 /*# sourceMappingURL=left.css.map */

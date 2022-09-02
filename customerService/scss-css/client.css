@@ -2,6 +2,7 @@
   border-radius: 5px;
   padding: 10px;
 }
+
 .client__source {
   font-size: 24px;
   font-family: "montserrat", sans-serif;
@@ -10,13 +11,20 @@
   font-weight: 700;
   color: darkcyan;
 }
+
 .client__comment {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   gap: 10px;
   width: 100%;
   margin: 20px 0 0 0;
 }
+
 .client__area {
   resize: none;
   width: 100%;
@@ -26,16 +34,35 @@
   font-style: normal;
   font-size: 12px;
   padding: 10px;
-  box-sizing: border-box;
-}
-.client__btn {
-  align-self: flex-start;
-}
-.client__buttons {
-  margin: 10px 0 0 0;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
+.client__btn {
+  -ms-flex-item-align: start;
+      align-self: flex-start;
+}
+
+.client__buttons {
+  margin: 10px 0 0 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.client__buttons-top {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
 /*# sourceMappingURL=client.css.map */

@@ -1,12 +1,14 @@
-.object{
+.object {
   border-radius: 5px;
   background: #C4C4C4;
   padding: 10px;
   overflow: auto;
-  &__header{
+
+  &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     & a {
       font-family: "montserrat", sans-serif;
       font-style: normal;
@@ -14,7 +16,8 @@
       line-height: 30px;
     }
   }
-  &__title{
+
+  &__title {
     font-family: "montserrat", sans-serif;
     font-style: normal;
     font-weight: 400;
@@ -23,69 +26,80 @@
     border-bottom: 1px dashed;
     cursor: pointer;
     opacity: .6;
-    &:hover{
+
+    &:hover {
       opacity: 1;
     }
   }
-  &__change{
+
+  &__change {
     display: flex;
     justify-content: space-between;
     margin: 0 0 10px 0;
   }
-  &__feature{
+
+  &__feature {
     display: flex;
     gap: 10px;
     margin: 0 0 10px 0;
   }
-  &__rooms{
+
+  &__rooms {
     display: flex;
     gap: 10px;
   }
-  &__direction{
+
+  &__direction {
     display: flex;
     gap: 10px;
   }
 }
 
-.about{
+.about {
   padding: 20px 0 20px 0;
   gap: 10px;
   display: flex;
   flex-wrap: wrap;
-  &__item{
+
+  &__item {
     display: grid;
     grid-template-columns: 20% 1fr;
     align-items: center;
     width: 100%;
     grid-gap: 10px;
     position: relative;
-    &-phone{
+
+    &-phone {
       grid-template-columns: 40% 1fr;
     }
-    &_background{
+
+    &_background {
       padding: 5px;
       background-color: white;
       border-radius: 5px;
       grid-template-columns: 40% 1fr;
     }
   }
-  &__select{
+
+  &__select {
     background-color: white;
     position: absolute;
     margin: 10px 0 0 0;
-    box-shadow: 4px 4px 8px 0 rgb(34 60 80 / 20%);
+    box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
     padding: 5px 0;
     z-index: 5;
     width: 100%;
     overflow: auto;
     border-radius: 5px;
     max-height: 200px;
-    &_last{
+
+    &_last {
       bottom: 28px;
       margin: 0 0 10px 0;
     }
   }
-  &__option{
+
+  &__option {
     width: 100%;
     display: block;
     padding: 10px;
@@ -98,14 +112,17 @@
     font-size: 13px;
     font-style: normal;
     letter-spacing: 0.8px;
-    &:hover{
+
+    &:hover {
       background: #f2f2f2;
     }
   }
-  &__container{
+
+  &__container {
     position: relative;
     width: 100%;
-    &::after{
+
+    &::after {
       content: '';
       display: block;
       width: 10px;
@@ -121,6 +138,13 @@
     }
   }
 }
-.client__info{
+
+.client__info {
   padding: 10px 0 0 0;
+}
+
+.client__button-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
